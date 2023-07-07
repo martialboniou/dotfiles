@@ -1,0 +1,19 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "\
+(progn\
+  (require 'media)
+  (require 'emms-history)
+  (emms-history-load)\
+  (unless (fboundp #'remove-if)\
+    (require 'cl))\
+  (let ((buf (car (remove-if #'(lambda (x) (= (buffer-size x) 0))\
+      (emms-playlist-buffer-list)))))\
+    (if (null buf)\
+        (emms)\
+      (switch-to-buffer buf)))\
+  (add-lambda-hook 'emms-player-started-hook\
+      (set-process-query-on-exit-flag\
+        (get-process \"emms-player-simple-process\") nil)))" $*
+# first require 'MEDIA (and a minimalist configuration)
+# then restore the last session with #'EMMS-HISTORY-LOAD
+# finally go to the last playlist or open a new one

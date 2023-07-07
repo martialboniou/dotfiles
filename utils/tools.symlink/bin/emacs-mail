@@ -1,0 +1,11 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "\
+(progn\
+  (require 'mail)\
+  (add-hook 'wl-exit-hook 'kill-emacs)\
+  (condition-case err\
+      (wl)\
+    (error \"%s\" err)))" $*
+# first require 'MAIL (it includes 'WWW for html decoding & 'GTD for 'ORG-MODE support)
+# then say to kill emacs on #'WL exiting
+# finally run #'WL safely

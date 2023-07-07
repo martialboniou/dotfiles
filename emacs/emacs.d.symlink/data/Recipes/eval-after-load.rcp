@@ -1,0 +1,4 @@
+(:name eval-after-load
+       :description "`eval-after-load' by mode, map, hook"
+       :type http
+       :url "http://dea.googlecode.com/svn/trunk/my-lisps/eval-after-load.el")

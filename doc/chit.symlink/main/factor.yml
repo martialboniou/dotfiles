@@ -1,0 +1,25 @@
+--- 
+factor: |
+  Fry
+  '[ _ ]                     literalize
+  '[ _ @ ]                   curry
+  '[ @ @ ]                   compose
+  note:
+  # _ and @ are for fried quotations '[
+  # @ is a syntactic sugar for: _ call
+  # nested quotations in fry behave like fried quotations
+  # '[ hides fry so that:
+  '[ this ]                  [ this ] fry call
+  # lexical closures resemblance
+  '[ 1 _ + 2 * _ / ]  <~~~>  [| a b | 1 a + 2 * b / ]
+  
+  Combinators
+  bi ( x p q -- )            cleave
+  bi* ( x y p q -- )         spread (as a dip generalization)
+  bi@ ( x y quot -- )        apply
+  
+  Tips
+  with-scope ( quot -- )     private namespace for lexical effect
+  infer. ( quot -- )         pretty-print infer
+  iota ( n -- iota )         ex: 3 iota [ sq ] map . => { 0 1 4 }
+

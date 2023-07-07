@@ -1,0 +1,542 @@
+"" Vimrc by mars for Vim 7.3+ (git & ruby required)
+"
+" Language: Vim
+" Maintainer: Martial
+" Creator: Martial
+" Version: 0.7
+" Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
+"       adds snippets, completion & syntax checker
+"       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
+"
+" hondana@gmx.com (2004-2010,2012-2013,2015,2020-2021)
+"
+
+" BASIC BEHAVIOR
+set hidden
+set nobackup
+set noswapfile
+set mouse=a
+set isfname+=32 "valid filename w/ space
+let mapleader=" " "space
+let maplocalleader="," "less pinky than - on Dvorak
+nnoremap ; :
+set path=.,** " search in file's dir then current subdir
+au BufEnter * :cd %:p:h "current dir is file dir (so path != .,,**)
+if &t_Co > 2 || has("gui_running") | syntax on | endif
+if v:version >= 703
+  " Inspiration RelativeNumberCurrentWindow script by Ingo Karkat
+  au VimEnter,WinEnter,BufWinEnter,FocusGained,InsertLeave * :set rnu | :set nu
+  au WinLeave,FocusLost,InsertEnter * :set rnu! | :set nu!
+endif
+set sts=2 ts=2 sw=2 et
+set laststatus=2
+set winminheight=0
+
+" VUNDLE
+let s:iCanHazVundle=1
+set nocompatible
+filetype off
+"" VUNDLE SYSTEM
+" Cygwin requires 'autocrlf = false' in [core] section of your .gitconfig
+if !isdirectory(expand("$HOME/.vim/bundle/vundle/.git"))
+  if system("git --version")=~"^git"
+    let s:iCanHazVundle=0
+    if ( has("win32") || has("win64") ) && !has("win32unix")
+      silent! cal mkdir($HOME."/.vim")
+      silent! cal mkdir($HOME."/.vim/bundle")
+      silent! cal mkdir($HOME."/.vim/backup")
+      silent! cal mkdir($HOME."/.vim/doc")
+      silent! cal mkdir($HOME."/.vim/tmp")
+      silent! cal mkdir($HOME."/.vim/views")
+    else
+      silent exe '!umask 027; mkdir -p $HOME/.vim/{bundle,backup,doc,tmp,views}'
+    endif
+    try | cd $HOME/.vim/bundle | catch /^Vim\%((\a\+)\)\=:E344/ | finish | endtry
+    echo "Installing Vundle..." | echo ""
+    silent !git clone https://github.com/gmarik/vundle vundle
+  else | echo "Please install git on " . &shell | finish | endif
+endif
+set rtp+=$HOME/.vim/bundle/vundle
+try | cal vundle#rc() | catch /^Vim\%((\a\+)\)\=:E117/ | finish | endtry
+Bundle 'gmarik/vundle'
+"" VUNDLE PACKAGES
+""" colorscheme
+Bundle 'tomasr/molokai'
+if &t_Co>=256 || has("gui_running")
+  try
+    au VimEnter * :colorscheme molokai
+  catch /^Vim\%((\a\+)\)\=:E185/
+    "no way
+  endtry
+endif
+""" NERDTree
+Bundle 'scrooloose/nerdtree'
+let NERDTreeBookmarksFile=$HOME."/.vim/.NERDTreeBookmarks"
+let NERDTreeShowBookmarks=1
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swp$', '\.swo$', '\.git$', '\.hg', '\.svn', '\.bzr']
+let NERDTreeMouseMode=2
+let NERDTreeChDirMode=0
+"let NERDTreeQuitOnOpen=1
+"let g:NERDTreeWinSize=31
+"set noequalalways
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"" start NERDTree when clean or directory launch
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+      \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif""
+fun! IsNerdTreeEnabled()
+  return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfun
+fun! RefreshTree()
+  call NERDTreeFocus()
+  exe 'normal R'
+  exe "wincmd p"
+endfun
+autocmd BufWritePost * if IsNerdTreeEnabled()  | call RefreshTree()  | endif
+"" <C-n>/<C-f> to toggle/find
+nnoremap <silent> <C-N> :NERDTreeToggle<CR>
+nnoremap <silent> <C-F> :NERDTreeFind<CR>
+nnoremap <leader>n :NERDTreeFind<CR>
+""" tag sidebar for large files
+Bundle 'majutsushi/tagbar'
+""" statusline enhancer (light version)
+Bundle 'vim-airline/vim-airline'
+Bundle 'vim-airline/vim-airline-themes'
+"python version: Bundle 'powerline/powerline'
+"older version: Bundle 'Lokaltog/vim-powerline'
+""" most recent used
+Bundle 'yegappan/mru'
+nmap <Leader>oo :MRU<CR>
+nmap <Leader>o :bro<leader>ol!<CR>
+""" motion helper: <Leader><Leader>w displays word jump
+Bundle 'Lokaltog/vim-easymotion' "TODO
+""" <TAB> everywhere (completion+search)
+Bundle 'ervandew/supertab' "TODO
+Bundle 'SearchComplete' "TODO
+""" yank stack (use <Leader>p instead of <M>p to cycle backwards)
+Bundle 'maxbrunsfeld/vim-yankstack' "TODO (or FORGET)
+nmap <Leader>p <Plug>yankstack_substitute_older_paste
+nmap <Leader>P <Plug>yankstack_substitute_newer_paste
+""" undo tree
+Bundle 'Gundo' "FORGET (undotree or nothing)
+""" indent levels visualizer: <Leader>ig to switch off
+Bundle 'nathanaelkane/vim-indent-guides' "TODO (indentLine or FORGET; use coc instead)
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+"au VimEnter * :IndentGuidesEnable
+""" emacs' paredit slurping/barfing tool (a bliss for Lisp): use <Leader>< / <Leader>>
+Bundle 'paredit.vim' "TODO
+au BufNewFile,BufRead *.shen cal PareditInitBuffer()
+""" surrounding symbols & tags fast editing
+Bundle 'surround.vim'
+""" rainbow parens: <Leader>r to switch off
+Bundle 'rainbow_parentheses.vim' "FORGET luochen1990/rainbow instead
+let g:rbpt_colorpairs = [
+      \ ['blue',       '#FF6000'],
+      \ ['cyan', '#00FFFF'],
+      \ ['yellow',   '#FFFF00'],
+      \ ['darkgreen',    '#00FF00'],
+      \ ['White',         '#c0c0c0'],
+      \ ['blue',       '#FF6000'],
+      \ ['cyan', '#00FFFF'],
+      \ ['yellow',   '#FFFF00'],
+      \ ['darkgreen',    '#00FF00'],
+      \ ['White',         '#c0c0c0'],
+      \ ['blue',       '#FF6000'],
+      \ ['cyan', '#00FFFF'],
+      \ ['yellow',   '#FFFF00'],
+      \ ['darkgreen',    '#00FF00'],
+      \ ['White',         '#c0c0c0'],
+      \ ]
+let g:rbpt_max = 16
+au VimEnter * RainbowParenthesesToggle
+au Syntax   * RainbowParenthesesLoadRound
+au Syntax   * RainbowParenthesesLoadSquare
+nmap <Leader>r :RainbowParenthesesToggle<CR>
+""" ultimate solution for snippets
+Bundle 'SirVer/ultisnips' "TODO
+Bundle 'honza/vim-snippets' "TODO
+let g:UltiSnipsExpandTrigger="<C-;>"
+let g:UltiSnipsJumpForwardTrigger="<C-b>"
+let g:UltiSnipsJumpBackwardTrigger="<C-z>"
+"let g:UltiSnipsEditSplit="vertical"
+""" circular snippets (<C-\> expands; <C-r><C-r><C-\> lists; <Tab>/<CR> goes in/out)
+"Bundle 'drmingdrmer/xptemplate'
+" let g:SuperTabMappingForward = '<Plug>supertabKey' " + SuperTab
+" let g:xptemplate_fallback = '<Plug>supertabKey'
+" let g:xptemplate_key = '<Tab>'
+" let g:xptemplate_pum_tab_nav = 1
+" let g:xptemplate_minimal_prefix = 'full'
+""" autocomplete
+"Bundle 'Shougo/neocomplcache' "TODO
+let g:acp_enableAtStartup = 0
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_smart_case = 1
+let g:neocomplcache_enable_camel_case_completion = 1
+let g:neocomplcache_enable_underbar_completion = 1
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+let g:neocomplcache_dictionary_filetype_lists = {
+      \ 'default' : '',
+      \ 'vimshell' : '$HOME/.vimshell_hist'
+      \}
+if !exists('g:neocomplcache_keyword_patterns')
+  let g:neocomplcache_keyword_patterns = {}
+endif
+let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+if (!has("gui_vsvim"))
+  inoremap <expr><C-g> neocomplcache#undo_completion()
+  inoremap <expr><C-l> neocomplcache#complete_common_string()
+  " <CR> to close popup
+  inoremap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() : "\<CR>"
+  " <TAB> to navigate (<C-n> induces <CR> so prefer <Down>)
+  inoremap <expr><TAB> pumvisible() ? "\<Down>" : "\<TAB>"
+  inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS>  neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><C-y> neocomplcache#close_popup()
+  inoremap <expr><C-e> neocomplcache#cancel_popup()
+endif
+""" syntax checker
+Bundle 'scrooloose/syntastic' "TODO
+""" structure ending tool
+" Bundle 'tpope/vim-endwise' " TODO: find other
+""" comment tool
+Bundle 'tomtom/tcomment_vim' "TODO
+""" timestamp changes on save (iff English time display format)
+Bundle 'timestamp.vim' "TODO
+let g:timestamp_rep = '%a %d %b %Y %H:%M:%S %Z' " 24-hour clock
+let g:timestamp_regexp = '\v\C%(<%(Last %([cC]hanged?|modified)|Modified)\s*:\s+)@<=\S+ \d{2} \S+ \d{4} \d{2}:\d{2}:\d{2}.*|Tue 09 Feb 2021 21:56:14 CET' " international pattern
+""" intelligent finder
+Bundle 'FuzzyFinder' "TODO
+Bundle 'kien/ctrlp.vim' "TODO
+""" terminal
+Bundle 'vim-scripts/Conque-Shell' "TODO
+"""  git manager
+"Bundle 'tpope/vim-fugitive'
+map <Leader>gb :Gblame<CR> "OBSOLETE
+map <Leader>gs :Gstatus<CR>
+map <Leader>gd :Gdiff<CR>
+map <Leader>gl :Glog<CR>
+map <Leader>gc :Gcommit<CR>
+""" gutentags (brew install ctags on Darwin or 'illegal option --')
+Bundle 'ludovicchabant/vim-gutentags' "TODO
+Bundle 'skywind3000/gutentags_plus' "TODO
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
+let g:gutentags_project_root = ['.root']
+let g:gutentags_cache_dir = expand('~/.cache/tags')
+let g:gutentags_plus_switch = 1
+""" tabular
+Bundle 'godlygeek/tabular' "DONE
+""" markdown (tabular MUST come before this)
+Bundle 'plasticboy/vim-markdown
+""" haskell
+""" javascript
+Bundle 'neoclide/coc.nvim' "TODO
+Bundle 'kchmck/vim-coffee-script' "TODO
+Bundle 'maksimr/vim-jsbeautify' "TODO
+""" racket
+""" python
+Bundle 'tmhedberg/SimpylFold' "TODO
+Bundle 'nvie/vim-flake8' "TODO
+Bundle 'davidhalter/jedi-vim' "TODO
+""" xml
+Bundle 'sukima/xmledit' "TODO
+""" html/css
+Bundle 'mattn/emmet-vim' "TODO
+Bundle 'hail2u/vim-css3-syntax' "TODO
+Bundle 'cakebaker/scss-syntax.vim' "TODO
+Bundle 'othree/html5.vim' "TODO
+"Bundle 'nelsyeung/twig.vim'
+Bundle 'evidens/vim-twig' "TODO
+Bundle 'lepture/vim-jinja' "TODO
+Bundle 'rstacruz/sparkup',{'rtp': 'vim/'} "TODO
+""" ruby
+Bundle 'tpope/vim-rails.git' "TODO (or FORGET)
+""" php
+Bundle 'shawncplus/phpcomplete.vim' "TODO
+set omnifunc=syntaxcomplete#Complete
+autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
+set tags=tags;/
+augroup MyGutentagsStatusLineRefresher
+  autocmd!
+  "autocmd User GutentagsUpdating call lightline#update()
+  "autocmd User GutentagsUpdated call lightline#update()
+augroup END
+"stephpy/vim-php-cs-fixer
+Bundle 'arnaud-lb/vim-php-namespace' "TODO
+function! IPhpInsertUse()
+    call PhpInsertUse()
+    call feedkeys('a',  'n')
+endfunction
+autocmd FileType php inoremap <Leader>; <Esc>:cal IPhpInsertUse()<CR>
+autocmd FileType php noremap <Leader>; :cal PhpInsertUse()<CR>
+Bundle 'docteurklein/php-getter-setter.vim' "TODO
+Bundle 'sumpygump/php-documentor-vim' "TODO
+""" viml
+Bundle 'L9' "TODO
+""" rpn calc
+Bundle 'tomtom/tcalc_vim' "TODO
+
+if s:iCanHazVundle == 0
+  echo "Installing Bundles..."
+  echo ""
+  :BundleInstall!
+endif
+filetype plugin indent on
+
+" COLORSCHEME
+"if &term =~ \".*256color\" | set t_Co=256 | else | echo \"toto\"| endif
+" set t_Co=256
+" set bg=dark
+" let g:molokai_original = 1
+" set t_Co=256
+" colorscheme molokai
+
+" DEFAULT BEHAVIOR
+set enc=utf-8
+set encoding=utf-8
+set fileencodings=utf-8
+set background=dark
+set history=1000
+set clipboard+=unnamed
+set ffs=unix,mac,dos
+set viminfo+=!
+set shiftround
+set smarttab
+set visualbell t_vb=
+set autowrite
+set scrolloff=3 " maintain more context around the cursor: 999 to centerize
+set guioptions-=T
+set guioptions+=c
+set guioptions-=m
+set guioptions-=r " no right scrollbar
+set guioptions-=R
+set guioptions-=l " no left scrollbar
+set guioptions-=L
+set history=1000 " boost history up
+set undolevels=1000
+set shortmess=atI " stifle many interruptive prompts
+set backupdir=$HOME/.vim/backup " unused
+set directory=$HOME/.vim/tmp
+"helptags $HOME/.vim/doc
+set incsearch
+set ignorecase
+set smartcase
+set lsp=0
+set wildmenu
+set wildmode=longest,list,full " bash-like
+set wildignore+=*.o,*.obj,*.swp,*.bak,*.pyc,*.elc,*.class,*.*fsl,*.fasl
+set ruler
+set cmdheight=2
+set lz
+set hid
+set backspace=indent,eol,start
+set shortmess=atI
+set report=0
+set noerrorbells "set fillchars=vert:\,stl:\,stlnc:\
+set showmatch
+set cpoptions-=m
+set mat=5
+set list
+set listchars=tab:>.,trail:.,extends:#,nbsp:.
+set fo=tcrqn " see formatoptions help (auto-wraps text+comments using textwidth + auto-inserts the current comment leader + allows formatting of comments + align text)
+set ai
+set si
+set cindent
+set nojoinspaces
+set nocp
+set cursorline
+set whichwrap=b,s,<,>,[,]
+set bufhidden=hide " no distant file reload
+set equalalways " multiple windows, when created, are equal in size
+set splitbelow splitright
+
+" WINDOWS OS CASE
+if has('win32') || has('win64')
+  " PURGE CLASSIC PATH FILE
+  set rtp-=$HOME/vimfiles
+  set rtp+=$HOME/.vim
+  " DISPLAY BETTER DEFAULT FONT
+  if has('gui_running')
+    if filereadable("C:\\Windows\\Fonts\\DejaVuSansMono.ttf")
+      set guifont=DejaVu_Sans_Mono:h12
+    else
+      set guifont=Consolas:h9:cANSI
+    endif
+    set lines=40
+  endif
+else
+  if has('gui_running')
+    set guifont=Inconsolata:h15
+    set lines=50
+  endif
+endif
+
+" KEY
+"" <F2> to paste
+set pastetoggle=<F2>
+"" <Leader>ee & <Leader>ss to edit & source this file
+nmap <silent> <Leader>ee :sp $MYVIMRC<CR>
+nmap <silent> <Leader>ss :so $MYVIMRC<CR>
+"" Q to format the current paragraph (or selection)
+vmap Q gq
+nmap Q gqap
+"" easy window navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+map <Leader>k <C-w>k<C-w>_
+map <Leader>j <C-w>j<C-w>_
+" tricky W:
+"   use <Leader>=  to view all window
+"   use <C-w><C-w> to go in the next window
+"   use <Leader>ww to maxswap window with the next one
+"   use <Leader>w  to max the current window (w once)
+"   use <Leader>wa to close other windows (AUF = open)
+"   use <Leader>wz to close the current window (ZU = close)
+map <Leader>ww <C-w><C-w><C-w>_
+map <Leader>wm <C-w>x<C-w>_
+map <Leader>wz <C-w>c
+map <Leader>wa <C-w>o
+map <Leader>w <C-w>_
+map <Leader>=  <C-w>=
+"" highlighted searches' clearing
+nmap <silent> ,/ :nohlsearch<CR>
+"" sudo admin
+cmap w!! w !sudo tee % >/dev/null
+"" session (function below)
+nmap <silent> <Leader>vv :cal SaveSession()<CR>
+
+" VIEW + SESSION
+set viewdir=$HOME/.vim/views
+set sessionoptions=blank,buffers,curdir,globals,help,localoptions,options,resize,tabpages,winsize,folds
+if !exists("s:sessionautoloaded")
+  let s:sessionautoloaded = 0
+endif
+au VimEnter * exe MySessionLoader()
+fun! MySessionLoader()
+  if filereadable('./.session.vim')
+    if s:sessionautoloaded == 0
+      source ./.session.vim
+      let s:sessionautoloaded = 1
+    endif
+  endif
+endfun
+fun! SaveSession()
+  if s:sessionautoloaded == 1
+    mksession! ./.session.vim
+    echo "Session saved."
+  else
+    echo "No session to save. Please create session with ':mksession .session.vim' first!"
+  endif
+endfun
+
+" FOLD
+set foldenable " turn on folding
+set foldmethod=syntax " make folding syntax sensitive
+set foldlevel=5 " don't autofold anything (but I can still fold manually)
+set foldopen-=search " don't open folds when you search into them
+set foldopen-=undo " don't open folds when you undo stuff
+set foldminlines=2 " don't fold 3 lines
+set fillchars=fold:=
+set foldtext=MyFoldFunction()
+fun! MyFoldFunction()
+  let line = getline(v:foldstart)
+  let sub = substitute(line, '/\*\|\*/\|^\s+', '', 'g')
+  let lines = v:foldend - v:foldstart +1
+  return '[+] ' . v:folddashes.sub . '...' . lines . ' lines ...' . getline(v:foldend)
+endfun
+
+" SPECIFIC FILETYPE BEHAVIOR
+"" HTML
+au Filetype html,htm,xml,twig setl listchars-=tab:>.
+"" INDENT STYLE FAMILY
+au Filetype make,python,ruby setl noet
+"" TRAILING WHITESPACE KEEPER'S FAMILY
+au Filetype ruby,javascript,perl let b:noStripWhitespace=1
+"" BACKUP ISSUE
+au Filetype crontab set nobackup nowritebackup
+"" OMNIFUNC
+au Filetype html,htm,twig,markdown setl omnifunc=htmlcomplete#CompleteTags
+au Filetype xml setl omnifunc=xmlcomplete#CompleteTags
+au Filetype css setl omnifunc=csscomplete#CompleteCSS
+au Filetype javascript setl omnifunc=javascriptcomplete#CompleteJS
+" JEDI-VIM (for python)
+let g:jedi#force_py_version = 3
+let g:jedi#auto_initialization = 1
+let g:jedi#popup_on_dot = 0
+au FileType python let b:did_ftplugin = 1
+" + NEOCOMPLCACHE
+let g:neocomplcache_force_overwrite_completefunc = 1
+
+" ADDITIONAL FILETYPE ASSOCIATION
+augroup filetypedetect
+  au BufNewFile,BufRead *.shen set filetype=shen
+augroup END
+
+" UTILITY FUNCTIONS
+"" trailing whitespace crusher
+fun! Preserve( command )
+  let _s = @/
+  let l = line(".")
+  let c = col(".")
+  exe a:command
+  let @/=_s
+  cal cursor( l, c )
+endfun
+au! BufWritePre * if !&bin && &ft != 'diff' && !exists('b:noStripWhitespace') | cal Preserve( "%s/\\s\\+$//e" ) | endif
+
+"" restore cursor position on reload
+fun! s:CursorOldPosition()
+  if line("'\"") > 0 && line("'\"") <= line("$")
+    exe "normal g`\""
+  endif
+endfun
+au BufReadPost * silent! cal s:CursorOldPosition()
+
+"" visual search & replace
+function! EscapeString(string)
+  let string=a:string
+  " Escape regex characters
+  let string = escape(string, '^$.*\/~[]')
+  " Escape the line endings
+  let string = substitute(string, '\n', '\\n', 'g')
+  return string
+endfunction
+
+function! GetVisual() range
+  " Save the current register and clipboard
+  let reg_save = getreg('"')
+  let regtype_save = getregtype('"')
+  let cb_save = &clipboard
+  set clipboard&
+  " Put the current visual selection in the " register
+  normal! ""gvy
+  let selection = getreg('"')
+  " Put the saved registers and clipboards back
+  call setreg('"', reg_save, regtype_save)
+  let &clipboard = cb_save
+  " Escape any special characters in the selection
+  let escaped_selection = EscapeString(selection)
+  return escaped_selection
+endfunction
+" Use <Leader>zvShow/Hide to replace Show/Hide in the visual
+vmap <Leader>zv <Esc>:%s/\%V
+" Start the find and replace command across the entire file
+" Usage:
+"   yank a text (no need to use "ay to register A)
+"   (optional) :reg : check register
+"   <Leader>z : use search-replace on a visual
+"               the last yank (ie "0) is the target
+vmap <Leader>z <Esc>:%s/<c-r>=GetVisual()<cr>/<c-r><c-o>"
+""" reindent the whole file
+nmap <Leader>ii :cal Preserve("normal gg=G")<cr>
+nmap <Leader>i :cal Preserve("normal gg=G")<cr>
+"" avoid undo by misclicking
+nmap <Leader>uu :cal Preserve("normal gg=G")<cr>
+nmap <Leader>u :cal Preserve("normal gg=G")<cr>
+
+" Last Modified: Thu 06 Jul 2023 15:29:01 CEST

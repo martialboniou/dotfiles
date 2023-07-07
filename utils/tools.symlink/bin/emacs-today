@@ -1,0 +1,4 @@
+#!/bin/sh
+tmux split-window 'emacs-media-player -nw'
+tmux select-pane -t 0
+emacs-mail -nw

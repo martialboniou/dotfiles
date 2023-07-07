@@ -1,0 +1,54 @@
+unbind C-b
+set-option -g prefix C-space # AKA C-Backtick | C-S-2 (ie C-@)
+bind-key C-space last-window
+set-window-option -g aggressive-resize on
+#set-option -g status-utf8 on
+#set-window-option -g utf8 on
+set -g history-limit 5000
+set-option -g default-command "reattach-to-user-namespace -l zsh"
+
+if '[ `uname` = Darwin ]' 'bind C-c run "tmux show-buffer | reattach-to-user-namespace pbcopy"'
+if '[ `uname` = Darwin ]' 'bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"'
+
+if '[ `uname` = Linux ]' 'bind C-c run "tmux save-buffer - | xclip -i -selection clipboard"'
+if '[ `uname` = Linux ]' 'bind C-v run "tmux set-buffer -- \"`xclip -o -selection clipboard`\"; tmux paste-buffer"'
+bind -n C-k clear-history
+
+# look
+set -g status-bg black
+set -g status-fg white
+#set-window-option -g window-status-current-attr bright
+#set-window-option -g window-status-current-bg black
+#set-window-option -g window-status-current-fg magenta
+set -g mode-style bg=black,fg=magenta,bright
+set-option -g status-justify centre
+set-option -g status-interval 5
+set-option -g status-left-length 50
+set-option -g status-left '#[fg=cyan] #T#[default]'
+set-option -g status-right '#[fg=cyan]%a,%d-%b#[default]'
+
+# 256 colors
+# - tmux -2 should be used
+# - the first window may be set to screen b/c of race condition
+#   (see .zsh/zshrc.d/97-tmux-session.zsh)
+CONTAINING_TERM=$TERM
+if-shell 'test `tput colors` -ge 256' 'set-option -g default-terminal "xterm-256color"'
+use=screen-256color-bce
+# - vim should use t_Co=256
+setw -g xterm-keys on
+
+# additional keys
+bind F5 resize-pane -Z
+bind C-l swap-pane -s :+.top \; rotate-window -Ut :+
+bind C-h swap-pane -s :+.bottom \; rotate-window -Dt :+
+bind l next-window
+bind h previous-window
+
+# PageUp/PageDown
+is_vim="ps -o state= -o comm= -t '#{pane_ttp}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+bind -n Pageup if-shell "$is_vim" "send-keys PageUp" "copy-mode -u"
+bind -n S-Pageup if-shell "$is_vim" "send-keys PageUp" "copy-mode -u"
+bind -n Pagedown send-keys Pagedown
+
+unbind x
+bind x run "~/.tmux/zoom"

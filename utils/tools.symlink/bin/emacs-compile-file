@@ -1,0 +1,45 @@
+#!/bin/bash -e
+# Martial Boniou 2011 ;;; byte-compile a file [with or w/o extension] (multiple -eval and '-l load-file' may be added)
+case $# in
+  0)
+    echo "emacs-compile-file: usage: emacs-compile-file <option> <file>"
+    echo "emacs-compile-file: function: byte-compile this <file> being the last arg"
+    echo "emacs-compile-file: function: you may pass emacs <option> like 'eval' too"
+    ;;
+  *)
+    EMACS="emacs -batch"
+    BONUS=""
+    arg=
+    acc=
+    file=
+    j=0
+    iseval=0
+    for i in "$@"
+      do
+        j=`expr $j + 1`
+        if [ -z $(echo "$i" | awk -F: '/-eval/ && $0 != "" { print 1 }') ]; then
+          if [ "$iseval" -eq 1 ]; then
+            iseval=0
+            acc="$acc $i"
+          else
+            if [ "$j" -eq "$#" ]; then
+              file="$i"
+            else 
+              arg="$arg $i"
+            fi
+          fi
+        else
+          iseval=1
+        fi
+      done
+      acc=`echo $acc | sed -e 's/"/\\"/g'`
+      if [[ -f $file ]]; then
+        #file=`echo $file | sed -en 's/.el*$/i'`
+        $EMACS $arg -eval "(progn (add-to-list 'load-path (expand-file-name \".\")) $acc (byte-compile-file \"$file\")))"
+        exit 0
+      fi
+      echo "$file: no such a file or directory"
+      exit 1
+      ;;
+esac
+

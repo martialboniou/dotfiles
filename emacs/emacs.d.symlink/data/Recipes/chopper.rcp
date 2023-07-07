@@ -1,0 +1,9 @@
+(:name chopper
+       :description "Interactive binary search for a line within a window or a buffer"
+       :type github
+       :pkgname "martialboniou/chopper"
+       :post-init (progn
+                    (global-set-key [(meta up)] 'chopper-window-move-up)
+                    (global-set-key [(meta down)] 'chopper-window-move-down)
+                    (global-set-key [(shift meta up)] 'chopper-buffer-move-up)
+                    (global-set-key [(shift meta down)] 'chopper-buffer-move-down)))

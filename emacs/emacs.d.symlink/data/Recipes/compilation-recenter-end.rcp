@@ -1,0 +1,4 @@
+(:name compilation-recenter-end
+       :description "compilation-mode window recentre"
+       :type elpa
+       :depends compilation-recenter-end)

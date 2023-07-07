@@ -1,0 +1,8 @@
+(:name hexview-mode
+:auto-generated t
+:type emacswiki
+:description "A simple & fast hexadecimal file viewer"
+:website "https://raw.github.com/emacsmirror/emacswiki.org/master/hexview-mode.el"
+:post-init (progn
+             (autoload 'hexview-mode "hexview-mode" "Major mode for viewing file in hexical mode.")
+             (autoload 'hexview-find-file "hexview-mode" "Find a file with `hexview-mode'")))

@@ -1,0 +1,60 @@
+#!/bin/bash
+# create_mvim_symlinks
+# create `mvim' symlinks in `~/.tools/bin' to use vim/view/vimdiff/ex non-gui of MacVim
+# replace the 'override-system-vim' option of Homebrew's MacVim
+
+set -e
+
+echo ''
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+[ "`uname -s`" != "Darwin" ] && fail "This script is intended to run on macOS"
+source=`command -v  mvim 2>/dev/null` || fail "Install MacVim please"
+dest="$HOME/.tools/bin" && [ -d "$dest" ] && [ -w "$dest" ] || fail "run bootstrap first"
+
+user () {
+  printf "\r  [ \033[0;33m?\033[0m ] $1 "
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+link_files () {
+  ln -s $1 $2
+  success "linked $1 to $2"
+}
+
+dest_files=( $dest/vim $dest/vimdiff $dest/view $dest/ex )
+
+for file in "${dest_files[@]}"; do
+  skip=false
+  if [ -x "$file" ]; then
+    user "File already exists: `basename $file`, what do you want to do? [s]kip, [o]verwrite, [b]ackup?"
+    read -n 1 action
+    case "$action" in
+      o )
+        rm -f "$file" && success "remove $file";;
+      b )
+        mv "$file" "$file.backup" && success "moved $file to $file.backup";;
+      s )
+        skip=true;;
+      * )
+        ;;
+    esac
+  fi
+  if [[ "$skip" == "false" ]]
+  then
+    link_files $source $file
+  else
+    success "skipped $file"
+  fi
+done
+
+echo ''
+echo '  Symlinks created!'

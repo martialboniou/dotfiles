@@ -1,0 +1,7 @@
+(:name mpg123
+       :description "ID3 tag editor used by mpg123-mode"
+       :website "http://www.gentei.org/~yuuji/software/mpg123el/"
+       :type http
+       :url "http://www.gentei.org/~yuuji/software/mpg123el/mpg123.el"
+       :depends id3el
+       :load "mpg123.el")

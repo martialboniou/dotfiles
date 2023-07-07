@@ -1,0 +1,51 @@
+--- 
+emacs_fast: |
+  Emacs Fast keys
+  
+  Essential
+  <f5><f5>          mars/toggle-single-window (switch forth and back to single window view of the current buffer)
+  <f8><f5>          mars/today-calendar
+  <f8><f7>          make-remember-frame (write a *TODO* or a note)
+  <f5><f8>          anything (show *buffers* / *recentf* / *current-directory*)
+  (cycle buffer with <f5><f4> and <f5><f6> / faster than C-x C-b)
+  
+  Break Glass - Emergency
+  <f8><f8>          mars/safe-emms-start-stop
+  <f7><f8>          mars/toggle-ecb
+  <f5><f2>          undo-kill-buffer
+  
+  Fast Coding
+  <f7><f5>          mars/save-n-purge-code (clean trailing space & save)
+  <f7><f7>          anything-browse-code (faster than ecb)
+  
+  Buffers - F5
+  <f5><f8>          anything
+  <f5><f4>          cycle-buffer
+  <f5><f6>          cycle-buffer-backward
+  <f5><f5>          mars/toggle-single-window
+  <f5><f1>          kill-this-buffer
+  <F5><f2>          undo-kill-buffer
+  (see emacs/nav for buffer navigation)
+  
+  Daily tasks - F8
+  <f8><f8>          mars/safe-emms-start-stop
+  <f8><f5>          mars/today-calendar
+  <f8><f7>          make-remember-frame
+  <f8><f6>          mars/unscheduled-tasks
+  <f8><f4>          mars/draft-email
+  <f8>1             mars/emms-any-streams
+  
+  Hack tools - F7
+  <f7><f7>          anything-browse-code
+  <f7><f6>          anything-simple-call-tree (visual caller/callee tree)
+  <f7><f5>          mars/save-n-purge-code
+  <f7><f8>          mars/toggle-ecb
+  <f7><f2>          cycle-ispell-languages
+  <f7><f1>          whitespace-mode (display trailing space)
+  
+  Window configuration - F6
+  <f6><f6>          mars-windows-archiver-save
+  <f6><f5>          mars-windows-archiver-restore 0 (restore last saved)
+  <f6>1..9          mars-windows-archiver-save 0..8
+  <f6>0             mars-windows-archiver-save 9
+

@@ -1,0 +1,29 @@
+--- 
+emacs_nav: |
+  Emacs Navigation
+  
+  Windowing
+  C-<up>            windmove-up
+  C-<down>          windmove-down
+  C-<left>          windmove-left
+  C-<right>         windmove-right
+  
+  Buffering
+  M-<up>            buf-move-up
+  M-<down>          buf-move-down
+  M-<left>          buf-move-left
+  M-<right>         buf-move-right
+  M-S-<up>          mars/rotate-windows 'up
+  M-S-<down>        mars/rotate-windows 'down
+  (use M-S-<left> / M-S-<right> to organize windows in tiles vertically / horizontally)
+  
+  Splitting
+  C-S-<up>          split-window-vertically   previous-buffer
+  C-S-<down>        split-window-vertically   buf-move-down previous-buffer
+  C-S-<left>        split-window-horizontally previous-buffer
+  C-S-<right>       split-window-horizontally buf-move-down previous-buffer
+  C-S-[             shrink-window-horizontally  (deprecated b/c PAREDIT)
+  C-S-]             enlarge-window-horizontally (deprecated b/c PAREDIT)
+  C-S-<end>         delete-window
+  C-^               enlarge-window
+

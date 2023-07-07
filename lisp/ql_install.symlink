@@ -1,0 +1,6 @@
+(format t "This is the Quicklisp auto-installer")
+(require :asdf)
+(asdf:run-shell-command "curl -O http://beta.quicklisp.org/quicklisp.lisp")
+(load "quicklisp.lisp")
+(quicklisp-quickstart:install :path "~/.quicklisp/")
+(delete-file "quicklisp.lisp")

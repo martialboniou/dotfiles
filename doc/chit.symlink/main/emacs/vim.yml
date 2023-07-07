@@ -1,0 +1,30 @@
+--- 
+emacs-vim: |
+  Emacs Vimpulse
+  
+  Undo
+  [normal]u         undo
+  [normal]C-r       redo
+  C-x u             undo-tree
+  
+  Special
+  [normal]C-e       viper-scroll-up-one [normally defined]
+  [insert]C-e       move-end-of-line (to use C-a/C-e ASCII for bol/eol)
+  [insert]C-,       vimpulse-copy-from-below
+  [normal]<space>d  viper-kill-buffer
+  
+  Windmove
+  C-w k             windmove-up
+  C-w j             windmove-down
+  C-w h             windmove-left
+  C-w l             windmove-right
+  
+  Split
+  C-w v             split-window-horizontally other-window
+  
+  Forward to Vim
+  M-0               open-with-vim
+  
+  Back to Emacs
+  C-x C-z           viper-toggle-key (to switch to Emacs state)
+

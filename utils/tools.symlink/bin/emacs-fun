@@ -1,0 +1,7 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "(progn\
+(require 'peyton-jones-family)\
+(require 'rectify))" $*
+# fun = functional programming language like Haskell or shen (Viz. lambda static)
+# `lang' subdirectory of local site-lisp MUST be in EMACSLOADPATH
+# 'RECTIFY enables snippets & code validation

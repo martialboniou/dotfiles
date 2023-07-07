@@ -1,0 +1,11 @@
+(:name id3el
+       :description "ID3 tag editor used by mpg123-mode"
+       :website "http://www.gentei.org/~yuuji/software/mpg123el/"
+       :type http-tar
+       :url "http://www.gentei.org/~yuuji/software/mpg123el/id3el-0.05.tar.gz"
+       :load-path "."
+       :build ("make")
+       :post-init (progn
+                    (eval-after-load "id3"
+                      '(setq id3*coding 'utf-8
+                             id3*put-prog (expand-file-name "id3put" (el-get-load-path id3el))))))

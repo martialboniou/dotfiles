@@ -1,0 +1,6 @@
+#!/bin/sh
+emacs -q -nw -eval "\
+(progn\
+  (require 'vim-everywhere)\
+  (switch-to-buffer \"*scratch*\"))" $*
+# load emacs in Evil emulation

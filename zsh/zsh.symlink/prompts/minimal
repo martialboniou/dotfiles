@@ -1,0 +1,26 @@
+# http://people.freedesktop.org/~whot/zsh-setup/zshrc
+#
+# http://pthree.org/2008/11/23/727/
+
+autoload -U git_prompt
+
+precmd () {
+   GITBRANCH="$(git_prompt)"
+    if [ -n "$GITBRANCH" ]; then
+        GITBRANCH=" ($GITBRANCH)"
+    fi
+    GITBRANCH=$GITBRANCH
+}
+
+setprompt () {
+  setopt prompt_subst
+  autoload pr_colors
+  pr_colors
+
+  emacs_acquaint
+  if [[ $? -eq 0 ]]; then
+      PROMPT='%n@%m:%~$GITBRANCH> ' # neither color nor extended char in emacs for instance
+  else
+      PROMPT='$PR_CYAN%n@%m:$PR_NO_COLOUR%~$PR_GREEN$GITBRANCH$PR_NO_COLOUR> '
+  fi
+}

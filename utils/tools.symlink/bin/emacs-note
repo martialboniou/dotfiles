@@ -1,0 +1,10 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "(progn\
+(require 'kernel)\
+(require 'gtd)\
+(start-named-server \"$USER\")\
+(mars/two-days-calendar)\
+(delete-other-windows))" $*
+# 'GTD requires at least a minimal emacs
+# start a server to #'ORG-CAPTURE bookmarks
+# open #'ORG-AGENDA for today and tomorrow

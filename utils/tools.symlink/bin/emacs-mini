@@ -1,0 +1,3 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "(require 'kernel)" $*
+# booting 'KERNEL loads 'VARS, 'DEFS, 'WALKER, 'EL-SELECT, 'ADAPTER, 'APPEARANCE, 'WINDOW-MANAGER, 'FORMATS, 'SHORTCUTS and optionally 'VIM-EVERYWHERE
