@@ -1,0 +1,9 @@
+(:name mouse-embrace
+       :description "Minor Mode to embrace text with mouse selections"
+       :type http
+       :url "http://www.xsteve.at/prg/emacs/mouse-embrace.el"
+       :post-init (progn
+                    (autoload 'mouse-embrace-mode "mouse-embrace" "Minor Mode to embrace text with mouse selections")
+                    (global-set-key [(control c) (e)] 'mouse-embrace-mode)
+                    (eval-after-load "mouse-embrace"
+                      '(define-key mouse-embrace-mode-map [(C-S-down-mouse-3)] 'mouse-embrace-choose-text))))

@@ -1,0 +1,6 @@
+#!/bin/sh
+emacs --no-init-file --no-site-file --eval "(progn\
+(require 'church-inspired)\
+(require 'rectify))" $*
+# `lang` subdirectory of local site-lisp MUST be in EMACSLOADPATH
+# 'RECTIFY enables snippets & code validation

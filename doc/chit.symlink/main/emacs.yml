@@ -1,0 +1,58 @@
+--- 
+emacs: |
+  Emacs (I mean this one!)
+  
+  Fast keys
+  (see emacs/fast)
+  
+  Basics
+  C-h               delete-backward-char (use <f1> for help)
+  C-w               delete-backward-word
+  (the default copy-paste process changes:
+    Qwerty users: use cua-mode
+    Dvorak users: see emacs-dvorak)
+  C-x C-f           ido-recentf-file-name-history
+  C-x S-f           ido-recentf
+  C-x f             ido-find-file where M-m to make directory
+  M-n               new-frame
+  C-c C-m           make-directory
+  C-x C-b           ido-switch-buffer
+  C-x b             ibuffer
+  
+  Interactive
+  C-p               hippie-expand
+  C-c o             anything-occur
+  C-=               shell-command
+  M-x               smex or execute-extended-command if no 'smex
+  C-:               smex or anything-M-x             if no 'smex
+  M-X               smex-major-mode-commands         if 'smex
+  C-\               esc-map
+  C-c C-9           anything-imenu
+  C-c C-0           anything-mini
+  M-<f2>            apply-macro-to-region-lines
+  (see emacs_fast too!)
+  
+  Org/Remember
+  C-c l             org-store-link
+  C-c C-r           make-remember-frame
+  C-c r             make-remember-frame
+  
+  Dired (with enhancements)
+  C-x d             dired
+  )                 dired-details-show
+  (                 dired-details-hide
+  r                 wdired-change-to-wdired-mode
+  
+  Ibuffer
+  '                 kill-all-dired-buffers
+  
+  Anything
+  C-.               anything-execute-persistent-action
+  
+  Unicode in Emacs
+  M-x switch-encodings
+                    mars/define-encodings 'utf-8 | latin1
+  
+  No-window-system session
+  C-<f10>           tmm-menubar (<f10> is default but not always available)
+

@@ -1,0 +1,26 @@
+---
+zsh::mars: |
+    Zsh
+    General
+    Vi key bindings is on
+    (CMD)             command mode
+    (INS)             insert mode
+
+    ASCII Welcomed Fast Keys
+    ^a                beginning of the line
+    ^e                end of the line
+    ^t                transpose chars
+
+    Navigation & zdirdump
+    ^u                go to the parent directory (up)
+    ^p                go to previous directory of dirs
+    cd?               display dirs history
+    cd2               go to the 2nd directory of dirs
+    cp2 this          copy `this` to the 2nd directory from dirs
+    gd (Darwin only)  display window to mouse select a directory from dirs
+
+    Search
+    /  (CMD)          go backward for history incremental search
+    ^r (INS)          go backward for history incremental search
+    ?  (CMD)          go forward  for history incremental search
+    ^f (INS)          go forward  for history incremental search

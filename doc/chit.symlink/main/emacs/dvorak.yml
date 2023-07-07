@@ -1,0 +1,9 @@
+--- 
+emacs_dvorak: |-
+  Emacs Dvorak
+
+  C-; C-'           copy
+  C-; C-a           paste
+  C-; C-;           cut
+  (** respect Sun special keys' order on Type 5/6 keyboards **)
+  

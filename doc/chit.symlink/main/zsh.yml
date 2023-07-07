@@ -1,0 +1,22 @@
+--- 
+zsh: |
+  ... no real cheat sheet for zsh yet.  
+  
+  go to zsh_mars for default key bindings on this machine
+  
+  check these sheets out though:
+    zsh_array
+    zsh_bang
+    zsh_case
+    zsh_ftp
+    zsh_glob
+    zsh_if
+    zsh_keys
+    zsh_loop
+    zsh_mars
+    zsh_modifiers
+    zsh_param
+    zsh_process
+    zsh_ranges
+    zsh_rename
+

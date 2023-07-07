@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# for those who get hard time to run Cocoa Emacs from terminal
+# make a symlink like this:
+# $ ln -s memacs emacs
+# inspiration: mvim
+
+EMACS_PATH=/Applications/Emacs.app/Contents/MacOS/Emacs
+
+if [ $(id -u) = "0" ]; then
+  sudo $EMACS_PATH "$@"
+else
+  $EMACS_PATH "$@"
+fi
+
+# beware: not to have issue with quotes, use "$@" not $*

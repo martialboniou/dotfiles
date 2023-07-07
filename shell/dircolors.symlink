@@ -1,0 +1,40 @@
+# Configuration file for the color ls utility
+# This file goes in the /etc/directory, and must be world readable.
+# You can copy this file to .dir_colors in your $HOME directory to override
+# the system defaults
+
+COLOR tty
+# Extra command line options for ls go here
+# -F = show '/' for dirs, '*' for exec, etc.
+# -T 0 = don't trust tab spacing when formatting ls output
+OPTIONS -F -T 0
+
+# Below, there should be one TERM entry for each termtype that is colorizable
+TERM xterm-256color
+TERM urxvt
+TERM linux
+TERM console
+TERM xterm
+TERM rxvt
+TERM xterm-color
+TERM color-xterm
+TERM vt100
+TERM vt220
+TERM dtterm
+TERM color_xterm
+TERM xfterm4
+
+# EIGHTBIT
+EIGHTBIT 1
+
+# Global colors
+DIR 01;33  # yellow directory is better than blue upon dark background (replaced by Xdefaults color changes)
+SOCK 01;32 # green socket
+
+# Specific suffix-based colors you may add
+# magenta images
+# compressed files
+#.tar .tgz .arj .lzh .zip .z .Z .gz .bz2 .bz .tz .deb .rpm .cpio
+# programming source code files
+#.lisp .scm .lsp # newLISP .clj # Clojure .st .rb .py .hs .lhs .el .emacs .m .cxx .cpp .cc .c
+# executable

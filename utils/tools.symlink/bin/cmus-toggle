@@ -1,0 +1,61 @@
+#!/usr/bin/env zsh
+# cmus-toggle
+
+ORDERED_Q_TAGS=( stream title )
+
+cmus_get_info ()
+{
+  echo $(cmus-remote -Q | grep $1 | sed 's/^set/tag/' | sed 's/^tag//' | awk '{ $1=""; print }' | sed 's/^ *//' | sed 's/ *$//' | sed 's/"/\\"/' 2>/dev/null)
+}
+
+cmus_display ()
+{
+  return $(terminal-notifier -sender com.apple.iTunes -title $'C* Music Player' -message "$1")
+}
+
+cmus_display_q ()
+{
+  Q=$(cmus_get_info $1)
+  return $(cmus_display "$Q")
+}
+
+cmus_display_informative_q ()
+{
+  for tag in $ORDERED_Q_TAGS; do
+    Q=$(cmus_get_info $tag)
+    if [[ "$Q" != "" ]]; then
+      return $(cmus_display "$Q")
+    fi
+  done
+  return $(cmus_display "No information")
+}
+
+cmus_display_all_info ()
+{
+  return $(cmus_display_informative_q)
+}
+
+cmus_toggle ()
+{
+  STATUS=$1 || $(cmus_get_info status)
+  if [[ "$STATUS" == "playing" ]]; then
+    out=$(cmus_display_all_info)
+    $(cmus-remote -s) # or s to stop
+    return $out
+  else if [[ "$STATUS" == "stopped" || "$STATUS" == "paused" ]]; then
+      $(cmus-remote -p)
+      return $(cmus_display_all_info)
+    fi
+  fi
+}
+
+STATUS=$(cmus_get_info status)
+if [[ "$1" == 'show_only' ]]; then
+  if [[ "$STATUS" == 'playing' ]]; then
+    return $(cmus_display_all_info)
+  else
+    return $(cmus_display "Not running...")
+  fi
+else
+  return $(cmus_toggle $STATUS)
+fi

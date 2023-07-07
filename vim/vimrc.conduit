@@ -1,0 +1,224 @@
+"" Vimrc by mars for Vim 8.0+; better with Yarn
+"
+" Language: Vim
+" Maintainer: Martial
+" Creator: Martial
+" Version: 0.8
+" Goal: embeds FZF if found
+"       supports Shen, Prolog, Zig
+"       adds snippets, completion & syntax checker for web dev (TS, PHP)
+"       extends indent, tabular & parentheses management
+"
+" hondana@gmx.com (2004-2010,2012-2013,2015,2020-2023)
+"
+
+""""""""""""""""
+" BASIC BEHAVIOR
+""""""""""""""""
+
+set hidden
+set nobackup
+set noswapfile
+set mouse=a
+set isfname+=32 "valid filename w/ space
+let mapleader=" " "space
+let maplocalleader="," "less pinky than - on Dvorak
+nnoremap ; :
+set path=.,** " search in file's dir then current subdir
+au BufEnter * :cd %:p:h "current dir is file dir (so path != .,,**)
+if &t_Co > 2 || has("gui_running") | syntax on | endif
+if v:version >= 703
+  " Inspiration RelativeNumberCurrentWindow script by Ingo Karkat
+  au VimEnter,WinEnter,BufWinEnter,FocusGained,InsertLeave * :set rnu | :set nu
+  au WinLeave,FocusLost,InsertEnter * :set rnu! | :set nu!
+endif
+set sts=2 ts=2 sw=2 et
+set laststatus=2
+set winminheight=0
+
+set nocompatible
+filetype off
+
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+
+"""""""""
+" PLUGINS
+"""""""""
+
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+
+" styl
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/seoul256.vim'
+Plug 'tomasr/molokai'
+Plug 'luochen1990/rainbow'
+"something for indent? see coc
+
+" navi
+Plug 'preservim/nerdtree'
+Plug 'majutsushi/tagbar'
+Plug 'yegappan/mru'
+Plug 'mbbill/undotree'
+if executable('fzf')
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+endif
+
+" form
+Plug 'tpope/vim-surround'
+Plug 'junegunn/vim-easy-align'
+
+" tool
+Plug 'tpope/vim-fugitive'
+map <Leader>gb :Git blame<CR>
+map <Leader>gs :Git status<CR>
+map <Leader>gd :Git diff<CR>
+map <Leader>gl :Git log<CR>
+map <Leader>gc :Git commit<CR>
+
+" lang
+" - markdown
+Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
+if executable('yarn')
+  Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
+else
+  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+endif
+" - zig
+Plug 'ziglang/zig.vim'
+
+call plug#end()
+
+""""""""""""""" 
+" GENERIC SETUP
+"""""""""""""""
+
+" THEME
+if &t_Co>=256 || has("gui_running")
+  try
+    au VimEnter * :colo molokai
+  catch /^Vim\%((\a\+)\)\=:E185/
+    "no way
+  endtry
+endif
+" alternative theme
+"colo seoul256-light
+"set background=dark
+
+"RAINBOW PARENTHESES IMPROVED
+let g:rainbow_active=1
+
+" VIM SURROUND
+"examples:
+"  - cs'"  : change ' to " inside a single-quoted expression
+"  - cst"  : change a tagged expression to a double-quoted version
+"  - ds"   : delete the quotes
+"  - ysiw] : add some brackets around a inner word (iw)
+"  - yss)  : wrap the entire line in parentheses
+
+" EASY ALIGN
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+"examples around '=':
+"  vipga= : visual inner paragraph
+"  gaip=  : start alignment for inner paragraph
+
+" NERDTREE
+let NERDTreeBookmarksFile=data_dir."/.NERDTreeBookmarks"
+let NERDTreeShowBookmarks=1
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swp$', '\.swo$', '\.git$', '\.hg', '\.svn', '\.bzr']
+let NERDTreeMouseMode=2
+let NERDTreeChDirMode=0
+"let NERDTreeQuitOnOpen=1
+"let g:NERDTreeWinSize=31
+"set noequalalways
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"" start NERDTree when clean or directory launch
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+      \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif""
+fun! IsNerdTreeEnabled()
+  return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfun
+fun! RefreshTree()
+  call NERDTreeFocus()
+  exe 'normal R'
+  exe "wincmd p"
+endfun
+autocmd BufWritePost * if IsNerdTreeEnabled()  | call RefreshTree()  | endif
+"" <C-n>/<C-f> to toggle/find
+nnoremap <silent> <C-N> :NERDTreeToggle<CR>
+nnoremap <silent> <C-F> :NERDTreeFind<CR>
+nnoremap <leader>n :NERDTreeFind<CR>
+
+" MOST RECENT USED (MRU)
+nmap <leader>oo :MRU<CR>
+nmap <leader>o :bro<leader>ol!<CR>
+
+" FUZZY FINDER (FZF)
+if executable('fzf')
+  " - options
+  let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
+  " - colors
+  let g:fzf_colors =
+  \ { 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
+  " - actions
+  let g:fzf_action = {
+    \ 'ctrl-t': 'tab split',
+    \ 'ctrl-b': 'split',
+    \ 'ctrl-v': 'vsplit',
+    \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
+  " - mapping selecting mappings
+  nmap <leader><tab> <plug>(fzf-maps-n)
+  xmap <leader><tab> <plug>(fzf-maps-x)
+  omap <leader><tab> <plug>(fzf-maps-o)
+  " - insert mode completion
+  "   - C-X C-F => file
+  "   - C-X C-L => line
+  "   - C-X C-K => word
+  imap <c-x><c-k> <plug>(fzf-complete-word)
+  imap <c-x><c-f> <plug>(fzf-complete-path)
+  imap <c-x><c-l> <plug>(fzf-complete-line)
+  " - FZF ❤️  MRU
+  nmap <Leader>oo :FZFMru<CR>
+endif
+
+"""""""""""""""""""""" 
+" FILE-DEPENDENT SETUP
+""""""""""""""""""""""
+
+" MARKDOWN
+"run with :MarkdownPreview/:MarkdownPreviewStop
+
+"plasticboy/vim-markdown
+autocmd FileType markdown let b:sleuth_automatic=0
+autocmd FileType markdown set conceallevel=0
+autocmd FileType markdown normal zR
+
+let g:vim_markdown_frontmatter=1
+
+"iamcco/markdown-preview.nvim
+let g:mkdp_refresh_slow=1
+let g:mkdp_markdown_css=$HOME.'/.scrubs/share/css/github-markdown.css' " TODO: link to Dots
+
+" ZIG
+let g:zig_fmt_autosave = 0

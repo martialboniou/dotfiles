@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+# Provide a reverse cat command
+
+# usage:
+#
+# $ tac foo.txt
+function tac () {
+  sed '1!G;h;$!d' "$1"
+}

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# display 2 days' org-agenda view using emacs and elinks
+
+_get_browser_cmd () {
+  local BROWSER=$(which $1 2>/dev/null)
+  [[ "$BROWSER" != "" && "$2" != "" ]] && BROWSER+=" $2"
+  echo "$BROWSER"
+}
+
+CMD=$( _get_browser_cmd "elinks" )
+[[ "$CMD" == "" ]] && CMD=$( _get_browser_cmd "w3m" "-T text/html" )
+[[ "$CMD" == "" ]] && echo "no browser found; install elinks or w3m" && exit
+
+declare -a ORG_DONE_KEYWORDS=(DONE DEFERRED CANCELLED)
+ORG_PATH="${HOME}/.emacs.d/el-get/org-mode"
+ORG_CONTRIB_PATH="${ORG_PATH}/contrib/lisp"
+ORG_AGENDA_DIRECTORY="${HOME}/.emacs.d/data/Notes"
+ORG_AGENDA_FILE="Todo.org"
+ORG_AGENDA_PATH="${ORG_AGENDA_DIRECTORY}/${ORG_AGENDA_FILE}"
+
+ORG_DONE_SEQ="\"|\""            # filter DONE & alike
+for i in ${ORG_DONE_KEYWORDS[@]}; do
+    ORG_DONE_SEQ="$ORG_DONE_SEQ \"$i\""
+done
+AGENDA=`emacs --batch --eval "(progn\
+(add-to-list (quote load-path) \"${ORG_CONTRIB_PATH}\")\
+(add-to-list (quote load-path) \"${ORG_PATH}/lisp\")\
+(require (quote org))\
+(setq org-directory (expand-file-name \"${ORG_AGENDA_DIRECTORY}\")\
+      org-agenda-files (list \"${ORG_AGENDA_PATH}\")\
+      org-todo-keywords (quote ((sequence $ORG_DONE_SEQ))))\
+(custom-set-variables\
+      '(org-agenda-skip-deadline-if-done t)\
+      '(org-agenda-skip-scheduled-if-done t))\
+(org-agenda-list nil nil 2)\
+(let ((bs (copy-sequence (buffer-string))) beg)\
+      (with-temp-buffer\
+        (rename-buffer \"Agenda\" t)\
+        (set-buffer-modified-p nil)\
+        (insert bs)\
+        (org-agenda-remove-marked-text (quote org-filtered))\
+      (run-hooks (quote org-agenda-before-write-hook))\
+      (require (quote htmlize))\
+      (set-buffer (htmlize-buffer (current-buffer)))\
+      (princ (buffer-string))))\
+)"`
+echo "$AGENDA" | $CMD

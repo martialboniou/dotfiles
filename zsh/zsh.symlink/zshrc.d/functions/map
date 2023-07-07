@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+# Provide higer-order functions 
+
+# usage:
+#
+# $ foo(){print "x: $1"}
+# $ map foo a b c d
+# x: a
+# x: b
+# x: c
+# x: d
+function map {
+    local func_name=$1
+    shift
+    for elem in $@; print -- $(eval $func_name $elem)
+}

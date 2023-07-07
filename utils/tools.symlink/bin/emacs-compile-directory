@@ -1,0 +1,26 @@
+#!/bin/bash -e
+# Martial Boniou 2011 ;;; byte-compile all .el in a directory (multiple -eval and '-l load-file' may be added)
+EMACS="emacs -batch"
+BONUS=""
+arg=
+acc=
+iseval=0
+if [ -n "$1" ]; then
+  for i in "$@"
+  do
+    if [ -z $(echo "$i" | awk -F: '/-eval/ && $0 != "" { print 1 }') ]; then
+      if [ "$iseval" -eq 1 ]; then
+        iseval=0
+        acc="$acc $i"
+      else
+        arg="$arg $i"
+      fi
+    else
+      iseval=1
+    fi
+done
+    acc=`echo $acc | sed -e 's/"/\\"/g'`
+fi
+
+$EMACS $arg -eval "(progn $acc (setq load-path (cons (expand-file-name \".\") load-path))(eval-when-compile (require 'cl))(dolist (file (remove-if 'file-directory-p (directory-files \".\" t \"^[^.]*.el$\")))(byte-compile-file file)))"
+

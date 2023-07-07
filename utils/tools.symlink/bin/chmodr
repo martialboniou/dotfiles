@@ -1,0 +1,22 @@
+#!/bin/sh
+# Martial Boniou <hondana@gmx.com> 2006-2011 -- copyleft GLP v3
+
+case $# in
+0)
+  echo "chmodr: usage: chmodr <octal>"
+  echo "chmodr: function: apply <octal> recursively in all subdirectories"
+  echo "chmodr: function: it avoids to touch directories and binaries"
+  ;;
+1) 
+  find . -type f -print0 | xargs -0 file | grep -Ev ': *a ' | grep -v 'executable' | cut -f1 -d: |
+  while read result
+  do
+    chmod $1 "$result"
+  done
+  ;; 
+*) 
+  chmodr $1
+  ;; 
+esac
+  
+#find . -type -exec chmod {} \;

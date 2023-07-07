@@ -1,0 +1,135 @@
+#!/bin/bash
+# create_checkmail_commands
+# create `checkmail' scripts in `~/.tools/bin' to biff mailboxes contained in $DEFAULT_MAILSERVERS_DIR/mailservers.yaml or $DEFAULT_MAILSERVERS_DIR/mailservers_<name>.y[a|]ml where <name> will be added to the command name (ex: mailservers_family.yaml => checkmail-family); If $DEFAULT_MAILSERVERS_DIR is $HOME, this script will search dotfile version of the mailservers files. The default name is `default' (ex: mailservers.yaml => checkmail-default): so, mailservers_default.yaml will be ignored if mailservers.yaml exists.
+
+set -e
+
+echo ''
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+[ "`uname -s`" != "Darwin" ] && fail "This script is intended to run on macOS"
+dest="$HOME/.tools/bin" && [ -d "$dest" ] && [ -w "$dest" ] || fail "run bootstrap first"
+
+DEFAULT_MAILSERVERS_DIR=$HOME # change this at your convenience
+MAILSERVERS_TMPL="mailservers"
+DEFAULT_NAME="default"
+EXTENSION_TMPL="yaml"
+CHECKMAIL="checkmail"
+CHECKMAIL_SCRIPT=$CHECKMAIL
+
+posix_realpath()
+{
+  echo $(cd $(dirname "$1"); pwd)/$(basename "$1")
+}
+
+DEFAULT_MAILSERVERS_DIR=$(posix_realpath "$DEFAULT_MAILSERVERS_DIR")
+HOME_FULLPATH=$(posix_realpath "$HOME")
+
+user () {
+  printf "\r  [ \033[0;33m?\033[0m ] $1 "
+}
+
+info () {
+  printf "\r\033[2K  [ \033[00;36mINFO\033[0m ] $1\n"
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+create_specific_checkmail () {
+  NAME=$CHECKMAIL-$1
+  FILE=$dest/$NAME
+  skip=false
+  if [ -x "$FILE" ]; then
+    user "File already exists: $NAME, what do you want to do? [s]kip, [o]verwrite, [b]ackup?"
+    read -n 1 action
+    case "$action" in
+      o )
+        rm -f "$FILE" && success "remove $FILE";;
+      b )
+        mv -f "$FILE" "$FILE.backup" && success "moved $FILE to $FILE.backup";;
+      s )
+        skip=true;;
+      * )
+        ;;
+    esac
+  fi
+  if [[ "$skip" == "true" ]]; then
+    success "skipped $FILE"
+  else
+    DELAY=
+    misunderstood=true
+    while $misunderstood; do
+      user "Which delay (in minutes)? [d]efault one or any number"
+      read -n 1 num_or_d
+      case "$num_or_d" in
+        d )
+          misunderstood=false;;
+        [0-9] )
+          DELAY=$num_or_d
+          misunderstood=false;;
+        * )
+          ;;
+      esac
+    done
+    if [[ "$DELAY" != "" ]]; then
+      nonstop=true
+      while $nonstop; do
+        read -n 1 number
+        case "$number" in
+          [0-9] )
+            DELAY=$DELAY$number;;
+          * )
+            nonstop=false;;
+        esac
+      done
+    fi
+    DELAY_PRINT=" $DELAY"
+    echo -e "#!/usr/bin/env zsh\n# $NAME\n\n$CHECKMAIL_SCRIPT $2$DELAY_PRINT" > "$FILE" &&\
+      chmod 700 "$FILE" &&\
+      success "$NAME created"
+  fi
+}
+
+if [ "$DEFAULT_MAILSERVERS_DIR" == "$HOME_FULLPATH" ]; then
+  HIDDEN_TAG="."
+else
+  HIDDEN_TAG=""
+fi
+
+create_checkmail_commands ()
+{
+  local o=$IFS
+  IFS=$(echo -en "\n\b")
+  for file in $DEFAULT_MAILSERVERS_DIR/$HIDDEN_TAG$MAILSERVERS_TMPL*.$EXTENSION_TMPL; do
+    name=$(basename "$file")
+    ker=$(echo "$name" | sed 's/^'"$HIDDEN_TAG$MAILSERVERS_TMPL"'\(.*\)\..*/\1/')
+    ker=$(echo "$ker" | sed 's/^_//')
+    if [[ "$ker" == "$DEFAULT_NAME" ]]; then
+      GENERIC_FILE=$(dirname "$file")/$HIDDEN_TAG$MAILSERVERS_TMPL.$EXTENSION_TMPL
+      if [ -f "$GENERIC_FILE" ]; then
+        info "$file is ignored. Rename it or merge its content with $GENERIC_FILE"
+        continue
+      else
+        mv -f "$file" "$GENERIC_FILE" && info "$GENERIC_FILE is the new name of $file"
+        continue
+      fi
+    else
+      if [[ "$ker" == "" ]]; then
+        ker=$DEFAULT_NAME
+      fi
+    fi
+    create_specific_checkmail $ker $file
+  done
+  IFS=$o
+}
+create_checkmail_commands
+
+echo ''
+echo '  Executables created!'

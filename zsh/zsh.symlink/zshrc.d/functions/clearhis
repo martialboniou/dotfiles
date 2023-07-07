@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+# Purge history
+
+# usage:
+#
+# $ clearhis
+function clearhis {
+    cd $HOME
+    srm $HISTFILE
+    srm $ZDOTDIR/cache/zdirdump
+    clear
+    if test -n ${TMUX}; then
+      tmux clear-history
+    fi
+}

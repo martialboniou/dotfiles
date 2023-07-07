@@ -1,0 +1,4 @@
+(:name dar
+       :description "Disk archiver interface for emacs"
+       :type http
+       :url "http://www.xsteve.at/prg/emacs/dar.el")

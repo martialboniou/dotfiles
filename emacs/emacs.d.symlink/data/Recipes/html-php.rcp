@@ -1,0 +1,6 @@
+(:name html-php
+       :website "http://www.loveshack.ukfsn.org/emacs/"
+       :description "multi-mode PHP embedded in HTML"
+       :depends (multi-mode php-mode-improved)
+       :type http
+       :url "http://www.loveshack.ukfsn.org/emacs/html-php.el")

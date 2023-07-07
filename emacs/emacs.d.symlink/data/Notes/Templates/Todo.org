@@ -1,0 +1,39 @@
+MY PROJECTS  -*- mode: org; fill-column: 78 -*-
+
+* Tasks
+#+CATEGORY: Tasks
+** TODO Replace template and customize your Emacs
+   [2016-03-12 Sat]
+
+
+* [#B] Project GTD/Planner Learning
+#+CATEGORY: Organizer
+  DEADLINE: <2016-03-12 Sat>
+
+* Work
+#+CATEGORY: Work
+* Party
+#+CATEGORY: Party
+* Metal
+#+CATEGORY: Metal
+* Computer
+#+CATEGORY: Computer
+* Health
+#+CATEGORY: Health
+* Finances
+#+CATEGORY: Finance
+* Miscellaneous
+#+CATEGORY: Misc
+
+
+* Anniversaries and Holidays
+#+CATEGORY: Holiday
+%%(org-calendar-holiday)
+%%(diary-date 10 25 t) Grenada's Thanksgiving
+#+CATEGORY: Birthday
+%%(diary-anniversary  1 1 1960) Someone is %d years old
+
+
+#+STARTUP: content
+#+STARTUP: lognotedone
+#+TAGS: { WORK(w) HOME(h) GUITAR(g) } FUN(f) CALL(c) ERRAND(e)

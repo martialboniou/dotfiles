@@ -1,0 +1,130 @@
+#!/usr/bin/perl
+# File: checkmail
+die "A filename argument is missing!" if ($#ARGV == -1);
+exit 0 if (system "/usr/sbin/ipconfig getifaddr en0>/dev/null || /usr/sbin/ipconfig getifaddr en1>/dev/null"); # Network is unreachable!
+exit 0 unless (system "ps caux | grep `whoami` | grep NotificationCenter >/dev/null") == 0; # NotificationCenter instance is missing!
+die "Module IO::Socket::SSL is missing!" unless (eval{require IO::Socket::SSL});
+die "Module Mail::IMAPClient is missing!" unless(eval{require Mail::IMAPClient});
+die "Module MIME::Base64 is missing!" unless(eval{require MIME::Base64});
+die "Module YAML::XS is missing!" unless(eval{require YAML::XS});
+
+use utf8;
+use YAML::XS qw/LoadFile/;
+use MIME::Base64;
+use Encode qw/encode decode/;
+
+my $mailservers = LoadFile(join "", $ARGV[0]);
+my $terminal_path = 'terminal-notifier -sender com.apple.mail';
+my $limit_message = 70; # as character
+my $display_delay = $ARGV[1] // 2; # as second
+
+sub printOnTerminal
+{
+  local ($title,$message) = @_;
+  $title =~ s/"//g;
+  $message =~ s/"//g;
+  $title =~ s/\'/\\'/g;
+  $message =~ s/\'/\\'/g;
+  my $cmd = join "", $terminal_path, " -title \$'", $title, "' -message \$'", $message, "'>/dev/null";
+  system ($cmd);
+  select(undef, undef, undef, $display_delay);
+}
+
+for ( keys %{$mailservers} )
+{
+  my $imap_host = $mailservers->{$_}{'host'};
+  my $imap_port = $mailservers->{$_}{'port'} // 993;
+  my $imap_user = $mailservers->{$_}{'user'};
+  my $imap_pass = decode_base64($mailservers->{$_}{'pass'});
+  my $imap_hidden = $mailservers->{$_}{'hidden'} // 0;
+
+  my $imap = Mail::IMAPClient->new(
+    User => $imap_user,
+    Password => $imap_pass,
+    Socket => IO::Socket::SSL->new(
+      Proto => 'tcp',
+      PeerAddr => $imap_host,
+      PeerPort => $imap_port,
+    ),
+  ) || die join "", $_, " login failed; $!\n";
+
+  $imap->select("INBOX") || die $!;
+
+  my $msgs = $imap->search("UNSEEN");
+  if (defined $msgs) {
+    my $numbermsg = scalar @{$msgs};
+    if ($numbermsg > 0) {
+      if ($imap_hidden == 1) { &printOnTerminal("$_ informs you", (join "", $numbermsg, " unseen message", $numbermsg > 1 ? "s" : "")); next; }
+      use Time::localtime;
+      my $tm=localtime;
+      my $today=$tm->mday;
+      my ($title,$message) = "";
+      my $msg_counter = 0;
+      for my $h ( values %{ $imap->parse_headers(
+        $msgs , "From" , "Subject" , "Date") } )
+      {
+        $msg_counter = $msg_counter + 1;
+        my $from = $h->{'From'}->[0];
+        if ($from =~ m/^(.*)\s<.*>.*/){ $from = $1; }
+        if ($from =~ m/"([^"]*)"/){ $from = $1; }
+        $from = decode("MIME-Header", $from );
+        $title = join "", $from, " on ", $_, " (", $msg_counter, "/", $numbermsg, ")";
+        my $subject = $h->{'Subject'}->[0];
+        while ($subject =~ m/Re:\s*(.*)/) { $subject = $1; }
+        # while ($subject =~ m/\s*\[.*\]\s*(.*)/) { $subject = $1; }
+        $subject = decode("MIME-Header", $subject);
+        if ($subject =~ m/^\s*$/) { $subject = "something unreadable"; } elsif (length $subject > $limit_message){ $subject = join "", substr($subject, 0, $limit_message - 1), "..."; }
+        my $date = $h->{'Date'}->[0];
+        if ($date =~ m/.*,\s(\d{1,2}).*/)
+        {
+          my $day = $1;
+          SWITCH:
+          {
+            $1 == localtime->mday && do { $day_expression = "Today"; last SWITCH; };
+            $1 == localtime(time - 24 * 60 * 60)->mday && do { $day_expression = "Yesterday"; last SWITCH; };
+            my $day = $1;
+            $day_expression = join "On the ", $day;
+            if ($day =~ m/.*(\d)$/)
+            {
+              my $day_ord = "";
+              if ($1 == 1) { $day_ord="st"; } elsif ($1 == 2) { $day_ord="nd"; } elsif ($1 == 3) { $day_ord="rd"; } else { $day_ord = "th"; }
+              $day_expression = join "", $day_expression, $day_ord;
+            }
+          }
+        }
+        if ($date =~ m/.*(\d\d:\d\d:\d\d).*/){ $date = $1; }
+        if (not (defined $day_expression)) { $day_expression = join "At ", $date; }
+        $message = join "", $day_expression, " about ", $subject;
+        &printOnTerminal($title,$message);
+      }
+    }
+  }
+  $imap->logout();
+}
+
+# Usage:
+#
+#   checkmail <file_pathname>
+#   checkmail <file_pathname> <delay_seconds>
+#
+#   <file_pathname> is the name of a file containing a YAML configuration
+#   <delay_seconds> is the optional delay between requests to multiple servers
+#
+#  the YAML file looks like this:
+#  <MAILSERVER_NAME>: { host: <hostname>, user: <username>, pass: <password> }
+#  hidden and port are optional keys. hidden is a boolean, set true to display the
+#  number of unseen messages instead of the complete abstract about the sender and
+#  the title of each message. port is a port number, set to anything if your IMAP
+#  server port is not 993.
+#
+# using this kind of "~/.mailservers.yaml" 400-chmoded file:
+#
+# M1: { host: imap.gmail.com, user: my-my, pass: something-base64-encoded }
+# M2: { host: imap.gmail.com, user: my-my-2, pass: something-base64-encoded }
+# OH: { host: imap.gmx.com, user: oh-my-my, pass: something-base64-encoded }
+# PRIVATE: { host: imap.gmx.net, port: 45906, user: private-me, pass: something-base64-encoded, hidden: true }
+# edit crontab with:
+# 1-56/5 * * * * PATH=`zsh -c 'echo $PATH'` && checkmail ~/.mailservers.yaml
+# */15 * * * * PATH=`zsh -c 'echo $PATH'` && && checkmail ~/.secondary_mailservers.yaml 5
+
+# Last Modified: Tue 10 Dec 2013 19:48:18 CET

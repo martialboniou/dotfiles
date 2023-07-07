@@ -1,0 +1,3 @@
+- load update-auto-loads.el to generate loaddefs during the emacs' kill
+- add all local SITE-LISP in 'LOAD-PATH (UPDATE-AUTO-LOADS adds its own to prevent error)
+- load loaddefs in .emacs or create it for all local SITE-LISP (and theirs subdirs) [no need subdirs.el for this; `touch .nosearch' in the directory to set invisible]

@@ -1,0 +1,75 @@
+2011-10-20  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* lang/python-357.el (python-mode-hook): add smart-operator from https://github.com/xwl/xwl-elisp
+
+2011-05-06  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* media.el (locate-library): introduce emms-stream-info processes fix
+	- vlc needs vlc://quit to quit
+	- mplayer needs cache to get some fields
+
+2011-03-09  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* media.el: test emms-start-stop ok
+
+2011-02-23  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* elisp.el (mars/vars-heading): insert an heading to load vars
+	in confs file. You may use 'mars/emacs-Q to load an emacs in
+	debug mode on a conf file ready to be used. A yasnippet named
+	`confvars' to insert this heading.
+
+2011-02-19  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* box.el: dired (well configured + Viper compatible) + windows
+	management ('tiling and 'buffer-move doesn't have autoloads so
+	you need to load it manually:
+	(mars/autoload '(("tiling" tiling-cycle tiling-master)
+                 ("buffer-move" buf-move-down buf-move-up
+	                        buf-move-left buf-move-right)))
+
+2008-01-21  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* modes.el (ido-mode): #'ido-mode returns because icicles is too
+	heavy (problems with global shortcuts (<f5> is grabbed by
+	mini-buffer but I used to define it to #'emms-stop), with local
+	key-bindings (C-w was used to kill-word but it's copy-paste in
+	minibuffer now) and with speed). #'ido-extras-keys is no more
+	deprecated.
+
+2008-01-19  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* emusic.el (emms-playlist-mode): replace emms-init.el by this;
+	should replace simple #'emms by #'mingus
+
+	* ekeys.el: replace ido by icicles (#'ido-extra-keys is deprecated)
+
+2008-01-18  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* efuncs.el (no-line-wrap-this-buffer-internal):
+	no-line-wrap-this-buffer added (may be used by ${HOME}/.wl
+
+2008-01-15  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* ecomm-wl.el (load-path): add utils subdir to load ssl.el
+
+	* ecomm.el: split wanderlust and mew configuration in two
+	files. Wanderlust is the main MUA.
+
+2008-01-14  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* ecomm.el: return to wanderlust (mew is promissing if active);
+	wanderlust needs some addons from mew in 2007. The key bindings of
+	wl is always the same as the ones of mew. The problem of
+	wanderlust is its lack of evolution since 2005 (mew is active but
+	may end soon) and the lack of documentation (hopefully I can read
+	japanese quite easily).
+
+	* emms-init.el (1): replacement of start (f6) by another one to
+	open a new frame when there's only one in the current window (to
+	keep the current working buffer active)
+
+2008-01-11  Martial Boniou  <Martial.Boniou@ifrance.com>
+
+	* ekeys.el: add-change-log-entry-other-window added
+
