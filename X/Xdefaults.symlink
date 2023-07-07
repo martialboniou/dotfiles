@@ -1,0 +1,78 @@
+! Additional keys (mainly for emacsen)
+XTerm*vt100.modifyOtherKeys: 1
+XTerm*vt100.formatOtherKeys: 1
+XTerm*vt100.eightBitInput: false
+XTerm*vt100.locale: UTF-8
+XTerm*vt100.encodingMode: locale
+
+Xft.antialias: true
+! URxvt colors based on vim/colors/underwater
+!URxvt*font: xft:DejaVu Sans Mono:size=12
+URxvt*scrollBar: false
+!URxvt*depth: 32
+!URxvt*background: rgba:1111/1111/1111/4444
+!URxvt*background: rgb:1111/1111/1111
+!URxvt*fading: 15
+!URxvt*fadeColor: black
+!URxvt*cursorColor: yellow
+URxvt*cursorColor: #55a096
+URxvt*pointerColor: #55a096
+URxvt*pointerColor2: black
+!URxvt*transparent: false
+!URxvt.shading: 50
+!URxvt*borderless: true
+!URxvt*inheritPixmap: true
+URxvt*saveLines: 6000
+URxvt*termName: xterm-256color
+!URxvt*iso14755_52: false
+
+! XTerm
+XTerm*faceName: DejaVu Sans Mono
+XTerm*faceSize: 10
+!XTerm*metaSendsEscape: true
+
+! UXTerm !
+
+! wombat256mod Vim colorscheme to X
+!
+*background: #1c1c1c
+*foreground: #d0d0d0
+! LineNr guibg > tmux line / public directory fg
+*color0: #080808
+! PreProc > binary
+*color1: #d7875f
+! Type > prompt[user@hostname]
+*color2: #d7d787
+! Identifier > directory / prompt[date]
+*color3: #d7ff87
+! Comment
+*color4: #949494
+! Function
+*color5: red
+! Statement > symlink / prompt[line]
+*color6: #87afff
+! Keyword
+*color7: #87afff
+! Special
+*color8: #ffffaf
+! Constant
+*color9: #d7875f
+! String
+*color10: #87d75f
+! Visual guibg
+*color11: #303030
+! SpecialKey guifg > prompt[delimiter]
+*color12: #626262
+! Todo
+*color13: #87875f
+! Statement
+*color14: #87afff
+! Folded
+*color15: #8787af
+! StatusLine guibg
+*colorUL: #444444
+! Function
+*colorBD: #d7ff87
+
+!!
+!xrdb -load ~/.Xdefaults
