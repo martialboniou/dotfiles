@@ -16,6 +16,10 @@ Use the [easy](https://github.com/holman/dotfiles) way:
 
 # And?
 
+## Config directory
+
+Every files/directories in `config/` will be linked to the `$HOME` directory as a subdirectory of `.config/` instead of having their symlink in the `.<filename>` form.
+
 ## Zsh
 
 Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne with every fancy things from `csh` like _aliases_. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.

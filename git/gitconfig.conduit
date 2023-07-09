@@ -23,13 +23,18 @@
 [core]
   excludesfile = ~/.gitignore
   editor = vim
+  pager = delta
 	autocrlf = false
 	safecrlf = false
   eol = lf
 [apply]
   whitespace = nowarn
+[merge]
+  conflictstyle = diff3
 [mergetool]
   keepBackup = false
+[diff]
+  colorMoved = default
 [difftool]
   prompt = false
 [help]
@@ -45,3 +50,7 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  navigate = true

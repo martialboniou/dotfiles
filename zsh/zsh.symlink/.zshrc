@@ -48,3 +48,7 @@ if [[ -d "${ZDOT_SRC_ZSH}" ]]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if (( $+commands[nvim] )); then
+  alias "vim"="nvim"
+  alias "vi"="nvim"
+fi
