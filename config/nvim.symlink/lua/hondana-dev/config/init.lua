@@ -1,0 +1,6 @@
+require "hondana-dev.config.colors"
+require "hondana-dev.config.telescope"
+require "hondana-dev.config.harpoon"
+require "hondana-dev.config.undotree"
+require "hondana-dev.config.fugitive"
+require "hondana-dev.config.treesitter"

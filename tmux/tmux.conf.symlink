@@ -32,7 +32,7 @@ set-option -g status-right '#[fg=cyan]%a,%d-%b#[default]'
 # - the first window may be set to screen b/c of race condition
 #   (see .zsh/zshrc.d/97-tmux-session.zsh)
 CONTAINING_TERM=$TERM
-if-shell 'test `tput colors` -ge 256' 'set-option -g default-terminal "xterm-256color"'
+if-shell 'test `tput colors` -ge 256' 'set-option -g default-terminal "tmux-256color"'
 use=screen-256color-bce
 # - vim should use t_Co=256
 setw -g xterm-keys on

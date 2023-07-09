@@ -1,3 +1,2 @@
-require("hondana-dev")
-print("hello")
+require "hondana-dev"
 
