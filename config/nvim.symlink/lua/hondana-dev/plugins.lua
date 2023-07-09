@@ -1,40 +1,53 @@
-vim.cmd [[packadd packer.nvim]]
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-return require('packer').startup(function(use)
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
+end
+
+vim.opt.rtp:prepend(lazypath)
+
+local plugins = {
 	
-  -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
-  
   -- telescope (may change back to fzf or lf)
-  use {
-	  'nvim-telescope/telescope.nvim', tag = '0.1.2',
-	  -- or                            , branch = '0.1.x',
-	  requires = { {'nvim-lua/plenary.nvim'} }
-  }
+  {
+	  'nvim-telescope/telescope.nvim',
+	  tag = '0.1.2',
+	  dependencies = { {'nvim-lua/plenary.nvim'} },
+  },
 
   -- colorscheme
-  use({
+  {
 	  'rose-pine/neovim',
-	  as = 'rose-pine',
+	  name = 'rose-pine',
 	  config = function()
 		  vim.cmd('colorscheme rose-pine')
 	  end
-  })
+  },
 
   -- treesitter
-  use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-  use('nvim-treesitter/playground')
+  {
+	  'nvim-treesitter/nvim-treesitter',
+  	  build = ':TSUpdate'
+  },
+  { 'nvim-treesitter/playground' },
 
   -- harpoon
-  use('theprimeagen/harpoon')
+  'theprimeagen/harpoon',
 
   -- undotree
-  use('mbbill/undotree')
+  'mbbill/undotree',
 
   -- vim-fugitive
-  use('tpope/vim-fugitive')
+  'tpope/vim-fugitive',
 
-  -- LSP
+  -- LSP (beware: packer format)
 --  use {
 --	  'VonHeikemen/lsp-zero.nvim',
 --	  branch = 'v2.x',
@@ -63,4 +76,8 @@ return require('packer').startup(function(use)
 --  	}
 --  }
 
-end)
+}
+
+local opts = {}
+
+require("lazy").setup(plugins, opts)
