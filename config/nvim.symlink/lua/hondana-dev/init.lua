@@ -1,5 +1,5 @@
-vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+require("hondana-dev/remap")
+require("hondana-dev/set")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
