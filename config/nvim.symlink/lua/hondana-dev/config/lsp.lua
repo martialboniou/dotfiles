@@ -9,6 +9,9 @@ lsp.ensure_installed({
 	'rust_analyzer',
 })
 
+-- fix undefined global 'vim'
+lsp.nvim_workspace()
+
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -17,6 +20,9 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
 	['<C-y>'] = cmp.mapping.confirm({ select = true }),
 	["<C-Space>"] = cmp.mapping.complete(),
 })
+
+cmp_mappings['<Tab>'] = nil
+cmp_mappings['<S-Tab>'] = nil
 
 cmp.setup({
 	sources = {
@@ -29,13 +35,11 @@ cmp.setup({
 	},
 })
 
-lsp.set_preferences({
-	sign_icons = {
-		error = '✘',
-  		warn = '▲',
-  		hint = '⚑',
-  		info = '»',
-	},
+lsp.set_sign_icons({
+    error = '✘',
+  	warn = '▲',
+  	hint = '⚑',
+  	info = '»',
 })
 
 lsp.setup_nvim_cmp({
@@ -65,7 +69,10 @@ require("lspconfig").eslint.setup({})
 require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
 
 require("lspconfig").rust_analyzer.setup({
-	cmd = { 'rustup', 'run', 'stable', 'rust-analyzer' },
 })
 
 lsp.setup()
+
+vim.diagnostic.config({
+    virtual_text = true
+})

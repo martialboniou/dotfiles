@@ -2,6 +2,9 @@ vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<leader><leader>", vim.cmd.Ex) -- fast nav
 
+-- Q is removed (that's good!)
+vim.keymap.set("n", "Q", "<nop>")
+
 -- mode the selection up & down with K & J
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
@@ -37,9 +40,6 @@ vim.keymap.set("v", "<leader>d", "\"_d")
 
 -- ThePrimeagen thing; can be changed when foot controller is plugged
 vim.keymap.set("i", "<C-c>", "<Esc>")
-
--- Q is removed (that's good!)
-vim.keymap.set("n", "Q", "<nop>")
 
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>") -- require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
