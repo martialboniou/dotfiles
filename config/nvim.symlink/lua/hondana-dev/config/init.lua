@@ -1,6 +1,3 @@
-require "hondana-dev.config.oil"
-require "hondana-dev.config.telescope"
 require "hondana-dev.config.harpoon"
 require "hondana-dev.config.undotree"
-require "hondana-dev.config.fugitive"
 require "hondana-dev.config.lsp"

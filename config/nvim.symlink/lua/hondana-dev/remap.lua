@@ -16,15 +16,6 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz") -- page up
 vim.keymap.set("n", "n", "nzzzv") -- keep the cursor in the middle during search
 vim.keymap.set("n", "N", "Nzzzv") -- keep the cursor in the middle during backsearch
 
---[[
-vim.keymap.set("n", "<leader>vwm", function()
-	require("vim-with-me").StartVimWithMe()
-end)
-vim.keymap.set("n", "<leader>svwm", function()
-	require("vim-with-me").StopVimWithMe()
-end)
-]]
-
 -- greatest remap ever
 --   paste a buffer but doesn't keep the deleted selection
 --   so you can paste the same again

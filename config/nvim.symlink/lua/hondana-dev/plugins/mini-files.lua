@@ -51,11 +51,19 @@ return {
             })
         end
 
-        vim.api.nvim_create_autocmd("User" , {
+        vim.api.nvim_create_autocmd("User", {
             pattern = "MiniFilesBufferCreate",
             callback = function(args)
                 local buf_id = args.data.buf_id
                 vim.keymap.set("n", "gh", toggle_dotfiles, { buffer = buf_id })
+            end,
+        })
+
+        -- add relative numbers (on nightly build)
+        vim.api.nvim_create_autocmd("User", {
+            pattern = "MiniFilesWindowUpdate",
+            callback = function(args)
+                vim.wo[args.data.win_id].relativenumber = true
             end,
         })
     end,
