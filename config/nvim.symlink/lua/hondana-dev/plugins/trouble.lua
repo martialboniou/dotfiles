@@ -5,10 +5,10 @@ return {
     },
     keys = {
         {
-            "<leader>xq",
-            "<cmd>TroubleToggle quickfix<CR>",
             silent = true,
             noremap = true,
+            "<leader>xx",
+            "<cmd>TroubleToggle quickfix<CR>",
             desc = "Toogle trouble quickfix",
         },
     },

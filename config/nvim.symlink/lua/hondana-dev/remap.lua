@@ -1,4 +1,6 @@
 vim.g.mapleader = " "
+vim.g.maplocalleader = "," -- TODO: check this or remove in 2 weeks
+
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<leader><leader>", vim.cmd.Ex) -- fast nav
 
@@ -35,7 +37,7 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>") -- require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
 vim.keymap.set("n", "<leader>f", function()
-	vim.lsp.buf.format() -- TODO: should not be here
+	vim.lsp.buf.format() -- TODO: FIXME: remove that shit!
 end)
 
 -- quickfix navigation

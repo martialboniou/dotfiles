@@ -31,3 +31,14 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = "," -- TODO: check this or remove in 2 weeks
+
+-- Restore cursor position -- FIXME: improve or rely on plugin
+--[[ -- vim script
+fun! s:CursorOldPosition()
+  if line("'\"") > 0 && line("'\"") <= line("$")
+    exe "normal g`\""
+  endif
+endfun
+au BufReadPost * silent! cal s:CursorOldPosition()
+--]]

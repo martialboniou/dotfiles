@@ -1,126 +1,274 @@
-return
-    {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
-        lazy = true,
-        config = function()
-            local lsp = require('lsp-zero')
-            lsp.preset("recommended")
-            lsp.ensure_installed({
-                'tsserver',
-                'eslint',
-                'lua_ls',
-                'rust_analyzer',
-            })
-            -- TODO: check assert above
-            -- lsp.nvim_workspace() -- fix undefined global 'vim'
-        end,
-    },
-    -- Autocompletion
-    {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
+return {
+    { -- LSP
+        "neovim/nvim-lspconfig",
+        event = "BufReadPost",
         dependencies = {
-            'hrsh7th/cmp-path',         -- :before
-            'hrsh7th/cmp-buffer',       -- :before
-            'saadparwaiz1/cmp_luasnip', -- :before
+            { "williamboman/mason.nvim", opts = {}, run = ":MasonUpdate" }, -- installing LSPs automaticlly
+            "williamboman/mason-lspconfig.nvim",                            -- lsp configuration for mason lsp
+            -- { "j-hui/fidget.nvim", opts = {}, tag = "legacy" }, -- status for lsp
+            "hrsh7th/nvim-cmp",
             {
-                'L3MON4D3/LuaSnip',
-                dependencies = {
-                    'rafamadriz/friendly-snippets', -- optional
-                },
-            },
-        },
-        config = function()
-            -- autocompletion settings
-            local lsp = require('lsp-zero.cmp')
-            lsp.extend()
-            local cmp = require('cmp')
-            local cmp_select = { behavior = cmp.SelectBehavior.Select }
-            local cmp_mappings = lsp.defaults.cmp_mappings({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-            })
-
-            cmp_mappings['<Tab>'] = nil
-            cmp_mappings['<S-Tab>'] = nil
-
-            lsp.setup_nvim_cmp({
-                mapping = cmp_mappings,
-            })
-
-            cmp.setup({ -- TODO: check this
-                sources = {
-                    {
-                        name = 'buffer',
-                        option = {
-                            keyword_pattern = [[\k\+]],
-                        },
+                "glepnir/lspsaga.nvim",
+                opts = {
+                    code_action = {
+                        show_server_name = true,
+                        extend_gitsigns = false,
+                    },
+                    lightbulb = {
+                        enable = false,
+                    },
+                    diagnostic = {
+                        on_insert = false,
+                        on_insert_follow = false,
+                    },
+                    rename = {
+                        in_select = false,
                     },
                 },
-            })
-        end -- config =
-    },
-    -- LSP
-    {
-        'neovim/nvim-lspconfig',
-        cmd = 'LspInfo',
-        event = { 'BufReadPre', 'BufNewFile' },
-        dependencies = {
-            'hrsh7th/nvim-cmp', -- added (FIXME: needed rework deps)
-            'hrsh7th/cmp-nvim-lsp',
-            'williamboman/mason-lspconfig.nvim',
-            {
-                'williamboman/mason.nvim',
-                build = function()
-                    pcall(vim.cmd, 'MasonUpdate')
-                end,
+            },
+            "rrethy/vim-illuminate",
+        },
+        opts = {
+            diagnostics = {
+                update_in_insert = false,
+                virtual_text = false,
+            },
+            autoformat = true,
+            servers = {
+                "tsserver",
+                -- "eslint",
+                "html",
+                "lua_ls",
+                "jsonls",
+                "tailwindcss",
+                "dockerls",
+                "docker_compose_language_service",
+                "astro",
+                "vimls",
+                "cssls",
+                "astro",
             },
         },
-        config = function()
-            local lsp = require('lsp-zero')
+        config = function(plugin, opts)
+            ----------------------------------
+            -- Diagnostics
+            ----------------------------------
+            --[[
+            -- smaili
+            for name, icon in pairs(smaili.icons.diagnostics) do
+                name = "DiagnosticSign" .. name
+                vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+            end
+            --]]
+            vim.diagnostic.config(opts.diagnostics)
 
-            lsp.set_sign_icons({
-                error = '✘',
-                warn = '▲',
-                hint = '⚑',
-                info = '»',
-            })
+            ----------------------------------
+            -- Server configuration
+            ----------------------------------
+            -- Load server configurations from files
+            ----------------------------------
+            -- Every file configuration should have at least these two properties
+            --  name -> the server name
+            --  config -> the config of the server
+            --  we configure servers on seperate files, if we do not want to change the
+            --  default behaviour then we can just add to the opts.servers the server name
 
-            lsp.set_preferences({
-                suggest_lsp_servers = true, -- CHECK: false
-            })
+            local servers = {
+                "lua_ls",
+            }
 
-            lsp.on_attach(function(_, bufnr)
-                local opts = { buffer = bufnr, remap = false }
-                vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-                vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-                vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
-                vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
-                vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-                vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-                vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
-                vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
-                vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
-                vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-            end)
+            --[[
 
-            -- lua language server
-            require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-            --[[ other examples
-            require("lspconfig").tsserver.setup({})
-            require("lspconfig").eslint.setup({})
-            require("lspconfig").rust_analyzer.setup({})
+            local servers = {
+            "lua_ls",
+            "tsserver",
+            {"tailwindcss" = {
+            filetypes = {
+            "javascriptreact", 
+            "typescriptreact", 
+            "astro" 
+            },
+            autostart = true,
+            settings = {
+            tailwindCSS = {
+            classAttributes = {
+            "class",
+            "className",
+            "classList", 
+            "ngClass",
+            "class:list" 
+            },
+            },
+            },
+            },
+            },
+            }
             ]]
-            lsp.setup()
+            -- smaili:
+            -- for _, file in
+            -- ipairs(
+            -- vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/smaili/plugins/lsp/servers", [[v:val =~ '\.lua$']])
+            -- )
+            -- do
+            --     local server = require("smaili.plugins.lsp.servers." .. file:gsub("%.lua$", ""))
+            --     -- lsp.configure(server.name, server.config)
+            --     servers[server.name] = server.config
+            -- end
 
-            -- from ThePrimeagen - 2023/07/12
-            -- https://github.com/ThePrimeagen/init.lua/blob/master/after/plugin/lsp.lua
-            vim.diagnostic.config({
-                virtual_text = true
+            ----------------------------------
+            -- ON ATTACH
+            ----------------------------------
+            local on_attach = function(client, bufnr)
+                ----------------------------------
+                -- Load key mappings
+                ----------------------------------
+                require("hondana-dev.mappins.lsp.map")(bufnr) -- smaili: added to replace the nextline
+                -- require("smaili.plugins.lsp.key-mappings")(bufnr)
+
+                -- Highlight lsp reference when we keep hovering -> :h document_highlight
+                -- if client.server_capabilities.documentHighlightProvider then
+                -- 	vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
+                -- 	vim.api.nvim_clear_autocmds({ buffer = bufnr, group = "lsp_document_highlight" })
+                -- 	vim.api.nvim_create_autocmd("CursorHold", {
+                -- 		callback = vim.lsp.buf.document_highlight,
+                -- 		buffer = bufnr,
+                -- 		group = "lsp_document_highlight",
+                -- 		desc = "Document Highlight",
+                -- 	})
+                -- 	vim.api.nvim_create_autocmd("CursorMoved", {
+                -- 		callback = vim.lsp.buf.clear_references,
+                -- 		buffer = bufnr,
+                -- 		group = "lsp_document_highlight",
+                -- 		desc = "Clear All the References",
+                -- 	})
+                -- end
+            end
+
+            ----------------------------------
+            -- Add servers automaticlly
+            ----------------------------------
+            local capabilities =
+                require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+            require("mason-lspconfig").setup({ ensure_installed = opts.servers })
+            require("mason-lspconfig").setup_handlers({
+                function(server_name)
+                    local server_opts = servers[server_name] or {}
+                    server_opts["capabilities"] = capabilities
+                    server_opts["on_attach"] = on_attach
+                    require("lspconfig")[server_name].setup(server_opts)
+                end,
             })
+        end,
+    },
+    -- ===========================
+    -- Autocompletion
+    -- ===========================
+    {
+        "hrsh7th/nvim-cmp",
+        opts = function()
+            local cmp = require("cmp")
+            local luasnip = require("luasnip")
+            vim.opt.runtimepath:append("~/github/lsp_signature.nvim")
+
+            return {
+                completion = {
+                    completeopt = "menu,menuone,noinsert",
+                },
+                window = {
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
+                },
+                snippet = {
+                    expand = function(args)
+                        require("luasnip").lsp_expand(args.body)
+                    end,
+                },
+                formatting = {
+                    format = function(_, item)
+                        -- smaili: next line
+                        -- item.kind = string.format("%s %s", smaili.icons.lsp[item.kind], item.kind)
+                        return item
+                    end,
+                },
+                sources = cmp.config.sources({
+                    -- { name = "nvim_lsp_signature_help" }, --
+                    { name = "nvim_lsp" },
+                    { name = "luasnip" },
+                    { name = "buffer" },
+                    { name = "path" },
+                }),
+                -- experimental = { ghost_text = true },
+                mapping = cmp.mapping.preset.insert({
+                    ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+                    ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+                    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    ["<C-Space>"] = cmp.mapping.complete({}),
+                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif require("luasnip").expand_or_jumpable() then
+                            require("luasnip").expand_or_jump()
+                        elseif cmp.has_words_before() then
+                            cmp.complete()
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                    -- ["<Tab>"] = cmp.mapping(function(fallback)
+                    -- 	if cmp.visible() then
+                    -- 		cmp.select_next_item()
+                    -- 	elseif luasnip.expand_or_jumpable() then
+                    -- 		luasnip.expand_or_jump()
+                    -- 	else
+                    -- 		fallback()
+                    -- 	end
+                    -- end, { "i", "s" }),
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                }),
+            }
+        end,
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            {
+                "L3MON4D3/LuaSnip",
+                opts = {},
+                build = "make install_jsregexp",
+            },
+            "rafamadriz/friendly-snippets",
+            "saadparwaiz1/cmp_luasnip",
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",
+            -- "hrsh7th/cmp-nvim-lsp-signature-help",
+            "ray-x/lsp_signature.nvim",
+        },
+    },
+    -- ===========================
+    -- Formatter
+    -- ===========================
+    {
+        "jose-elias-alvarez/null-ls.nvim",
+        -- dependencies = {
+        -- 	"jayp0521/mason-null-ls.nvim",
+        -- },
+        event = "BufReadPost",
+        config = function()
+            ----------------------------------
+            -- Setting up formatter
+            ----------------------------------
+            -- require("smaili.plugins.lsp.formatting")
+            -- setting vscode snippets
+            require("luasnip.loaders.from_vscode").lazy_load()
         end,
     },
 }
