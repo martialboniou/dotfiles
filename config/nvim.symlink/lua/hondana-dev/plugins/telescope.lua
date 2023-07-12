@@ -3,41 +3,62 @@ return {
     'nvim-telescope/telescope.nvim',
     tag = '0.1.2',
     dependencies = { { 'nvim-lua/plenary.nvim' } },
-    config = function()
-        local builtin = require('telescope.builtin')
-
+    keys = {
         -- files & buffers
-        vim.keymap.set('n', '<leader>pf', builtin.find_files, {
-            desc = "Open a fuzzy file picker",
-        })
-        vim.keymap.set('n', '<leader>pr', builtin.oldfiles, {
-            desc = "Open a fuzzy recent file picker",
-        })
-        vim.keymap.set('n', '<leader>pb', builtin.buffers, {
-            desc = "Open a fuzzy buffer picker",
-        })
-
-        -- rg-filtered project files
-        vim.keymap.set('n', '<leader>ps',
+        {
+            '<leader>pf',
             function()
-	            builtin.grep_string({
+                require("telescope.builtin").find_files()
+            end,
+            { desc = "Open a fuzzy file picker", },
+        },
+        {
+            '<leader>pr',
+            function()
+                require("telescope.builtin").oldfiles()
+            end,
+            { desc = "Open a fuzzy recent file picker", },
+        },
+        {
+            '<leader>pb',
+            function()
+                require("telescope.builtin").buffers()
+            end,
+            { desc = "Open a fuzzy buffer picker", },
+        },
+        -- rg-filtered project files
+        {
+            '<leader>ps',
+            function()
+                require("telescope.builtin").grep_string({
                     search = vim.fn.input("Grep > ")
                 });
-            end, {
-            desc = "Open a string-filtered file picker (cwd)",
-        })
-
+            end,
+            { desc = "Open a string-filtered file picker (cwd)", },
+        },
         -- helptags
-        vim.keymap.set('n', '<leader>vh', builtin.help_tags, {
-            desc = "Open a help tag picker",
-        })
-        vim.keymap.set('n', '<leader>ph', builtin.help_tags, {
-            desc = "Open a help tag picker",
-        })
-
+        {
+            '<leader>vh',
+            function()
+                require("telescope.builtin").help_tags()
+            end,
+            { desc = "Open a help tag picker", },
+        },
+        {
+            '<leader>ph',
+            function()
+                require("telescope.builtin").help_tags()
+            end,
+            { desc = "Open a help tag picker", },
+        },
         -- git files
-        vim.keymap.set('n', '<C-p>', builtin.git_files, {
-            desc = "Open a git repo fuzzy file picker",
-        })
-    end
+        {
+            '<C-p>',
+            function()
+                require("telescope.builtin").git_files()
+            end,
+            { desc = "Open a git repo fuzzy file picker", },
+        },
+
+    },
 }

@@ -19,7 +19,7 @@ vim.keymap.set("n", "N", "Nzzzv") -- keep the cursor in the middle during backse
 -- greatest remap ever
 --   paste a buffer but doesn't keep the deleted selection
 --   so you can paste the same again
-vim.keymap.set("x", "<leader>p", "\"_dP")
+-- vim.keymap.set("x", "<leader>p", "\"_dP")
 
 -- next greatest remap ever : asbjornHaland
 -- yank/delete for the clipboard
@@ -45,7 +45,7 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+-- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- TODO: something better
 
 --[[
 vim.keymap.set("n", "<leader><leader>", function()

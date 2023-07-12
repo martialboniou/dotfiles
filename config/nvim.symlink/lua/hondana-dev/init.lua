@@ -29,5 +29,3 @@ local opts = {
 }
 
 require("lazy").setup("hondana-dev.plugins", opts)
-
-require "hondana-dev.config"
