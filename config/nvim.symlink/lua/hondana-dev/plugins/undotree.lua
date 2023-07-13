@@ -1,4 +1,4 @@
-return {
+return { -- NOTE: more reliable than debugloop/telescope-undo.nvim
 	'mbbill/undotree',
     cmd = "UndotreeToggle",
     keys = {

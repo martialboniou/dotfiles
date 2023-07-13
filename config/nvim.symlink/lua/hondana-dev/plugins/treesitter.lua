@@ -38,10 +38,5 @@ return {
                 additional_vim_regex_highlighting = false,
             },
         },
-        --[[
-        build        = function()
-        pcall(require('nvim-treesitter.install').update { with_sync = true })
-        end,
-        --]]
     },
 }

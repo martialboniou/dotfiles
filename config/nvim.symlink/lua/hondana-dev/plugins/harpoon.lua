@@ -1,5 +1,14 @@
 return {
     'theprimeagen/harpoon',
+    lazy = true,
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+    },
+    opts = {
+        menu = {
+            width = vim.api.nvim_win_get_width(0) - 4,
+        },
+    },
     keys = {
         {
             "<leader>a",
@@ -19,6 +28,7 @@ return {
                 "Toggle the harpoon's quick menu",
             },
         },
+        -- dvorak keys: H,T,N,S --> #1,#2,#3,#4
         {
             "<C-h>",
             function()

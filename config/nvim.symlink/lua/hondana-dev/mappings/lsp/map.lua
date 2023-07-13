@@ -13,11 +13,13 @@ return function(bufnr)
 			-- ["<leader>lo"] = { "<cmd>Lspsaga outline<CR>", desc = "List file outline" },
 			["<leader>lf"] = { ":FormatCurrentBuffer<CR>", desc = "Format document", buffer = bufnr },
 			["<leader>ld"] = { "<cmd>Lspsaga show_line_diagnostics<CR>", desc = "Show diagnostics", buffer = bufnr },
-			["<leader>lb"] = {
-				"<cmd>FzfLua diagnostics_document<CR>",
-				desc = "Show buffer diagnostics",
-				buffer = bufnr,
-			},
+            --[[ TODO:
+            ["<leader>lb"] = {
+            "<cmd>FzfLua diagnostics_document<CR>",
+            desc = "Show buffer diagnostics",
+            buffer = bufnr,
+            },
+            --]]
       -- Toggle inlay hint
 			["<leader>ui"] = {
 				function()
@@ -44,7 +46,7 @@ return function(bufnr)
 			------------------------------
 			["<leader>lwa"] = { vim.lsp.buf.add_workspace_folder, desc = "Workspace Add Folder", buffer = bufnr },
 			["<leader>lwr"] = { vim.lsp.buf.remove_workspace_folder, desc = "Workspace Remove Folder" },
-			["<leader>lwd"] = { ":FzfLua diagnostics_workspace<CR>", desc = "Workspace diagnostics", buffer = bufnr },
+			-- TODO: ["<leader>lwd"] = { ":FzfLua diagnostics_workspace<CR>", desc = "Workspace diagnostics", buffer = bufnr },
 
 			------------------------------
 			-- LSP
