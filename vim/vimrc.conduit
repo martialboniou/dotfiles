@@ -5,9 +5,8 @@
 " Creator: Martial
 " Version: 0.8
 " Goal: embeds FZF if found
-"       supports Shen, Prolog, Zig
-"       adds snippets, completion & syntax checker for web dev (TS, PHP)
-"       extends indent, tabular & parentheses management
+"       maintained for compatibility reason (switch to nvim)
+"       TODO: restore parsers/auto-completion tools
 "
 " hondana@gmx.com (2004-2010,2012-2013,2015,2020-2023)
 "
@@ -21,9 +20,12 @@ set nobackup
 set noswapfile
 set mouse=a
 set isfname+=32 "valid filename w/ space
-let mapleader=" " "space
-let maplocalleader="," "less pinky than - on Dvorak
+
+let g:mapleader="\<Space>"
+let g:maplocalleader="," "less pinky than - on Dvorak
+
 nnoremap ; :
+
 set path=.,** " search in file's dir then current subdir
 au BufEnter * :cd %:p:h "current dir is file dir (so path != .,,**)
 if &t_Co > 2 || has("gui_running") | syntax on | endif
@@ -61,7 +63,6 @@ Plug 'luochen1990/rainbow'
 "something for indent? see coc
 
 " navi
-Plug 'preservim/nerdtree'
 Plug 'majutsushi/tagbar'
 Plug 'yegappan/mru'
 Plug 'mbbill/undotree'
@@ -69,20 +70,20 @@ if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
 endif
+if executable('lf')
+  Plug 'ptzz/lf.vim' | Plug 'voldikss/vim-floaterm'
+endif
 
 " form
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
 
 " tool
+Plug 'liuchengxu/vim-which-key'
 Plug 'tpope/vim-fugitive'
-map <Leader>gb :Git blame<CR>
-map <Leader>gs :Git status<CR>
-map <Leader>gd :Git diff<CR>
-map <Leader>gl :Git log<CR>
-map <Leader>gc :Git commit<CR>
 
 " lang
+" TODO: coc
 " - markdown
 Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
 if executable('yarn')
@@ -111,7 +112,7 @@ endif
 "colo seoul256-light
 "set background=dark
 
-"RAINBOW PARENTHESES IMPROVED
+" RAINBOW PARENTHESES IMPROVED
 let g:rainbow_active=1
 
 " VIM SURROUND
@@ -129,39 +130,21 @@ nmap ga <Plug>(EasyAlign)
 "  vipga= : visual inner paragraph
 "  gaip=  : start alignment for inner paragraph
 
-" NERDTREE
-let NERDTreeBookmarksFile=data_dir."/.NERDTreeBookmarks"
-let NERDTreeShowBookmarks=1
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swp$', '\.swo$', '\.git$', '\.hg', '\.svn', '\.bzr']
-let NERDTreeMouseMode=2
-let NERDTreeChDirMode=0
-"let NERDTreeQuitOnOpen=1
-"let g:NERDTreeWinSize=31
-"set noequalalways
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-"" start NERDTree when clean or directory launch
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-      \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif""
-fun! IsNerdTreeEnabled()
-  return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
-endfun
-fun! RefreshTree()
-  call NERDTreeFocus()
-  exe 'normal R'
-  exe "wincmd p"
-endfun
-autocmd BufWritePost * if IsNerdTreeEnabled()  | call RefreshTree()  | endif
-"" <C-n>/<C-f> to toggle/find
-nnoremap <silent> <C-N> :NERDTreeToggle<CR>
-nnoremap <silent> <C-F> :NERDTreeFind<CR>
-nnoremap <leader>n :NERDTreeFind<CR>
+" VIM WHICH KEY
+set timeoutlen=500
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+nnoremap <silent> <localleader> :WhichKey ','<CR>
+
+" VIM FUGITIVE
+map <leader>gb :Git blame<CR>
+map <leader>gs :Git status<CR>
+map <leader>gd :Git diff<CR>
+map <leader>gl :Git log<CR>
+map <leader>gc :Git commit<CR>
 
 " MOST RECENT USED (MRU)
-nmap <leader>oo :MRU<CR>
-nmap <leader>o :bro<leader>ol!<CR>
+nmap <leader>o :MRU<CR>
+nmap <leader>r :bro<leader>ol!<CR>
 
 " FUZZY FINDER (FZF)
 if executable('fzf')
@@ -199,8 +182,29 @@ if executable('fzf')
   imap <c-x><c-f> <plug>(fzf-complete-path)
   imap <c-x><c-l> <plug>(fzf-complete-line)
   " - FZF ❤️  MRU
-  nmap <Leader>oo :FZFMru<CR>
+  nmap <leader>o :FZFMru<CR>
+  " - other
+  nnoremap <silent> <leader>' :Marks<CR>
+  nnoremap <silent> <leader>b :Buffers<CR>
+  nnoremap <silent> <leader>f :Files<CR>
+  nnoremap <silent> <leader>/ :BLines<CR>
+  nnoremap <silent> <leader>g :Commits<CR>
+  nnoremap <silent> <leader>H :Helptags<CR>
+  nnoremap <silent> <leader>hh :History<CR>
+  nnoremap <silent> <leader>h: :History:<CR>
+  nnoremap <silent> <leader>h/ :History/<CR>
+  if executable('rg')
+    nnoremap <silent> <leader>f :Rg<CR>
+  endif
 endif
+
+" LIST FILES (AKA LF)
+if executable('lf')
+  let g:lf_replace_netrw = 1
+  " REMINDER: use zh to toggle hidden files in LF
+  let g:lf_command_override = 'lf -command "set hidden"'
+endif
+
 
 """""""""""""""""""""" 
 " FILE-DEPENDENT SETUP
@@ -210,7 +214,7 @@ endif
 "run with :MarkdownPreview/:MarkdownPreviewStop
 
 "plasticboy/vim-markdown
-autocmd FileType markdown let b:sleuth_automatic=0
+autocmd FileType markdown let b:sleuth_automatic=0 "TODO: vim-sleuth is worth it?
 autocmd FileType markdown set conceallevel=0
 autocmd FileType markdown normal zR
 

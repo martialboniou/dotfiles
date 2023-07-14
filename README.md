@@ -16,6 +16,38 @@ Use the [easy](https://github.com/holman/dotfiles) way:
 
 # And?
 
+## Config directory
+
+Every files/directories in `config/` will be linked to the `$HOME` directory as a subdirectory of `.config/` instead of having their symlink in the `.<filename>` form.
+
+## NeoVim
+
+- Minimal configuration (keybindings are made for dvorak keyboards)
+- [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
+a colorscheme only; everything loads when needed)
+- Telescope (used as fuzzy finder) & [Harpoon](https://github.com/ThePrimeagen/harpoon)
+- [mini.files](https://github.com/echasnovski/mini.files) (very good to navigate,
+  preview files and manage directories; replace Netrw even if it's still available
+  thru `:Ex`)
+- Undotree & Fugitive (same in my classic Vim setup)
+- [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter) (interface
+  to a fast parser generator tool and incremental parsing library)
+- Mason-boosted LSP & CMP (no [zero](https://github.com/VonHeikemen/lsp-zero.nvim))
+  (work in progress!)
+- others:
+  - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
+  & mini.files)
+- sources:
+  - [good lazy configuration](https://github.com/MuhametSmaili/nvim) (inspiration
+  for Lazy installation of LSP, Autocompletion and Formatter)
+  - [0 to LSP : Neovim RC From Scratch](https://www.youtube.com/watch?v=w7i4amO_zaE)
+  (smooth vanilla NeoVim tutorial based on `packer`; inspiration for settings/keybindings)
+- tested on macOS (aarch) using NeoVim 0.9, tmux & iTerm2 (should work with 0.8)
+
+NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
+I decided to start from *scratch*. Still have some functions to convert from
+VimScript to Lua.
+
 ## Zsh
 
 Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne with every fancy things from `csh` like _aliases_. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.

@@ -4,7 +4,7 @@
 
 case "$CONTAINING_TERM" in
   *256color)
-    TERM=xterm-256color
+    TERM=screen-256color
     unset CONTAINING_TERM
     ;;
 esac

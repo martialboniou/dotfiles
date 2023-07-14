@@ -82,7 +82,12 @@ install_dotfiles () {
 
   for source in `find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -o -name \*.conduit`
   do
-    dest="$HOME/.`basename \"${source%.*}\"`"
+    prefix=""
+    # special case: config/example.symlink -> .config/example (not .example)
+    if [[ "$source" = "${DOTFILES_ROOT}/config"* ]]; then
+     prefix="config/" 
+    fi
+    dest="$HOME/.${prefix}`basename \"${source%.*}\"`"
 
     if [ -f $dest ] || [ -d $dest ]
     then
