@@ -1,13 +1,15 @@
+-- keymap for NeoVim by ThePrimeagen
 vim.g.mapleader = " "
 vim.g.maplocalleader = "," -- TODO: check this or remove in 2 weeks
 
+-- these two lines will be remapped by plugins/mini-files
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<leader><leader>", vim.cmd.Ex) -- fast nav
 
 -- Q is removed (that's good!)
 vim.keymap.set("n", "Q", "<nop>")
 
--- mode the selection up & down with K & J
+-- move the selection up & down with K & J
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
@@ -36,10 +38,6 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>") -- require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
-vim.keymap.set("n", "<leader>f", function()
-	vim.lsp.buf.format() -- TODO: FIXME: remove that shit!
-end)
-
 -- quickfix navigation
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
@@ -47,11 +45,9 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("v", "<leader>s", [[:s///I<Left><Left><Left>]]) -- added by https://gitlab.com/martialhb 
+-- vim.keymap.set("v", "<leader>s", [[:s/\<\>//I<Left><Left><Left><Left><Left>]])
+
 -- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- TODO: something better
 
---[[
-vim.keymap.set("n", "<leader><leader>", function()
-    vim.cmd("so")
-end)
-]]
 
