@@ -1,10 +1,17 @@
 -- table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
+-- LSP Zero version
 -- 2023-07-12
 return {
+    { -- LSP Zero
+        "VonHeikemen/lsp-zero.nvim",
+        branch = "v2.x",
+        lazy = true,
+    },
     { -- LSP
         "neovim/nvim-lspconfig",
         event = "BufReadPost",
         dependencies = {
+            "VonHeikemen/lsp-zero.nvim",
             { "williamboman/mason.nvim", opts = {}, run = ":MasonUpdate" },
             "williamboman/mason-lspconfig.nvim", -- lsp conf for mason lsp
             "hrsh7th/nvim-cmp",                  -- see Autocompletion
@@ -39,69 +46,65 @@ return {
                 virtual_text = true,
             },
             autoformat = true,
-            servers = {
-                "tsserver",
-                -- "eslint",
-                "html",
-                "lua_ls",
-                "jsonls",
-                "tailwindcss",
-                "dockerls",
-                "docker_compose_language_service",
-                "astro",
-                "vimls",
-                "cssls",
-                "astro",
-            },
-            icons = {
-                diagnostics = {
-                    Error = "✘",
-                    Warn = "▲",
-                    Hint = "⚑",
-                    Info = "»",
+            zero_setup = {
+                preset = "recommended",
+                preferences = {
+                    suggest_lsp_servers = false,
+                },
+                servers = {
+                    "tsserver",
+                    "rust_analyzer",
+                    -- "eslint",
+                    "html",
+                    "lua_ls",
+                    "jsonls",
+                    "tailwindcss",
+                    "dockerls",
+                    "docker_compose_language_service",
+                    "astro",
+                    "vimls",
+                    "cssls",
+                    "astro",
+                },
+                sign_icons = {
+                    error = "✘",
+                    warn = "▲",
+                    hint = "⚑",
+                    info = "»",
                 },
             },
         },
         config = function(_, opts)
-            -- diagnostics
-            for name, icon in pairs(opts.icons.diagnostics) do
-                name = "DiagnosticSign" .. name
-                vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
-            end
-            vim.diagnostic.config(opts.diagnostics)
-            --  servers {name, config} -- TODO: separate files for each server
+            -- reduce boilerplate code with LSP Zero
+            local lsp_zero = require('lsp-zero')
+            local lsp_zero_setup = opts.zero_setup
 
-            local servers = {
-                "lua_ls",
-            }
+            lsp_zero.nvim_workspace()
 
-            -- smaili:
-            -- for _, file in
-            -- ipairs(
-            -- vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/smaili/plugins/lsp/servers", [[v:val =~ '\.lua$']])
-            -- )
-            -- do
-            --     local server = require("smaili.plugins.lsp.servers." .. file:gsub("%.lua$", ""))
-            --     -- lsp.configure(server.name, server.config)
-            --     servers[server.name] = server.config
-            -- end
+            lsp_zero.preset(lsp_zero_setup.preset)
+            lsp_zero.ensure_installed(lsp_zero_setup.servers)
+            lsp_zero.set_preferences(lsp_zero_setup.preferences)
+            lsp_zero.set_sign_icons(lsp_zero_setup.sign_icons)
 
-            local on_attach = function(_, bufnr)
-                require("hondana-dev.mappings.lsp.map")(bufnr)
-            end
+            lsp_zero.on_attach(function(_, bufnr)
+                local options = { buffer = bufnr, remap = false }
 
-            -- servers
-            local capabilities =
-                require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-            require("mason-lspconfig").setup({ ensure_installed = opts.servers })
-            require("mason-lspconfig").setup_handlers({
-                function(server_name)
-                    local server_opts = servers[server_name] or {}
-                    server_opts["capabilities"] = capabilities
-                    server_opts["on_attach"] = on_attach
-                    require("lspconfig")[server_name].setup(server_opts)
-                end,
-            })
+                vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format() end, options)
+                vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, options)
+                vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, options)
+                vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, options)
+                vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, options)
+                vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, options)
+                vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, options)
+                vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, options)
+                vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, options)
+                vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, options)
+                vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, options)
+            end)
+
+            require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+
+            lsp_zero.setup(opts)
         end,
     },
     { -- Autocompletion
@@ -121,10 +124,13 @@ return {
             -- "hrsh7th/cmp-nvim-lsp-signature-help" -- replaced by previous
         },
         opts = function()
-            local cmp = require("cmp")
-            local luasnip = require("luasnip")
+            -- nvim-lspconfig ensures the lazy loading of LSP Zero
+            require('lsp-zero.cmp').extend()
 
-            vim.opt.runtimepath:append("~/github/lsp_signature.nvim")
+            local cmp = require("cmp")
+            -- local cmp_action_from_lsp_zero = require('lsp-zero.cmp').action()
+
+            -- vim.opt.runtimepath:append("~/github/lsp_signature.nvim")
 
             return {
                 completion = {
@@ -139,13 +145,6 @@ return {
                         require("luasnip").lsp_expand(args.body)
                     end,
                 },
-                formatting = {
-                    format = function(_, item)
-                        -- smaili: next line
-                        -- item.kind = string.format("%s %s", smaili.icons.lsp[item.kind], item.kind)
-                        return item
-                    end,
-                },
                 sources = cmp.config.sources({
                     { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lsp" },
@@ -154,13 +153,17 @@ return {
                     { name = "path" },
                 }),
                 -- experimental = { ghost_text = true },
-                mapping = cmp.mapping.preset.insert({
+                mapping = require("lsp-zero").defaults.cmp_mappings({
                     ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
                     ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-                    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    -- ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+                    -- ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete({}),
                     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+                    -- ["<C-f>"] = cmp_action_from_lsp_zero.luasnip_jump_forward(),
+                    -- ["<C-b>"] = cmp_action_from_lsp_zero.luasnip_jump_backward(),
+                    ["<Tab>"] = nil,
+                    ["<S-Tab>"] = nil,
                 }),
             }
         end,
