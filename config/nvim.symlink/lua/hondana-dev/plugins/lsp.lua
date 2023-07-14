@@ -86,38 +86,11 @@ return {
             --     servers[server.name] = server.config
             -- end
 
-            ----------------------------------
-            -- ON ATTACH
-            ----------------------------------
             local on_attach = function(_, bufnr)
-                ----------------------------------
-                -- Load key mappings
-                ----------------------------------
-                require("hondana-dev.mappings.lsp.map")(bufnr) -- smaili: added to replace the nextline
-                -- require("smaili.plugins.lsp.key-mappings")(bufnr)
-
-                -- Highlight lsp reference when we keep hovering -> :h document_highlight
-                -- if client.server_capabilities.documentHighlightProvider then
-                -- 	vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
-                -- 	vim.api.nvim_clear_autocmds({ buffer = bufnr, group = "lsp_document_highlight" })
-                -- 	vim.api.nvim_create_autocmd("CursorHold", {
-                -- 		callback = vim.lsp.buf.document_highlight,
-                -- 		buffer = bufnr,
-                -- 		group = "lsp_document_highlight",
-                -- 		desc = "Document Highlight",
-                -- 	})
-                -- 	vim.api.nvim_create_autocmd("CursorMoved", {
-                -- 		callback = vim.lsp.buf.clear_references,
-                -- 		buffer = bufnr,
-                -- 		group = "lsp_document_highlight",
-                -- 		desc = "Clear All the References",
-                -- 	})
-                -- end
+                require("hondana-dev.mappings.lsp.map")(bufnr)
             end
 
-            ----------------------------------
-            -- Add servers automaticlly
-            ----------------------------------
+            -- servers
             local capabilities =
                 require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
             require("mason-lspconfig").setup({ ensure_installed = opts.servers })
@@ -150,6 +123,7 @@ return {
         opts = function()
             local cmp = require("cmp")
             local luasnip = require("luasnip")
+
             vim.opt.runtimepath:append("~/github/lsp_signature.nvim")
 
             return {
@@ -173,7 +147,7 @@ return {
                     end,
                 },
                 sources = cmp.config.sources({
-                    -- { name = "nvim_lsp_signature_help" }, --
+                    { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                     { name = "buffer" },
