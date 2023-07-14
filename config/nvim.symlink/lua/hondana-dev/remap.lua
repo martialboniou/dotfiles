@@ -45,8 +45,8 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("v", "<leader>s", [[:s///I<Left><Left><Left>]]) -- added by https://gitlab.com/martialhb 
--- vim.keymap.set("v", "<leader>s", [[:s/\<\>//I<Left><Left><Left><Left><Left>]])
+vim.keymap.set("v", "<leader>s", [[:s///gI<Left><Left><Left><Left>]]) -- added by https://gitlab.com/martialhb 
+-- vim.keymap.set("v", "<leader>s", [[:s/\<\>//gI<Left><Left><Left><Left><Left><Left>]])
 
 -- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true }) -- TODO: something better
 
