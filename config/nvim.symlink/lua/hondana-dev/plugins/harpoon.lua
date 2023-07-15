@@ -20,7 +20,7 @@ return {
             },
         },
         {
-            "<C-e>",
+            "<leader>e", -- it was <C-e> but <C-a>/<C-e> = cursor navi in terms
             function()
                 require("harpoon.ui").toggle_quick_menu()
             end,

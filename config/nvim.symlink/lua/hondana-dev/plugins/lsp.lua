@@ -1,6 +1,6 @@
 -- table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 -- LSP Zero version
--- 2023-07-12
+-- 2023-07-15
 return {
     { -- LSP Zero
         "VonHeikemen/lsp-zero.nvim",
@@ -72,6 +72,12 @@ return {
                     hint = "⚑",
                     info = "»",
                 },
+                sign_chars = {
+                    error = "E",
+                    warn = "W",
+                    hint = "H",
+                    info = "I",
+                },
             },
         },
         config = function(_, opts)
@@ -84,7 +90,7 @@ return {
             lsp_zero.preset(lsp_zero_setup.preset)
             lsp_zero.ensure_installed(lsp_zero_setup.servers)
             lsp_zero.set_preferences(lsp_zero_setup.preferences)
-            lsp_zero.set_sign_icons(lsp_zero_setup.sign_icons)
+            lsp_zero.set_sign_icons(lsp_zero_setup.sign_icons) -- or .sign_chars
 
             lsp_zero.on_attach(function(_, bufnr)
                 local options = { buffer = bufnr, remap = false }
@@ -156,12 +162,14 @@ return {
                 mapping = require("lsp-zero").defaults.cmp_mappings({
                     ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
                     ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-                    -- ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-                    -- ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete({}),
                     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+                    -- these two lines are already added by LSP Zero
                     -- ["<C-f>"] = cmp_action_from_lsp_zero.luasnip_jump_forward(),
                     -- ["<C-b>"] = cmp_action_from_lsp_zero.luasnip_jump_backward(),
+                    -- NOTE: no <C-b> as tmux prefix
+                    --       I chose <C-q> as <C-a> is cursor navi in terms
+                    -- other keys: <C-u><C-d> = scroll; <C-e> = cancel
                     ["<Tab>"] = nil,
                     ["<S-Tab>"] = nil,
                 }),
