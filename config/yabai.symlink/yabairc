@@ -1,0 +1,32 @@
+# clean install (sudo, SIP enabled)
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+# bsp, float or stack
+yabai -m config layout bsp
+
+yabai -m config window_placement second_child
+
+# padding
+yabai -m config top_padding 0
+yabai -m config bottom_padding 0
+yabai -m config left_padding 4
+yabai -m config right_padding 0
+yabai -m config window_gap 4
+
+# mouse settings
+yabai -m config mouse_follows_focus on
+yabai -m config focus_follows_mouse autofocus
+
+#TODO: test the modifier
+yabai -m config mouse_modifier alt
+yabai -m config mouse_action1 move
+yabai -m config mouse_action2 resize 
+
+yabai -m mouse_drop_action swap
+
+# disable specific apps
+# check your app names: yabai -m query --windows | jq ".[] | { App: .app, Title: .title }"
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^Karabiner-Elements$" manage=off
