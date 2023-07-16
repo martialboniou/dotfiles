@@ -20,7 +20,7 @@ Use the [easy](https://github.com/holman/dotfiles) way:
 
 Every files/directories in `config/` will be linked to the `$HOME` directory as a subdirectory of `.config/` instead of having their symlink in the `.<filename>` form.
 
-## NeoVim
+## NeoVim (up-to-date, my main editor)
 
 - Minimal configuration (keybindings are made for dvorak keyboards)
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
@@ -48,7 +48,7 @@ NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from
 VimScript to Lua.
 
-## Zsh
+## Zsh (my main shell)
 
 Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne with every fancy things from `csh` like _aliases_. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.
 
@@ -73,11 +73,29 @@ On macOS, install the following package (see [tmux-MacOSX-pasteboard](https://gi
 brew install reattach-to-user-namespace
 ```
 
-## Vim 8
+## Tmux (my main terminal manager)
+
+`<C-q>` is the prefix, here. I use `<C-a>` and `<C-e>` to navigate in a terminal
+(move cursor at the beginning and end of the current line respectively). `<C-b>`
+was the default but it is in conflict with the *snippet backward* default keybinding
+in Vim/NeoVim.
+
+## Yabai (my additional macOS window manager)
+
+- simple setup
+- notification works as expected but you need to check the
+[official documentation](https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release))
+to configure the scripting addition at startup
+- the window manipulation requires to start `skhd` as a service:
+  - the keybindings are based on the Option` key
+  - use the touchpad or additional keybindings to move between Spaces (the default
+  Yabai space navigation doesn't work without breaking the SIP)
+
+## Vim 8 (still maintained)
 
 The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZF and yarn if possible.
 
-## GNU Emacs (working in progress)
+## GNU Emacs (unmaintained, rework to come)
 
 All scripts in `.emacs.d` are currently tested on Emacs 24.3. **Ensure your LOAD-PATH know this path:** `~/.emacs.d/lisp` to be able to launch partial setup (see my `zsh` setup).
 
