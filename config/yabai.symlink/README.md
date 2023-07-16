@@ -15,7 +15,13 @@ YABAI
     - alt + m to maximize/restore
     - alt + H,J,K,L to swap windows (+ shift)
     - alt + 1.. to move window to a specific space
-    - (NOT WORKING NOW!) ctrl  + 1.. to go to a specific space (if no window to focus, go to the space anyway!; also, REMINDER: ctrl + left/right works too!)
+    - **(NOT WORKING NOW!)** ctrl + alt + 1.. to go to a specific space
+      (if no window to focus, go to the space anyway!; also, REMINDER:
+      ctrl + left/right works too!); **IMPORTANT**: use ctrl + alt, not
+      ctrl only, when dealing with numbers (`ctrl + 6` can be reserved on
+      (Neo)Vim as an alternative to `<C-^>`; useful if Vim cannot listen
+      to this last one because of a layout with a *dead key* for the
+      *caret*)
     - ctrl  + alt + q/s to quit/start yabai
   - others
     - alt + r to rotate clockwise

@@ -3,6 +3,7 @@ TMUX
 
 - About the prefix
   - `<M-a>` is the current prefix
+  - (macOS only) ensure iTerm2 has Profiles/Keys/Esc+ for Option keys
   - previous ones:
     - `<C-b>` used by vim (snippet backward)
     - `<C-a>` navigate cursor in terms

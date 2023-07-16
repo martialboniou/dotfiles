@@ -27,12 +27,11 @@ vim.keymap.set("n", "N", "Nzzzv")       -- keep the cursor in the middle during 
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
 -- next greatest remap ever : asbjornHaland
--- yank/delete for the clipboard
-vim.keymap.set("n", "<leader>y", "\"+y")
-vim.keymap.set("v", "<leader>y", "\"+y")
+-- yank for the clipboard
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
-vim.keymap.set("n", "<leader>d", "\"_d")
-vim.keymap.set("v", "<leader>d", "\"_d")
+-- delete for the clipboard
+vim.keymap.set({"n", "v"}, "<leader>d", "\"_d")
 
 -- ThePrimeagen thing; can be changed when foot controller is plugged
 vim.keymap.set("i", "<C-c>", "<Esc>")

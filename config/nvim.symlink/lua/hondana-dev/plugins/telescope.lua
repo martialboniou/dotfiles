@@ -1,10 +1,11 @@
 return {
-    -- telescope (may change back to fzf or lf)
+    -- telescope
     'nvim-telescope/telescope.nvim',
     tag = '0.1.2',
     dependencies = { { 'nvim-lua/plenary.nvim' } },
     keys = {
-        -- files & buffers
+        -- project
+        ---> files (memo: project files)
         {
             '<leader>pf',
             function()
@@ -12,21 +13,7 @@ return {
             end,
             { desc = "Open a fuzzy file picker", },
         },
-        {
-            '<leader>pr',
-            function()
-                require("telescope.builtin").oldfiles()
-            end,
-            { desc = "Open a fuzzy recent file picker", },
-        },
-        {
-            '<leader>pb',
-            function()
-                require("telescope.builtin").buffers()
-            end,
-            { desc = "Open a fuzzy buffer picker", },
-        },
-        -- rg-filtered project files
+        ---> rg-filtered files (memo: project search)
         {
             '<leader>ps',
             function()
@@ -36,7 +23,24 @@ return {
             end,
             { desc = "Open a string-filtered file picker (cwd)", },
         },
-        -- helptags
+        -- view
+        ---> recent files (memo: view viewed/view visited; vr = BAD ERGO)
+        {
+            '<leader>vv',
+            function()
+                require("telescope.builtin").oldfiles()
+            end,
+            { desc = "Open a fuzzy recent file picker", },
+        },
+        ---> buffers (memo: view buffers)
+        {
+            '<leader>vb',
+            function()
+                require("telescope.builtin").buffers()
+            end,
+            { desc = "Open a fuzzy buffer picker", },
+        },
+        ---> helptags (memo: view helptags)
         {
             '<leader>vh',
             function()
@@ -44,14 +48,8 @@ return {
             end,
             { desc = "Open a help tag picker", },
         },
-        {
-            '<leader>ph',
-            function()
-                require("telescope.builtin").help_tags()
-            end,
-            { desc = "Open a help tag picker", },
-        },
-        -- git files
+        -- git
+        --> files (memo: "control project")
         {
             '<C-p>',
             function()

@@ -106,6 +106,10 @@ return {
                 vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, options)
                 vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, options)
                 vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, options)
+                -- ! for ergonomics : <leader> + ca = vca, rr = vrr, nn = vrn
+                vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, options)
+                vim.keymap.set("n", "<leader>rr", function() vim.lsp.buf.references() end, options)
+                vim.keymap.set("n", "<leader>nn", function() vim.lsp.buf.rename() end, options)
             end)
 
             require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())

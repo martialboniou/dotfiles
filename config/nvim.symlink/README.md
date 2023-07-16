@@ -19,6 +19,9 @@ Vim keybinding reminders & tips
 
 - `"+p`  : paste the system clipboard register
 - ```0`` : go to the position before exit 
+- `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
+  use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
+  international Dvorak layout (+ Command Qwerty) on macOS)
 - `:map` : check the key mapping
 - `G`    : go to the end of file (of course!)
 - `J` (in visual) : move down the visual block (added!)
@@ -38,6 +41,8 @@ Plugins and new keybindings
 
 - **IMPORTANT!**: Lazy is the unique package manager
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
+- Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
+  your current project
 
 ### About Netrw
 
@@ -97,13 +102,15 @@ insert
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*)
 - `<leader>pf` : telescope find files (memo: project files)
-- `<leader>pr` : telescope recent files (memo: project recent) AKA old files
-- `<leader>pb` : telescope buffers (memo: project buffers)
 - `<leader>ps` : telescope project search (`rg`!)
-- `<leader>vh` or `<leader>ph` : telescope view helptags (TODO: choose!)
+- `<leader>vh` : telescope view helptags
+- `<leader>vv` : telescope recent files (memo: view viewed/view visited);
+  `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
+- `<leader>vb` : telescope buffers (memo: view buffers); not in the
+  ThePrimeagen setup
 - `<leader>gs` : git
 - `<leader>a`  : add file in harpoon
-- `<leader>e`  : harpoon quick menu
+- `<leader>e`  : harpoon quick menu (it was `<C-e>`)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>k`/`<leader>j`/`<C-k>`/`<C-j>` : quickfix navigations (TODO: test this)
@@ -140,9 +147,10 @@ insert
      - `<leader>vd` : view diagnostic
      - `[d` : next diagnostic
      - `]d` : previous diagnostic
-     - `<leader>vca` : view code action
-     - `<leader>vrr` : view references (memo: RefeRences)
-     - `<leader>vrn` : view rename (memo: ReName)
+     - these following keybindings come with a shorter version for ergonomics:
+       - `<leader>vca`/`<leader>ca` : view code action OR simply, **code action**
+       - `<leader>vrr`/`<leader>rr` : view **r**efe**r**ences OR simply, **RefeRences**
+       - `<leader>vrn` : view **r**e**n**ame OR simply, **New Name**
 
 ### Technical tips
 
