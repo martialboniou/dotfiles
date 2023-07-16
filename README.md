@@ -1,10 +1,14 @@
 # What?
 
-Some useful dotfiles for developers using applications such as zsh, tmux, vim, emacs... on POSIX systems. Used mainly on macOS and linux.
+Some useful dotfiles for developers using applications such as Zsh, Tmux,
+(Neo)Vim... on POSIX systems. Used mainly on macOS and linux.
 
 # For whom?
 
 Me and my roomies. But anyone can find something cool here.
+Notice I use a simplified **Dvorak layout** on my keyboard: expect
+some HTNS keybindings and others optimized for this layout. 
+(The HJKL keybindings stay unchanged in (Neo)Vim and their plugins.)
 
 # How?
 
@@ -23,6 +27,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 ## NeoVim (up-to-date, my main editor)
 
 - Minimal configuration (keybindings are made for dvorak keyboards)
+- `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope)
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
 a colorscheme only; everything loads when needed)
 - Telescope (used as fuzzy finder) & [Harpoon](https://github.com/ThePrimeagen/harpoon)
@@ -32,8 +37,15 @@ a colorscheme only; everything loads when needed)
 - Undotree & Fugitive (same in my classic Vim setup)
 - [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter) (interface
   to a fast parser generator tool and incremental parsing library)
-- Mason-boosted LSP & CMP (no [zero](https://github.com/VonHeikemen/lsp-zero.nvim))
-  (work in progress!)
+- Mason-boosted LSP & CMP ([zero](https://github.com/VonHeikemen/lsp-zero.nvim)
+  helped!). Standard keybindings:
+  - for completion:
+    - `<C-space>`     : force to start
+    - `<C-y>`/`<C-e>` : confirm/cancel
+    - `<C-p>`/`<C-n>` : previous/next option
+    - `<C-d>`/`<C-u>` : go down/up in documentation
+  - for snippets:
+    - `<C-f>`/`<C-b>` : move forward/backward in the selection
 - others:
   - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
   & mini.files)
@@ -75,10 +87,11 @@ brew install reattach-to-user-namespace
 
 ## Tmux (my main terminal manager)
 
-`<C-q>` is the prefix, here. I use `<C-a>` and `<C-e>` to navigate in a terminal
+- Ensure the version (`tmux -V`) is 3.1+
+- `<M-a>` is the prefix, here. I use `<C-a>` and `<C-e>` to navigate in a terminal
 (move cursor at the beginning and end of the current line respectively). `<C-b>`
 was the default but it is in conflict with the *snippet backward* default keybinding
-in Vim/NeoVim.
+in Vim/NeoVim. `<C-q>` was my previous choice but emacs uses it.
 
 ## Yabai (my additional macOS window manager)
 
@@ -87,7 +100,7 @@ in Vim/NeoVim.
 [official documentation](https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release))
 to configure the scripting addition at startup
 - the window manipulation requires to start `skhd` as a service:
-  - the keybindings are based on the Option` key
+  - the keybindings are based on the `Option` key (except `Option-a`; reserved for `tmux`)
   - use the touchpad or additional keybindings to move between Spaces (the default
   Yabai space navigation doesn't work without breaking the SIP)
 

@@ -1,5 +1,192 @@
+NeoVim
+======
+
+Pre-configuration
+-----------------
+
 Ensure `rg` is installed:
 
 ```sh
-brew install rg
+brew install ripgrep
 ```
+
+Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
+monospaced font for your terminal (I'm happy with Inconsolata), otherwise
+some emoticons won't be displayed at all.
+
+Vim keybinding reminders & tips
+-------------------------------
+
+- `"+p`  : paste the system clipboard register
+- ```0`` : go to the position before exit 
+- `:map` : check the key mapping
+- `G`    : go to the end of file (of course!)
+- `J` (in visual) : move down the visual block (added!)
+- `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
+- `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
+  `nnoremap` function in standard vim lua (nice trick!)
+- Netrw specific:
+  - `%` : create file
+  - `d` : create directory
+  - `gn` : change the current directory to the folder under the cursor
+  - `gh` : show/hide hidden files
+
+Plugins and new keybindings
+---------------------------
+
+### Reminders
+
+- **IMPORTANT!**: Lazy is the unique package manager
+- `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
+
+### About Netrw
+
+It's great but:
+- use `mini.files`:
+  - IMPORTANT: `h`/`l` : navigate up/down (`l` on a file = load in buffer)
+  - `g?` : help
+  - `@`  : reveal `cwd`
+  - `=`  : synchronize (IMPORTANT: not :wq)
+  - `gh` : show/hide hidden files
+  - edition like `vim-vinegar`/`oil`:
+    - btw, `-` is important in a buffer, DON'T TOUCH IT
+  - BAD IDEA: don't add `-` as alias of `h` in the `mini.files` buffer
+  - Netrw still available: `:Ex` (or open a directory `nvim .`)
+- I CANNOT switch to `oil.nvim`
+  - `-` in normal mode : open folder directory in `oil.nvim` (like `vim-vinegar`)
+  - `<leader><leader>`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
+  - it **BREAKS** Netrw
+- Telescope is good enough and faster than FZF
+- `:Ex` is still available
+
+### Example of workflow
+      
+- `<leader>a` : tag a file in harpoon (first)
+- `<leader><leader>` or `<leader>pv` : project view at the current directory
+  (the cursor is on the current file AKA `:pwd`) or at the current working
+  directory (root of the project AKA `:lua print(vim.loop.cwd())`)
+  respectively
+- make a file, say, a module
+  - edit the current buffer from `<leader><leader>`
+  - `=` to synchronize
+  - (optional) otherwise: `%` if you used `:Ex`
+- `<C-h>` : back to first file
+- (optional) `<C-Space>` : enable completion
+- (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
+- `gd` (on a reference, say, `require`; normal mode) : back to the module
+- `<leader>a` : tag the module in harpoon (second)
+- `<leader>e` : check harpoon (change the order with copy-pasta; this was <C-e> is the original configuration)
+- `<C-h>`/`<C-t>` : switch back and forth, the file and its module
+
+### Cheat sheet
+
+- `<C-o><cmd>` (in insert): switch to normal to execute `<cmd>` then back to 
+insert
+- `J` : append line (in normal) BUT in this remap, it doesn't move the cursor away
+- `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
+  memo: Down/Up)
+- `:so` : source this file
+- `:Lazy` : check package (I prefer this one to Packer)
+- `<C-w><C-w>` : cycle windows
+- `<C-w>o` : one window (AKA 'close' others)
+- `:TSPlaygroundToggle` : display the AST (neat!)
+- *REMINDER*: `:map` to check the key mapping
+- **IMPORTANT!**: `<leader>s` : create a template to replace the current word (memo: `s` as in `:%s`)
+- `<leader>s` (in visual) : create a template to replace a pattern in the selection (added by me)
+- `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
+- **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
+- `<leader>pv` : `mini.files` at root (ie *Cwd*)
+- `<leader>pf` : telescope find files (memo: project files)
+- `<leader>pr` : telescope recent files (memo: project recent) AKA old files
+- `<leader>pb` : telescope buffers (memo: project buffers)
+- `<leader>ps` : telescope project search (`rg`!)
+- `<leader>vh` or `<leader>ph` : telescope view helptags (TODO: choose!)
+- `<leader>gs` : git
+- `<leader>a`  : add file in harpoon
+- `<leader>e`  : harpoon quick menu
+- `<leader>u`  : undotree
+- **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
+- `<leader>k`/`<leader>j`/`<C-k>`/`<C-j>` : quickfix navigations (TODO: test this)
+- `<leader>x`  : toggle the executability of a file (different than the ThePrimeagen's version?)
+- **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
+- **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (memo: control project)
+- `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
+- `<C-f>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
+- in *visual* mode:
+  - `<shift-J>`: move down the whole selection
+  - `<shift-K>`: move up the whole selection
+- **Trouble** (fix helper plugin) case:
+  - `<leader>xx` : toggle trouble quickfix (memo: quickfiXX)
+- LSP case:
+  - *cmp_mappings*:
+    - `<C-y>` : confirm completion
+    - `<C-p>` : previous completion
+    - `<C-n>` : next completion
+    - `<C-Space>` : complete
+    - `<C-f>` : snippet forward selection (default by LSP Zero; navigate thru tmux sessions in normal mode)
+    - `<C-b>` : snippet backward selection (default by LSP Zero; unbind `<C-b>` for `tmux`; don't use `<C-a>` because you lose the cursor navigation (start of line);
+    `<C-q>` is a good candidate for the `tmux` prefix if you don't use emacs;
+    `<M-a>` is my current choice for `tmux`)
+    - other keys (imposed by vim and added by LSP Zero)
+      - `<C-e>` : cancel the completion
+      - `<C-u>`/`<C-d>` : scroll the document up/down
+   - in LSP buffer only (normal mode except when said otherwise)
+     - `<leader>f`  : format LSP
+     - `<C-h>` (insert mode) : signature (*BEWARE*: `<C-h>` switches to the
+        first harpoon in **normal mode**)
+     - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
+     - `gd` : goto definitions (**IMPORTANT**: jump to the file in LSP-injected files; say, like lua vim configurations)
+     - `<leader>vws` : view workspace symbol
+     - `<leader>vd` : view diagnostic
+     - `[d` : next diagnostic
+     - `]d` : previous diagnostic
+     - `<leader>vca` : view code action
+     - `<leader>vrr` : view references (memo: RefeRences)
+     - `<leader>vrn` : view rename (memo: ReName)
+
+### Technical tips
+
+About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero):
+- LSP
+  - neovim/nvim-lspconfig
+    - event: BufReadPost
+    - dependencies:
+      - williamboman/mason.nvim
+        - run: `:MasonUpdate`
+      - hrsh7th/nvim-cmp (see Autocompletion)
+      - (optional) rrethy/vim-illuminate (highlight same word)
+      - (optional) glepnir/lspaga.nvim (fancy navbar)
+    - opts:
+      - diagnostics
+      - autoformat
+      - servers
+    - config:
+      - requirements
+        - cmp_nvim_lsp
+          - `default_capabilities(vim.lsp.protocol.make_client_capabilities())` 
+        - mason-lspconfig
+          - `setup({ ensure_installed = ... })`
+          - `setup_handlers({ function(server_name) ... end })`
+        - lspconfig
+- Autocompletion
+  - hrsh7th/nvim-cmp
+    - dependencies:
+      - hrsh7th/cmp-nvim-lsp
+      - L3MON4D3/LuaSnip
+        - build: `make install_jsregexp`
+      - (optional) rafamadriz/friendly-snippets
+      - saadparwaiz1/cmp_luasnip
+      - (optional) hrsh7th/cmp-buffer (buffer words)
+      - (optional) hrsh7th/cmp-path (filesystem paths)
+      - (optional) ray-x/lsp_signature.nvim (show function signatures)
+      - (replaced by previous) hrsh7th/cmp-nvim-lsp-signature-help
+- Formatter
+  - jay-babu/mason-null-ls
+    - depe
+  - jose-elias-alvarez/null-ls.nvim (frozen?)
+    - event: BufReadPost
+    - config:
+      - requirements
+        - luasnip.loaders.from_vscode
+          - `lazy_load()`
+
