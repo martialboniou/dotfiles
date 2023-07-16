@@ -108,7 +108,8 @@ insert
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
 - `<leader>vb` : telescope buffers (memo: view buffers); not in the
   ThePrimeagen setup
-- `<leader>gs` : git
+- `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
+  command `Git`)
 - `<leader>a`  : add file in harpoon
 - `<leader>e`  : harpoon quick menu (it was `<C-e>`)
 - `<leader>u`  : undotree
@@ -122,6 +123,11 @@ insert
 - in *visual* mode:
   - `<shift-J>`: move down the whole selection
   - `<shift-K>`: move up the whole selection
+- FuGITive (inside the fugitive buffer only):
+  - `<leader>p` : `git push`
+  - `<leader>P` : `git pull` **with rebase** 
+  - `<leader>t` : `git push -u origin` template; complete with the branch name
+    to push to
 - **Trouble** (fix helper plugin) case:
   - `<leader>xx` : toggle trouble quickfix (memo: quickfiXX)
 - LSP case:
