@@ -5,7 +5,6 @@
 ! system="A specific OS-dependent conditional case"
 ! variable="A variable to set (bin only if * action)"
 ! pattern=(<action>:)<path>:<system>:<variable>
-$HOME/.symfony
 $HOME/.scrubs
 $HOME/.tools
 $HOME/.local

@@ -49,4 +49,9 @@ M.toggle_executable = function()
     return "you can execute " .. file .. " now!"
 end
 
+M.php_cs_fixer_format = function()
+    local file = vim.fn.expand("%:p")
+    print([[exe tail -2 $file]])
+end
+
 return M

@@ -12,7 +12,12 @@ return {
         event = "BufReadPost",
         dependencies = {
             "VonHeikemen/lsp-zero.nvim",
-            { "williamboman/mason.nvim", opts = {}, run = ":MasonUpdate" },
+            {
+                "williamboman/mason.nvim",
+                opts = {},
+                cmd = "Mason",
+                run = ":MasonUpdate"
+            },
             "williamboman/mason-lspconfig.nvim", -- lsp conf for mason lsp
             "hrsh7th/nvim-cmp",                  -- see Autocompletion
             "rrethy/vim-illuminate",             -- optional/highlight same word
@@ -185,12 +190,26 @@ return {
         event = { "BufReadPost", "BufNewFile" },
         dependencies = {
             "williamboman/mason.nvim",
-            "jose-elias-alvarez/null-ls.nvim", -- frozen?
+            {
+                "jose-elias-alvarez/null-ls.nvim",
+                dependencies = {
+                    "nvim-lua/plenary.nvim",
+                },
+                opts = function ()
+                    local null_ls = require("null-ls")
+                    return {
+                        sources = {
+                            null_ls.builtins.formatting.stylua,
+                            null_ls.builtins.diagnostics.eslint,
+                            null_ls.builtins.completion.spell,
+                        },
+                    }
+                end,
+            },
         },
         opts = {
             ensure_installed = { 'stylua', 'jq' },
             automatic_installation = false,
-
         },
         config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
