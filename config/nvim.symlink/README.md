@@ -156,7 +156,7 @@ insert
      - these following keybindings come with a shorter version for ergonomics:
        - `<leader>vca`/`<leader>ca` : **v**iew **c**ode **a**ction OR simply, **code action**
        - `<leader>vrr`/`<leader>rr` : **v**iew **r**efe**r**ences OR simply, **RefeRences**
-       - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **New Name**
+       - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **new name**
 
 ### Technical tips
 
