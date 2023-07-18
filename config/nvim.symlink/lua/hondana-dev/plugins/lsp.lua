@@ -195,14 +195,22 @@ return {
                 dependencies = {
                     "nvim-lua/plenary.nvim",
                 },
-                opts = function ()
-                    local null_ls = require("null-ls")
+                opts = function()
+                    local nls = require("null-ls")
                     return {
                         sources = {
-                            null_ls.builtins.formatting.stylua,
-                            null_ls.builtins.diagnostics.eslint,
-                            null_ls.builtins.completion.spell,
+                            nls.builtins.formatting.stylua,
+                            nls.builtins.diagnostics.eslint,
+                            nls.builtins.completion.spell,
+                            -- (optional) for my Symfony backend
+                            -- :Mason insall: php-cs-fixer & phpactor
+                            nls.builtins.formatting.phpcsfixer.with({
+                                extra_args = {
+                                    "--rules=@PhpCsFixer,@Symfony"
+                                },
+                            }),
                         },
+                        debug = true,
                     }
                 end,
             },

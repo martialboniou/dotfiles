@@ -40,6 +40,7 @@ Plugins and new keybindings
 ### Reminders
 
 - **IMPORTANT!**: Lazy is the unique package manager
+- the `<leader>` key is `<Space>` in this configuration
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
 - Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project
@@ -204,3 +205,20 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
         - luasnip.loaders.from_vscode
           - `lazy_load()`
 
+### Note for beginners using PHP
+
+I've had developed a lot with the Symfony 5/6 framework. Not as pro as
+Spring but it works. If you want to use this install to make NeoVim as
+a *ready-to-go* Symfony editor (and get rid of VSCode), do it so.
+
+First, install with `:Mason` (type `i` when the cursor is above
+one of the following package):
+
+- `php-cs-fixer` (not needed if already in your path): LSP has already been
+extended by [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)
+and the `php-cs-fixer` script is ready to use with the `vim.lsp.buf.format()`
+command (`<Space>f` is the keybinding for the code formatting)
+- `php-actor` (need a restart): `phpactor.json` auto-created at the root
+of the project (start NeoVim there!) and auto-configured after Symfony
+was detected. It'll make the editing smooth (autocompletion, auto-imports,
+...)
