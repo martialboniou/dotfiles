@@ -222,3 +222,18 @@ command (`<Space>f` is the keybinding for the code formatting)
 of the project (start NeoVim there!) and auto-configured after Symfony
 was detected. It'll make the editing smooth (autocompletion, auto-imports,
 ...)
+
+(Optional) For the [Twig](https://twig.symfony.com) template engine:
+- `twigcs` diagnostics:
+```shell
+composer global require friendsoftwig/twigcs
+```
+- [djLint](https://www.djlint.com/docs/getting-started/) formatter (Python3 required;
+NOTE: this is the best way to format Twig properly as the
+[twig melody](https://github.com/trivago/prettier-plugin-twig-melody) plugin
+is not compatible with recent `prettier` versions that `null-ls` may
+rely on):
+```shell
+pip3 install djlint
+```
+

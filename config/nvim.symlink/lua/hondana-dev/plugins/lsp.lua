@@ -1,6 +1,6 @@
 -- table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 -- LSP Zero version
--- 2023-07-15
+-- 2023-07-19
 return {
     { -- LSP Zero
         "VonHeikemen/lsp-zero.nvim",
@@ -16,7 +16,7 @@ return {
                 "williamboman/mason.nvim",
                 opts = {},
                 cmd = "Mason",
-                run = ":MasonUpdate"
+                run = ":MasonUpdate",
             },
             "williamboman/mason-lspconfig.nvim", -- lsp conf for mason lsp
             "hrsh7th/nvim-cmp",                  -- see Autocompletion
@@ -87,7 +87,7 @@ return {
         },
         config = function(_, opts)
             -- reduce boilerplate code with LSP Zero
-            local lsp_zero = require('lsp-zero')
+            local lsp_zero = require("lsp-zero")
             local lsp_zero_setup = opts.zero_setup
 
             lsp_zero.nvim_workspace()
@@ -100,24 +100,52 @@ return {
             lsp_zero.on_attach(function(_, bufnr)
                 local options = { buffer = bufnr, remap = false }
 
-                vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format() end, options)
-                vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, options)
-                vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, options)
-                vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, options)
-                vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, options)
-                vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, options)
-                vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, options)
-                vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, options)
-                vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, options)
-                vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, options)
-                vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, options)
+                vim.keymap.set("n", "<leader>f", function()
+                    vim.lsp.buf.format()
+                end, options)
+                vim.keymap.set("n", "gd", function()
+                    vim.lsp.buf.definition()
+                end, options)
+                vim.keymap.set("n", "K", function()
+                    vim.lsp.buf.hover()
+                end, options)
+                vim.keymap.set("n", "<leader>vws", function()
+                    vim.lsp.buf.workspace_symbol()
+                end, options)
+                vim.keymap.set("n", "<leader>vd", function()
+                    vim.diagnostic.open_float()
+                end, options)
+                vim.keymap.set("n", "[d", function()
+                    vim.diagnostic.goto_next()
+                end, options)
+                vim.keymap.set("n", "]d", function()
+                    vim.diagnostic.goto_prev()
+                end, options)
+                vim.keymap.set("n", "<leader>vca", function()
+                    vim.lsp.buf.code_action()
+                end, options)
+                vim.keymap.set("n", "<leader>vrr", function()
+                    vim.lsp.buf.references()
+                end, options)
+                vim.keymap.set("n", "<leader>vrn", function()
+                    vim.lsp.buf.rename()
+                end, options)
+                vim.keymap.set("i", "<C-h>", function()
+                    vim.lsp.buf.signature_help()
+                end, options)
                 -- ! for ergonomics : <leader> + ca = vca, rr = vrr, nn = vrn
-                vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, options)
-                vim.keymap.set("n", "<leader>rr", function() vim.lsp.buf.references() end, options)
-                vim.keymap.set("n", "<leader>nn", function() vim.lsp.buf.rename() end, options)
+                vim.keymap.set("n", "<leader>ca", function()
+                    vim.lsp.buf.code_action()
+                end, options)
+                vim.keymap.set("n", "<leader>rr", function()
+                    vim.lsp.buf.references()
+                end, options)
+                vim.keymap.set("n", "<leader>nn", function()
+                    vim.lsp.buf.rename()
+                end, options)
             end)
 
-            require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+            require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
 
             lsp_zero.setup(opts)
         end,
@@ -140,7 +168,7 @@ return {
         },
         opts = function()
             -- nvim-lspconfig ensures the lazy loading of LSP Zero
-            require('lsp-zero.cmp').extend()
+            require("lsp-zero.cmp").extend()
 
             local cmp = require("cmp")
             -- local cmp_action_from_lsp_zero = require('lsp-zero.cmp').action()
@@ -195,28 +223,78 @@ return {
                 dependencies = {
                     "nvim-lua/plenary.nvim",
                 },
-                opts = function()
+                config = function()
                     local nls = require("null-ls")
-                    return {
+                    local h = require("null-ls.helpers")
+                    -- TEMPORARY: formatter for Twig/Nunjucks template
+                    local twig_formatter = h.make_builtin {
+                        name = "twig-formatter",
+                        method = nls.methods.FORMATTING,
+                        filetypes = { "html.twig.js.css", },
+                        generator_opts = {
+                            command = "djlint",
+                            args = {
+                                "--no-function-formatting", -- MANDATORY
+                                "--profile=nunjucks",
+                                "--max-blank-lines=1",
+                                "--reformat",               -- the thing!
+                                "$FILENAME",
+                            },
+                            to_stdin = false,
+                            to_temp_file = true,
+                        },
+                        factory = h.formatter_factory,
+                    }
+                    -- TODO: remove this
+                    local no_really_test = {
+                        method = nls.methods.DIAGNOSTICS,
+                        filetypes = { "markdown", },
+                        generator = {
+                            fn = function(params)
+                                local diagnostics = {}
+                                for i, line in ipairs(params.content) do
+                                    local col, end_col = line:find("really")
+                                    if col and end_col then
+                                        table.insert(diagnostics, {
+                                            row = i,
+                                            col = col,
+                                            end_col = end_col + 1,
+                                            source = "no-really",
+                                            message = "Don't use 'really!'",
+                                            severity = vim.diagnostic.severity.WARN,
+                                        })
+                                    end
+                                end
+                                return diagnostics
+                            end,
+                        },
+                    }
+                    local opts = {
                         sources = {
-                            nls.builtins.formatting.stylua,
+                            -- NOTE: the LSP lua server is good for comments' alignment
+                            --       if you prefer stylua, uncomment the following line
+                            -- nls.builtins.formatting.stylua, -- :MasonInstall stylua
                             nls.builtins.diagnostics.eslint,
+                            nls.builtins.diagnostics.twigcs,
                             nls.builtins.completion.spell,
-                            -- (optional) for my Symfony backend
+                            -- (optional) for Symfony backend
                             -- :Mason insall: php-cs-fixer & phpactor
                             nls.builtins.formatting.phpcsfixer.with({
                                 extra_args = {
-                                    "--rules=@PhpCsFixer,@Symfony"
+                                    "--rules=@PhpCsFixer,@Symfony",
                                 },
                             }),
+                            twig_formatter,
                         },
                         debug = true,
                     }
+                    nls.setup(opts)
+                    nls.register(no_really_test) -- dummy test = markdown with 'really'
                 end,
             },
         },
         opts = {
-            ensure_installed = { 'stylua', 'jq' },
+            ensure_installed = { "stylua", "jq" },
             automatic_installation = false,
         },
         config = function()
