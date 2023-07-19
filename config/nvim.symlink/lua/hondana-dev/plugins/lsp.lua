@@ -223,10 +223,10 @@ return {
                 dependencies = {
                     "nvim-lua/plenary.nvim",
                 },
-                config = function()
+                opts = function()
                     local nls = require("null-ls")
                     local h = require("null-ls.helpers")
-                    -- TEMPORARY: formatter for Twig/Nunjucks template
+                    -- formatter for Twig/Nunjucks template
                     local twig_formatter = h.make_builtin {
                         name = "twig-formatter",
                         method = nls.methods.FORMATTING,
@@ -237,7 +237,7 @@ return {
                                 "--no-function-formatting", -- MANDATORY
                                 "--profile=nunjucks",
                                 "--max-blank-lines=1",
-                                "--reformat",               -- the thing!
+                                "--reformat", -- the thing!
                                 "$FILENAME",
                             },
                             to_stdin = false,
@@ -245,8 +245,8 @@ return {
                         },
                         factory = h.formatter_factory,
                     }
-                    -- TODO: remove this
-                    local no_really_test = {
+                    -- FIXME: just here for the joke/test
+                    local no_really_test = h.make_builtin {
                         method = nls.methods.DIAGNOSTICS,
                         filetypes = { "markdown", },
                         generator = {
@@ -269,7 +269,7 @@ return {
                             end,
                         },
                     }
-                    local opts = {
+                    return {
                         sources = {
                             -- NOTE: the LSP lua server is good for comments' alignment
                             --       if you prefer stylua, uncomment the following line
@@ -284,17 +284,16 @@ return {
                                     "--rules=@PhpCsFixer,@Symfony",
                                 },
                             }),
-                            twig_formatter,
+                            twig_formatter, -- bonus for Symfony
+                            no_really_test, -- dummy test: load markdown with ready's
                         },
                         debug = true,
                     }
-                    nls.setup(opts)
-                    nls.register(no_really_test) -- dummy test = markdown with 'really'
                 end,
             },
         },
         opts = {
-            ensure_installed = { "stylua", "jq" },
+            ensure_installed = { "stylua", "jq" }, -- NOTE: stylua is ready to use but still unused here
             automatic_installation = false,
         },
         config = function()

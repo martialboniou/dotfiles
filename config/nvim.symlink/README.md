@@ -231,9 +231,8 @@ composer global require friendsoftwig/twigcs
 - [djLint](https://www.djlint.com/docs/getting-started/) formatter (Python3 required;
 NOTE: this is the best way to format Twig properly as the
 [twig melody](https://github.com/trivago/prettier-plugin-twig-melody) plugin
-is not compatible with recent `prettier` versions that `null-ls` may
+is not compatible with any recent `prettier` versions that `null-ls` may
 rely on):
 ```shell
 pip3 install djlint
 ```
-
