@@ -156,13 +156,21 @@ return {
             "hrsh7th/cmp-nvim-lsp",
             {
                 "L3MON4D3/LuaSnip",
-                opts = {},
                 build = "make install_jsregexp",
+                dependencies = {
+                    "rafamadriz/friendly-snippets", -- optional
+                },
+                config = function()
+                    require("luasnip.loaders.from_vscode").lazy_load({
+                        paths = vim.fn.stdpath "config" .. "/snippets/vscode"
+                    })
+                end,
             },
-            "rafamadriz/friendly-snippets", -- optional
             "saadparwaiz1/cmp_luasnip",
-            "hrsh7th/cmp-buffer",           -- optional/buffer words
-            "hrsh7th/cmp-path",             -- optional/filesystem paths
+            "hrsh7th/cmp-buffer", -- optional/buffer words
+            "hrsh7th/cmp-path",   -- optional/filesystem paths
+            "petertriho/cmp-git", -- optional/git
+            "hrsh7th/cmp-emoji",  -- very optional
             "ray-x/lsp_signature.nvim",
             -- "hrsh7th/cmp-nvim-lsp-signature-help" -- replaced by previous
         },
@@ -188,12 +196,26 @@ return {
                         require("luasnip").lsp_expand(args.body)
                     end,
                 },
+                filetype = {
+                    "gitcommit",
+                    {
+                        sources = cmp.config.sources({
+                            { name = "git" },
+                        }),
+                    },
+                },
                 sources = cmp.config.sources({
                     { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                     { name = "buffer" },
                     { name = "path" },
+                    {
+                        name = "emoji",
+                        {
+                            option = { insert = true },
+                        }
+                    },
                 }),
                 -- experimental = { ghost_text = true },
                 mapping = require("lsp-zero").defaults.cmp_mappings({
@@ -205,7 +227,7 @@ return {
                     -- ["<C-f>"] = cmp_action_from_lsp_zero.luasnip_jump_forward(),
                     -- ["<C-b>"] = cmp_action_from_lsp_zero.luasnip_jump_backward(),
                     -- NOTE: no <C-b> as tmux prefix
-                    --       I chose <C-q> as <C-a> is cursor navi in terms
+                    --       I chose <M-a> as <C-a> is BOF in any terms
                     -- other keys: <C-u><C-d> = scroll; <C-e> = cancel
                     ["<Tab>"] = nil,
                     ["<S-Tab>"] = nil,
@@ -296,8 +318,5 @@ return {
             ensure_installed = { "stylua", "jq" }, -- NOTE: stylua is ready to use but still unused here
             automatic_installation = false,
         },
-        config = function()
-            require("luasnip.loaders.from_vscode").lazy_load()
-        end,
     },
 }

@@ -43,7 +43,8 @@ Plugins and new keybindings
 - the `<leader>` key is `<Space>` in this configuration
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
 - Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
-  your current project
+  your current project (notice you can harpoon a file under the cursor
+  in a Netrw or `mini.files` buffer)
 
 ### About Netrw
 

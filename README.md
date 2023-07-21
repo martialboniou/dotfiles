@@ -24,7 +24,7 @@ Use the [easy](https://github.com/holman/dotfiles) way:
 
 Every files/directories in `config/` will be linked to the `$HOME` directory as a subdirectory of `.config/` instead of having their symlink in the `.<filename>` form.
 
-## NeoVim (up-to-date, my main editor)
+## NeoVim (up-to-date, my editor)
 
 - Minimal configuration (keybindings are made for dvorak keyboards)
 - `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope)
@@ -60,7 +60,7 @@ NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from
 VimScript to Lua.
 
-## Zsh (my main shell)
+## Zsh (my shell)
 
 Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne with every fancy things from `csh` like _aliases_. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.
 
@@ -85,7 +85,7 @@ On macOS, install the following package (see [tmux-MacOSX-pasteboard](https://gi
 brew install reattach-to-user-namespace
 ```
 
-## Tmux (my main terminal manager)
+## Tmux (my terminal manager)
 
 - Ensure the version (`tmux -V`) is 3.1+
 - `<M-a>` is the prefix, here. I use `<C-a>` and `<C-e>` to navigate in a terminal
