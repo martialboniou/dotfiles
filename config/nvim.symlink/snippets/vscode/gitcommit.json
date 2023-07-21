@@ -1,0 +1,30 @@
+{
+    "conventional commit": {
+        "prefix": "cc",
+        "body": ["📦 NEW: ", "", "$0"]
+    },
+    "refactor conventional commit": {
+        "prefix": "improve",
+        "body": ["👌 IMPROVE: ", "", "$0"]
+    },
+    "fix conventional commit": {
+        "prefix": "fix",
+        "body": ["🐛 FIX: ", "", "$0"]
+    },
+    "docs conventional commit": {
+        "prefix": "docs",
+        "body": ["📖 DOCS: ", "", "$0"]
+    },
+    "release conventional commit": {
+        "prefix": "release",
+        "body": ["🚀 RELEASE: ", "", "$0"]
+    },
+    "test conventional commit": {
+        "prefix": "test",
+        "body": ["🤖 TEST: ", "", "$0"]
+    },
+    "break change conventional commit footer": {
+        "prefix": "BREAK",
+        "body": ["‼️ BREAKING", "", "$0"]
+    }
+}
