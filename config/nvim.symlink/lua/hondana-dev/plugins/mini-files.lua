@@ -14,13 +14,15 @@ return {
         },
     },
     keys = {
-        -- <leader><leader> : open at the current file location
+        -- <leader><leader> : open/close at the current file location if possible
         {
             "<leader><leader>",
             function()
                 local mini_files = require("mini.files")
-                mini_files.close() -- force reset if open at root
-                local ok, res = pcall(mini_files.open, vim.api.nvim_buf_get_name(0), true)
+                if mini_files.get_target_window() ~= nil then
+                    return mini_files.close()
+                end
+                local ok, _ = pcall(mini_files.open, vim.api.nvim_buf_get_name(0), true)
                 if not ok then -- say, the file is not created yet
                     print("Mini.files cannot open the current directory; open cwd instead")
                     -- open at the root of the project instead

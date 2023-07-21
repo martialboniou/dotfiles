@@ -12,8 +12,31 @@ return {
     keys = {
         {
             "<leader>a",
-            function()
+            function() -- NOTE: harpoon files selected in Netrw/mini.files too
+                local buf_type = vim.api.nvim_buf_get_option(0, "filetype")
+                if (buf_type == "netrw") then
+                    vim.cmd [[ let netrw#current_word = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord')) ]]
+                    local path = vim.g["netrw#current_word"] -- TODO: get rid of VimL
+                    if vim.fn.isdirectory(path) == 0 then
+                        require("harpoon.mark").add_file(path)
+                        return
+                    end
+                end
+                local buf_name = vim.api.nvim_buf_get_name(0)
+                if (buf_type == "minifiles" and buf_name == "" or buf_name == nil) then
+                    local ok, res = pcall(require("mini.files").get_target_window)
+                    if ok and res ~= nil then
+                        local fs_entry = require("mini.files").get_fs_entry()
+                        if fs_entry.fs_type == "file" then
+                            require("harpoon.mark").add_file(fs_entry.path)
+                            return
+                        end
+                    end
+                end
                 require("harpoon.mark").add_file()
+                -- expected behaviors:
+                --     error if the cursor in Netrw is not above a file
+                --     error if mini.files selection is not a file
             end,
             desc = {
                 "Harpoon the current file",
