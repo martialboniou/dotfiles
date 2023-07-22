@@ -69,7 +69,6 @@ return {
                     "astro",
                     "vimls",
                     "cssls",
-                    "astro",
                 },
                 sign_icons = {
                     error = "✘",
@@ -183,6 +182,43 @@ return {
 
             -- vim.opt.runtimepath:append("~/github/lsp_signature.nvim")
 
+            cmp.setup.filetype(
+                { "markdown" }, {
+                    sources = cmp.config.sources({
+                        { name = "nvim_lsp_signature_help" },
+                        { name = "nvim_lsp" },
+                        { name = "luasnip" },
+                        {
+                            name = "buffer",
+                            keyword_length = 4,
+                        },
+                        { name = "path" },
+                        {
+                            name = "emoji",
+                            { option = { insert = true, }, }
+                        }
+                    }),
+                })
+
+            cmp.setup.filetype(
+                { "gitcommit" }, {
+                    sources = cmp.config.sources({
+                        { name = "nvim_lsp_signature_help" },
+                        { name = "nvim_lsp" },
+                        { name = "luasnip" },
+                        {
+                            name = "buffer",
+                            keyword_length = 4,
+                        },
+                        { name = "path" },
+                        { name = "git" },
+                        {
+                            name = "emoji",
+                            { option = { insert = true, }, }
+                        }
+                    }),
+                })
+
             return {
                 completion = {
                     completeopt = "menu,menuone,noinsert",
@@ -196,25 +232,29 @@ return {
                         require("luasnip").lsp_expand(args.body)
                     end,
                 },
-                filetype = {
-                    "gitcommit",
-                    {
-                        sources = cmp.config.sources({
-                            { name = "git" },
-                        }),
-                    },
-                },
+                -- sources = source_emoji_in(),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
-                    { name = "buffer" },
+                    {
+                        name = "buffer",
+                        keyword_length = 4,
+                    },
                     { name = "path" },
                     {
                         name = "emoji",
-                        {
-                            option = { insert = true },
-                        }
+                        option = { insert = true, },
+                        entry_filter = function(_, _)
+                            local context = require("cmp.config.context")
+                            if context.in_syntax_group("Comment") then
+                                return true
+                            end
+                            if context.in_syntax_group("String") then
+                                return true
+                            end
+                            return false
+                        end,
                     },
                 }),
                 -- experimental = { ghost_text = true },
