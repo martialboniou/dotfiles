@@ -4,9 +4,12 @@ return {
         dependencies = {
             'nvim-treesitter/playground'
         },
-        build = ":TSUpdate",
-        event = { "BufReadPost", "BufNewFile", },
-        cmd = { "TSUpdateSync" },
+        build        = ":TSUpdate",
+        event        = { "BufReadPost", "BufNewFile", },
+        cmd          = { "TSUpdateSync" },
+        config       = function(_, opts)
+            require("nvim-treesitter.configs").setup(opts)
+        end,
         opts         = {
             ensure_installed = {
                 "typescript",
@@ -25,7 +28,7 @@ return {
                 "yaml",
             },
             sync_install = false,
-            auto_install = true,
+            auto_install = false,
             rainbow = {
                 enable = true,
                 extended_mode = true,

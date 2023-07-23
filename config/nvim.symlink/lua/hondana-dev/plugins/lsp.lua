@@ -1,28 +1,41 @@
 -- table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 -- LSP Zero version
--- 2023-07-19
+-- 2023-07-23
 return {
-    { -- LSP Zero
-        "VonHeikemen/lsp-zero.nvim",
-        branch = "v2.x",
-        lazy = true,
-    },
     { -- LSP
         "neovim/nvim-lspconfig",
         event = "BufReadPost",
         dependencies = {
-            "VonHeikemen/lsp-zero.nvim",
+            {
+                "VonHeikemen/lsp-zero.nvim", -- LSP Zero
+                branch = "v2.x",
+                lazy = true,
+            },
+            -- "simrat39/rust-tools.nvim",
             {
                 "williamboman/mason.nvim",
                 opts = {},
                 cmd = "Mason",
                 run = ":MasonUpdate",
             },
-            "williamboman/mason-lspconfig.nvim", -- lsp conf for mason lsp
-            "hrsh7th/nvim-cmp",                  -- see Autocompletion
-            "rrethy/vim-illuminate",             -- optional/highlight same word
             {
-                "glepnir/lspsaga.nvim",          -- optional/fancy navbar
+                "williamboman/mason-lspconfig.nvim", -- lsp conf for mason lsp
+                opts = function(_, opts)
+                    if type(opts.ensure_installed) == "table" then
+                        vim.list_extend(
+                            opts.ensure_installed,
+                            {
+                                "rust_analyzer",
+                                -- "codelldb",
+                                -- "taplo",
+                            })
+                    end
+                end,
+            },
+            "hrsh7th/nvim-cmp",                      -- see Autocompletion
+            "rrethy/vim-illuminate",                 -- optional/highlight same word
+            {
+                "glepnir/lspsaga.nvim",              -- optional/fancy navbar
                 dependencies = {
                     "nvim-tree/nvim-web-devicons",
                     "nvim-treesitter/nvim-treesitter",
@@ -58,7 +71,7 @@ return {
                 },
                 servers = {
                     "tsserver",
-                    "rust_analyzer",
+                    "rust_analyzer", -- IMPORTANT: only for cargo project
                     -- "eslint",
                     "html",
                     "lua_ls",
@@ -95,6 +108,8 @@ return {
             lsp_zero.ensure_installed(lsp_zero_setup.servers)
             lsp_zero.set_preferences(lsp_zero_setup.preferences)
             lsp_zero.set_sign_icons(lsp_zero_setup.sign_icons) -- or .sign_chars
+
+            vim.diagnostic.config(opts.diagnostics)
 
             lsp_zero.on_attach(function(_, bufnr)
                 local options = { buffer = bufnr, remap = false }
@@ -145,8 +160,19 @@ return {
             end)
 
             require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
+            -- require("lspconfig").rust_analyzer.setup({
+            --     on_attach = lsp_zero.on_attach,
+            --     settings = {
+            --         ["rust_analyzer"] = {
+            --             cargo = {
+            --                 autoreload = true,
+            --                 buildScripts = { enable = true },
+            --             },
+            --         },
+            --     },
+            -- })
 
-            lsp_zero.setup(opts)
+            lsp_zero.setup()
         end,
     },
     { -- Autocompletion
