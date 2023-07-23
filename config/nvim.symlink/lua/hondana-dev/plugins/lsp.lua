@@ -32,10 +32,10 @@ return {
                     end
                 end,
             },
-            "hrsh7th/nvim-cmp",                      -- see Autocompletion
-            "rrethy/vim-illuminate",                 -- optional/highlight same word
+            "hrsh7th/nvim-cmp",         -- see Autocompletion
+            "rrethy/vim-illuminate",    -- optional/highlight same word
             {
-                "glepnir/lspsaga.nvim",              -- optional/fancy navbar
+                "glepnir/lspsaga.nvim", -- optional/fancy navbar
                 dependencies = {
                     "nvim-tree/nvim-web-devicons",
                     "nvim-treesitter/nvim-treesitter",
@@ -192,10 +192,13 @@ return {
                 end,
             },
             "saadparwaiz1/cmp_luasnip",
-            "hrsh7th/cmp-buffer", -- optional/buffer words
-            "hrsh7th/cmp-path",   -- optional/filesystem paths
-            "petertriho/cmp-git", -- optional/git
-            "hrsh7th/cmp-emoji",  -- very optional
+            "hrsh7th/cmp-buffer",    -- optional/buffer words
+            "hrsh7th/cmp-path",      -- optional/filesystem paths
+            "petertriho/cmp-git",    -- optional/git
+            {
+                "hrsh7th/cmp-emoji", -- very optional (see sources.emoji)
+                -- dependencies = { "nvim-treesitter/nvim-treesitter" },
+            },
             "ray-x/lsp_signature.nvim",
             -- "hrsh7th/cmp-nvim-lsp-signature-help" -- replaced by previous
         },
@@ -221,8 +224,8 @@ return {
                         { name = "path" },
                         {
                             name = "emoji",
-                            { option = { insert = true, }, }
-                        }
+                            insert = true,
+                        },
                     }),
                 })
 
@@ -240,8 +243,8 @@ return {
                         { name = "git" },
                         {
                             name = "emoji",
-                            { option = { insert = true, }, }
-                        }
+                            insert = true,
+                        },
                     }),
                 })
 
@@ -258,7 +261,6 @@ return {
                         require("luasnip").lsp_expand(args.body)
                     end,
                 },
-                -- sources = source_emoji_in(),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lsp" },
@@ -270,16 +272,16 @@ return {
                     { name = "path" },
                     {
                         name = "emoji",
-                        option = { insert = true, },
+                        -- emojis are available in strings/comments only
+                        -- but some special filetypes: gitcommit/markdown
+                        insert = true,
                         entry_filter = function(_, _)
                             local context = require("cmp.config.context")
-                            if context.in_syntax_group("Comment") then
-                                return true
-                            end
-                            if context.in_syntax_group("String") then
-                                return true
-                            end
-                            return false
+
+                            return context.in_treesitter_capture("comment")
+                                or context.in_treesitter_capture("string")
+                                or context.in_syntax_group("Comment")
+                                or context.in_syntax_group("String")
                         end,
                     },
                 }),

@@ -237,3 +237,10 @@ rely on):
 ```shell
 pip3 install djlint
 ```
+
+### Note about the *emoji* completion
+
+The plugin `cmp-emoji` has been added. Type `:` to open the completion menu
+anywhere in a **markdown** file or a `git commit` message. This completion is
+disabled for other buffers but in comments or strings (ensure there's a space
+after the opening `"` before typing the `:`).
