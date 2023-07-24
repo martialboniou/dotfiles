@@ -91,24 +91,24 @@ It's great but:
 insert
 - `J` : append line (in normal) BUT in this remap, it doesn't move the cursor away
 - `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
-  memo: Down/Up)
+  *memo*: Down/Up)
 - `:so` : source this file
 - `:Lazy` : check package (I prefer this one to Packer)
 - `<C-w><C-w>` : cycle windows
 - `<C-w>o` : one window (AKA 'close' others)
 - `:TSPlaygroundToggle` : display the AST (neat!)
 - *REMINDER*: `:map` to check the key mapping
-- **IMPORTANT!**: `<leader>s` : create a template to replace the current word (memo: `s` as in `:%s`)
+- **IMPORTANT!**: `<leader>s` : create a template to replace the current word (*memo*: `s` as in `:%s`)
 - `<leader>s` (in visual) : create a template to replace a pattern in the selection (added by me)
 - `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*)
-- `<leader>pf` : telescope find files (memo: project files)
+- `<leader>pf` : telescope find files (*memo*: project files)
 - `<leader>ps` : telescope project search (`rg`!)
 - `<leader>vh` : telescope view helptags
-- `<leader>vv` : telescope recent files (memo: view viewed/view visited);
+- `<leader>vv` : telescope recent files (*memo*: view viewed/view visited);
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
-- `<leader>vb` : telescope buffers (memo: view buffers); not in the
+- `<leader>vb` : telescope buffers (*memo*: view buffers); not in the
   ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
@@ -119,7 +119,7 @@ insert
 - `<leader>k`/`<leader>j`/`<C-k>`/`<C-j>` : quickfix navigations (TODO: test this)
 - `<leader>x`  : toggle the executability of a file (different than the ThePrimeagen's version?)
 - **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
-- **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (memo: control project)
+- **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-f>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
 - in *visual* mode:
@@ -171,7 +171,17 @@ insert
     - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
       to a file
 - **Trouble** (fix helper plugin) case:
-  - `<leader>xx` : toggle trouble quickfix (memo: quickfiXX)
+  - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
+- Github Copilot is ready to use. You must `:Copilot auth` the very first time.
+  If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
+  with `<M-]>`. These following keybindings are available in **insert mode**:
+  - `<M-]>` : next suggestion/start suggestion (*lazy-load* if not loaded)
+  - `<M-[>` : previous suggestion
+  - `<C-]>` : cancel suggestion
+  - `<M-=>` : accept suggestion (**IMPORTANT!**: the default keybinding `<M-l>`
+    is reserved in my [yabai](https://github.com/koekeishiya/yabai) setup;
+    *memo*: `=` to synchronize as already used in `mini.files`; also, `=` is
+    just below `]` on the dvorak layout)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
   (setup in `plugins/procrastinate.lua`)
   - `<leader>z`  : randomly activate an animation

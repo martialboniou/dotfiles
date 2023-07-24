@@ -13,8 +13,8 @@ alt - k : yabai -m window --focus north
 alt - l : yabai -m window --focus east
 
 # change focus between external displays (left & right)
-alt - o : yabai -m display --focus west
-alt - u : yabai -m display --focus east #i
+alt - o : yabai -m window --display west; yabai -m display --focus west
+alt - u : yabai -m window --display east; yabai -m display --focus east #i
 
 # the following doesn't work without having SIP partially disabled => switch Spaces with the touchpad!!
 # change focus between spaces (if no window to focus, switch to the space anyway)
@@ -65,10 +65,6 @@ ctrl + alt - h : yabai -m window --wrap west
 ctrl + alt - j : yabai -m window --wrap south
 ctrl + alt - k : yabai -m window --wrap north
 ctrl + alt - l : yabai -m window --wrap east
-
-# move window to display left & right
-alt - o : yabai -m window --display west; yabai -m display --focus west;
-alt - u : yabai -m window --display east; yabai -m display --focus east;
 
 # move window to prev & next space
 alt - p : yabai -m window --space prev
