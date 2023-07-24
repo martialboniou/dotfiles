@@ -303,7 +303,7 @@ return {
             }
         end,
     },
-    { -- Formatter
+    { -- Additional Formatters, Diagnostic tools and Spellchecking
         "jay-babu/mason-null-ls.nvim",
         event = { "BufReadPost", "BufNewFile" },
         dependencies = {

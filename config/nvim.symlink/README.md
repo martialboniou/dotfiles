@@ -130,8 +130,6 @@ insert
   - `<leader>P` : `git pull` **with rebase** 
   - `<leader>t` : `git push -u origin` template; complete with the branch name
     to push to
-- **Trouble** (fix helper plugin) case:
-  - `<leader>xx` : toggle trouble quickfix (memo: quickfiXX)
 - LSP case:
   - *cmp_mappings*:
     - `<C-y>` : confirm completion
@@ -158,7 +156,25 @@ insert
      - these following keybindings come with a shorter version for ergonomics:
        - `<leader>vca`/`<leader>ca` : **v**iew **c**ode **a**ction OR simply, **code action**
        - `<leader>vrr`/`<leader>rr` : **v**iew **r**efe**r**ences OR simply, **RefeRences**
+         (*BEWARE*: `<leader>r` + another key is used by the *refactoring* plugin; see below)
        - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **new name**
+- Primeagen's refactoring plugin (inspired by Martin Fowler):
+  - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
+    by default):
+    - `<leader>re` : extract function
+    - `<leader>rf` : extract function to a file
+    - `<leader>rv` : extract variable (extract occurences of a selected expression
+    to its own variable, replacing occurences of that expression with the variable)
+    - `<leader>ri` (also in **normal mode**) : inline variable (opposite of
+    extract variable; replace all occurences of a variable with its value)
+    - `<leader>rb` (**only in normal mode**) : extract block
+    - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
+      to a file
+- **Trouble** (fix helper plugin) case:
+  - `<leader>xx` : toggle trouble quickfix (memo: quickfiXX)
+- [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
+  (setup in `plugins/procrastinate.lua`)
+  - `<leader>z`  : randomly activate an animation
 
 ### Technical tips
 
@@ -184,7 +200,7 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
           - `setup({ ensure_installed = ... })`
           - `setup_handlers({ function(server_name) ... end })`
         - lspconfig
-- Autocompletion
+- Autocompletion (CMP)
   - hrsh7th/nvim-cmp
     - dependencies:
       - hrsh7th/cmp-nvim-lsp
@@ -196,7 +212,7 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
       - (optional) hrsh7th/cmp-path (filesystem paths)
       - (optional) ray-x/lsp_signature.nvim (show function signatures)
       - (replaced by previous) hrsh7th/cmp-nvim-lsp-signature-help
-- Formatter
+- `null-ls` (Additional Formatters, Diagnostic tools and Spellchecking)
   - jay-babu/mason-null-ls
     - depe
   - jose-elias-alvarez/null-ls.nvim (frozen?)

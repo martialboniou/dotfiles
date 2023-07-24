@@ -9,7 +9,7 @@ return {
             noremap = true,
             "<leader>xx",
             "<cmd>TroubleToggle quickfix<CR>",
-            desc = "Toogle trouble quickfix",
+            desc = "Toggle trouble quickfix",
         },
     },
 }

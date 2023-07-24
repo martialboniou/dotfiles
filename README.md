@@ -33,12 +33,14 @@ a colorscheme only; everything loads when needed)
 - Telescope (used as fuzzy finder) & [Harpoon](https://github.com/ThePrimeagen/harpoon)
 - [mini.files](https://github.com/echasnovski/mini.files) (very good to navigate,
   preview files and manage directories; replace Netrw even if it's still available
-  thru `:Ex`)
+  thru `:Ex`; use `<leader><leader>` to open/close it at your current location)
 - Undotree & Fugitive (same in my classic Vim setup)
 - [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter) (interface
   to a fast parser generator tool and incremental parsing library)
 - Mason-boosted LSP & CMP ([zero](https://github.com/VonHeikemen/lsp-zero.nvim)
-  helped!). Standard keybindings:
+  helped!). [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) is
+  used for additional formatters, diagnostic tools & for spellchecking.
+  Standard keybindings:
   - for completion:
     - `<C-space>`     : force to start
     - `<C-y>`/`<C-e>` : confirm/cancel
@@ -47,6 +49,8 @@ a colorscheme only; everything loads when needed)
   - for snippets:
     - `<C-f>`/`<C-b>` : move forward/backward in the selection
 - others:
+  - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
+  [trouble](https://github.com/folke/trouble.nvim)
   - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
   & mini.files)
 - sources:

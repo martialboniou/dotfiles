@@ -38,18 +38,16 @@ return {
                 --     error if the cursor in Netrw is not above a file
                 --     error if mini.files selection is not a file
             end,
-            desc = {
-                "Harpoon the current file",
-            },
+            desc = "Harpoon the current file",
+
         },
         {
             "<leader>e", -- it was <C-e> but <C-a>/<C-e> = cursor navi in terms
             function()
                 require("harpoon.ui").toggle_quick_menu()
             end,
-            desc = {
-                "Toggle the harpoon's quick menu",
-            },
+            desc = "Toggle the harpoon's quick menu",
+
         },
         -- dvorak keys: H,T,N,S --> #1,#2,#3,#4
         {
@@ -57,36 +55,32 @@ return {
             function()
                 require("harpoon.ui").nav_file(1)
             end,
-            desc = {
-                "Go to the #1 harpooned file",
-            },
+            desc = "Go to the #1 harpooned file",
+
         },
         {
             "<C-t>",
             function()
                 require("harpoon.ui").nav_file(2)
             end,
-            desc = {
-                "Go to the #2 harpooned file",
-            },
+            desc = "Go to the #2 harpooned file",
+
         },
         {
             "<C-n>",
             function()
                 require("harpoon.ui").nav_file(3)
             end,
-            desc = {
-                "Go to the #3 harpooned file",
-            },
+            desc = "Go to the #3 harpooned file",
+
         },
         {
             "<C-s>",
             function()
                 require("harpoon.ui").nav_file(4)
             end,
-            desc = {
-                "Go to the #4 harpooned file",
-            },
+            desc = "Go to the #4 harpooned file",
+
         },
     },
 }
