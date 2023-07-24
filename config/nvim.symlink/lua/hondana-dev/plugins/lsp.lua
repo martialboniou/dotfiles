@@ -366,7 +366,7 @@ return {
                             -- nls.builtins.formatting.stylua, -- :MasonInstall stylua
                             nls.builtins.diagnostics.eslint,
                             nls.builtins.diagnostics.twigcs,
-                            nls.builtins.completion.spell,
+                            -- (FIXME: restore me) nls.builtins.completion.spell,
                             -- (optional) for Symfony backend
                             -- :Mason insall: php-cs-fixer & phpactor
                             nls.builtins.formatting.phpcsfixer.with({

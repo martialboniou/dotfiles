@@ -174,7 +174,9 @@ insert
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
 - Github Copilot is ready to use. You must `:Copilot auth` the very first time.
   If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
-  with `<M-]>`. These following keybindings are available in **insert mode**:
+  with `<M-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
+  to do so (NOTE: if the auto-completion menu disturbs you, use `<C-e>` to disable
+  the menu and `<C-Space>`, after that, to restore it). These following keybindings are available in **insert mode**:
   - `<M-]>` : next suggestion/start suggestion (*lazy-load* if not loaded)
   - `<M-[>` : previous suggestion
   - `<C-]>` : cancel suggestion
