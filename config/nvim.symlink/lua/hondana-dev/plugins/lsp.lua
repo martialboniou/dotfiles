@@ -374,6 +374,12 @@ return {
                                     "--rules=@PhpCsFixer,@Symfony",
                                 },
                             }),
+                            -- (optional)
+                            -- :Mason install:
+                            --     gofumpt, goimports_reviser & golines 
+                            nls.builtins.formatting.gofumpt,
+                            nls.builtins.formatting.goimports_reviser,
+                            nls.builtins.formatting.golines,
                             twig_formatter, -- bonus for Symfony
                             no_really_test, -- dummy test: load markdown with ready's
                         },
