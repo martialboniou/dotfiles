@@ -26,6 +26,7 @@ return {
                 "html",
                 "php",
                 "yaml",
+                -- "go", -- add me when you go
             },
             sync_install = false,
             auto_install = false,

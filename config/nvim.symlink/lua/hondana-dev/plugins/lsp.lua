@@ -82,6 +82,7 @@ return {
                     "astro",
                     "vimls",
                     "cssls",
+                    -- "gopls", -- add me when you go
                 },
                 sign_icons = {
                     error = "✘",
@@ -367,21 +368,18 @@ return {
                             nls.builtins.diagnostics.eslint,
                             nls.builtins.diagnostics.twigcs,
                             -- (FIXME: restore me) nls.builtins.completion.spell,
-                            -- (optional) for Symfony backend
-                            -- :Mason insall: php-cs-fixer & phpactor
+                            -- (PHP/Symfony) :Mason insall: php-cs-fixer & phpactor
                             nls.builtins.formatting.phpcsfixer.with({
                                 extra_args = {
                                     "--rules=@PhpCsFixer,@Symfony",
                                 },
                             }),
-                            -- (optional)
-                            -- :Mason install:
-                            --     gofumpt, goimports_reviser & golines 
-                            nls.builtins.formatting.gofumpt,
-                            nls.builtins.formatting.goimports_reviser,
-                            nls.builtins.formatting.golines,
-                            twig_formatter, -- bonus for Symfony
-                            no_really_test, -- dummy test: load markdown with ready's
+                            -- (go) :Mason install: gofumpt, goimports_reviser & golines
+                            -- nls.builtins.formatting.gofumpt,          -- add me when you go
+                            -- nls.builtins.formatting.goimports_reviser -- add me when you go
+                            -- nls.builtins.formatting.golines,          -- add me when you go
+                            twig_formatter,                           -- bonus for Symfony
+                            no_really_test,                           -- dummy test: load markdown with ready's
                         },
                         debug = true,
                     }
