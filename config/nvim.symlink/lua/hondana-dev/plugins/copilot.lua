@@ -2,7 +2,7 @@ return {
     "zbirenbaum/copilot.lua",
     cmd = { "Copilot" },
     keys = {
-        { "<M-]>", mode = "i" }, -- suggestion
+        { "<M-]>", mode = "i" }, -- next suggestion
     },
     opts = function()
         vim.api.nvim_create_user_command(
@@ -13,10 +13,11 @@ return {
         return {
             suggestion = {
                 keymap = {
-                    accept = "<M-=>", -- was <M-l> but used by yabai (memo: = to sync as in mini.files)
+                    accept = "<M-=>",      -- was <M-l> but used by yabai (memo: = to sync as in mini.files)
+                    accept_word = "<C-]>", -- may be useful!
+                    dismiss = "<C-[>",
                     next = "<M-]>",
                     prev = "<M-[>",
-                    dismiss = "<C-]>",
                 },
             },
         }

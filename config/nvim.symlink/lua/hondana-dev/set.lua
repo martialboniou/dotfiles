@@ -42,3 +42,5 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 --]]
+
+-- vim.cmd [[ colorscheme hondana-tomorrow-night ]]

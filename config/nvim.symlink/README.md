@@ -174,16 +174,18 @@ insert
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
 - Github Copilot is ready to use. You must `:Copilot auth` the very first time.
   If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
-  with `<M-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
+  with `<C-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
   to do so (NOTE: if the auto-completion menu disturbs you, use `<C-e>` to disable
-  the menu and `<C-Space>`, after that, to restore it). These following keybindings are available in **insert mode**:
-  - `<M-]>` : next suggestion/start suggestion (*lazy-load* if not loaded)
+  the menu and `<C-Space>`, after that, to restore it).  These following
+  keybindings are available in **insert mode**:
+  - `<M-]>` : next suggestion/start the suggestion (*lazy-load* if not loaded)
   - `<M-[>` : previous suggestion
-  - `<C-]>` : cancel suggestion
-  - `<M-=>` : accept suggestion (**IMPORTANT!**: the default keybinding `<M-l>`
-    is reserved in my [yabai](https://github.com/koekeishiya/yabai) setup;
-    *memo*: `=` to synchronize as already used in `mini.files`; also, `=` is
-    just below `]` on the dvorak layout)
+  - `<C-]>` : accept next word from the suggestion
+  - `<C-[>` : cancel the suggestion
+  - `<M-=>` : accept the suggestion (**IMPORTANT!**: the default keybinding
+    `<M-l>` is reserved in my [yabai](https://github.com/koekeishiya/yabai)
+    setup; *memo*: `=` to synchronize as already used in `mini.files`; also,
+    `=` is just below `]` on the dvorak layout)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
   (setup in `plugins/procrastinate.lua`)
   - `<leader>z`  : randomly activate an animation
