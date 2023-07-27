@@ -76,7 +76,18 @@ local tokyonight = {
     end,
 }
 
+local kat = {
+    "katawful/kat.nvim",
+    version = "3.1",
+    priority = 1000,
+    lazy = false,
+    config = function (_, _)
+        vim.cmd [[ colorscheme kat.nvim ]]
+    end
+}
+
 return {
     rose_pine,
     -- tokyonight,
+    -- kat,
 }

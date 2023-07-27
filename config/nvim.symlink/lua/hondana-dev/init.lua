@@ -1,20 +1,22 @@
 require("hondana-dev/remap")
 require("hondana-dev/set")
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazy_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local hotpot_path = lazy_path .. '/hotpot.nvim'
 
-if not vim.loop.fs_stat(lazypath) then
+-- bootstrap lazy
+if not vim.loop.fs_stat(lazy_path) then
     vim.fn.system({
         "git",
         "clone",
         "--filter=blob:none",
         "https://github.com/folke/lazy.nvim.git",
         "--branch=stable",
-        lazypath,
+        lazy_path,
     })
 end
 
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazy_path)
 
 local opts = {
     defaults = { lazy = true },
@@ -29,3 +31,27 @@ local opts = {
 }
 
 require("lazy").setup("hondana-dev.plugins", opts)
+
+-- bootstrap hotpot
+if not vim.loop.fs_stat(hotpot_path) then
+    vim.notify('Bootstrapping hotpot.nvim...', vim.log.levels.INFO)
+    vim.fn.system({
+        'git',
+        'clone',
+        '--filter=blob:none',
+        '--single-branch',
+        'https://github.com/rktjmp/hotpot.nvim.git',
+        hotpot_path,
+    })
+end
+
+vim.opt.rtp:prepend(hotpot_path)
+
+require('hotpot').setup({
+    provide_require_fennel = true,
+    compiler = {
+        modules = {
+            correlate = true,
+        },
+    },
+})
