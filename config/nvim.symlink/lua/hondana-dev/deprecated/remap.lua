@@ -1,3 +1,4 @@
+-- (DEPRECATED) this file is used by hondana-dev/init.lua (fennel free version)
 -- keymap for NeoVim by ThePrimeagen
 vim.g.mapleader = " "
 vim.g.maplocalleader = "," -- TODO: check this or remove in 2 weeks
@@ -52,7 +53,7 @@ vim.keymap.set("v", "<leader>s", [[:s///gI<Left><Left><Left><Left>]]) -- added b
 -- toggle the executability of the current file
 local function toggle_exe()
     -- use hondana-dev.utils.make_executable() if no back and forth
-    local ok, res = pcall(require("hondana-dev.utils").toggle_executable)
+    local ok, res = pcall(require("hondana-dev.deprecated.utils").toggle_executable)
     if not ok then
         print("Error: toggle_executable in remap.lua: "..res)
         return
