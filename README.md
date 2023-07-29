@@ -54,6 +54,8 @@ a colorscheme only; everything loads when needed)
   - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
   & mini.files)
 - sources:
+  - [Tangerine configuration](https://github.com/Massolari/neovim)
+  ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)
   - [good lazy configuration](https://github.com/MuhametSmaili/nvim) (inspiration
   for Lazy installation of LSP, Autocompletion and Formatter)
   - [0 to LSP : Neovim RC From Scratch](https://www.youtube.com/watch?v=w7i4amO_zaE)

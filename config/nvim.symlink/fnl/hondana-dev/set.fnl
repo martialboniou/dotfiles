@@ -1,4 +1,4 @@
-(import-macros {: set! : set+ : g! : color!} :hibiscus.vim)
+(import-macros {: set! : g! : color!} :hibiscus.vim)
 
 (set! :guicursor "")
 
@@ -18,7 +18,7 @@
 
 (set! :swapfile false)
 (set! :backup false)
-;; (set! :undodir (.. (os.getenv :HOME) :/.vim/undodir))
+(vim.cmd "set undodir=$HOME/.vim/undodir")
 (set! :undofile true)
 
 (set! :hlsearch false)
@@ -28,7 +28,7 @@
 
 (set! :scrolloff 8)
 (set! :signcolumn :yes)
-;; (set+ :isfname "@~@")
+(vim.cmd "set isfname+=@-@")
 
 (set! :updatetime 50)
 

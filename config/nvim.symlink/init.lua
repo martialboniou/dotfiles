@@ -1,4 +1,4 @@
--- this new version of this NeoVim configuration requires fennel
+-- the new version of this NeoVim configuration requires fennel
 -- if you want to boot the previous lua-only version,
 -- set the following to false
 local tangerine_dream = true
@@ -30,6 +30,10 @@ else
             verbose = false,
             hooks = { "onsave", "oninit", },
         },
-        keymaps = {},
+        keymaps = {
+            float = {
+                kill = "<C-c>",
+            },
+        },
     }
 end

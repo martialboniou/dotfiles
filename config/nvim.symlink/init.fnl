@@ -24,7 +24,8 @@
 
 (let [opts {:checker {:enabled false}
             :defaults {:lazy true}
-            :performance {:rtp {:disabled_plugins [:tutor]}}
+            :performance {:rtp {:reset false
+                                :disabled_plugins [:tutor]}}
             :spec plugins
            }]
     (#($.setup opts)

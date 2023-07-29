@@ -27,7 +27,7 @@ Vim keybinding reminders & tips
 - `J` (in visual) : move down the visual block (added!)
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
-  `nnoremap` function in standard vim lua (nice trick!)
+  `nnoremap` function in standard vim Lua (nice trick!)
 - Netrw specific:
   - `%` : create file
   - `d` : create directory
@@ -192,6 +192,8 @@ insert
 
 ### Technical tips
 
+#### Language Server Protocol
+
 About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero):
 - LSP
   - neovim/nvim-lspconfig
@@ -235,6 +237,39 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
       - requirements
         - luasnip.loaders.from_vscode
           - `lazy_load()`
+
+#### Fennel as the main programming language
+
+Fennel code is used to set up this NeoVim. No worries: you still can add your
+own plugins written in Lua in `fnl/hondana-dev/plugins`. Here's the form of
+these plugins spec file content:
+
+```lua
+return {
+    "<account-name>/<project-name>", -- from github.com
+}
+```
+
+**IMPORTANT**: if you put your files in `lua/hondana-dev/plugins`, please choose
+an original filename (put, your name as prefix). If another plugin spec file with
+the same name may exist in `fnl/hondana-dev/plugins` in the future (written in
+either Fennel or Lua), the compiled version in `lua/hondana-dev/plugins` will
+crush yours.
+Note when I say same name, understand *same name but the extension*, of course;
+what .NET calls `FilenameWithoutExtension` (!).
+
+If you want to edit some Fennel code, here are some keybindings for the
+Fennel buffer:
+- `gE` : evaluate
+- `gL` : Lua output
+- `gO` : Lua output in a new buffer (**IMPORTANT**: your Fennel files must be in
+a `fnl/` directory so your compiled Lua files will be pushed in a `lua/`-rooted
+directory tree; to move back to the Fennel buffer, remember `<C-6>` is your
+friend; also, don't forget to `:FnlCompileBuffer` before `gO`)
+- `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
+
+Here's some tips for the LISP typists on Vim/NeoVim:
+- (insert mode) <C-k> + `*` + `l`: print `λ`
 
 ### Note for beginners using PHP
 
