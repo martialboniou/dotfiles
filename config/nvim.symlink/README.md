@@ -41,6 +41,7 @@ Plugins and new keybindings
 
 - **IMPORTANT!**: Lazy is the unique package manager
 - the `<leader>` key is `<Space>` in this configuration
+- the `<localleader>` key is `,` in this configuration
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
 - Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
@@ -245,6 +246,7 @@ own plugins written in Lua in `fnl/hondana-dev/plugins`. Here's the form of
 these plugins spec file content:
 
 ```lua
+-- ~/.config/nvim/fnl/hondana-dev/plugins/<project-name>.lua
 return {
     "<account-name>/<project-name>", -- from github.com
 }
@@ -260,13 +262,35 @@ what .NET calls `FilenameWithoutExtension` (!).
 
 If you want to edit some Fennel code, here are some keybindings for the
 Fennel buffer:
-- `gE` : evaluate
-- `gL` : Lua output
-- `gO` : Lua output in a new buffer (**IMPORTANT**: your Fennel files must be in
-a `fnl/` directory so your compiled Lua files will be pushed in a `lua/`-rooted
-directory tree; to move back to the Fennel buffer, remember `<C-6>` is your
-friend; also, don't forget to `:FnlCompileBuffer` before `gO`)
-- `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
+- from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin:
+  - `gE` : evaluate
+  - `gL` : Lua output
+  - `gO` : Lua output in a new buffer (**IMPORTANT**: your Fennel files must be in
+  a `fnl/` directory so your compiled Lua files will be pushed in a `lua/`-rooted
+  directory tree; to move back to the Fennel buffer, remember `<C-6>` is your
+  friend; also, don't forget to `:FnlCompileBuffer` before `gO`)
+  - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
+- from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every evaluation
+  is stored in a register, try `"cp`):
+  - doc word:
+    - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
+  - evaluate: 
+    - `<localleader>eb` : **e**valuate the whole **b**uffer
+    - `<localleader>ee` : **e**valuate the inn**e**r form
+    - `<localleader>er` : **e**valuate the oute**r** form
+    - `<localleader>e!` : **e**valuate a form and replace it with the result
+    - `<localleader>em<letter>` : **e**valuate a form at the `<letter>` mark
+      (created with `m<letter>`)
+  - inspect:
+    - `<localleader>ew` : inspect by **e**valuating *w*hat it is
+    - `<localleader>E` (in visual mode) : inspect by **E**valuating the selection
+    - `<localleader>Eiw` (in normal mode) : inspect by **E**valuating the inner word
+    - `<localleader>Ea(` (in normal mode) : inspect by **E**valuating the whole parens (`a(`)
+  - log buffer:
+    - `<localleader>ls` : open the **l**og buffer horizontally **s**plit
+    - `<localleader>q`  : close any log buffer (*ie* **q**uit)
+    - `<localleader>lr` : soft **l**og **r**eset (leaving the window open)
+    - `<localleader>lR` : hard **l**og **R**eset (closing the window open, deleting the buffer)
 
 Here's some tips for the LISP typists on Vim/NeoVim:
 - (insert mode) <C-k> + `*` + `l`: print `λ`
@@ -308,4 +332,6 @@ pip3 install djlint
 The plugin `cmp-emoji` has been added. Type `:` to open the completion menu
 anywhere in a **markdown** file or a `git commit` message. This completion is
 disabled for other buffers but in comments or strings (ensure there's a space
-after the opening `"` before typing the `:`).
+after the opening `"` before typing the `:`). NOTE: The emoji's completion is
+disabled for strings in Fennel code because TreeSitter sees symbols (starting
+with colon) as strings.
