@@ -52,7 +52,9 @@ a colorscheme only; everything loads when needed)
   - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
   [trouble](https://github.com/folke/trouble.nvim)
   - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
-  & mini.files)
+  & mini.files; quotes and backticks are skipped from *autopairing* for Lisp
+  languages) & [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
+  (additional colors for brackets)
 - sources:
   - [Tangerine configuration](https://github.com/Massolari/neovim)
   ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)

@@ -46,6 +46,9 @@ Plugins and new keybindings
 - Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
+- (**MINOR BUG**): the [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
+  plugin (used to highlight the parentheses) stops when you format
+  (with `<leader>f`); edit new content will fix this issue
 
 ### About Netrw
 
@@ -242,8 +245,9 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
 #### Fennel as the main programming language
 
 Fennel code is used to set up this NeoVim. No worries: you still can add your
-own plugins written in Lua in `fnl/hondana-dev/plugins`. Here's the form of
-these plugins spec file content:
+own plugins written in Lua in `fnl/hondana-dev/plugins` (**YES!** it's correct,
+add your Lua files in the `fnl/` subdirectory). Here's the form of these
+plugins spec file content:
 
 ```lua
 -- ~/.config/nvim/fnl/hondana-dev/plugins/<project-name>.lua
@@ -257,11 +261,15 @@ an original filename (put, your name as prefix). If another plugin spec file wit
 the same name may exist in `fnl/hondana-dev/plugins` in the future (written in
 either Fennel or Lua), the compiled version in `lua/hondana-dev/plugins` will
 crush yours.
-Note when I say same name, understand *same name but the extension*, of course;
-what .NET calls `FilenameWithoutExtension` (!).
 
-If you want to edit some Fennel code, here are some keybindings for the
-Fennel buffer:
+If you want to edit some Fennel code, notice that:
+- the Fennel Language Server should work for diagnostics
+- the `<leader>f` keybinding for formatting (ie. `vim.lsp.buf.format()`) will
+  work if you have [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt) in your
+  `$PATH` (the snippet `;skip` prints a special comment if you want to locally
+  skip the formatting)
+
+Here are some keybindings for the Fennel buffer (mainly to access a REPL):
 - from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin:
   - `gE` : evaluate
   - `gL` : Lua output
@@ -270,10 +278,8 @@ Fennel buffer:
   directory tree; to move back to the Fennel buffer, remember `<C-6>` is your
   friend; also, don't forget to `:FnlCompileBuffer` before `gO`)
   - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
-- from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every evaluation
-  is stored in a register, try `"cp`):
-  - doc word:
-    - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
+- from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
+  evaluation is stored in a register, try `"cp`):
   - evaluate: 
     - `<localleader>eb` : **e**valuate the whole **b**uffer
     - `<localleader>ee` : **e**valuate the inn**e**r form
@@ -291,9 +297,11 @@ Fennel buffer:
     - `<localleader>q`  : close any log buffer (*ie* **q**uit)
     - `<localleader>lr` : soft **l**og **r**eset (leaving the window open)
     - `<localleader>lR` : hard **l**og **R**eset (closing the window open, deleting the buffer)
+  - doc word:
+    - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
 
 Here's some tips for the LISP typists on Vim/NeoVim:
-- (insert mode) <C-k> + `*` + `l`: print `λ`
+- (insert mode) <C-k> + `*` + `l`: print `λ` (a viable **keyword** in Fennel)
 
 ### Note for beginners using PHP
 
