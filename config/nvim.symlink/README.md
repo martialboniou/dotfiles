@@ -245,38 +245,45 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
 #### Fennel as the main programming language
 
 Fennel code is used to set up this NeoVim. No worries: you still can add your
-own plugins written in Lua in `fnl/hondana-dev/plugins` (**YES!** it's correct,
-add your Lua files in the `fnl/` subdirectory). Here's the form of these
-plugins spec file content:
+own plugins written in Lua in `lua/hondana-dev/plugins/unchecked`. Here's the
+form of these plugins spec file content:
 
 ```lua
--- ~/.config/nvim/fnl/hondana-dev/plugins/<project-name>.lua
+-- ~/.config/nvim/lua/hondana-dev/plugins/unchecked/<project-name>.lua
 return {
     "<account-name>/<project-name>", -- from github.com
 }
 ```
 
-**IMPORTANT**: if you put your files in `lua/hondana-dev/plugins`, please choose
-an original filename (put, your name as prefix). If another plugin spec file with
-the same name may exist in `fnl/hondana-dev/plugins` in the future (written in
-either Fennel or Lua), the compiled version in `lua/hondana-dev/plugins` will
-crush yours.
+**IMPORTANT**: If you put your plugins in `lua/hondana-dev/plugins`, please
+choose an original filename (say, add your name as a  prefix). If another
+plugin spec file with the same name may exist in `fnl/hondana-dev/plugins` 
+in the future, the compiled version in `lua/hondana-dev/plugins` will crush
+yours.
 
 If you want to edit some Fennel code, notice that:
 - the Fennel Language Server should work for diagnostics
 - the `<leader>f` keybinding for formatting (ie. `vim.lsp.buf.format()`) will
   work if you have [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt) in your
-  `$PATH` (the snippet `;skip` prints a special comment if you want to locally
-  skip the formatting)
+  `$PATH` (the snippet `;skip` prints a special comment if you want to
+  locally skip the formatting)
 
 Here are some keybindings for the Fennel buffer (mainly to access a REPL):
-- from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin:
-  - `gE` : evaluate
-  - `gL` : Lua output
-  - `gO` : Lua output in a new buffer (**IMPORTANT**: your Fennel files must be in
-  a `fnl/` directory so your compiled Lua files will be pushed in a `lua/`-rooted
-  directory tree; to move back to the Fennel buffer, remember `<C-6>` is your
-  friend; also, don't forget to `:FnlCompileBuffer` before `gO`)
+- from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin
+  (NOTE: `<leader>g` is a prefix for git-related actions (as `<leader>gs` and
+  other FuGITive commands); here, `g` followed by a **capital letter** is
+  the pattern.):
+  - `gE` : **E**valuate
+  - `gL` : **L**ua output
+  - `gC` : **C**ompile the file in the current active Fennel buffer into a Lua
+    file (this keybinding is not available in the default configuration; don't
+    forget to save the file as the compiler doesn't use the current buffer
+    itself)
+  - `gO` : **O**utput the Lua file (**IMPORTANT**: your Fennel files must be in
+    a `fnl/` directory so your compiled Lua files will be pushed into a
+    `lua/`-rooted directory tree; to move back to the Fennel buffer, remember
+    `<C-6>` is your friend; also, don't forget to `gC`/`:FnlCompileBuffer`
+    before `gO`)
   - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
 - from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
   evaluation is stored in a register, try `"cp`):
@@ -300,8 +307,11 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
   - doc word:
     - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
 
-Here's some tips for the LISP typists on Vim/NeoVim:
-- (insert mode) <C-k> + `*` + `l`: print `λ` (a viable **keyword** in Fennel)
+Here's some tips for the LISP typists:
+- (insert mode) `,\<Space>` : print `λ` (only in this configuration; a viable
+  **keyword** in Fennel)
+- (insert mode) <C-k> + `*` + `l`: print `λ` (same as above but this is an 
+  universal keybinding for Vim/NeoVim)
 
 ### Note for beginners using PHP
 

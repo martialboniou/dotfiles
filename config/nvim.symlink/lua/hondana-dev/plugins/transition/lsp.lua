@@ -33,13 +33,14 @@ return {
                 end,
             },
             "hrsh7th/nvim-cmp",         -- see Autocompletion
-            "rrethy/vim-illuminate",    -- optional/highlight same word
+            "rrethy/vim-illuminate",    -- optional/highlight same word (TODO: might be moved to colors later!)
             {
                 "glepnir/lspsaga.nvim", -- optional/fancy navbar
                 dependencies = {
                     "nvim-tree/nvim-web-devicons",
                     "nvim-treesitter/nvim-treesitter",
                 },
+                event = "LspAttach",
                 opts = {
                     code_action = {
                         show_server_name = true,
@@ -161,8 +162,11 @@ return {
                 end, options)
             end)
 
-            require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
-            -- require("lspconfig").rust_analyzer.setup({
+            local lspconfig = require("lspconfig")
+            -- lua
+            lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
+            -- rust? (TODO: remove this if default is ok)
+            -- lspconfig.rust_analyzer.setup({
             --     on_attach = lsp_zero.on_attach,
             --     settings = {
             --         ["rust_analyzer"] = {
@@ -173,6 +177,26 @@ return {
             --         },
             --     },
             -- })
+            -- fennel (TODO: already configured? {✓ cmd; ✓ single_file_support})
+            require("lspconfig.configs").fennel_language_server = {
+                default_config = {
+                    cmd = { "fennel-language-server" }, -- install w/ :Mason
+                    filetypes = { "fennel" },
+                    single_file_support = true,
+                    root_dir = lspconfig.util.root_pattern("fnl"),
+                    settings = {
+                        fennel = {
+                            workspace = {
+                                library = vim.api.nvim_list_runtime_paths(),
+                            },
+                            diagnostics = {
+                                globals = { "vim", },
+                            },
+                        },
+                    },
+                },
+            }
+            lspconfig.fennel_language_server.setup({})
 
             lsp_zero.setup()
         end,

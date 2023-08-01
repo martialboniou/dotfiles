@@ -35,5 +35,16 @@ else
                 kill = "<C-c>",
             },
         },
+        eval = {
+            luafmt = function()
+                local width = vim.o.colorcolumn
+                return {
+                    "lua-format",
+                    "--spaces-inside-table-braces",
+                    "--column-table-limit", math.floor(width / 1.7),
+                    "--column-limit", width,
+                }
+            end,
+        },
     }
 end

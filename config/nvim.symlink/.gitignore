@@ -5,9 +5,10 @@
 /lua/hondana-dev/*
 !/lua/hondana-dev/deprecated/
 !/lua/hondana-dev/plugins/
-#/lua/hondana-dev/plugins/* (not now)
+/lua/hondana-dev/plugins/*
+!/lua/hondana-dev/plugins/unchecked/
 !/lua/hondana-dev/plugins/transition/
-# plugins/transition will contain the handwritten lua lazy files (+ optional)
-# plugins/* will contain the fennel-generated lazy files (remove the comment
-# above after migration)
-
+# plugins/transition will contain the unmaintained & handwritten lua lazy
+# files (+ optional)
+# plugins/* will contain the fennel-generated lazy files
+# plugins/unchecked/* will contain unverified lua lazy specs

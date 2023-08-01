@@ -38,3 +38,5 @@
 (g! :maplocalleader ",")
 
 ; (color! :hondana-tomorrow-night)
+(vim.cmd.iab ",\\ λ")
+

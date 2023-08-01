@@ -21,7 +21,7 @@ vim.opt.rtp:prepend(lazypath)
 local opts = {
     spec = {
         { import = "hondana-dev.plugins.transition" }, -- handwritten lua plugin specs
-        { import = "hondana-dev.plugins" },            -- fennel-generated lua plugin specs
+        -- NOTE: these settings aren't maintained anymore (2023-08-01)
     },
     defaults = { lazy = true },
     checker = { enabled = false },
