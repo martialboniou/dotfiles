@@ -1,13 +1,13 @@
 /lazy-lock.json
-!/lua
 /lua/*
-!/lua/hondana-dev/
+!/lua/**/
 /lua/hondana-dev/*
-!/lua/hondana-dev/deprecated/
-!/lua/hondana-dev/plugins/
+!/lua/hondana-dev/**/
+!/lua/hondana-dev/deprecated/**
 /lua/hondana-dev/plugins/*
-!/lua/hondana-dev/plugins/unchecked/
-!/lua/hondana-dev/plugins/transition/
+!/lua/hondana-dev/plugins/**/
+!/lua/hondana-dev/plugins/transition/**
+!/lua/hondana-dev/plugins/unchecked/**
 # plugins/transition will contain the unmaintained & handwritten lua lazy
 # files (+ optional)
 # plugins/* will contain the fennel-generated lazy files
