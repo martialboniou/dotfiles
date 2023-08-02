@@ -18,6 +18,7 @@ return {
                 "json",
                 "c",
                 "lua",
+                "fennel",
                 "vim",
                 "vimdoc",
                 "rust",
