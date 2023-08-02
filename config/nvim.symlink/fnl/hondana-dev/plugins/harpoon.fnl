@@ -1,3 +1,12 @@
+(macro nav-file-mapping! [...]
+  (local out [])
+  (each [unit key (ipairs [...])]
+    (table.insert out
+                  `{1 ,(.. :<C- key ">")
+                    2 #(#($.nav_file ,unit) (require :harpoon.ui))
+                    :desc ,(.. "Go to the #" unit " harpooned file")}))
+  out)
+
 (λ netrw-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)]
     (= :netrw buf-type)))
@@ -35,11 +44,8 @@
          ;; it was <C-e> but <C-a>/<C-e> = cursor navi in terms
          2 #(#($.toggle_quick_menu) (require :harpoon.ui))
          :desc "Toggle the harpoon's quick menu"}
-        (->> [[1 :h] [2 :t] [3 :n] [4 :s]] ;; keys for Dvorak layout
-             (vim.tbl_map (λ [[unit key]]
-                            {1 (.. :<C- key :>)
-                             2 #(#($.nav_file unit) (require :harpoon.ui))
-                             :desc (.. "Go to the #" unit " harpooned file")}))
-             (unpack))]
+        ;; h,t,n,s = keys for Dvorak layout
+        ;; (you can add more to access #5+ harpooned files)
+        (unpack (nav-file-mapping! :h :t :n :s))]
  :lazy true
  :opts {:menu {:width (-> 0 (vim.api.nvim_win_get_width) (- 4))}}}

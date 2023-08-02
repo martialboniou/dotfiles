@@ -3,13 +3,13 @@
 [; auto-pairing (I'd like a magic tool that closes all the treesitter brackets
  ; when we want instead of a stupid pairing tool)
  {1 :windwp/nvim-autopairs
-  ; TODO: disable? check in 4 weeks
+  ;; TODO: disable? check in 4 weeks
   :event :InsertEnter
+  ;; not in echasnovski/mini.files
   :opts {:disable_filetype [:TelescopePrompt :minifiles :vim]
-         ; echasnovski/mini.files
+         ;; very annoying (does it work?)
          :enable_check_bracket_line false}
-  ; very annoying (does it work?)
-  :config (fn [_ opts]
+  :config (λ [_ opts]
             (local pairs (require :nvim-autopairs))
             (local cond (require :nvim-autopairs.conds))
             (local rule (require :nvim-autopairs.rule))

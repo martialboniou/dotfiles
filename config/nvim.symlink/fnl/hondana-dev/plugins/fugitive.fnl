@@ -10,13 +10,12 @@
                                    (let [bufnr (vim.api.nvim_get_current_buf)
                                          options {:buffer bufnr :remap false}]
                                      (vim.keymap.set :n :<leader>p
-                                                     (fn [] (vim.cmd.Git :push))
+                                                     #(vim.cmd.Git :push)
                                                      options)
-                                     ; rebase always
+                                     ;; rebase always
                                      (vim.keymap.set :n :<leader>P
-                                                     (fn []
-                                                       (vim.cmd.Git [:pull
-                                                                     :--rebase]))
+                                                     #(vim.cmd.Git [:pull
+                                                                    :--rebase])
                                                      options)
                                      ;; NOTE: It allows me to easily set the
                                      ;; branch i am pushing and any tracking 
