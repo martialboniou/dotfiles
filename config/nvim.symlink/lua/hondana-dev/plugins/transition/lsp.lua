@@ -33,13 +33,14 @@ return {
                 end,
             },
             "hrsh7th/nvim-cmp",         -- see Autocompletion
-            "rrethy/vim-illuminate",    -- optional/highlight same word
+            "rrethy/vim-illuminate",    -- optional/highlight same word (TODO: might be moved to colors later!)
             {
                 "glepnir/lspsaga.nvim", -- optional/fancy navbar
                 dependencies = {
                     "nvim-tree/nvim-web-devicons",
                     "nvim-treesitter/nvim-treesitter",
                 },
+                event = "LspAttach",
                 opts = {
                     code_action = {
                         show_server_name = true,
@@ -83,6 +84,7 @@ return {
                     "vimls",
                     "cssls",
                     -- "gopls", -- add me when you go
+                    "fennel_language_server", -- experimental but in working order
                 },
                 sign_icons = {
                     error = "✘",
@@ -160,8 +162,11 @@ return {
                 end, options)
             end)
 
-            require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
-            -- require("lspconfig").rust_analyzer.setup({
+            local lspconfig = require("lspconfig")
+            -- lua
+            lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
+            -- rust? (TODO: remove this if default is ok)
+            -- lspconfig.rust_analyzer.setup({
             --     on_attach = lsp_zero.on_attach,
             --     settings = {
             --         ["rust_analyzer"] = {
@@ -172,6 +177,26 @@ return {
             --         },
             --     },
             -- })
+            -- fennel (TODO: already configured? {✓ cmd; ✓ single_file_support})
+            require("lspconfig.configs").fennel_language_server = {
+                default_config = {
+                    cmd = { "fennel-language-server" }, -- install w/ :Mason
+                    filetypes = { "fennel" },
+                    single_file_support = true,
+                    root_dir = lspconfig.util.root_pattern("fnl"),
+                    settings = {
+                        fennel = {
+                            workspace = {
+                                library = vim.api.nvim_list_runtime_paths(),
+                            },
+                            diagnostics = {
+                                globals = { "vim", },
+                            },
+                        },
+                    },
+                },
+            }
+            lspconfig.fennel_language_server.setup({})
 
             lsp_zero.setup()
         end,
@@ -192,12 +217,13 @@ return {
                     })
                 end,
             },
+            "PaterJason/cmp-conjure", -- optional/conjure plugin
             "saadparwaiz1/cmp_luasnip",
-            "hrsh7th/cmp-buffer",    -- optional/buffer words
-            "hrsh7th/cmp-path",      -- optional/filesystem paths
-            "petertriho/cmp-git",    -- optional/git
+            "hrsh7th/cmp-buffer",     -- optional/buffer words
+            "hrsh7th/cmp-path",       -- optional/filesystem paths
+            "petertriho/cmp-git",     -- optional/git
             {
-                "hrsh7th/cmp-emoji", -- very optional (see sources.emoji)
+                "hrsh7th/cmp-emoji",  -- very optional (see sources.emoji)
                 -- dependencies = { "nvim-treesitter/nvim-treesitter" },
             },
             "ray-x/lsp_signature.nvim",
@@ -245,6 +271,33 @@ return {
                         {
                             name = "emoji",
                             insert = true,
+                        },
+                    }),
+                })
+            cmp.setup.filetype(
+                { "fennel", "clojure", }, {
+                    sources = cmp.config.sources({
+                        { name = "nvim_lsp_signature_help" },
+                        { name = "nvim_lsp" },
+                        { name = "conjure" },
+                        { name = "luasnip" },
+                        {
+                            name = "buffer",
+                            keyword_length = 4,
+                        },
+                        { name = "path" },
+                        {
+                            name = "emoji",
+                            -- emojis are available in comments only
+                            -- NOTE: not the strings as treesitter sees
+                            -- `:symbols` as `strings` (ie @string.fennel)
+                            insert = true,
+                            entry_filter = function(_, _)
+                                local context = require("cmp.config.context")
+
+                                return context.in_treesitter_capture("comment")
+                                    or context.in_syntax_group("Comment")
+                            end,
                         },
                     }),
                 })
@@ -317,6 +370,20 @@ return {
                 opts = function()
                     local nls = require("null-ls")
                     local h = require("null-ls.helpers")
+                    -- formatter for Fennel; install https://git.sr.ht/~technomancy/fnlfmt
+                    -- NOTE: use `;; fnlfmt: skip` to skip the following sexp
+                    local fennel_formatter = h.make_builtin {
+                        name = "fennel-formatter",
+                        method = nls.methods.FORMATTING,
+                        filetypes = { "fennel", },
+                        generator_opts = {
+                            command = "fnlfmt",
+                            args = { "--fix", "$FILENAME", },
+                            to_stdin = false,
+                            to_temp_file = true,
+                        },
+                        factory = h.formatter_factory,
+                    }
                     -- formatter for Twig/Nunjucks template
                     local twig_formatter = h.make_builtin {
                         name = "twig-formatter",
@@ -378,8 +445,9 @@ return {
                             -- nls.builtins.formatting.gofumpt,          -- add me when you go
                             -- nls.builtins.formatting.goimports_reviser -- add me when you go
                             -- nls.builtins.formatting.golines,          -- add me when you go
-                            twig_formatter,                           -- bonus for Symfony
-                            no_really_test,                           -- dummy test: load markdown with ready's
+                            fennel_formatter, -- great bonus for Fennel
+                            twig_formatter,   -- bonus for Symfony
+                            no_really_test,   -- dummy test: load markdown with ready's
                         },
                         debug = true,
                     }

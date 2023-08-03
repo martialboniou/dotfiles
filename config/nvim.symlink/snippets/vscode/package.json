@@ -10,6 +10,12 @@
           "gitcommit"
         ],
         "path": "./gitcommit.json"
+      },
+      {
+        "language": [
+          "fennel"
+        ],
+        "path": "./fennel.json"
       }
     ]
   }

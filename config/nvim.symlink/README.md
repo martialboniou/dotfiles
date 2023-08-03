@@ -27,7 +27,7 @@ Vim keybinding reminders & tips
 - `J` (in visual) : move down the visual block (added!)
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
-  `nnoremap` function in standard vim lua (nice trick!)
+  `nnoremap` function in standard vim Lua (nice trick!)
 - Netrw specific:
   - `%` : create file
   - `d` : create directory
@@ -41,10 +41,14 @@ Plugins and new keybindings
 
 - **IMPORTANT!**: Lazy is the unique package manager
 - the `<leader>` key is `<Space>` in this configuration
+- the `<localleader>` key is `,` in this configuration
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
 - Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
+- (**MINOR BUG**): the [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
+  plugin (used to highlight the parentheses) stops when you format
+  (with `<leader>f`); edit new content will fix this issue
 
 ### About Netrw
 
@@ -192,6 +196,8 @@ insert
 
 ### Technical tips
 
+#### Language Server Protocol
+
 About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero):
 - LSP
   - neovim/nvim-lspconfig
@@ -236,6 +242,77 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
         - luasnip.loaders.from_vscode
           - `lazy_load()`
 
+#### Fennel as the main programming language
+
+Fennel code is used to set up this NeoVim. No worries: you still can add your
+own plugins written in Lua in `lua/hondana-dev/plugins/unchecked`. Here's the
+form of these plugins spec file content:
+
+```lua
+-- ~/.config/nvim/lua/hondana-dev/plugins/unchecked/<project-name>.lua
+return {
+    "<account-name>/<project-name>", -- from github.com
+}
+```
+
+**IMPORTANT**: If you put your plugins in `lua/hondana-dev/plugins`, please
+choose an original filename (say, add your name as a  prefix). If another
+plugin spec file with the same name may exist in `fnl/hondana-dev/plugins` 
+in the future, the compiled version in `lua/hondana-dev/plugins` will crush
+yours.
+
+If you want to edit some Fennel code, notice that:
+- the Fennel Language Server should work for diagnostics
+- the `<leader>f` keybinding for formatting (ie. `vim.lsp.buf.format()`) will
+  work if you have [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt) in your
+  `$PATH` (the snippet `;skip` prints a special comment if you want to
+  locally skip the formatting)
+
+Here are some keybindings for the Fennel buffer (mainly to access a REPL):
+- from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin
+  (NOTE: `<leader>g` is a prefix for git-related actions (as `<leader>gs` and
+  other FuGITive commands); here, `g` followed by a **capital letter** is
+  the pattern.):
+  - `gE` : **E**valuate
+  - `gL` : **L**ua output
+  - `gC` : **C**ompile the file in the current active Fennel buffer into a Lua
+    file (this keybinding is not available in the default configuration; don't
+    forget to save the file as the compiler doesn't use the current buffer
+    itself)
+  - `gO` : **O**utput the Lua file (**IMPORTANT**: your Fennel files must be in
+    a `fnl/` directory so your compiled Lua files will be pushed into a
+    `lua/`-rooted directory tree; to move back to the Fennel buffer, remember
+    `<C-6>` is your friend; also, don't forget to `gC`/`:FnlCompileBuffer`
+    before `gO`)
+  - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
+- from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
+  evaluation is stored in a register, try `"cp`):
+  - evaluate: 
+    - `<localleader>eb` : **e**valuate the whole **b**uffer
+    - `<localleader>ee` : **e**valuate the inn**e**r form
+    - `<localleader>er` : **e**valuate the oute**r** form
+    - `<localleader>e!` : **e**valuate a form and replace it with the result
+    - `<localleader>em<letter>` : **e**valuate a form at the `<letter>` mark
+      (created with `m<letter>`)
+  - inspect:
+    - `<localleader>ew` : inspect by **e**valuating *w*hat it is
+    - `<localleader>E` (in visual mode) : inspect by **E**valuating the selection
+    - `<localleader>Eiw` (in normal mode) : inspect by **E**valuating the inner word
+    - `<localleader>Ea(` (in normal mode) : inspect by **E**valuating the whole parens (`a(`)
+  - log buffer:
+    - `<localleader>ls` : open the **l**og buffer horizontally **s**plit
+    - `<localleader>q`  : close any log buffer (*ie* **q**uit)
+    - `<localleader>lr` : soft **l**og **r**eset (leaving the window open)
+    - `<localleader>lR` : hard **l**og **R**eset (closing the window open, deleting the buffer)
+  - doc word:
+    - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
+
+Here's some tips for the LISP typists:
+- (insert mode) `,\<Space>` : print `λ` (only in this configuration; a viable
+  **keyword** in Fennel)
+- (insert mode) <C-k> + `*` + `l`: print `λ` (same as above but this is an 
+  universal keybinding for Vim/NeoVim)
+
 ### Note for beginners using PHP
 
 I've had developed a lot with the Symfony 5/6 framework. Not as pro as
@@ -273,4 +350,6 @@ pip3 install djlint
 The plugin `cmp-emoji` has been added. Type `:` to open the completion menu
 anywhere in a **markdown** file or a `git commit` message. This completion is
 disabled for other buffers but in comments or strings (ensure there's a space
-after the opening `"` before typing the `:`).
+after the opening `"` before typing the `:`). NOTE: The emoji's completion is
+disabled for strings in Fennel code because TreeSitter sees symbols (starting
+with colon) as strings.
