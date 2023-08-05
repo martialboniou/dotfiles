@@ -1,5 +1,5 @@
 (macro set-value-keys! [val ...]
-  `(let [keys# ,[...]]
+  `(let [keys# [,...]]
      (collect [# s# (ipairs keys#)]
        s#
        ,val)))

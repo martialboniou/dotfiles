@@ -94,4 +94,9 @@
              :lazy false
              :config #(vim.cmd.coloscheme :kat.nvim)})
 
-[rose-pine rainbow-delimiters]
+(local icons {1 :nvim-tree/nvim-web-devicons
+              :opts {:override_by_extension {:fnl {:icon "🌱"
+                                                   :color "#428850"
+                                                   :name :fnl}}}})
+
+[rose-pine rainbow-delimiters icons]

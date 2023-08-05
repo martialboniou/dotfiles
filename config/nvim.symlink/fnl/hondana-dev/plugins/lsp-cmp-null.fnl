@@ -1,6 +1,6 @@
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 ;;; LSP Zero version + fennel
-;;; 2023-08-03
+;;; 2023-08-05
 (local zero-setup-preferred-preset :recommended)
 (local mason-null-ls-preferred-install [:stylua :jq])
 
@@ -20,6 +20,8 @@
             :<leader>rr #(vim.lsp.buf.references)
             :<leader>nn #(vim.lsp.buf.rename)}
         :i {:<C-h> #(vim.lsp.buf.signature_help)}})
+
+(local cmp-config-complete-options "menu,menuone,noinsert")
 
 ;; BEWARE: <Tab> is not available
 (local cmp-custom-keymaps {:previous-word :<C-p>
@@ -51,6 +53,59 @@
         :vimls
         :cssls
         :fennel_language_server])
+
+(macro make-emoji-restrictions [...]
+  "build the entry filter function"
+  (let [clauses []
+        context (gensym :context)]
+    (each [_ ctxt (ipairs [...])]
+      (let [c (string.lower ctxt)
+            cap-c (string.gsub c "^%l" string.upper) ; gsub return 2 values
+            syntaxes {:in_treesitter_capture c :in_syntax_group cap-c}]
+        (each [f a (pairs syntaxes)]
+          (table.insert clauses `(. ,context ,f ,a)))))
+    `(fn []
+       (let [,context (require :cmp.config.context)]
+         (or ,(unpack clauses))))))
+
+(local cmp-config-preferred-default-sources
+       [{:name :nvim_lsp_signature_help}
+        {:name :nvim_lsp}
+        {:name :luasnip}
+        {:name :buffer :keyword_length 4}
+        {:name :path}
+        {:name :emoji
+         :entry_filter (make-emoji-restrictions :comment :string)
+         :insert true}])
+
+(local cmp-config-preferred-markdown-sources
+       [{:name :nvim_lsp_signature_help}
+        {:name :nvim_lsp}
+        {:name :luasnip}
+        {:name :buffer :keyword_length 3}
+        {:name :path}
+        {:name :emoji :insert true}])
+
+(local cmp-config-preferred-git-sources
+       [{:name :nvim_lsp_signature_help}
+        {:name :nvim_lsp}
+        {:name :luasnip}
+        {:name :buffer :keyword_length 4}
+        {:name :path}
+        {:name :git}
+        {:name :emoji :insert true}])
+
+(local cmp-config-preferred-modern-lisp-sources
+       [{:name :nvim_lsp_signature_help}
+        {:name :nvim_lsp}
+        ;; cmp-conjure!
+        {:name :conjure}
+        {:name :luasnip}
+        {:name :buffer :keyword_length 4}
+        {:name :path}
+        {:name :emoji
+         :entry_filter (make-emoji-restrictions :comment)
+         :insert true}])
 
 [;;; LSP
  {1 :neovim/nvim-lspconfig
@@ -154,54 +209,17 @@
           ;; OLD: -- vim.opt.runtimepath:apped("~/github/lsp_signature.nvim")
           (local lsp-zero (require :lsp-zero))
           (cmp.setup.filetype [:markdown]
-                              {:sources (cmp.config.sources [{:name :nvim_lsp_signature_help}
-                                                             {:name :nvim_lsp}
-                                                             {:name :luasnip}
-                                                             {:name :buffer
-                                                              :keyword_length 4}
-                                                             {:name :path}
-                                                             {:name :emoji
-                                                              :insert true}])})
+                              {:sources (cmp.config.sources cmp-config-preferred-markdown-sources)})
           (cmp.setup.filetype [:gitcommit]
-                              {:sources (cmp.config.sources [{:name :nvim_lsp_signature_help}
-                                                             {:name :nvim_lsp}
-                                                             {:name :luasnip}
-                                                             {:name :buffer
-                                                              :keyword_length 4}
-                                                             {:name :path}
-                                                             {:name :git}
-                                                             {:name :emoji
-                                                              :insert true}])})
+                              {:sources (cmp.config.sources cmp-config-preferred-git-sources)})
           (cmp.setup.filetype [:fennel :clojure]
-                              {:sources (cmp.config.sources [{:name :nvim_lsp_signature_help}
-                                                             {:name :nvim_lsp}
-                                                             {:name :conjure}
-                                                             {:name :luasnip}
-                                                             {:name :buffer
-                                                              :keyword_length 4}
-                                                             {:name :path}
-                                                             {:name :emoji
-                                                              :entry_filter #(let [context (require :cmp.config.context)]
-                                                                               (or (context.in_treesitter_capture :comment)
-                                                                                   (context.in_syntax_group :Comment)))
-                                                              :insert true}])})
-          {:completion {:completeopt "menu,menuone,noinsert"}
+                              {:sources (cmp.config.sources cmp-config-preferred-modern-lisp-sources)})
+          {:completion {:completeopt cmp-config-complete-options}
            :window {:completion (cmp.config.window.bordered)
                     :documentation (cmp.config.window.bordered)}
            :snippet {:expand (λ [args]
                                (#($.lsp_expand args.body) (require :luasnip)))}
-           :sources (cmp.config.sources [{:name :nvim_lsp_signature_help}
-                                         {:name :nvim_lsp}
-                                         {:name :luasnip}
-                                         {:name :buffer :keyword_length 4}
-                                         {:name :path}
-                                         {:name :emoji
-                                          :entry_filter #(let [context (require :cmp.config.context)]
-                                                           (or (context.in_treesitter_capture :comment)
-                                                               (context.in_treesitter_capture :string)
-                                                               (context.in_syntax_group :Comment)
-                                                               (context.in_syntax_group :String)))
-                                          :insert true}])
+           :sources (cmp.config.sources cmp-config-preferred-default-sources)
            ;; :experimental {:ghost_text true}
            :mapping (lsp-zero.defaults.cmp_mappings {(or cmp-custom-keymaps.previous-word
                                                           :<C-p>) (cmp.mapping.select_prev_item {:behavior cmp.SelectBehavior.Select})
@@ -255,25 +273,24 @@
                                                   :factory h.formatter_factory}))
                           ;; FIXME: just here for testing
                           (local warn-really-in-markdown
-                                 (h.make_builtin {:method nls.methods.DIAGNOSTICS
-                                                  :filetypes [:markdown]
-                                                  :generator {:fn (λ [params]
-                                                                    (local diagnostics
-                                                                           {})
-                                                                    (each [i line (ipairs params.content)]
-                                                                      (local (col end-col)
-                                                                             (line:find :really))
-                                                                      (and col
-                                                                           end-col
-                                                                           (table.insert diagnostics
-                                                                                         {: col
-                                                                                          :row i
-                                                                                          :end_col (+ end-col
-                                                                                                      1)
-                                                                                          :source :no-really
-                                                                                          :message "Don't use 'really!'"
-                                                                                          :severity vim.diagnostic.severity.WARN})))
-                                                                    diagnostics)}}))
+                                 (let [really-gen (λ [params]
+                                                    (local diagnostics {})
+                                                    (each [i line (ipairs params.content)]
+                                                      (local (col end-col)
+                                                             (line:find :really))
+                                                      (and col end-col
+                                                           (table.insert diagnostics
+                                                                         {: col
+                                                                          :row i
+                                                                          :end_col (+ end-col
+                                                                                      1)
+                                                                          :source :no-really
+                                                                          :message "Don't use 'really!'"
+                                                                          :severity vim.diagnostic.severity.WARN})))
+                                                    diagnostics)]
+                                   (h.make_builtin {:method nls.methods.DIAGNOSTICS
+                                                    :filetypes [:markdown]
+                                                    :generator {:fn really-gen}})))
                           {:sources [;; NOTE: the LSP Lua server is good for comments' alignment;
                                      ;;       if you prefer stylua, :MasonInstall stylua and
                                      ;;       uncomment the following line
