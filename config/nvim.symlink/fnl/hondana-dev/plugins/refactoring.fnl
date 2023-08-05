@@ -1,8 +1,7 @@
 (macro set-value-keys! [val ...]
-  `(let [keys# [,...]]
-     (collect [# s# (ipairs keys#)]
-       s#
-       ,val)))
+  `(collect [# s# (ipairs [,...])]
+     s#
+     ,val))
 
 (fn bind [post-leader-key refactor-type mode]
   {1 (.. :<leader> post-leader-key)

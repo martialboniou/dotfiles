@@ -26,10 +26,14 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 
 ## NeoVim (up-to-date, my editor)
 
-- Minimal configuration (keybindings are made for dvorak keyboards)
+- Minimal configuration written in [Fennel](https://fennel-lang.org)
+  (keybindings are made for dvorak keyboards)
 - `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope)
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
-a colorscheme only; everything loads when needed)
+  a colorscheme only; everything loads when needed)
+- [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) (enable the
+  NeoVim setup based on Fennel scripts; compiles and brings all the REPL commands
+  to easily develop in Fennel) 
 - Telescope (used as fuzzy finder) & [Harpoon](https://github.com/ThePrimeagen/harpoon)
 - [mini.files](https://github.com/echasnovski/mini.files) (very good to navigate,
   preview files and manage directories; replace Netrw even if it's still available
@@ -51,10 +55,16 @@ a colorscheme only; everything loads when needed)
 - others:
   - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
   [trouble](https://github.com/folke/trouble.nvim)
-  - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in Telescope
-  & mini.files; quotes and backticks are skipped from *autopairing* for Lisp
-  languages) & [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
-  (additional colors for brackets)
+  - [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
+    (additional colors for brackets)
+  - some various plugins for *brackets* and *symbolic expressions*:
+    - [nvim-surround](https://github.com/kylechui/nvim-surround) classic
+      quotes/brackets manipulation;
+    - [targets](https://github.com/wellle/targets.vim) for additional text
+      objects;
+    - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
+      Telescope & mini.files; quotes and backticks are skipped from
+      *autopairing* for Lisp languages)
 - sources:
   - [Tangerine configuration](https://github.com/Massolari/neovim)
   ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)

@@ -22,7 +22,7 @@
             cap-c (string.gsub c "^%l" string.upper) ; gsub return 2 values
             syntaxes {:in_treesitter_capture c :in_syntax_group cap-c}]
         (each [f a (pairs syntaxes)]
-          (table.insert clauses `(. ,context ,f ,a)))))
+          (table.insert clauses `((. ,context ,f) ,a)))))
     `(fn []
        (let [,context (require :cmp.config.context)]
          (or ,(unpack clauses))))))
