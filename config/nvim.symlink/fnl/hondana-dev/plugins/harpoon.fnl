@@ -24,14 +24,14 @@
           (vim.cmd " let netrw#current_word = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord')) ")
           (let [path (. vim.g "netrw#current_word")]
             (when (= 0 (vim.fn.isdirectory path))
-              ((. mark :add_file) path))))
+              (mark.add_file path))))
         (minifiles-buf?)
         (let [minifiles (require :mini.files)
               (ok res) (pcall (. minifiles :get_target_window))]
           (when (and ok (not= res nil))
             (local fs-entry ((. minifiles :get_fs_entry)))
             (when (= :file fs-entry.fs_type)
-              ((. mark :add_file) fs-entry.path))))
+              (mark.add_file fs-entry.path))))
         (mark.add_file))))
 
 {1 :theprimeagen/harpoon
