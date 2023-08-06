@@ -28,6 +28,7 @@
         ;; taplo
         ])
 
+;; will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers
        [:tsserver
         :rust_analyzer
@@ -108,4 +109,3 @@
                                                        :diagnostics {:globals [:vim]}}}}})
            (lspconfig.fennel_language_server.setup {})
            (lsp-zero.setup))}
-

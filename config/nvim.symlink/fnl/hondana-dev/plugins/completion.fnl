@@ -1,9 +1,10 @@
 ;;; LSP Zero version
-;;; 2023-08-05
+;;; 2023-08-06 - FIX: <Tab> disabled
 
-(local cmp-config-complete-options "menu,menuone,noinsert")
+;; IMPORTANT: noselect = no <CR> in CMP = what I want here
+(local cmp-config-complete-options "menu,menuone,noinsert, noselect")
 
-;; BEWARE: <Tab> is not available
+;; IMPORTANT: <Tab>/<S-Tab> disabled in CMP
 (local cmp-custom-keymaps {:previous-word :<C-p>
                            :next-word :<C-n>
                            :complete :<C-Space>
@@ -57,7 +58,6 @@
 (local cmp-config-preferred-modern-lisp-sources
        [{:name :nvim_lsp_signature_help}
         {:name :nvim_lsp}
-        ;; cmp-conjure!
         {:name :conjure}
         {:name :luasnip}
         {:name :buffer :keyword_length 4}
@@ -68,7 +68,7 @@
 
 {1 :hrsh7th/nvim-cmp
  ;; check lsp.fnl for the loading LSP Zero -> LSP -> nvim-cmp
- :dependencies [:hrsh7th/cmp-nvim-lsp
+ :dependencies [{1 :hrsh7th/cmp-nvim-lsp :dependencies :neovim/nvim-lspconfig}
                 {1 :L3MON4D3/LuaSnip
                  :build "make install_jsregexp"
                  ;; optional: friendly-snippets
@@ -76,7 +76,7 @@
                  :config #(#($.lazy_load {:paths (.. (vim.fn.stdpath :config)
                                                      :/snippets/vscode)}) (require :luasnip.loaders.from_vscode))}
                 ;; optional/conjure plugin
-                :PaterJason/cmp-conjure
+                ; :PaterJason/cmp-conjure ;; FIXME: enable via conjure.fnl?
                 :saadparwaiz1/cmp_luasnip
                 ;; optional/buffer words
                 :hrsh7th/cmp-buffer
@@ -105,22 +105,21 @@
                              {:sources (cmp.config.sources cmp-config-preferred-git-sources)})
          (cmp.setup.filetype [:fennel :clojure]
                              {:sources (cmp.config.sources cmp-config-preferred-modern-lisp-sources)})
-         {:completion {:completeopt cmp-config-complete-options}
-          :window {:completion (cmp.config.window.bordered)
-                   :documentation (cmp.config.window.bordered)}
+         {:sources (cmp.config.sources cmp-config-preferred-default-sources)
+          :completion {:completeopt cmp-config-complete-options}
+          :preselect :none
           :snippet {:expand (λ [args]
                               (#($.lsp_expand args.body) (require :luasnip)))}
-          :sources (cmp.config.sources cmp-config-preferred-default-sources)
+          :window {:completion (cmp.config.window.bordered)
+                   :documentation (cmp.config.window.bordered)}
           ;; :experimental {:ghost_text true}
-          :mapping (lsp-zero.defaults.cmp_mappings {(or cmp-custom-keymaps.previous-word
-                                                         :<C-p>) (cmp.mapping.select_prev_item {:behavior cmp.SelectBehavior.Select})
-                                                    (or cmp-custom-keymaps.next-word
-                                                         :<C-n>) (cmp.mapping.select_next_item {:behavior cmp.SelectBehavior.Select})
-                                                    (or cmp-custom-keymaps.complete
-                                                         :<C-Space>) (cmp.mapping.complete)
-                                                    (or cmp-custom-keymaps.confirm
-                                                         :<C-y>) (cmp.mapping.confirm {:select true})
-                                                    (or cmp-custom-keymaps.abort
-                                                         :<C-e>) (cmp.mapping.abort)
-                                                    :<Tab> nil
-                                                    :<S-Tab> nil})})}
+          :mapping (let [overrides {(or cmp-custom-keymaps.previous-word
+                                         :<C-p>) (cmp.mapping.select_prev_item {:behavior cmp.SelectBehavior.Select})
+                                    (or cmp-custom-keymaps.next-word :<C-n>) (cmp.mapping.select_next_item {:behavior cmp.SelectBehavior.Select})
+                                    (or cmp-custom-keymaps.complete :<C-Space>) (cmp.mapping.complete)
+                                    (or cmp-custom-keymaps.confirm :<C-y>) (cmp.mapping.confirm {:select true})
+                                    (or cmp-custom-keymaps.abort :<C-e>) (cmp.mapping.abort)
+                                    :<Tab> vim.NIL
+                                    :<S-Tab> vim.NIL}
+                         mappings (lsp-zero.defaults.cmp_mappings overrides)]
+                     mappings)})}
