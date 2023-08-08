@@ -58,7 +58,7 @@
 (local cmp-config-preferred-modern-lisp-sources
        [{:name :nvim_lsp_signature_help}
         {:name :nvim_lsp}
-        {:name :conjure}
+        {:name :conjure} ;; cmp-conjure enabled by plugins.conjure
         {:name :luasnip}
         {:name :buffer :keyword_length 4}
         {:name :path}
@@ -75,8 +75,6 @@
                  :dependencies [:rafamadriz/friendly-snippets]
                  :config #(#($.lazy_load {:paths (.. (vim.fn.stdpath :config)
                                                      :/snippets/vscode)}) (require :luasnip.loaders.from_vscode))}
-                ;; optional/conjure plugin
-                ; :PaterJason/cmp-conjure ;; FIXME: enable via conjure.fnl?
                 :saadparwaiz1/cmp_luasnip
                 ;; optional/buffer words
                 :hrsh7th/cmp-buffer

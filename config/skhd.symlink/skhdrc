@@ -35,11 +35,11 @@ alt - u : yabai -m window --display east; yabai -m display --focus east #i
 # clockwise rota
 alt - r : yabai -m space --rotate 270
 
-# y-axis flip
-alt - y : yabai -m space --mirror y-axis
+# y-axis flip TODO: don't do that! emacs will kill you
+# alt - y : yabai -m space --mirror y-axis
 
-# x-axis flip
-alt - x : yabai -m space --mirror x-axis
+# x-axis flip TODO: don't do that! emacs will kill you
+# alt - x : yabai -m space --mirror x-axis
 
 # toggle window float
 alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2

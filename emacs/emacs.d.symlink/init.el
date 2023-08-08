@@ -1,74 +1,126 @@
-;; -*- auto-byte-compile: t -*-
-;;; init.el
-;;
-;; Filename: init.el
-;; Description: Emacs Setup
-;; Author: Martial Boniou
-;; Maintainer: Martial Boniou (hondana.net/about)
-;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 5.1
-;; Last-Updated: Tue Jun 11 13:52:15 2013 (+0200)
-;;           By: Martial Boniou
-;;     Update #: 2071
-;; URL: https://github.com/martialboniou/Dots.git
-;; Keywords: .emacs, init
-;; Compatibility: 
-;;
-;; Features that might be required by this library:
-;;
-;;   CEDET 1.0 normally loaded..
-;;   REMARK: `load-path' and `loaddefs' generated in 'WALKER and 'ADAPTER;
-;;           'PACKS should be replaced by 'EL-SELECT and may soon not be
-;;           required:
-;;           - `el-select' <-- `walker' <-- `packs'
-;;           - `el-select' <-- `walker' <-- `adapter'
-;;           you should be able to load 'KERNEL w/o 'PACKS but only 'ADAPTER
-;;   TIPS: http://cheat.errtheblog.com/s/emacs_tips/
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2, or
-;; (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;;; Simple Emacs for Common Lisp
+(setq inferior-lisp-program "sbcl"
+      slime-git-source-directory "~/Documents/Code/lisp/emacs/_slime") ; used with sbcl 2.3.7 on macOS 13.4
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+;; Performance
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024))
 
-(delete-dups load-path)
+;; Core setup
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq-default tab-width 4
+              indent-tabs-mode nil)
+(add-hook 'before-save-hook 'whitespace-cleanup)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(setq inhibit-splash-screen t
+      inhibit-startup-message t
+      initial-buffer-choice (expand-file-name "init.el" user-emacs-directory))
+(save-place-mode t)
+(savehist-mode t)
+(recentf-mode t)
+(global-auto-revert-mode t)
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+(load-theme 'modus-vivendi t)
 
-(provide 'emacs-normal-startup)
+;; Mouse
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t))
 
-(require 'kernel)
+;; Uniquify
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward
+      window-resize-pixelwise t
+      frame-resize-pixelwise t
+      load-prefer-newer t
+      backup-by-copying t
+      custom-file (expand-file-name "custom.el" user-emacs-directory))
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-;;; SERVER
-;;
-(start-named-server user-login-name)
+;;; REPOSITORY
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+    use-package-expand-minimally t))
 
-;;; ALL THE FUN
-;; these packages are not loaded when Emacs boots from `kernel'
-;;
-(require 'mail)         ; emacs as a MUA, a web browser, a syndicate and an organizer
-(require 'rectify)      ; emacs as a programming environment including smart code validation
-(require 'version)      ; emacs as a VC tool
-(require 'vt)           ; emacs as a virtual terminal
-(require 'media)        ; emacs as a multimedia player
-(require 'toolbox)      ; emacs as a swiss army knife
+;;; PACKAGES
+;; Evil
+(use-package evil
+  :ensure t
+  :init (evil-mode 1))
 
-;; minibuffer histories
-(savehist-mode 1)
+;; Xclip
+(unless (and (eq system-type 'gnu/linux)
+             (not (executable-find "xclip")))
+  (use-package xclip
+               :ensure t
+               :init (xclip-mode 1)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; init.el ends here
+;; Better minibuffer completion
+(use-package vertico
+  :ensure t
+  :custom
+  (vertico-cycle t)
+  (read-buffer-completion-ignore-case t)
+  (read-file-name-completion-ignore-case t)
+  (completion-styles '(basic substring partial-completion flex))
+  :init
+  (vertico-mode))
+
+;; Code completion at point
+(use-package company
+  :ensure t
+  :hook (after-init . global-company-mode)
+  :custom
+  (company-idle-delay 0))
+
+;; Save minibuffer results
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; Show lots of useful stuff in the minibuffer
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :init
+  (marginalia-mode))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(vertico)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;;; SLY
+(use-package sly)
+
+;;; SLIME (DEPRECATED?)
+(when (file-directory-p slime-git-source-directory)
+  (add-to-list 'load-path slime-git-source-directory)
+  (require 'slime-autoloads)
+  ;; https://slime.common-lisp.dev/doc/html/Loading-Swank-faster.html
+  (setq slime-lisp-implementations
+    '((sbcl ("sbcl" "--core" "sbcl.core-with-swank")
+        :init (lambda (port-file _)
+            (format "(swank:start-server %S)\n" port-file)))
+      (sbcl-minimal ("sbcl")))))

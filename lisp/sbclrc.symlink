@@ -19,8 +19,8 @@
 ;; to get a convenient version (SBCL ASDF2 version may have some non-standard quirks)
 
 ;;; STALE FASL RECOMPILATION TRICK
-(defmethod asdf:perform :around ((o asdf:load-op) (c asdf:cl-source-file))
- (handler-case (call-next-method o c)
-  (sb-ext:invalid-fasl ()
-   (asdf:perform (make-instance 'asdf:compile-op) c)
-   (call-next-method))))
+; (defmethod asdf:perform :around ((o asdf:load-op) (c asdf:cl-source-file))
+;  (handler-case (call-next-method o c)
+;   (sb-ext:invalid-fasl ()
+;    (asdf:perform (make-instance 'asdf:compile-op) c)
+;    (call-next-method))))
