@@ -36,12 +36,7 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t))
 
-;; GUI (rarely used b/c my emacsclient is in a terminal)
-(setq use-dialog-box nil)
-(set-frame-parameter (selected-frame) 'alpha '(80 . 80))
-(add-to-list 'default-frame-alist '(alpha . (80 . 80)))
-
-;; Terminal (AKA -nw option)
+;; Terminal (AKA -nw option; normal way to start Emacs here)
 (defun set-transparency ()
   (interactive)
   (set-face-background 'default "unspecified-bg" (selected-frame))
@@ -61,7 +56,6 @@
 (column-number-mode)
 
 ;;; REPOSITORY
-(require 'cl-lib)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -73,69 +67,92 @@
     use-package-expand-minimally t))
 
 ;;; PACKAGES
+;; Key bindings manager
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t)
+  (general-create-definer hondana/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "M-SPC")
+  (hondana/leader-keys
+   "SPC" 'dired-jump))
+
 ;; Evil
 (use-package evil
   :ensure t
+  :after general
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding nil) ; IMPORTANT: mandatory for evil-collection
   :config
-  (evil-mode)
+  (evil-mode 1)
   (evil-set-undo-system 'undo-redo)
-  (cl-loop for (mode . state) in '((inferior-emacs-lisp-mode      . emacs)
-                                   (sly-db-mode                   . emacs)
-                                   (sly-inspector-mode            . emacs)
-                                   (sly-trace-dialog-mode         . emacs)
-                                   (sly-stickers--replay-mode     . emacs)
-                                   (sly-xref-mode                 . emacs)
-                                   (sly-connection-list-mode      . emacs)
-                                   (sly-thread-control-mode       . emacs)
-                                   (bs-mode                       . emacs)
-                                   (dired-mode                    . emacs)
-                                   (navi-mode                     . emacs)
-                                   (archive-mode                  . emacs)
-                                   (comint-mode                   . emacs)
-                                   (ebib-entry-mode               . emacs)
-                                   (dirtree-mode                  . emacs)
-                                   (image-mode                    . emacs)
-                                   (ebib-log-mode                 . emacs)
-                                   (gtags-select-mode             . emacs)
-                                   (shell-mode                    . emacs)
-                                   (term-mode                     . emacs)
-                                   (bc-menu-mode                  . emacs)
-                                   (grep-mode                     . emacs)
-                                   (help-mode                     . emacs)
-                                   (eww-mode                      . emacs)
-                                   (google-contacts-mode          . emacs)
-                                   (magit-branch-manager-mode-map . emacs)
-                                   (magit-popup-mode              . emacs)
-                                   (magit-revision-mode           . emacs)
-                                   (magit-mode                    . emacs)
-                                   (magit-refs-mode               . emacs)
-                                   (magit-popup-sequence-mode     . emacs)
-                                   (magit-repolist-mode           . emacs)
-                                   (semantic-symref-results-mode  . emacs)
-                                   (fundamental-mode              . emacs)
-                                   (cider-stacktrace-mode         . emacs)
-                                   (diff-mode                     . emacs)
-                                   (git-rebase-mode               . emacs)
-                                   (git-rebase-mode               . emacs)
-                                   (elfeed-show-mode              . emacs)
-                                   (elfeed-search-mode            . emacs)
-                                   (docker-images-mode            . emacs)
-                                   (docker-containers-mode        . emacs)
-                                   (cider-docview-mode            . emacs)
-                                   (notmuch-tree-mode             . emacs)
-                                   (xref--xref-buffer-mode        . emacs)
-                                   (eww-mode                      . emacs)
-                                   (rdictcc-buffer-mode           . emacs))
-      do (evil-set-initial-state mode state))
+  (general-define-key :states 'insert
+                      (kbd "C-g") 'evil-normal-state)
+  (general-define-key :states 'insert
+                      (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (dolist (mode '(inferior-emacs-lisp-mode
+                  sly-db-mode
+                  sly-inspector-mode
+                  sly-trace-dialog-mode
+                  sly-stickers--replay-mode ; not a typo
+                  sly-xref-mode
+                  sly-connection-list-mode
+                  sly-thread-control-mode
+                  dired-mode
+                  navi-mode
+                  comint-mode
+                  ebib-entry-mode
+                  dirtree-mode
+                  image-mode
+                  ebib-log-mode
+                  gtags-select-mode
+                  eshell-mode
+                  shell-mode
+                  term-mode
+                  bc-menu-mode
+                  grep-mode
+                  help-mode
+                  eww-mode
+                  google-contacts-mode
+                  magit-branch-manager-mode-map
+                  magit-repolist-mode
+                  semantic-symref-results-mode
+                  fundamental-mode
+                  cider-stacktrace-mode
+                  diff-mode
+                  git-rebase-mode
+                  git-rebase-mode
+                  elfeed-show-mode
+                  elfeed-search-mode
+                  docker-images-mode
+                  docker-containers-mode
+                  cider-docview-mode
+                  notmuch-tree-mode
+                  xref--xref-buffer-mode
+                  eww-mode
+                  rdictcc-buffer-mode))
+    (add-to-list 'evil-emacs-state-modes mode))
+  (dolist (buffer-name '("\\*sly-macroexpansion\\*" "\\*sly-description\\*"
+                         "\\*VC-history\\*" "COMMIT_EDITMSG" "CAPTURE-.*\\.org"
+                         "\\*Warnings\\*" "\\*cider-inspect\\*"))
+    (add-to-list 'evil-buffer-regexps
+                 (cons buffer-name 'emacs))))
 
-  (cl-loop for buffer-name in '("\\*sly-macroexpansion\\*" "\\*sly-description\\*"
-                                "\\*VC-history\\*" "COMMIT_EDITMSG" "CAPTURE-.*\\.org"
-                                "\\*Warnings\\*" "\\*cider-inspect\\*")
-           do (add-to-list 'evil-buffer-regexps
-                           (cons buffer-name 'emacs))))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package evil-surround
   :ensure t
+  :after evil
   :config
   (global-evil-surround-mode 1))
 
@@ -188,12 +205,19 @@
   :init
   (marginalia-mode))
 
-;;; Rainbow Delimiters
+;; Rainbow Delimiters
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;;; Sly (+ launch it when common lisp found)
+;; Sly (+ launch it when common lisp found)
 (use-package sly
   :init
   (when (executable-find inferior-lisp-program)
         (sly)))
+
+;;; Extensions
+(add-to-list 'load-path (file-name-directory user-init-file))
+(unless window-system
+  (require 'init-gui))
+
+(provide 'init)

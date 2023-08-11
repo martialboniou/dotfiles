@@ -7,6 +7,7 @@
 /.org-id-locations
 /ac-comphist.dat
 /elpa/*
+/transient/*
 /history
 /places
 /recentf

@@ -25,6 +25,7 @@ Vim keybinding reminders & tips
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
+- `gf`   : go to file when cursor is above a filename/hyperlink
 - `:copen` : open the quickfix list
 - `:map` : check the key mapping
 - `<C-f>` : command mode after a `:`; behave like any Vim buffer

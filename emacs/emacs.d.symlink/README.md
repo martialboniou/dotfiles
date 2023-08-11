@@ -6,8 +6,12 @@ Goal
 
 - small setup (no time for crazy customization as NeoVim is my main editor in
   2023)
-- Common Lisp ready
-- Evil Mode activated
+- Common Lisp ready (this setup will boot a REPL automatically)
+- **Evil Mode** activated
+  - *REMINDER*: `C-z` to go back to the `Normal` state from the `Emacs` one
+  - `C-g` (normally *cancel command*) in `Insert` state switches back to
+    `Normal` state (like `<C-c>` in this NeoVim setup; check
+    `../../config/nvim.symlink/fnl/hondana-dev/remap.fnl`)
 - (may include some tools from the deprecated `2013-scripts`; org-mode,
   wanderlust, mu4e...)
 
