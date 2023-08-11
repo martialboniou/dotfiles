@@ -11,7 +11,7 @@
                            :confirm :<C-y>
                            :abort :<C-e>})
 
-;; NOTE: <C-f>/<C-b> = jump forward/backward (<C-b> CANNOT be used in tmux; I chose <M-a>)
+;; NOTE: <C-f>/<C-b> = jump forward/backward (<C-b> CANNOT be used in tmux; I chose F5/`fn a` as a tmux prefix)
 ;;       <C-u>/<C-d> = scroll
 
 (macro make-emoji-restrictions [...]

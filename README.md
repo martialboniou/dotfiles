@@ -106,10 +106,11 @@ brew install reattach-to-user-namespace
 ## Tmux (my terminal manager)
 
 - Ensure the version (`tmux -V`) is 3.1+
-- `<M-a>` is the prefix, here. I use `<C-a>` and `<C-e>` to navigate in a terminal
-(move cursor at the beginning and end of the current line respectively). `<C-b>`
-was the default but it is in conflict with the *snippet backward* default keybinding
-in Vim/NeoVim. `<C-q>` was my previous choice but emacs uses it.
+- `fn a` is the prefix when skhd is activated on macOS; `F5` otherwise.
+  I use `<C-a>` and `<C-e>` to navigate in a terminal (move cursor at the
+  beginning and end of the current line respectively). `<C-b>` was the default
+  but it is in conflict with the *snippet backward* default keybinding in
+  (Neo)Vim.
 
 ## Yabai (my additional macOS window manager)
 
@@ -118,17 +119,31 @@ in Vim/NeoVim. `<C-q>` was my previous choice but emacs uses it.
 [official documentation](https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release))
 to configure the scripting addition at startup
 - the window manipulation requires to start `skhd` as a service:
-  - the keybindings are based on the `Option` key (except `Option-a`; reserved for `tmux`)
-  - use the touchpad or additional keybindings to move between Spaces (the default
-  Yabai space navigation doesn't work without breaking the SIP)
+  - the keybindings are based on the `fn` key (instead of `Option`:
+    the `M-x`, `M-w`, `M-y`, `M--`, `M-n` `M-p`... Emacs keybindings were
+    too complicated to manage); BEWARE: `fn a` is a mapping alias for the
+    tmux prefix (`F5`)
+  - use the touchpad or additional keybindings to move between Spaces (the
+    default Yabai space navigation doesn't work without breaking the SIP)
 
 ## Vim 8 (still maintained)
 
 The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZF and yarn if possible.
 
-## GNU Emacs (unmaintained, rework to come)
+## GNU Emacs
 
-All scripts in `.emacs.d` are currently tested on Emacs 24.3. **Ensure your LOAD-PATH know this path:** `~/.emacs.d/lisp` to be able to launch partial setup (see my `zsh` setup).
+### Emacs 29 (used for Common Lisp projects)
+
+- starts on a *Sly* session (requires `sbcl`)
+- minimal setup
+- Evil mode
+- (TODO: add Org, mu4e... and other good tools that don't exist elsewhere)
+
+### Previous version (deprecated)
+
+All scripts in `.emacs.d/2013-scripts` are currently tested on Emacs 24.3.
+**Ensure your LOAD-PATH know this path:** `~/.emacs.d/lisp` to be able to
+launch partial setup (see my `zsh` setup).
 
 The first Emacs is launched, Emacs asks at startup about:
 

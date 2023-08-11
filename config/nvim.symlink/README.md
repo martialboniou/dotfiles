@@ -22,7 +22,12 @@ Vim keybinding reminders & tips
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
   international Dvorak layout (+ Command Qwerty) on macOS)
+- `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
+  is available to change the working directory **for the current window**
+  with `lcd`)
+- `:copen` : open the quickfix list
 - `:map` : check the key mapping
+- `<C-f>` : command mode after a `:`; behave like any Vim buffer
 - `G`    : go to the end of file (of course!)
 - `J` (in visual) : move down the visual block (added!)
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
@@ -71,7 +76,8 @@ It's great but:
 - `:Ex` is still available
 
 ### Example of workflow
-      
+
+- (locally) `<leader>cd` : change locally the working directory
 - `<leader>a` : tag a file in harpoon (first)
 - `<leader><leader>` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
@@ -97,11 +103,15 @@ insert
 - `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
   *memo*: Down/Up)
 - `:so` : source this file
-- `:Lazy` : check package (I prefer this one to Packer)
 - `<C-w><C-w>` : cycle windows
 - `<C-w>o` : one window (AKA 'close' others)
-- `:TSPlaygroundToggle` : display the AST (neat!)
+- `<leader>cd` : change the working directory for the current window
+- in *visual* mode:
+  - `<shift-J>`: move down the whole selection
+  - `<shift-K>`: move up the whole selection
 - *REMINDER*: `:map` to check the key mapping
+- `:Lazy` : check package (I prefer this one to Packer)
+- `:TSPlaygroundToggle` : display the AST (neat!)
 - **IMPORTANT!**: `<leader>s` : create a template to replace the current word (*memo*: `s` as in `:%s`)
 - `<leader>s` (in visual) : create a template to replace a pattern in the selection (added by me)
 - `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
@@ -120,15 +130,14 @@ insert
 - `<leader>e`  : harpoon quick menu (it was `<C-e>`)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
-- `<leader>k`/`<leader>j`/`<C-k>`/`<C-j>` : quickfix navigations (TODO: test this)
-- `<leader>x`  : toggle the executability of a file (different than the ThePrimeagen's version?)
-- **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
+- `<leader>x`  : toggle the executability of a file (different from the ThePrimeagen's version)
+- `<leader>j`/`<leader>k` : quickfix local navigation (ie `lnext`/`lprev`; inverted from ThePrimeagen's)
+- `<C-j>`/`<C-k>` : quickfix navigation (ie `cnext`/`cprev`; inverted from ThePrimeagen's;
+  more natural; same order as in quickfix/**Trouble**)
 - **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-f>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
-- in *visual* mode:
-  - `<shift-J>`: move down the whole selection
-  - `<shift-K>`: move up the whole selection
+- **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
 - FuGITive (inside the fugitive buffer only):
   - `<leader>p` : `git push`
   - `<leader>P` : `git pull` **with rebase** 
@@ -141,9 +150,9 @@ insert
     - `<C-n>` : next completion
     - `<C-Space>` : complete
     - `<C-f>` : snippet forward selection (default by LSP Zero; navigate thru tmux sessions in normal mode)
-    - `<C-b>` : snippet backward selection (default by LSP Zero; unbind `<C-b>` for `tmux`; don't use `<C-a>` because you lose the cursor navigation (start of line);
-    `<C-q>` is a good candidate for the `tmux` prefix if you don't use emacs;
-    `<M-a>` is my current choice for `tmux`)
+    - `<C-b>` : snippet backward selection (default by LSP Zero; unbind `<C-b>` for `tmux`;
+      don't use `<C-a>` either because you lose the cursor navigation (start of line);
+      `F5`/`fn a` is my current choice for `tmux`)
     - other keys (imposed by vim and added by LSP Zero)
       - `<C-e>` : cancel the completion
       - `<C-u>`/`<C-d>` : scroll the document up/down
@@ -187,7 +196,7 @@ insert
   - `<C-]>` : accept next word from the suggestion
   - `<C-[>` : cancel the suggestion
   - `<M-=>` : accept the suggestion (**IMPORTANT!**: the default keybinding
-    `<M-l>` is reserved in my [yabai](https://github.com/koekeishiya/yabai)
+    `<M-l>` was reserved in my [yabai](https://github.com/koekeishiya/yabai)
     setup; *memo*: `=` to synchronize as already used in `mini.files`; also,
     `=` is just below `]` on the dvorak layout)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)

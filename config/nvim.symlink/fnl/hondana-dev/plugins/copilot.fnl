@@ -7,7 +7,8 @@
                                            #(#($.toggle_auto_trigger) (require :copilot.suggestion))
                                            {})
          ;; NOTE: if cmp disturbs you, use <C-e>/<C-Space> to switch off/back
-         {:suggestion {:keymap {; <M-=> was <M-l> but used by yabai
+         {:suggestion {:keymap {; <M-=> was <M-l> but it has been used by
+                                ; yabai/skhd before switching to the fn key 
                                 ; (memo: = to sync as in mini.files)
                                 :accept :<M-=>
                                 ; may be useful!

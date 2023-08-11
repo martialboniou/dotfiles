@@ -55,17 +55,19 @@
 
 ;; require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
-;; quickfix navigation
-(vim.keymap.set :n :<C-k> :<cmd>cnext<CR>zz)
-(vim.keymap.set :n :<C-j> :<cmd>cprev<CR>zz)
-(vim.keymap.set :n :<leader>k :<cmd>lnext<CR>zz)
-(vim.keymap.set :n :<leader>j :<cmd>lprev<CR>zz)
+;; quickfix navigation (inverted from ThePrimeagen version; more natural)
+(vim.keymap.set :n :<C-j> :<cmd>cnext<CR>zz)
+(vim.keymap.set :n :<C-k> :<cmd>cprev<CR>zz)
+(vim.keymap.set :n :<leader>j :<cmd>lnext<CR>zz)
+(vim.keymap.set :n :<leader>k :<cmd>lprev<CR>zz)
 
 (vim.keymap.set :n :<leader>s
                 ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+
 (vim.keymap.set :v :<leader>s ":s///gI<Left><Left><Left><Left>")
 
 ;; added by https://gitlab.com/martialhb
+(vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
@@ -76,4 +78,4 @@
       (lua :return))
     (print (.. "Success: " res))))
 
-(vim.keymap.set :n :<leader>x toggle-exec {:silent false} )
+(vim.keymap.set :n :<leader>x toggle-exec {:silent false})

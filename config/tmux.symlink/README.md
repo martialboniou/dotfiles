@@ -2,17 +2,21 @@ TMUX
 ====
 
 - About the prefix
-  - `<M-a>` is the current prefix
+  - `fn a` is the current prefix (if skhd is active on macOS)
+  - `F5` otherwise (user reserved in emacs)
   - (macOS only) ensure iTerm2 has Profiles/Keys/Esc+ for Option keys
   - previous ones:
     - `<C-b>` used by vim (snippet backward)
     - `<C-a>` navigate cursor in terms
-    - `<C-Space>` is used in my vim configuration (start completion)
-    - `<C-q>` (was the previous choice) is used by emacs
+    - `<C-Space>` is used in my vim configuration (start completion); also
+      used in emacs
+    - `<C-q>` is used by emacs
+    - `<M-a>` (was the previous choice) is used by emacs
 - Keybindings
-  - `<M-a>a` : last window
-  - `<M-a>c` : create new window
-  - `<M-a>n` : next window (`<M-a>l` too)
-  - `<M-a>p` : previous window (`<M-a>h` too)
-  - `<M-a>j` : window-pane down
-  - `<M-a>k` : window-pane up
+  - `F5 a` : last window
+  - `F5 c` : create new window
+  - `F5 &` : kill window
+  - `F5 n` : next window (`F5 l` too)
+  - `F5 p` : previous window (`F5 h` too)
+  - `F5 j` : window-pane down
+  - `F5 k` : window-pane up

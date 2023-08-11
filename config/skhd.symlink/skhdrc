@@ -4,88 +4,98 @@
 ###     - yabai (don't forget the sudo install for notifications...)
 ###     - jq
 
+# .blacklist [
+#  "Emacs"
+#]
+# M- in emacs is everywhere => alt - cannot work easily
+# solution #1: fn will be used (I use a Dvorak with Qwerty on cmd;
+#              so not very portable setup here)
+# solution #2 (best): fn key on my macbook (can be rebound to super
+#              on a pc)           
+
+fn - a : skhd -k "f5" # prefix tmux; DON'T COMMENT THIS LINE
+
 ## Changing focus
 
 # change window focus within space (not dvorak for now)
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+fn - h : yabai -m window --focus west
+fn - j : yabai -m window --focus south
+fn - k : yabai -m window --focus north
+fn - l : yabai -m window --focus east
 
 # change focus between external displays (left & right)
-alt - o : yabai -m window --display west; yabai -m display --focus west
-alt - u : yabai -m window --display east; yabai -m display --focus east #i
+fn - o : yabai -m window --display west; yabai -m display --focus west
+fn - u : yabai -m window --display east; yabai -m display --focus east #i
 
 # the following doesn't work without having SIP partially disabled => switch Spaces with the touchpad!!
 # change focus between spaces (if no window to focus, switch to the space anyway)
-# ctrl + alt - 1 : index=1;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 2 : index=2;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 3 : index=3;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 4 : index=4;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 5 : index=5;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 1 : index=1;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 2 : index=2;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 3 : index=3;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 4 : index=4;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 5 : index=5;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
 ## IMP + altORTANT: don't map ctrl - 6 because it's used by (Neo)Vim when <C-^> is not available (layout w/ dead keys)
-# ctrl + alt - 6 : index=6;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 7 : index=7;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 8 : index=8;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 9 : index=9;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
-# ctrl + alt - 0 : index=10; eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 6 : index=6;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 7 : index=7;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 8 : index=8;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 9 : index=9;  eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
+# fn + ctrl - 0 : index=10; eval "$(yabai -m query --spaces | jq --argjson index "${index}" -r '(.[] | select(.index == $index).windows[0]) as $wid | if $wid then "yabai -m window --focus \"" + ($wid | tostring) + "\"" else "skhd --key \"ctrl - " + (map(select(."is-native-fullscreen" == false)) | index(map(select(.index == $index))) + 1 % 10 | tostring) + "\"" end')"
 
 ## Modifying the layout
 
 # clockwise rota
-alt - r : yabai -m space --rotate 270
+fn - r : yabai -m space --rotate 270
 
-# y-axis flip TODO: don't do that! emacs will kill you
-# alt - y : yabai -m space --mirror y-axis
+# y-axis flip
+fn - y : yabai -m space --mirror y-axis
 
-# x-axis flip TODO: don't do that! emacs will kill you
-# alt - x : yabai -m space --mirror x-axis
+# x-axis flip
+fn - x : yabai -m space --mirror x-axis
 
 # toggle window float
-alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+fn - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
 
 ## Modifying window size
 
 # maximize/restore window
-alt - m : yabai -m window --toggle zoom-fullscreen
+fn - m : yabai -m window --toggle zoom-fullscreen
 
 # balance out tree of windows (resize to occupy same area)
-alt - e : yabai -m space --balance
+fn - e : yabai -m space --balance
 
 ## Modifying windows around
 
-# swap windows
-shift + alt - h : yabai -m window --swap west
-shift + alt - j : yabai -m window --swap south
-shift + alt - k : yabai -m window --swap north
-shift + alt - l : yabai -m window --swap east
+# swap windows (SHIFT)
+shift + fn - h : yabai -m window --swap west
+shift + fn - j : yabai -m window --swap south
+shift + fn - k : yabai -m window --swap north
+shift + fn - l : yabai -m window --swap east
 
-# move window and split
-ctrl + alt - h : yabai -m window --wrap west
-ctrl + alt - j : yabai -m window --wrap south
-ctrl + alt - k : yabai -m window --wrap north
-ctrl + alt - l : yabai -m window --wrap east
+# move window and split (CONTROL)
+fn + ctrl - h : yabai -m window --wrap west
+fn + ctrl - j : yabai -m window --wrap south
+fn + ctrl - k : yabai -m window --wrap north
+fn + ctrl - l : yabai -m window --wrap east
 
 # move window to prev & next space
-alt - p : yabai -m window --space prev
-alt - n : yabai -m window --space next
+fn - p : yabai -m window --space prev
+fn - n : yabai -m window --space next
 
 # move windows to space #
-alt - 1 : yabai -m window --space 1
-alt - 2 : yabai -m window --space 2
-alt - 3 : yabai -m window --space 3
-alt - 4 : yabai -m window --space 4
-alt - 5 : yabai -m window --space 5
-alt - 6 : yabai -m window --space 6
-alt - 7 : yabai -m window --space 7
-alt - 8 : yabai -m window --space 8
-alt - 9 : yabai -m window --space 9
-alt - 0 : yabai -m window --space 0
+fn - 1 : yabai -m window --space 1
+fn - 2 : yabai -m window --space 2
+fn - 3 : yabai -m window --space 3
+fn - 4 : yabai -m window --space 4
+fn - 5 : yabai -m window --space 5
+fn - 6 : yabai -m window --space 6
+fn - 7 : yabai -m window --space 7
+fn - 8 : yabai -m window --space 8
+fn - 9 : yabai -m window --space 9
+fn - 0 : yabai -m window --space 0
 
-## Start/Stop Yabai
-
-ctrl + alt - q : yabai --stop-service
-ctrl + alt - s : yabai --start-service
+## Start/Stop Yabai (OPTION)
+fn + ctrl - q : yabai --stop-service
+fn + ctrl - s : yabai --start-service
 
 ### other ideas for YABAI
 ## Space labels (from Livakivi@YT)

@@ -1,4 +1,4 @@
-(import-macros {: set! : g! : color!} :hibiscus.vim)
+(import-macros {: set! : g!} :hibiscus.vim)
 
 (set! :guicursor "")
 
@@ -37,6 +37,4 @@
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
-; (color! :hondana-tomorrow-night)
 (vim.cmd.iab ",\\ λ")
-
