@@ -1,0 +1,57 @@
+# this is another stupid carriage-return-based format
+# TODO: replace ASAP
+title = "Set Emacs states in evil-mode"
+
+modes = [
+    "inferior-emacs-lisp-mode",
+    "sly-db-mode",
+    "sly-inspector-mode",
+    "sly-trace-dialog-mode",
+    "sly-stickers--replay-mode", # not a typo
+    "sly-xref-mode",
+    "sly-connection-list-mode",
+    "sly-thread-control-mode",
+    "dired-mode",
+    "navi-mode",
+    "comint-mode",
+    "ebib-entry-mode",
+    "dirtree-mode",
+    "image-mode",
+    "ebib-log-mode",
+    "gtags-select-mode",
+    "eshell-mode",
+    "shell-mode",
+    "term-mode",
+    "bc-menu-mode",
+    "grep-mode",
+    "help-mode",
+    "eww-mode",
+    "google-contacts-mode",
+    "magit-branch-manager-mode-map",
+    "magit-repolist-mode",
+    "semantic-symref-results-mode",
+    "fundamental-mode",
+    "cider-stacktrace-mode",
+    "diff-mode",
+    "git-rebase-mode",
+    "git-rebase-mode",
+    "elfeed-show-mode",
+    "elfeed-search-mode",
+    "docker-images-mode",
+    "docker-containers-mode",
+    "cider-docview-mode",
+    "notmuch-tree-mode",
+    "xref--xref-buffer-mode",
+    "eww-mode",
+    "rdictcc-buffer-mode"
+    ]
+buffers = [
+    "*sly-macroexpansion*",
+    "*sly-description*",
+    "*VC-history*",
+    "COMMIT_EDITMSG",
+    "CAPTURE-.*\\.org",
+    "*Warnings*",
+    "*cider-inspect*"
+    ]
+

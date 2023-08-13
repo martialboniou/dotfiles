@@ -2,6 +2,8 @@
 (set-frame-parameter (selected-frame) 'alpha '(80 . 80))
 (add-to-list 'default-frame-alist '(alpha . (80 . 80)))
 
+;;; PACKAGES
+
 ;; Hydra
 (use-package hydra
   :config
@@ -10,4 +12,4 @@
             ("j" text-scale-decrease "out")
             ("f" nil "finished" :exit t)))
 
-(provide 'init-gui)
+(provide 'gui-setup)
