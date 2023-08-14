@@ -1,15 +1,15 @@
 .POSIX:
 EMACS = emacs
-BATCH   = $(EMACS) -Q --batch
+BATCH   = $(EMACS) --batch
 
 .PHONY: all
-all: compile extensions auto-compile-library
+all: auto-compile-library compile extensions
 
 compile:
-	$(BATCH) init.el -L . -l early-init -f batch-byte-compile
+	$(BATCH) -L . -l early-init -f batch-byte-compile init.el
 
 extensions:
-	$(BATCH) --eval "(byte-recompile-directory \"./lisp/\" 0 t)"
+	$(BATCH) -L . -l early-init --eval "(byte-recompile-directory \"./lisp/\" 0 t)"
 
 auto-compile-library:
 	$(BATCH) --eval "(byte-recompile-directory \"./auto-compile/\" 0 t)"

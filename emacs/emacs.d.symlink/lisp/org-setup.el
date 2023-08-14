@@ -1,5 +1,8 @@
 (provide 'org-setup)
 
+(defvar evil-auto-indent nil)
+(declare-function org-indent-mode (&optional arg))
+
 ;;; PACKAGES
 
 ;; TODO: WIP
@@ -36,10 +39,10 @@
 ;                 (org-level-7 . 1.1)
 ;                 (org-level-8 . 1.1)))
 ;     (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-; 
+;
 ; ;; Make sure org-indent face is available
 ; (require 'org-indent)
-; 
+;
 ; ;; Ensure that anything that should be fixed-pitch in Org files appears that way
 ; (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
 ; (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))

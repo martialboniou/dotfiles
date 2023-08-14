@@ -7,6 +7,8 @@
 
 (defvar inferior-lisp-program "sbcl") ; used with sbcl 2.3.7 on macOS 13,4
 (defvar project-directory "~/Documents/Code")
+(eval-and-compile
+  (defvar evil-want-keybinding nil)) ; IMPORTANT: mandatory for evil-collection
 
 (when (equal system-type 'darwin) ; `brew install coreutils` b/c gnuls != BSD's
   (let ((gnuls "/opt/homebrew/opt/coreutils/libexec/gnubin/ls"))
@@ -22,8 +24,7 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (setq inhibit-splash-screen t
-      inhibit-startup-message t
-      initial-buffer-choice (expand-file-name "init.el" user-emacs-directory))
+      inhibit-startup-message t)
 (save-place-mode t)
 (savehist-mode t)
 (recentf-mode t)
@@ -51,6 +52,13 @@
   (set-face-background 'line-number "unspecified-bg" (selected-frame)))
 (add-hook 'emacs-startup-hook 'set-transparency)
 
+;; Relative line numbers
+(eval-when-compile
+  (require 'display-line-numbers))
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+(column-number-mode)
+
 ;; Uniquify
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward
@@ -59,69 +67,49 @@
       load-prefer-newer t
       backup-by-copying t
       custom-file (expand-file-name "custom.el" user-emacs-directory))
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(eval-when-compile
-  (require 'display-line-numbers))
-(setq display-line-numbers-type 'relative)
-(column-number-mode)
 
-;;; REPOSITORY
-
-(eval-when-compile
-  (require 'package))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
+;;; REPOSITORY (`early-init.el' has already done the job)
 
 ;;; PACKAGES
 
 ;; Packages from sources
-(use-package quelpa
-  :demand t
-  :config
-  (quelpa
-   '(quelpa-use-package
-     :repo "quelpa/quelpa-use-package"
-     :fetcher github)))
-
-(eval-when-compile (require 'quelpa-use-package))
+(straight-use-package 'use-package)
 
 ;; TOML (used for configuration files)
-(use-package 'toml
+(use-package toml
   :ensure t
   :demand t
-  :quelpa (toml
-           :repo "gongo/emacs-toml"
-           :fetcher github))
+  :straight (toml
+             :type git
+             :host github
+             :repo "gongo/emacs-toml"))
 
 ;; Shortcuts' manager
 (use-package general
   :ensure t
   :config
-  (general-evil-setup t)
-  (general-create-definer hondana/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "M-SPC")
-  (hondana/leader-keys
-   "SPC" 'dired-jump))
+  (general-evil-setup t))
 
 ;; Evil
 (use-package evil
   :ensure t
   :after general
   :init
-  (setq evil-want-integration t
-        evil-want-keybinding nil) ; IMPORTANT: mandatory for evil-collection
+  (setq evil-want-integration t)
+  :defines
+  (evil-set-undo-systems)
+  :functions (evil-mode)
+  :preface ; (Optional) calm the compiler
+  (declare-function evil-set-undo-system (system))
+  (declare-function evil-global-set-key (state key def))
+  (declare-function evil-set-initial-state (mode state))
   :config
+  ;; leader leader => dired
+  (general-define-key :states 'normal
+                      "SPC SPC" 'dired-jump)
   (evil-mode 1)
   (evil-set-undo-system 'undo-redo)
+  ;; insert mode: C-g => Esc & C-h => good ole backward
   (general-define-key :states 'insert
                       (kbd "C-g") 'evil-normal-state)
   (general-define-key :states 'insert
@@ -130,7 +118,9 @@
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (when (require 'toml nil 'noerror)
-    (let ((states (toml:read-from-file "evil-emacs-state.toml")))
+    (let ((states (toml:read-from-file (expand-file-name
+                                        "evil-emacs-state.toml"
+                                        user-emacs-directory))))
       (dolist (state states)
         (cond ((equal "modes" (car state))
                (let ((modes (cdr state)))
@@ -148,12 +138,14 @@
 
 (use-package evil-collection
   :after evil
+  :functions evil-collection-init
   :config
   (evil-collection-init))
 
 (use-package evil-surround
   :ensure t
   :after evil
+  :functions global-evil-surround-mode
   :config
   (global-evil-surround-mode 1))
 
@@ -162,7 +154,9 @@
              (not (executable-find "xclip")))
   (use-package xclip
                :ensure t
-               :init (xclip-mode 1)))
+               :functions xclip-mode
+               :init
+               (xclip-mode 1)))
 
 ;; Buffer history
 (use-package savehist
@@ -203,6 +197,7 @@
 (use-package marginalia
   :after vertico
   :ensure t
+  :functions marginalia-mode
   :init
   (marginalia-mode))
 
@@ -210,11 +205,8 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Sly (+ launch it when common lisp found)
-(use-package sly
-  :init
-  (when (executable-find inferior-lisp-program)
-        (sly)))
+;; Sly
+(use-package sly)
 
 ;;; EXTENSIONS
 
@@ -228,14 +220,7 @@
     :commands (magit-status magit-get-current-branch)
     :custom
     (magit-display-buffer-function
-     #'magit-display-buffer-same-window-except-diff-v1))
-  (when (require 'evil-mode nil 'noerror)
-    ;; (quelpa '(evil-magit :repo "emacs-evil/evil-magit" :fetcher github :after magit))))
-    (use-package evil-magit
-      :quelpa (evil-magit
-               :repo "emacs-evil/evil-magit"
-               :fetcher github)
-      :after magit)))
+     #'magit-display-buffer-same-window-except-diff-v1)))
 
 ;; Project management if you want
 (when hondana/want-project-assist

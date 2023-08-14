@@ -6,9 +6,9 @@
 /auto-save-list/
 /.org-id-locations
 /ac-comphist.dat
+/straight/*
 /elpa/*
 /transient/*
-/quelpa/*
 /history
 /places
 /recentf
