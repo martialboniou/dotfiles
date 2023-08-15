@@ -1,4 +1,4 @@
-;;; Simple Emacs for Common Lisp
+;;; Simple Emacs for Common Lisp -*- lexical-binding: t; -*-
 
 ;;  Emacs version = 29.1
 (defconst hondana/want-git t)
@@ -16,9 +16,6 @@
       (setq insert-directory-program gnuls))))
 
 ;; Core setup
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (setq-default tab-width 4
               indent-tabs-mode nil)
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -30,8 +27,7 @@
 (recentf-mode t)
 (global-auto-revert-mode 1)
 (fset 'yes-or-no-p 'y-or-n-p)
-(eval-when-compile
-  (require 'autorevert))
+(eval-when-compile (require 'autorevert))
 (setq global-auto-revert-non-file-buffers t
       backup-directory-alist
       `((".*" . ,temporary-file-directory))
@@ -117,24 +113,43 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (when (require 'toml nil 'noerror)
-    (let ((states (toml:read-from-file (expand-file-name
-                                        "evil-emacs-state.toml"
-                                        user-emacs-directory))))
-      (dolist (state states)
-        (cond ((equal "modes" (car state))
-               (let ((modes (cdr state)))
-                 (when (proper-list-p modes)
-                   (dolist (mode modes)
-                     (add-to-list 'evil-emacs-state-modes (make-symbol mode))))))
-              ((equal "buffers" (car state))
-               (let ((buffers (cdr state)))
-                 (when (proper-list-p buffers)
-                   (dolist (buffer buffers)
-                     (let* ((bs-filtered (replace-regexp-in-string "\\\\\\\\" "\\\\" buffer))
-                            (wildcard-escaped-1 (replace-regexp-in-string "^\\*" "\\\\*" bs-filtered))
-                            (filtered-buffer (replace-regexp-in-string "\\([^\\.]\\)\\*" "\\1\\\\*" wildcard-escaped-1)))
-                       (add-to-list 'evil-buffer-regexps (cons filtered-buffer 'emacs))))))))))))
+  (let ((states
+         (eval-when-compile ;; rerun `make init' when *.toml changed
+           (let ((states
+                  (condition-case err
+                      (progn
+                        (require 'toml)
+                        (toml:read-from-file
+                         (expand-file-name "evil-emacs-state.toml"
+                                           user-emacs-directory)))
+                    (error
+                     (message "%s in evil-emacs-state.toml"
+                              (error-message-string err))
+                     nil))))
+             (when states
+               (fset 'filter (lambda (text a b)
+                               (replace-regexp-in-string a b text)))
+               (fset 'filter-buf (lambda (buf)
+                                   (let* ((bs (filter buf "\\\\\\\\" "\\\\"))
+                                          (wildc1 (filter bs "^\\*" "\\\\*"))
+                                          (clean-buf (filter wildc1
+                                                             "\\([^\\.]\\)\\*"
+                                                             "\\1\\\\*")))
+                                     clean-buf)))
+               (let ((buffers (cdr (assoc "buffers" states)))
+                     (filtered-buffers '()))
+                 (dolist (buffer buffers)
+                   (push (cons (filter-buf buffer) 'emacs)
+                         filtered-buffers))
+                 (setf (cdr (assoc "buffers" states)) filtered-buffers)
+                 states))))))
+    (when states
+      (let ((modes (cdr (assoc "modes" states)))
+            (buffers (cdr (assoc "buffers" states))))
+        (dolist (mode modes)
+          (add-to-list 'evil-emacs-state-modes (make-symbol mode)))
+        (dolist (buffer buffers)
+          (add-to-list 'evil-buffer-regexps buffer))))))
 
 (use-package evil-collection
   :after evil

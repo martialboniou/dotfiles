@@ -74,5 +74,8 @@ XTerm*faceSize: 10
 ! Function
 *colorBD: #d7ff87
 
+! Emacs
+Emacs*toolbar: 0
+
 !!
 !xrdb -load ~/.Xdefaults

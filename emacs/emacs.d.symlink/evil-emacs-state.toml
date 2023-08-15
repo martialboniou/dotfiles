@@ -1,5 +1,4 @@
-# this is another stupid carriage-return-based format
-# TODO: replace ASAP
+# IMPORTANT: recompile after each changes; `make init' will do it
 title = "Set Emacs states in evil-mode"
 
 modes = [
