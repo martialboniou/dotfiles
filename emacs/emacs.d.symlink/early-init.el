@@ -1,13 +1,19 @@
-;;; Simple Emacs Early Init -*- no-byte-compile: nil; lexical-binding: t; -*-
+;;; Simple Emacs Early Init -*- lexical-binding: t; -*-
 
 ;; Emacs version = 29.1
 (defvar auto-compile-display-buffer nil)
 (defvar auto-compile-mode-line-counter t)
-(defvar use-package-always-ensure nil)
+(defvar use-package-always-ensure nil) ; IMPORTANT: don't touch
 (defvar use-package-expand-minimally t)
+(defvar straight-use-package-by-default t)
+(defvar straight-vc-git-default-clone-depth '(1 single-branch))
+(defvar use-package-verbose nil)
+(defvar bootstrap-version)
+
+(declare-function straight-use-package "straight" (p))
 
 (setq read-process-output-max (* 1024 1024)
-      package-enable-at-startup t ; IMPORTANT: Packaging in Batch mode required
+      package-enable-at-startup nil ; IMPORTANT: Packaging in Batch mode required
       load-prefer-newer t)
 
 ;;; PERFORMANCE
@@ -29,41 +35,38 @@
         (makunbound 'file-name-handler-alist-original)
         (message "gc-cons-threshold and file-name-handler-alist restored")))))
 
-;;; BOOTSTRAP STRAIGHT
+;;; UTILITIES
+
+(defmacro hondana/use (package &rest params)
+  `(eval-and-compile
+     (use-package ,package ,@params)))
+
+;;; BOOTSTRAP STRAIGHT TO INSTALL PACKAGES FROM SOURCES
 
 (let ((bootstrap-file (expand-file-name
-                       "straight/repos/straight.el/bootstrap.el"
-                       user-emacs-directory)))
+                        "straight/repos/straight.el/bootstrap.el"
+                        user-emacs-directory))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+      (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+   (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
+  
+;;; LOAD-PATH & AUTO-COMPILATION FOR COMPILED FILES
 
-;;; LOAD-PATH & AUTO-COMPILATION OF COMPILED FILES
-;; NOTE: run `make` to ensure compilation of auto-compile, init & lisp directory
-
+;; Auto-compile
 (eval-and-compile
-  (let* ((extensions-repository-name "lisp")
-         (auto-compile--library 'auto-compile)
-         (auto-compile--name (symbol-name auto-compile--library)))
-    (dolist (sub-directory-name `(,extensions-repository-name ,auto-compile--name))
-      (add-to-list 'load-path (expand-file-name sub-directory-name
-                                                user-emacs-directory)))
-    (require auto-compile--library)
-    (auto-compile-on-load-mode)
-    (auto-compile-on-save-mode)))
+  (add-to-list 'load-path (expand-file-name "auto-compile" user-emacs-directory))
+  (require 'auto-compile))
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
 
-;;; REPOSITORY (used by init.el AND lisp/*)
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; Extensions (ie `lisp' directory)
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (provide 'early-init)

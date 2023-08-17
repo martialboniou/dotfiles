@@ -7,6 +7,7 @@
 
 (defvar inferior-lisp-program "sbcl") ; used with sbcl 2.3.7 on macOS 13,4
 (defvar project-directory "~/Documents/Code")
+(defvar hondana/evil-emacs-states '())
 (eval-and-compile
   (defvar evil-want-keybinding nil)) ; IMPORTANT: mandatory for evil-collection
 
@@ -64,31 +65,57 @@
       backup-by-copying t
       custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+;;; MACROS
+
+(defmacro hondana/make-evil-states (file)
+  `(let ((states
+          (condition-case err
+              (progn
+                (require 'toml)
+                (toml:read-from-file (expand-file-name ,file
+                                                       user-emacs-directory)))
+            (error
+             (message "%s in %s"
+                      (error-message-string err)
+                      ,file)
+             nil))))
+     (when states
+       (fset 'filter (lambda (text a b)
+                       (replace-regexp-in-string a b text)))
+       (fset 'filter-buf (lambda (buf)
+                           (let* ((bs (filter buf "\\\\\\\\" "\\\\"))
+                                  (wildc1 (filter bs "^\\*" "\\\\*"))
+                                  (clean-buf (filter wildc1
+                                                     "\\([^\\.]\\)\\*"
+                                                     "\\1\\\\*")))
+                             clean-buf)))
+       (let ((buffers (cdr (assoc "buffers" states)))
+             (filtered-buffers '()))
+         (dolist (buffer buffers)
+           (push (cons (filter-buf buffer) 'emacs)
+                 filtered-buffers))
+         (setf (cdr (assoc "buffers" states)) filtered-buffers)
+         states))))
+
 ;;; REPOSITORY (`early-init.el' has already done the job)
 
 ;;; PACKAGES
 
-;; Packages from sources
-(straight-use-package 'use-package)
-
 ;; TOML (used for configuration files)
-(use-package toml
-  :ensure t
-  :demand t
+
+(hondana/use toml
   :straight (toml
              :type git
              :host github
              :repo "gongo/emacs-toml"))
 
 ;; Shortcuts' manager
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup t))
+(hondana/use general
+             :config
+             (general-evil-setup t))
 
 ;; Evil
-(use-package evil
-  :ensure t
+(hondana/use evil
   :after general
   :init
   (setq evil-want-integration t)
@@ -113,36 +140,8 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (let ((states
-         (eval-when-compile ;; rerun `make init' when *.toml changed
-           (let ((states
-                  (condition-case err
-                      (progn
-                        (require 'toml)
-                        (toml:read-from-file
-                         (expand-file-name "evil-emacs-state.toml"
-                                           user-emacs-directory)))
-                    (error
-                     (message "%s in evil-emacs-state.toml"
-                              (error-message-string err))
-                     nil))))
-             (when states
-               (fset 'filter (lambda (text a b)
-                               (replace-regexp-in-string a b text)))
-               (fset 'filter-buf (lambda (buf)
-                                   (let* ((bs (filter buf "\\\\\\\\" "\\\\"))
-                                          (wildc1 (filter bs "^\\*" "\\\\*"))
-                                          (clean-buf (filter wildc1
-                                                             "\\([^\\.]\\)\\*"
-                                                             "\\1\\\\*")))
-                                     clean-buf)))
-               (let ((buffers (cdr (assoc "buffers" states)))
-                     (filtered-buffers '()))
-                 (dolist (buffer buffers)
-                   (push (cons (filter-buf buffer) 'emacs)
-                         filtered-buffers))
-                 (setf (cdr (assoc "buffers" states)) filtered-buffers)
-                 states))))))
+  (let ((states (eval-when-compile
+                  (hondana/make-evil-states "evil-emacs-states.toml"))))
     (when states
       (let ((modes (cdr (assoc "modes" states)))
             (buffers (cdr (assoc "buffers" states))))
@@ -151,14 +150,13 @@
         (dolist (buffer buffers)
           (add-to-list 'evil-buffer-regexps buffer))))))
 
-(use-package evil-collection
+(hondana/use evil-collection
   :after evil
   :functions evil-collection-init
   :config
   (evil-collection-init))
 
-(use-package evil-surround
-  :ensure t
+(hondana/use evil-surround
   :after evil
   :functions global-evil-surround-mode
   :config
@@ -167,20 +165,18 @@
 ;; Xclip
 (unless (and (eq system-type 'gnu/linux)
              (not (executable-find "xclip")))
-  (use-package xclip
-               :ensure t
+  (hondana/use xclip
                :functions xclip-mode
                :init
                (xclip-mode 1)))
 
 ;; Buffer history
-(use-package savehist
+(hondana/use savehist
   :init
   (savehist-mode))
 
 ;; Better minibuffer completion
-(use-package vertico
-  :ensure t
+(hondana/use vertico
   :custom
   (vertico-cycle t)
   (read-buffer-completion-ignore-case t)
@@ -190,38 +186,35 @@
   (vertico-mode))
 
 ;; Code completion at point ; TODO: replace me by Corfu if time
-(use-package company
-  :ensure t
+(hondana/use company
   :hook (after-init . global-company-mode)
   :custom
   (company-idle-delay 0))
 
 ;; Which Key
-(use-package which-key
+(hondana/use which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config (setq which-key-idle-delay 0.300))
 
 ;; (Optional) Doom-modeline
-(use-package doom-modeline
-  :ensure t
+(hondana/use doom-modeline
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 10)))
 
 ;; Show lots of useful stuff in the minibuffer
-(use-package marginalia
+(hondana/use marginalia
   :after vertico
-  :ensure t
   :functions marginalia-mode
   :init
   (marginalia-mode))
 
 ;; Rainbow Delimiters
-(use-package rainbow-delimiters
+(hondana/use rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Sly
-(use-package sly)
+(hondana/use sly)
 
 ;;; EXTENSIONS
 
@@ -231,7 +224,7 @@
 
 ;; Git manager if you want
 (when hondana/want-git
-  (use-package magit
+  (hondana/use magit
     :commands (magit-status magit-get-current-branch)
     :custom
     (magit-display-buffer-function

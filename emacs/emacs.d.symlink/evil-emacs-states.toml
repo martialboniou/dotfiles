@@ -1,4 +1,7 @@
 # IMPORTANT: recompile after each changes; `make init' will do it
+# NOTICE: if Emacs has already been started & you've just added some new
+# entries, simply change and save `init.el'; the auto-compiler will
+# re-evaluate this file for this Evil setup
 title = "Set Emacs states in evil-mode"
 
 modes = [

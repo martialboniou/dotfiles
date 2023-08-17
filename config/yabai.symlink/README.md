@@ -11,28 +11,29 @@ YABAI
 - TIP:
     - use `ctrl + F2` to move focus to the menu bar
 - skhd (`shift` not explicitly written but a capital letter)
-  - IMPORTANT!: don't map `alt + a` as it's the current prefix for tmux
+  - IMPORTANT!: don't map `fn + a` as it's the current prefix for tmux
+    (Technically, it's `F5` but skhd does the mapping!)
   - most used
-    - `alt + h,j,k,l` to navigate
-    - `alt + m` to maximize/restore
-    - `alt + H,J,K,L` to swap windows (+ `shift`)
-    - `alt + 1..` to move window to a specific space
-    - **(NOT WORKING NOW!)** `ctrl + alt + 1..` to go to a specific space
+    - `fn + h,j,k,l` to navigate
+    - `fn + m` to maximize/restore
+    - `fn + H,J,K,L` to swap windows (+ `shift`)
+    - `fn + 1..` to move window to a specific space
+    - **(NOT WORKING NOW!)** `ctrl + fn + 1..` to go to a specific space
       (if no window to focus, go to the space anyway!; also, REMINDER:
-      `ctrl + left/right` works too!); **IMPORTANT**: use `ctrl + alt`, not
+      `ctrl + left/right` works too!); **IMPORTANT**: use `ctrl + fn`, not
       `ctrl` only, when dealing with numbers (`ctrl + 6` can be reserved on
       (Neo)Vim as an alternative to `<C-^>`; useful if Vim cannot listen
       to this last one because of a layout with a *dead key* for the
       *caret*)
-    - `ctrl  + alt + q/s` to quit/start yabai
+    - `ctrl  + fn + q/s` to quit/start yabai
   - others
-    - `alt + r` to rotate clockwise
-    - `alt + t` to toggle window float
-    - `alt + e` to balance
-    - `alt + p,n` to move window to prev/next space
-    - `alt + x,y` to flip x,y axis
-    - `ctrl + alt + h,j,k,l` to move & split
-    - `alt + o,u` to change focus between external display (west,east)
+    - `fn + r` to rotate clockwise
+    - `fn + t` to toggle window float
+    - `fn + e` to balance
+    - `fn + p,n` to move window to prev/next space
+    - `fn + x,y` to flip x,y axis
+    - `ctrl + fn + h,j,k,l` to move & split
+    - `fn + o,u` to change focus between external display (west,east)
 - for faster Dock show/hide, `killall Dock` after:
   - `defaults write com.apple.dock autohide-delay -int 0`
   - `defaults write com.apple.dock autohide-time-modifier -float 0.4`

@@ -4,7 +4,7 @@
 ;;; PACKAGES
 
 ;; Project manager
-(use-package projectile
+(hondana/use projectile
   :diminish projectile-mode
   :defines (project-directory)
   :config (projectile-mode)

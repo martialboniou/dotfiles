@@ -1,53 +1,44 @@
-(provide 'org-setup)
-
 (defvar evil-auto-indent nil)
 (declare-function org-indent-mode (&optional arg))
 
 ;;; PACKAGES
 
-;; TODO: WIP
-(defun dw/org-mode-setup ()
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (auto-fill-mode 0)
-  (visual-line-mode 1)
-  (setq evil-auto-indent nil))
-
-(use-package org
-  :hook (org-mode . dw/org-mode-setup)
+(hondana/use org
   :config
-  (setq org-ellipsis " ▾"
-        org-hide-emphasis-markers t))
+  (setq org-ellipsis " ▾")
+  (defun hondana/org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (auto-fill-mode 0)
+    (visual-line-mode 1)
+    (setq evil-auto-indent nil))
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 ()
+                                  (compose-region
+                                   (match-beginning 1)
+                                   (match-end 1) "•")))))))
+(add-hook 'org-mode-hook 'hondana/org-mode-setup)
 
-(use-package org-bullets
+(hondana/use org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-;; Replace list hyphen with dot
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                          (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(hondana/use visual-fill-column
+  :straight (visual-fill-column
+             :host codeberg
+             :repo "joostkremers/visual-fill-column")
+  :config
+  (defun hondana/visual-fill ()
+    (setq-default visual-fill-column-width 83
+                  visual-fill-column-center-text t)
+    (visual-fill-column-mode 1)))
+;add-hook 'visual-line-mode-hook 'hondana/visual-fill)
 
-; (dolist (face '((org-level-1 . 1.2)
-;                 (org-level-2 . 1.1)
-;                 (org-level-3 . 1.05)
-;                 (org-level-4 . 1.0)
-;                 (org-level-5 . 1.1)
-;                 (org-level-6 . 1.1)
-;                 (org-level-7 . 1.1)
-;                 (org-level-8 . 1.1)))
-;     (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-;
 ; ;; Make sure org-indent face is available
 ; (require 'org-indent)
-;
-; ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-; (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-; (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-; (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-; (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-; (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-; (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+(provide 'org-setup)

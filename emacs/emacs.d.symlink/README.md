@@ -36,4 +36,10 @@ Notes
       - `../../config/skhd.symlink/skhdrc`
     - I use `skhd` for yabai's keybindings too; fortunately my keybindings
       previously based on `Option` (AKA `Alt`) are now based on `fn`
-
+- `C-Enter`/`S-Enter` (required in Org-mode) are still mapped to a
+  `[13;` derivatives (`C-M` AKA `Return`) or `C-J` on macOS due to the old TTY
+  compatibility; on iTerm2, add two entries in the Profiles' *Key Mappings*:
+  - `C-Enter` / Send Escape Sequence / `[13;5u`
+  - `S-Enter` / Send Escape Sequence / `[13;2u`
+  (check this
+  [source](https://stackoverflow.com/questions/16359878/how-to-map-shift-enter))

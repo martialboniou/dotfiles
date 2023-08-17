@@ -6,7 +6,7 @@
 ;;; PACKAGES
 
 ;; Hydra
-(use-package hydra
+(hondana/use hydra
   :functions (defhydra)
   :config
   (defhydra hydra-text-scale (:timeout 4)
