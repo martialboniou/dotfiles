@@ -31,8 +31,6 @@
       (lambda ()
         (setq gc-cons-threshold original/gc-cons-threshold)
         (setq file-name-handler-alist original/file-name-handler-alist)
-        (makunbound 'gc-cons-threshold-original)
-        (makunbound 'file-name-handler-alist-original)
         (message "gc-cons-threshold and file-name-handler-alist restored")))))
 
 ;;; UTILITIES

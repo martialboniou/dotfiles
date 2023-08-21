@@ -8,10 +8,7 @@
   (setq org-ellipsis " ▾")
   (defun hondana/org-mode-setup ()
     (org-indent-mode)
-    (variable-pitch-mode 1)
-    (auto-fill-mode 0)
-    (visual-line-mode 1)
-    (setq evil-auto-indent nil))
+    (visual-line-mode 1))
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -35,8 +32,9 @@
   (defun hondana/visual-fill ()
     (setq-default visual-fill-column-width 83
                   visual-fill-column-center-text t)
-    (visual-fill-column-mode 1)))
-;add-hook 'visual-line-mode-hook 'hondana/visual-fill)
+    (visual-fill-column-mode 1))
+  (add-hook 'visual-line-mode-hook 'hondana/visual-fill))
+
 
 ; ;; Make sure org-indent face is available
 ; (require 'org-indent)
