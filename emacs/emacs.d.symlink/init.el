@@ -7,6 +7,7 @@
 
 (defvar inferior-lisp-program "sbcl") ; used with sbcl 2.3.7 on macOS 13,4
 (defvar project-directory "~/Documents/Code")
+(defvar org-agenda-files '("~/Documents/Code/lisp/emacs/tests/org/OrgFiles/Tasks.org"))
 (defvar hondana/evil-emacs-states '())
 (eval-and-compile
   (defvar evil-want-keybinding nil)) ; IMPORTANT: mandatory for evil-collection

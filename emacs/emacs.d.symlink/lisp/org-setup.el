@@ -5,7 +5,10 @@
 
 (hondana/use org
   :config
-  (setq org-ellipsis " ▾")
+  (setq org-ellipsis " ▾"
+        org-agenda-start-with-log-mode t
+        org-log-into-drawer t
+        org-log-done 'time)
   (defun hondana/org-mode-setup ()
     (org-indent-mode)
     (visual-line-mode 1))

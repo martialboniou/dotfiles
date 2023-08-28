@@ -47,8 +47,12 @@ if [[ -d "${ZDOT_SRC_ZSH}" ]]; then
  end
 fi
 
+# FZF configuration
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 if (( $+commands[nvim] )); then
   alias "vim"="nvim"
   alias "vi"="nvim"
 fi
+
+# opam configuration
+[[ ! -r ~/.opam/opam-init/init.zsh ]] || source ~/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
