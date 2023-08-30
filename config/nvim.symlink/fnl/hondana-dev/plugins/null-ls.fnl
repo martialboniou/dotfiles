@@ -1,7 +1,9 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
 ;;; 2023-08-05
 
-(local mason-null-ls-preferred-install [:stylua :jq])
+(local mason-null-ls-preferred-install [:stylua :jq :ocamlformat])
+
+;; NOTE: ocamlformat requires a `.ocamlformat` file at the root of a dune project
 
 (local fnlfmt-command-pattern
        {:command :fnlfmt

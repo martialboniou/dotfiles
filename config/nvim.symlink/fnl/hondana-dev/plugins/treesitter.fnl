@@ -13,6 +13,8 @@
                             :html
                             :php
                             :yaml
+                            :ocaml
+                            :ocaml_interface
                             ; :go ;; add me when you go
                             ])
 

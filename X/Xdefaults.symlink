@@ -27,8 +27,8 @@ URxvt*termName: xterm-256color
 !URxvt*iso14755_52: false
 
 ! XTerm
-XTerm*faceName: DejaVu Sans Mono
-XTerm*faceSize: 10
+XTerm*faceName: Inconsolata Nerd Font Mono
+XTerm*faceSize: 12
 !XTerm*metaSendsEscape: true
 
 ! UXTerm !

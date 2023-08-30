@@ -22,11 +22,9 @@
         :i {:<C-h> #(vim.lsp.buf.signature_help)}})
 
 ;; NOTE: stylua is ready to use but still unused here
-(local mason-lspconfig-preferred-install
-       [:rust_analyzer
-        ;; codelldb
-        ;; taplo
-        ])
+(local mason-lspconfig-preferred-install [:rust_analyzer :ocaml-lsp])
+
+;; NOTE: ocaml-lsp is the same as ocaml-lsp-server via opam
 
 ;; will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers
@@ -41,6 +39,7 @@
         :astro
         :vimls
         :cssls
+        :ocamllsp
         :fennel_language_server])
 
 {1 :neovim/nvim-lspconfig
