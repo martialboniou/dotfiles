@@ -15,6 +15,7 @@
                             :yaml
                             :ocaml
                             :ocaml_interface
+                            :zig
                             ; :go ;; add me when you go
                             ])
 

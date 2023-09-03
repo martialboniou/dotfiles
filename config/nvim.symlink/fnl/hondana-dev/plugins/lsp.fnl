@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2023-08-05
+;;; 2023-09-03
 
 (local zero-setup-preferred-preset :recommended)
 
@@ -40,6 +40,9 @@
         :vimls
         :cssls
         :ocamllsp
+        :zls
+        ;; fennel_ls needs too much work especially
+        ;; without macro-path's multiple root-uri
         :fennel_language_server])
 
 {1 :neovim/nvim-lspconfig
@@ -107,4 +110,25 @@
                                    :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
                                                        :diagnostics {:globals [:vim]}}}}})
            (lspconfig.fennel_language_server.setup {})
+           ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
+           (if (-> :fennel-ls (vim.fn.executable) (= 1))
+               (do
+                 ;; (tset (require :lspconfig.configs) :fennel_ls
+                 ;;       {:default_config {:cmd [:fennel-ls]
+                 ;;                         :filetypes [:fennel]
+                 ;;                         :single_file_support true
+                 ;;                         :root_dir (λ [startpath]
+                 ;;                                     (let [path ((lspconfig.util.root_pattern :fnl) startpath)]
+                 ;;                                       (local root
+                 ;;                                              (table.concat [path
+                 ;;                                                             :fnl]
+                 ;;                                                            "/"))
+                 ;;                                       (when (lspconfig.util.path.exists root)
+                 ;;                                         root)))
+                 ;;                         :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
+                 ;;                                             :diagnostics {:globals [:vim]}}
+                 ;;                                    ;                                    :fennel-ls {:macro-path "~/.local/share/nvim/lazy/hibiscus\.nvim/fnl/?.fnl;./?.fnl;"}
+                 ;;                                    }}})
+                 ;; (lspconfig.fennel_ls.setup {})
+                 ))
            (lsp-zero.setup))}
