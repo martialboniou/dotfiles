@@ -111,24 +111,4 @@
                                                        :diagnostics {:globals [:vim]}}}}})
            (lspconfig.fennel_language_server.setup {})
            ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
-           (if (-> :fennel-ls (vim.fn.executable) (= 1))
-               (do
-                 ;; (tset (require :lspconfig.configs) :fennel_ls
-                 ;;       {:default_config {:cmd [:fennel-ls]
-                 ;;                         :filetypes [:fennel]
-                 ;;                         :single_file_support true
-                 ;;                         :root_dir (λ [startpath]
-                 ;;                                     (let [path ((lspconfig.util.root_pattern :fnl) startpath)]
-                 ;;                                       (local root
-                 ;;                                              (table.concat [path
-                 ;;                                                             :fnl]
-                 ;;                                                            "/"))
-                 ;;                                       (when (lspconfig.util.path.exists root)
-                 ;;                                         root)))
-                 ;;                         :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
-                 ;;                                             :diagnostics {:globals [:vim]}}
-                 ;;                                    ;                                    :fennel-ls {:macro-path "~/.local/share/nvim/lazy/hibiscus\.nvim/fnl/?.fnl;./?.fnl;"}
-                 ;;                                    }}})
-                 ;; (lspconfig.fennel_ls.setup {})
-                 ))
            (lsp-zero.setup))}
