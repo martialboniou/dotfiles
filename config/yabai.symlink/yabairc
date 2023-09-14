@@ -32,3 +32,5 @@ yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^PathOfExileClient$" manage=off
 yabai -m rule --add app="^PathOfBuilding$" manage=off
+# TEMPORARY!!
+yabai -m rule --add app="^clashproto$" manage=off

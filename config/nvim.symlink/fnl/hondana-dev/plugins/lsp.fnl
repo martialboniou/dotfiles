@@ -40,7 +40,7 @@
         :vimls
         :cssls
         :ocamllsp
-        :zls
+        ;; :zls DON'T USE MASON HERE (see below)
         ;; fennel_ls needs too much work especially
         ;; without macro-path's multiple root-uri
         :fennel_language_server])
@@ -111,4 +111,12 @@
                                                        :diagnostics {:globals [:vim]}}}}})
            (lspconfig.fennel_language_server.setup {})
            ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
+           ;; NOTE: I need the zls that fits zig's version
+           (if (-> :zls ( vim.fn.executable) (= 1))
+             (do
+               (tset (require :lspconfig.configs) :zls
+                     {:default_config {:cmd [:zls]
+                                       :filetypes [:zig]
+                                       :root_dir (lspconfig.util.root_pattern :build.zig "*.zig" ".git")}})
+               (lspconfig.zls.setup {})))
            (lsp-zero.setup))}

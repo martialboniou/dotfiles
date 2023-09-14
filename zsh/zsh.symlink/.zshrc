@@ -51,8 +51,10 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 if (( $+commands[nvim] )); then
   alias "vim"="nvim"
-  alias "vi"="nvim"
 fi
 
 # opam configuration
 [[ ! -r ~/.opam/opam-init/init.zsh ]] || source ~/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+# bun completions
+[ -s "/Users/mars/.bun/_bun" ] && source "/Users/mars/.bun/_bun"
