@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/env/bin zsh
 # git_prompt: get the current branch; inspired by /etc/bash_completion.d/git
 function git_prompt() {
     if which git > /dev/null; then

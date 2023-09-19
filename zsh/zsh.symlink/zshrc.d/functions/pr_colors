@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # pr_colors: create PR_* colors for prompt
 
 function pr_colors() {

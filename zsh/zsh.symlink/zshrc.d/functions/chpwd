@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # chpwd: when you cd, this updates your shared dirdump
 function chpwd() {
     dirdump

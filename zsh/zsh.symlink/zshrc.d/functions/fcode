@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+function fcode {
+    cd $(find $HOME/Documents/Code -type d -print | fzf)
+}

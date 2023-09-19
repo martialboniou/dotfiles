@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+function fcd {
+    cd $(find . -type d -print | fzf)
+}

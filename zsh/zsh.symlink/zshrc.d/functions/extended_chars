@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # extended_chars: extended characters to look nicer 
 
 function extended_chars() {
