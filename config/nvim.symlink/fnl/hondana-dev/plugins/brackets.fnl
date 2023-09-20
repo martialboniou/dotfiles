@@ -47,7 +47,8 @@
  ;    cin) => change inners of the parens (cursor out)
  ;    da,  => delete between commas (cursor in)
  ;    d2i) => change inners including outer parens (cursor in)
- {1 :wellle/targets.vim :event [:BufReadPost :BufNewFile]}
+ ;;; DANGER! ;; targets ruin the Vim macros (recorded/typed)
+ ;;; DANGER! ;; {1 :wellle/targets.vim :event [:BufReadPost :BufNewFile]}
  ;; s-expression editing = paredit as recommended by monkoose in the nvlime-tutor
  ;; (https://github.com/monkoose/nvlime#Quickstart)
  ;
@@ -86,8 +87,7 @@
  {1 :kovisoft/paredit
   ; ready on first file if you need to enable for a non-lisp content
   ; use: `:cal PareditInitBuffer()`
-  :event [:BufReadPost :BufNewFile]
-  }
+  :event [:BufReadPost :BufNewFile]}
  ;;; TODO: replace paredit by parinfer-rust if smoother
  ;;; NEXT = UNUSED
  ;; s-expression editing; eg:
