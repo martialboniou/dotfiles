@@ -18,7 +18,7 @@
 
 (set! :swapfile false)
 (set! :backup false)
-(vim.cmd "set undodir=$HOME/.vim/undodir")
+(set! :undodir (.. (os.getenv :HOME) :/.vim/undodir))
 (set! :undofile true)
 
 (set! :hlsearch false)

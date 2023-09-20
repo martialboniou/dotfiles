@@ -26,11 +26,12 @@ Vim keybinding reminders & tips
   is available to change the working directory **for the current window**
   with `lcd`)
 - `gf`   : go to file when cursor is above a filename/hyperlink
-- `:copen` : open the quickfix list
 - `:map` : check the key mapping
 - `<C-f>` : command mode after a `:`; behave like any Vim buffer
 - `G`    : go to the end of file (of course!)
-- `J` (in visual) : move down the visual block (added!)
+- `J` (in visual) : move down the visual block (added; see `remap.fnl`!)
+- `<C-j>` : go down in the quickfix list (see below)
+- `:copen` : open the quickfix list (say, after a `:grep foo src/*`)
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)

@@ -73,9 +73,8 @@
 (λ toggle-exec []
   ;; use :make_executable if no back and forth
   (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle_executable))]
-    (when (not ok)
-      (print (.. "Error: toggle_executable in remap.lua: " res))
-      (lua :return))
-    (print (.. "Success: " res))))
+    (if (not ok)
+        (print (.. "Error: toggle_executable in remap.lua: " res))
+        (print (.. "Success: " res)))))
 
 (vim.keymap.set :n :<leader>x toggle-exec {:silent false})
