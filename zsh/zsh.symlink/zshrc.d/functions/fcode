@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
 function fcode {
-    cd $(find $HOME/Documents/Code -type d -print | fzf)
+    local CODE_PATH=$HOME/Documents/Code
+    cd $(find $CODE_PATH -type d -depth 4 -not -path '*/deprecated/*' -not -path "*/\.*" -prune -print | fzf) 
 }
