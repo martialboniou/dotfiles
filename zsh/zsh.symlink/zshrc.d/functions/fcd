@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
 function fcd {
-    cd $(find . -type d -print | fzf)
+    dest=$(fd -t d . . --ignore-file ~/.gitignore --exclude deprecated --exclude "/Applications*" | fzf)\
+        && cd $dest\
+        || return 0
 }

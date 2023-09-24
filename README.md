@@ -106,6 +106,8 @@ On macOS, install the following package (see [tmux-MacOSX-pasteboard](https://gi
 brew install reattach-to-user-namespace
 ```
 
+**IMPORTANT**: some useful functions require `fzf` and `fd`
+
 ## Tmux (my terminal manager)
 
 - Ensure the version (`tmux -V`) is 3.1+

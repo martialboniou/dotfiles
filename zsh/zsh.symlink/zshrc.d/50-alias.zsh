@@ -40,14 +40,19 @@ if which elinks &> /dev/null; then
 fi
 
 # cd aliases (->hondana@gmx.com)
-alias -- rh='cd' # Dvorak keyboard: overuse of 'return' key
-                 # may shift your hand from the row line
+alias -- rh='cd'   # Dvorak keyboard: overuse of 'return' key
+                   # may shift your hand from the row line
 alias ..='cd ..'
 alias ...='cd ../..'
 alias cd..='cd ..'
-alias cd.='cd ..' # honestly 'cd .' is normally unused alone
+alias cd.='cd ..'  # honestly 'cd .' is normally unused alone
 alias cdc='cd ~; clear'
-alias mcd='mkcdir' # see modules
+# zsh functions -- see modules
+alias mcd='mkcdir' # AKA mkdir+cd
+# NOTE: the following aliases require fd
+alias ff='fcd'     # ie fzf <- cd .
+alias ffc='fcode'  # ie fzf <- cd ~/Documents/Code
+alias fcf='fcode'  # ie fzf <- cd ~/Documents/Code
 
 # Dump specific
 alias purge="rm -i *~" # emacs temp files to the void

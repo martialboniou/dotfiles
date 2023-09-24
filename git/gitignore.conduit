@@ -3,3 +3,10 @@
 *~
 *.swp
 *.rbc
+/Library/
+!/.config/
+/temp/
+*cache/
+*Cache/
+vendor/
+node_modules/

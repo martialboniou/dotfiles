@@ -2,5 +2,7 @@
 
 function fcode {
     local CODE_PATH=$HOME/Documents/Code
-    cd $(find $CODE_PATH -type d -depth 4 -not -path '*/deprecated/*' -not -path "*/\.*" -prune -print | fzf) 
+    dest=$(fd -t d . $CODE_PATH --ignore-file ~/.gitignore --exclude deprecated | fzf)\
+        && cd $dest\
+        || return 0
 }
