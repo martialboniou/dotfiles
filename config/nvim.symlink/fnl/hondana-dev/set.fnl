@@ -1,4 +1,4 @@
-(import-macros {: set! : setlocal! : g!} :hibiscus.vim)
+(import-macros {: set! : set+ : setlocal! : g!} :hibiscus.vim)
 (import-macros {: or=} :hibiscus.core)
 (local autocmd vim.api.nvim_create_autocmd)
 
@@ -43,14 +43,25 @@
 ;; you can use lambda in this programming languagea (see below)
 (vim.cmd.iab ",\\ λ")
 
-;; shorten indentation for some filetypes
-(local hondana-short-indentation
-       (vim.api.nvim_create_augroup :Hondana_ShortIndentation {}))
+;; special indentation for some filetypes
+(local hondana-special-indentation
+       (vim.api.nvim_create_augroup :Hondana_SpecialIndentation {}))
 
 (autocmd :BufWinEnter {:callback (λ []
+                                   ;; short indent
                                    (when (or= vim.bo.ft :jsonc :json :haskell
                                               :ocaml)
                                      (each [_ option (ipairs [:sw :ts :sts])]
                                        (setlocal! option 2))))
-                       :group hondana-short-indentation
+                       ;; long indent example
+                       ;; (when (or= vim.bo.ft :go)
+                       ;;   (each [_ option (ipairs [:sw :ts :sts])]
+                       ;;     (setlocal! option 8)))
+                       :group hondana-special-indentation
                        :pattern "*"})
+
+;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
+(local fzf-macos :/opt/homebrew/opt/fzf)
+(when (= 1 (vim.fn.isdirectory fzf-macos))
+  (set+ rtp fzf-macos)
+  (vim.keymap.set :n :<leader>t ":FZF<CR>"))
