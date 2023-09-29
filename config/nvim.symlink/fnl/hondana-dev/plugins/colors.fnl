@@ -5,7 +5,10 @@
         :opts {:disable_background true :disable_float_background true}
         :config (λ [_ opts]
                   (#($.setup opts) (require :rose-pine))
-                  (vim.cmd.colorscheme :rose-pine-moon))})
+                  (vim.cmd.colorscheme :rose-pine-moon)
+                  ;; I don't like the dull default color for the punctuation
+                  (vim.api.nvim_set_hl 0 "@punctuation" {:fg :White})
+                  (vim.api.nvim_set_hl 0 :Operator {:fg :Pink}))})
 
 (local rainbow-delimiters
        {1 :HiPhish/rainbow-delimiters.nvim
