@@ -7,6 +7,8 @@
                     :desc ,(.. "Go to the #" unit " harpooned file")}))
   out)
 
+(local unpack (or table.unpack _G.unpack)) ; for tests only with Lua 5.4
+
 (λ netrw-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)]
     (= :netrw buf-type)))

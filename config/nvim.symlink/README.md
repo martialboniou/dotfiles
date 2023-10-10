@@ -25,9 +25,19 @@ Vim keybinding reminders & tips
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
+- `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
+  - `I`  : insert in visual block
+  - `A`  : append in visual block (use `$` to reach the EOL of each line of
+           the block; useful to complete lines with commas or semi-colons)
 - `gf`   : go to file when cursor is above a filename/hyperlink
 - `:map` : check the key mapping
-- `<C-f>` : command mode after a `:`; behave like any Vim buffer
+- `<C-f>` : **command mode** after a `:`; behave like any Vim buffer
+- navigation with some `z` commands when *wrap* mode is off (default in this setup):
+  - `zz`  : center cursor position vertically (**BEWARE**: `ZZ` means save and close buffer; works
+            the same when *wrap* mode is on)
+  - `z;`  : center cursor position horizontally (added; equivalent to `zszH`; see `remap.fnl`!)
+  - `zs`  : scroll horizontally to position the **cursor at the start** of the
+            screen
 - `G`    : go to the end of file (of course!)
 - `J` (in visual) : move down the visual block (added; see `remap.fnl`!)
 - `<C-j>` : go down in the quickfix list (see below)

@@ -1,3 +1,4 @@
+;; TODO: slimv (compare with emacs.sly)
 (import-macros {: g!} :hibiscus.vim)
 {1 :monkoose/nvlime
  :ft :lisp

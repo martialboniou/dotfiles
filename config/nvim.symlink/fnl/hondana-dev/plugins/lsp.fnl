@@ -112,11 +112,12 @@
            (lspconfig.fennel_language_server.setup {})
            ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
            ;; NOTE: I need the zls that fits zig's version
-           (if (-> :zls ( vim.fn.executable) (= 1))
-             (do
-               (tset (require :lspconfig.configs) :zls
-                     {:default_config {:cmd [:zls]
-                                       :filetypes [:zig]
-                                       :root_dir (lspconfig.util.root_pattern :build.zig "*.zig" ".git")}})
-               (lspconfig.zls.setup {})))
+           (when (-> :zls (vim.fn.executable) (= 1))
+             (tset (require :lspconfig.configs) :zls
+                   {:default_config {:cmd [:zls]
+                                     :filetypes [:zig]
+                                     :root_dir (lspconfig.util.root_pattern :build.zig
+                                                                            :*.zig
+                                                                            :.git)}})
+             (lspconfig.zls.setup {}))
            (lsp-zero.setup))}

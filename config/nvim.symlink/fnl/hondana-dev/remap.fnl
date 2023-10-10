@@ -68,6 +68,7 @@
 
 ;; added by https://gitlab.com/martialhb
 (vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")
+(vim.keymap.set :n "z;" ":<C-u>normal! zszH<CR>")
 
 ;; toggle the executability of the current file
 (λ toggle-exec []

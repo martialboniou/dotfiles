@@ -1,6 +1,8 @@
 ;;; LSP Zero version
 ;;; 2023-08-06 - FIX: <Tab> disabled
 
+(local unpack (or table.unpack _G.unpack)) ; for tests only with Lua 5.4
+
 ;; IMPORTANT: noselect = no <CR> in CMP = what I want here
 (local cmp-config-complete-options "menu,menuone,noinsert, noselect")
 
