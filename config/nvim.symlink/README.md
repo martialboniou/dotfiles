@@ -279,7 +279,7 @@ return {
 **IMPORTANT**: If you put your plugins in `lua/hondana-dev/plugins`, please
 choose an original filename (say, add your name as a  prefix). If another
 plugin spec file with the same name may exist in `fnl/hondana-dev/plugins` 
-in the future, the compiled version in `lua/hondana-dev/plugins` will crush
+in the future, the compiled version in `lua/hondana-dev/plugins` would crush
 yours.
 
 If you want to edit some Fennel code, notice that:
@@ -334,10 +334,38 @@ Here's some tips for the LISP typists:
 - (insert mode) <C-k> + `*` + `l`: print `λ` (same as above but this is an 
   universal keybinding for Vim/NeoVim)
 
-### Note for beginners using PHP
+### Note about specific environment for developers
 
-I've had developed a lot with the Symfony 5/6 framework. Not as pro as
-Spring but it works. If you want to use this install to make NeoVim as
+#### Clang (C/C++)
+
+This setup is not ready for Clang with LSP; you'll have to install `clangd`
+via `Mason` (type `i` when the cursor is above `clangd`).
+
+Additionally, configure your project by setting a `compile_flags.txt` at
+the root of your project like this (change the path according to your
+install):
+
+```
+-Wall
+-Wextra
+-I/opt/homebrew/include
+```
+
+Report to the [documentation](https://clangd.llvm.org/config) for other
+settings (say, if you use `cmake`; I generally build by `zig` or other
+minimalist scripts).
+
+The default formatting is *annoying* (set to 2 spaces' indent). You should
+add `.clang-format` at the root of your project too:
+
+```yaml
+BasedOnStyle: LLVM
+IndentWith: 4
+```
+
+#### Symfony 6 (PHP)
+
+If you want to use this install to make NeoVim as
 a *ready-to-go* Symfony editor (and get rid of VSCode), do it so.
 
 First, install with `:Mason` (type `i` when the cursor is above
