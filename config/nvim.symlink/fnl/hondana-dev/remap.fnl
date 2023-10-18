@@ -61,10 +61,20 @@
 (vim.keymap.set :n :<leader>j :<cmd>lnext<CR>zz)
 (vim.keymap.set :n :<leader>k :<cmd>lprev<CR>zz)
 
-(vim.keymap.set :n :<leader>s
-                ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+;; <leader>ss => search-replace (in normal/visual mode)
+;; <leader>sc => search-replace w/ confirmation (in normal/visual mode)
+(each [k v (pairs {:s "" :c :c<Left>})]
+  (let [key (.. :<leader>s k)]
+    (vim.keymap.set :n key (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI" v
+                               :<Left><Left><Left>))
+    (vim.keymap.set :v key (.. ":s///gI" v :<Left><Left><Left><Left>))))
 
-(vim.keymap.set :v :<leader>s ":s///gI<Left><Left><Left><Left>")
+;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
+;; <leader>cc (alias)
+(icollect [_ v (ipairs [:cgn :cc])]
+  (->> v
+       (.. :<leader>)
+       (#(vim.keymap.set :n $ ":let @/=expand('<cword>')<CR>cgn"))))
 
 ;; added by https://gitlab.com/martialhb
 (vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")

@@ -29,6 +29,13 @@ Vim keybinding reminders & tips
   - `I`  : insert in visual block
   - `A`  : append in visual block (use `$` to reach the EOL of each line of
            the block; useful to complete lines with commas or semi-colons)
+- `gn` to search forward (`g` as in `ex` command) the `n`ext similar word as
+  the last search (`*`, `/\<something\>`...; *since Vim 7.4*):
+    - `cgn` to change the current searched word then the next one with the same
+      pattern by using `.`
+    - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
+      the next one with the same pattern by using `.` (*alias* of
+      `:let @/=expand('<cword>')<CR>cgn`)
 - `gf`   : go to file when cursor is above a filename/hyperlink
 - `:map` : check the key mapping
 - `<C-f>` : **command mode** after a `:`; behave like any Vim buffer
@@ -45,7 +52,11 @@ Vim keybinding reminders & tips
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)
-- Netrw specific:
+- **Case sensitivity**: the default setting is case insensitive so use `\C`
+  to **force the case sensitivity** in a search (eg: `/something\C` or
+  `/\Csomething`; use: `\c` otherwise if you've already switched to a
+  *case-sensitive setup* with `:set noic`)
+- **Netrw** specific:
   - `%` : create file
   - `d` : create directory
   - `gn` : change the current directory to the folder under the cursor
@@ -124,8 +135,10 @@ insert
 - *REMINDER*: `:map` to check the key mapping
 - `:Lazy` : check package (I prefer this one to Packer)
 - `:TSPlaygroundToggle` : display the AST (neat!)
-- **IMPORTANT!**: `<leader>s` : create a template to replace the current word (*memo*: `s` as in `:%s`)
-- `<leader>s` (in visual) : create a template to replace a pattern in the selection (added by me)
+- **IMPORTANT!**: `<leader>ss`/`<leader>sc` : create a template to replace the 
+  *current word* (*memo*: `s` as in `:%s`); the `sc` version stands for **confirmation**
+- `<leader>ss`/`<leader>sc` (in visual) : create a template to replace a *pattern
+  in the selection* (added by me; the `sc` version stands for **confirmation**)
 - `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*)
