@@ -10,8 +10,8 @@
             :K #(vim.lsp.buf.hover)
             :<leader>vws #(vim.lsp.buf.workspace_symbol)
             :<leader>vd #(vim.diagnostic.open_float)
-            "[d" #(vim.diagnostic.goto_next)
-            "]d" #(vim.diagnostic.goto_prev)
+            "[d" #(vim.diagnostic.goto_prev)
+            "]d" #(vim.diagnostic.goto_next)
             :<leader>vca #(vim.lsp.buf.code_action)
             :<leader>vrr #(vim.lsp.buf.references)
             :<leader>vrn #(vim.lsp.buf.rename)
@@ -30,6 +30,7 @@
 (local preferred-language-servers
        [:tsserver
         :rust_analyzer
+        :clangd
         :html
         :lua_ls
         :jsonls

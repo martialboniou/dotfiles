@@ -351,12 +351,8 @@ Here's some tips for the LISP typists:
 
 #### Clang (C/C++)
 
-This setup is not ready for Clang with LSP; you'll have to install `clangd`
-via `Mason` (type `i` when the cursor is above `clangd`).
-
-Additionally, configure your project by setting a `compile_flags.txt` at
-the root of your project like this (change the path according to your
-install):
+Configure your project by setting a `compile_flags.txt` at the root of your
+project like this (change the path according to your install):
 
 ```
 -Wall

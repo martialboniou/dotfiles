@@ -1,3 +1,25 @@
+;; less colors hype
+(local chosen-theme-idx 0) ;; 0 = last theme (b/c permute)
+(local themes
+       [{:foreground "#adb6b4" :n_hues 2 :desc :blue->orange-yellow}
+        {:foreground "#efefee" :n_hues 2 :desc :pink->cyan}
+        {:foreground "#aabcbb" :n_hues 3 :desc :cyan->green->pink}])
+
+(local chosen-theme
+       (-> themes
+           (#(. $ (-> $ (length) (#(-> chosen-theme-idx (- 1) (% $))) (+ 1))))))
+
+(local mini-hues {1 :echasnovski/mini.hues
+                  :version false
+                  :priority 1000
+                  :lazy false
+                  :opts {:saturation :high
+                         :background "#181818"
+                         :accent :bg
+                         :foreground (. chosen-theme :foreground)
+                         :n_hues (. chosen-theme :n_hues)}})
+
+;; previous colorscheme
 (local rose-pine
        {1 :rose-pine/neovim
         :priority 1000
@@ -30,76 +52,9 @@
                         :strategy {"" (. rainbow.strategy :global)
                                    :commonlisp (. rainbow.strategy :local)}}))})
 
-;; fnlfmt: skip
-(λ tokyonight-custom-colors [colors]
-  ;; Tomorrow Night palette based on:
-  ;; - the https://doc.rust-lang.org/book css theme
-  ;; - adapted from https://github.com/jmblog/color-themes-for-highlightjs
-  ;; - originally created by https://github.com/chriskempson/tomorrow-theme
-  ;; #c5c8c6 ; tomorrow foreground
-  ;; #1d1f21 ; tomorrow background
-  ;; *selection: #373b41 (unused in book)
-  ;; *line: #282a2e (unused in book)
-  ;; *window: #4d5057 (unused in book)
-  ;; #969896 ; tomorrow comment (comment)
-  ;; #cc6666 ; tomorrow red (variable, attribute, tag, regexp, ruby-constant, xml-tag-title, xml-doctype, xml-pi, html-doctype, css-id, css-class, css-pseudo)
-  ;; #de935f ; tomorrow orange (params, constant, number, preprocessor, pragma, built-in, literal)
-  ;; #f0c674 ; tomorrow yellow (ruby-class-title, css-rule-attribute)
-  ;; #b5bd68 ; tomorrow green (string, value, inheritance, header, name, ruby-symbol, xml-cdata)
-  ;; #8abeb7 ; tomorrow aqua (title, css-hexcolor)
-  ;; #81a2be ; tomorrow blue (python-decoration+title, ruby-function-title+title-keyword)
-  ;; #b294bb ; tomorrow purple (hljs-keyword, hljs-function)
-  ;; #718c00 ; addition (only used in book)
-  ;; #c82829 ; deletion (only used in book)
-  ;; WORK IN PROGRESS
-  (set colors.bg_dark "#1d1f21") ; tomorrow background
-  (set colors.bg "#1d1f21")      ; tomorrow background
-  (set colors.fg "#c5c8c6")      ; tomorrow foreground
-  (set colors.comment "#565f89") ; tomorrow comment
-  ;;;
-  (set colors.blue1 "#c5c8c6")   ; tomorrow foreground (identifier)
-  (set colors.blue6 "#8abeb7")   ; tomorrow aqua (lsp regexp)
-  (set colors.magenta "#b294bb") ; tomorrow purple (keyword fn)
-  (set colors.purple "#b294bb")  ; tomorrow purple (keyword let)
-  ;;;
-  (set colors.green "#b5bd68")   ; tomorrow green (string)
-  (set colors.orange "#de935f")
-  (set colors.yellow "#f0c674")
-  (set colors.red "#cc6666"))
-
-(λ tokyonight-custom-highlights [highlights colors]
-  ;; b/c magenta = purple now
-  (set highlights.rainbowcol6 {:fg colors.magenta2}))
-
-(local _tkn {1 :folke/tokyonight.nvim
-             :priority 1000
-             :lazy false
-             :opts {:on_colors #(tokyonight-custom-colors)
-                    :on_highlights #(tokyonight-custom-highlights)
-                    :style :night
-                    :styles {:comments {} :keywords {}}}
-             :config (λ [_ opts]
-                       (let [tokyonight (require :tokyonight)]
-                         (tokyonight.setup opts)
-                         (vim.cmd.coloscheme :tokyonight)
-                         (vim.api.nvim_set_hl 0
-                                              "@lsp.typemod.function.declaration.rust"
-                                              {:link "@string.regex"})
-                         (vim.api.nvim_set_hl 0
-                                              "@lsp.typemod.enum.declaration.rust"
-                                              {:link "@string.regex"})
-                         (vim.api.nvim_set_hl 0 "@lsp.type.function.rust"
-                                              {:link :Normal})))})
-
-(local _kat {1 :katawful/kat.nvim
-             :version :3.1
-             :priority 1000
-             :lazy false
-             :config #(vim.cmd.coloscheme :kat.nvim)})
-
 (local icons {1 :nvim-tree/nvim-web-devicons
               :opts {:override_by_extension {:fnl {:icon "🌱"
                                                    :color "#428850"
                                                    :name :fnl}}}})
 
-[rose-pine rainbow-delimiters icons]
+(-> mini-hues (#[$ rainbow-delimiters icons]))

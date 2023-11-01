@@ -9,4 +9,4 @@ autoload -U fold map filter # functional programming
 autoload -U zmv # mv w/ pattern matching
 autoload -U canonical_readlink # $(readlink -f) everywhere
 autoload -U clearhis imv mkcdir
-autoload -U fcd fcode
+autoload -U fcd fcode fv

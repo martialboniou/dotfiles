@@ -4,6 +4,7 @@ alias l='ls -CF'
 alias ssh='ssh -2'
 alias pa='ps aux'
 #alias vi='vim -c ":cd %:p:h"'
+alias vv='fv'  # ie fzf -> nvim
 alias mc='mc -bs'
 alias man='PAGER=less man -a'
 alias mv='nocorrect mv'       # no spelling correction on mv

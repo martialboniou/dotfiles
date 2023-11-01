@@ -1,5 +1,6 @@
 {1 :mfussenegger/nvim-dap
  :cmd [:DapToggleBreakpoint :DapToggleRepl]
+ :dependencies [:rcarriga/nvim-dap-ui :ldelossa/nvim-dap-projects]
  :keys [{1 :<leader>db
          2 #(#($.toggle_breakpoint) (require :dap))
          :desc "Add breakpoint at line"}

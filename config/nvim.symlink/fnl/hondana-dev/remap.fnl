@@ -1,11 +1,21 @@
 (import-macros {: g!} :hibiscus.vim)
+
+(local unpack (or table.unpack _G.unpack))
+
+(macro repeat-str! [str times]
+  (assert (< 0 times))
+  (assert (= :string (type str)))
+  (let [out []]
+    (for [_ 1 times] (table.insert out str))
+    `(.. ,(unpack out))))
+
 ;; keymap for NeoVim by ThePrimeagen
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
 ;; these two lines will be remapped by plugins/mini-files
-(vim.keymap.set :n :<leader>pv vim.cmd.Ex)
-(vim.keymap.set :n :<leader><leader> vim.cmd.Ex)
+(icollect [_ key (ipairs [:pv :<leader>])]
+  (vim.keymap.set :n (.. :<leader> key) vim.cmd.Ex))
 
 ;; fast nav
 
@@ -21,16 +31,15 @@
 
 ;; doesn't move the cursor while appending line
 ;; the following one is bad C-d is delete (also used in terms)
+;; page down
 (vim.keymap.set :n :<C-d> :<C-d>zz)
 
-;; page down (CHECK: any conflict?)
+;; page up (CHECK: any conflict?)
 (vim.keymap.set :n :<C-u> :<C-u>zz)
 
-;; page up
-(vim.keymap.set :n :n :nzzzv)
-
-;; keep the cursor in the middle during search
-(vim.keymap.set :n :N :Nzzzv)
+;; keep the cursor in the middle during (back)search
+(icollect [_ key (ipairs [:n :N])]
+  (vim.keymap.set :n key (.. key :zzzv)))
 
 ;; keep the cursor in the middle during backsearch
 
@@ -56,18 +65,18 @@
 ;; require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
-(vim.keymap.set :n :<C-j> :<cmd>cnext<CR>zz)
-(vim.keymap.set :n :<C-k> :<cmd>cprev<CR>zz)
-(vim.keymap.set :n :<leader>j :<cmd>lnext<CR>zz)
-(vim.keymap.set :n :<leader>k :<cmd>lprev<CR>zz)
+(collect [key navi (pairs {:<C-j> :cnext
+                           :<C-k> :cprev
+                           :<leader>j :lnext
+                           :<leader>k :lprev})]
+  (vim.keymap.set :n key (.. :<cmd> navi :<CR>zz)))
 
-;; <leader>ss => search-replace (in normal/visual mode)
-;; <leader>sc => search-replace w/ confirmation (in normal/visual mode)
-(each [k v (pairs {:s "" :c :c<Left>})]
-  (let [key (.. :<leader>s k)]
-    (vim.keymap.set :n key (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI" v
-                               :<Left><Left><Left>))
-    (vim.keymap.set :v key (.. ":s///gI" v :<Left><Left><Left><Left>))))
+;; <leader>s => search-replace (in normal/visual mode) w/ confirmation
+(let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI"
+                   (repeat-str! :<Left> 4))
+            :v (.. ":s///cgI" (repeat-str! :<Left> 5))}]
+  (collect [mode cmd (pairs cmds)]
+    (vim.keymap.set mode :<leader>s cmd)))
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)
@@ -77,8 +86,29 @@
        (#(vim.keymap.set :n $ ":let @/=expand('<cword>')<CR>cgn"))))
 
 ;; added by https://gitlab.com/martialhb
+; - change local current directory
 (vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")
+; - center the buffer vertically according to the cursor's position
 (vim.keymap.set :n "z;" ":<C-u>normal! zszH<CR>")
+; - print the current filename at the cursor position
+(vim.keymap.set :n :<leader>. ":put =expand('%:t')<CR>")
+; - print a C #include guard at current the cursor position
+(λ include-guard-scheme []
+  (when (= (vim.fn.expand "%p") "")
+    (error "Empty filename (save file and try again)"))
+  ;; vimscript's toupper() is unicode (might not be a problem here: "a-z\.")
+  (let [t #(-> $ (vim.fn.expand) (vim.fn.toupper))
+        ext (t "%:t:e")
+        guard (.. (t "%:t:r") "_" (if (= "" ext) "" (.. ext "_")))]
+    (icollect [_ cmd (ipairs [(.. :O "#ifndef " guard)
+                              (.. :o "#define " guard)
+                              :o
+                              (.. :o "#endif // " guard)
+                              :k])]
+      (vim.cmd.normal cmd))))
+
+(vim.keymap.set :n :<leader>h include-guard-scheme
+                {:desc "Print a C #include guard at the current cursor position"})
 
 ;; toggle the executability of the current file
 (λ toggle-exec []

@@ -1,0 +1,9 @@
+#!/usr/env/bin zsh
+
+function fv ()
+{
+    fd -H -E .git \
+        -E zig-cache -E zig-out \
+        -E node_modules -E vendor \
+    | fzf --print0 | xargs -0 -o nvim
+}
