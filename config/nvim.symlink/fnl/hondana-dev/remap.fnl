@@ -90,6 +90,7 @@
 (vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")
 ; - center the buffer vertically according to the cursor's position
 (vim.keymap.set :n "z;" ":<C-u>normal! zszH<CR>")
+;; TODO: test the following command; find a better keybinding
 ; - print the current filename at the cursor position
 (vim.keymap.set :n :<leader>. ":put =expand('%:t')<CR>")
 ; - print a C #include guard at current the cursor position
@@ -112,7 +113,6 @@
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
-  ;; use :make_executable if no back and forth
   (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle_executable))]
     (if (not ok)
         (print (.. "Error: toggle_executable in remap.lua: " res))

@@ -1,4 +1,5 @@
 /lazy-lock.json
+/.clang-format
 /lua/*
 !/lua/**/
 /lua/hondana-dev/*

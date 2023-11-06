@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2023-09-03
+;;; 2023-11-06
 
 (local zero-setup-preferred-preset :recommended)
 
@@ -26,7 +26,12 @@
 
 ;; NOTE: ocaml-lsp is the same as ocaml-lsp-server via opam
 
-;; will be replaced by mason-lspconfig in version 3
+;; I use the Mason clangd but you can use another one; remove _remove-me_
+(local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
+;; change to true if you want the clangd's overthought semantics!
+(local allow-clangd-semantics (-> "shitty colors" (type) (= :string) (not)))
+
+;; WARN: this will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers
        [:tsserver
         :rust_analyzer
@@ -95,12 +100,35 @@
            ;; change the following to lsp-zero-setup.sign-chars
            (lsp-zero.set_sign_icons lsp-zero-setup.sign-icons)
            (vim.diagnostic.config opts.diagnostics)
-           (lsp-zero.on_attach (λ [_ bufnr]
-                                 (local options {:buffer bufnr :remap false})
+           (lsp-zero.on_attach (λ [_ buffer]
+                                 (local options {: buffer :remap false})
                                  (each [mode map (pairs lsp-custom-keymaps)]
                                    (each [key fun (pairs map)]
                                      (vim.keymap.set mode key fun options)))))
            (local lspconfig (require :lspconfig))
+           ;; check if there's a clangd in your llvm-local-binary-path
+           (let [M (require :hondana-dev.utils)
+                 ;; local-clangd is optional (current status: unused)
+                 local-clangd (.. llvm-local-binary-path :/clangd)
+                 capabilities (vim.lsp.protocol.make_client_capabilities)
+                 on_attach #(do
+                              ;; disable formattings (see hondana-dev.plugins.null-ls)
+                              (set $1.server_capabilities.documentFormattingProvider
+                                   false)
+                              (set $1.server_capabilities.documentRangeFormattingProvider
+                                   false)
+                              ;; disable semantics if not allowed
+                              (or allow-clangd-semantics
+                                  (set $1.server_capabilities.semanticTokensProvider
+                                       nil)))]
+             ;; IMPORTANT: null-ls will do the clang-format with extra args
+             (set capabilities.offsetEncoding [:utf-16])
+             (lspconfig.clangd.setup {:cmd [(if (-> local-clangd
+                                                    (M.is_executable))
+                                                local-clangd
+                                                :clangd)]
+                                      : on_attach
+                                      : capabilities}))
            ;; Lua
            (lspconfig.lua_ls.setup (lsp-zero.nvim_lua_ls))
            (tset (require :lspconfig.configs) :fennel_language_server

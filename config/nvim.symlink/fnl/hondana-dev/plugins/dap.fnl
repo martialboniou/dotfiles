@@ -1,3 +1,4 @@
+;; TODO: add a default setup for lldb-vscode adapter
 {1 :mfussenegger/nvim-dap
  :cmd [:DapToggleBreakpoint :DapToggleRepl]
  :dependencies [:rcarriga/nvim-dap-ui :ldelossa/nvim-dap-projects]
