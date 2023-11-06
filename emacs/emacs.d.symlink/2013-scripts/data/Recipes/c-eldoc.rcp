@@ -1,5 +1,0 @@
-(:name c-eldoc
-       :description "eldoc-mode plugin for C source code"
-       :type github
-       :build `((el-get-emacs "-Q" "-L ." "-batch" "-f batch-byte-compile" "*.el"))
-       :pkgname "nflath/c-eldoc")

@@ -59,14 +59,6 @@
         :to_stdin false
         :to_temp_file true})
 
-;; unused
-(λ make-clang-generator-opts [factory]
-  (let [command :/opt/homebrew/opt/llvm/bin/clang-format
-        _ factory
-        args [(.. :--style= "\"{BasedOnStyle: LLVM, IndentWidth: 4}\"")
-              :--assume-filename=$FILENAME]]
-    {: command : args :to_stdin true}))
-
 (λ markdown-really-diagnostics-generator [params]
   (local diagnostics {})
   (each [i line (ipairs params.content)]
@@ -80,15 +72,6 @@
                         :message "Don't use 'really!'"
                         :severity vim.diagnostic.severity.WARN})))
   diagnostics)
-
-(λ on_attach [client bufnr]
-  "Disable the LSP formatting support when Null-ls is on"
-  (when (client.supports_method :textDocument/formatting)
-    (let [group (vim.api.nvim_create_augroup :LspFormatting {})
-          buffer bufnr
-          callback #(vim.lsp.buf.format {: bufnr})]
-      (vim.api.nvim_clear_autocmds {: group : buffer})
-      (vim.api.nvim_create_autocmd :BufWritePre {: group : buffer : callback}))))
 
 {1 :jay-babu/mason-null-ls.nvim
  :event [:BufReadPost :BufNewFile]
@@ -107,21 +90,6 @@
                                                                  :filetypes [:fennel]
                                                                  :generator_opts fnlfmt-command-pattern
                                                                  :factory h.formatter_factory})
-                               ;; TESTING ONLY: clang-format (removed in the next commit)
-                               clang-formatter (h.make_builtin {:name :clang_format
-                                                                :method [nls.methods.FORMATTING
-                                                                         nls.methods.RANGE_FORMATTING]
-                                                                :ignore_stderr false
-                                                                :filetypes [:c
-                                                                            :cpp
-                                                                            :cxx
-                                                                            :cs
-                                                                            :java
-                                                                            :cuda
-                                                                            :proto]
-                                                                :generator_opts (-> h.range_formatting_args_factory
-                                                                                    (make-clang-generator-opts))
-                                                                :factory h.formatter_factory})
                                ;; formatter for Twig/Nunjucks template
                                twig-formatter (h.make_builtin {:name :twig-formatter
                                                                :method nls.methods.FORMATTING
@@ -151,12 +119,6 @@
                                                                          (#[$]))}
                                                        {})]
                                         (format.clang_format.with extras))
-                                      ;;; (when (-> clang-format-global-file
-                                      ;;;           (vim.fn.filereadable) (= 1))
-                                      ;;;   (format.clang_format.with {:extra_args (->> clang-format-global-file
-                                      ;;;                                               (.. "--style=file:")
-                                      ;;;                                               (#[$]))}))
-                                      ;;; TESTING only: clang-formatter
                                       ;; great bonus for Fennel
                                       fennel-formatter
                                       ;; (go) :Mason install: gofumpt, goimports_reviser & golines
@@ -169,7 +131,6 @@
                                       twig-formatter
                                       ;; diagnostic test: warn really in markdown
                                       warn-really-in-markdown]
-                            ;; : on_attach
                             :debug true}))}]
  :opts {:ensure_installed mason-null-ls-preferred-install
         :automatic_installation false}}

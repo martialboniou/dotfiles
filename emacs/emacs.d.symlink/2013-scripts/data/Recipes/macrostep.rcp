@@ -1,6 +1,0 @@
-(:name macrostep
-       :description "Elisp macro stepper"
-       :type github
-       :pkgname "joddie/macrostep"
-       :post-init (define-key emacs-lisp-mode-map (kbd "C-c e") 'macrostep-expand))
-;; UNUSED

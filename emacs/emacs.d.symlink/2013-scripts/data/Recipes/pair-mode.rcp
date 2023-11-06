@@ -1,7 +1,0 @@
-(:name pair-mode
-       :description "Insertion of paired characters"
-       :type http
-       :url "http://www.loveshack.ukfsn.org/emacs/pair-mode.el"
-       :post-init (progn
-                    (autoload 'pair-mode "pair-mode" "Toggle Pair mode.")
-                    (autoload 'global-pair-mode "pair-mode" "Toggle Pair mode.")))

@@ -1,8 +1,0 @@
-(:name html-script
-       :description "narrow/widen on blocks of php, css, javascript and visual basic embedded in (X)HTML"
-       :website "http://www.dur.ac.uk/p.j.heslin/Software/Emacs/"
-       :type http
-       :url "http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/html-script.el"
-       :build ("mv html-script.el html-script.el.gz && gzip -d html-script.el.gz")
-       :compile "html-script.el"
-       :features "html-script")
