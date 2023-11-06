@@ -13,7 +13,8 @@ Goal
     `Normal` state (like `<C-c>` in this NeoVim setup; check
     `../../config/nvim.symlink/fnl/hondana-dev/remap.fnl`)
 - (may include some tools from the deprecated `2013-scripts`; org-mode,
-  wanderlust, mu4e...)
+  wanderlust, mu4e...;
+[check the db66a2a's version of this repository](https://github.com/martialboniou/dotfiles/tree/db66a2a41cd4fc950a378088de126f5ffef67a19))
 
 Context
 -------
