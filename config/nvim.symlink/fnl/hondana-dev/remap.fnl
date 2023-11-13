@@ -1,7 +1,5 @@
 (import-macros {: g!} :hibiscus.vim)
 
-(local unpack (or table.unpack _G.unpack))
-
 (macro repeat-str! [str times]
   (assert (< 0 times))
   (assert (= :string (type str)))
@@ -114,8 +112,10 @@
 ;; toggle the executability of the current file
 (λ toggle-exec []
   (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle_executable))]
-    (if (not ok)
-        (print (.. "Error: toggle_executable in remap.lua: " res))
-        (print (.. "Success: " res)))))
+    (-> ok
+        (not)
+        (#(if $ "Error: toggle_executable in hondana-dev.remap: " "Sucess: "))
+        (.. res)
+        (print))))
 
 (vim.keymap.set :n :<leader>x toggle-exec {:silent false})

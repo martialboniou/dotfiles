@@ -1,8 +1,6 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
 ;;; 2023-11-06
 
-(local unpack (or table.unpack _G.unpack))
-
 (local mason-null-ls-preferred-install [:stylua :jq :ocamlformat :clang-format])
 
 ;; NOTE: clangd lacks a way to customize its own clang-format (LLVM's indent width is 2; I want tabstop)
@@ -20,6 +18,7 @@
 
 (local clang-format-global-file
        (-> :config (vim.fn.stdpath) (.. :/.clang-format) (vim.fn.expand)))
+
 (when (-> clang-format-global-file (vim.fn.filereadable) (= 0))
   (let [file (io.open clang-format-global-file :w)
         options ["BasedOnStyle: LLVM"

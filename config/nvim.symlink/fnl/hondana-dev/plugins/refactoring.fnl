@@ -3,8 +3,6 @@
      s#
      ,val))
 
-(local unpack (or table.unpack _G.unpack)) ; for tests only with Lua 5.4
-
 (fn bind [post-leader-key refactor-type mode]
   {1 (.. :<leader> post-leader-key)
    2 #(#($.refactor refactor-type) (require :refactoring))

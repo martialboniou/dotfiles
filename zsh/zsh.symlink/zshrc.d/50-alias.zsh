@@ -77,3 +77,5 @@ fi
 # autoload -U zsh-mime-setup
 # zsh-mime-setup
 alias -g sc="symfony console"
+alias -g lua="luajit"
+alias -g fennel="fennel-bin-luajit"

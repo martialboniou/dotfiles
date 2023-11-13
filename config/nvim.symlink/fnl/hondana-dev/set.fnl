@@ -44,21 +44,27 @@
 (vim.cmd.iab ",\\ λ")
 
 ;; special indentation for some filetypes
-(local hondana-special-indentation
-       (vim.api.nvim_create_augroup :Hondana_SpecialIndentation {}))
+(let [group (vim.api.nvim_create_augroup :Hondana_SpecialIndentation {})]
+  (autocmd :BufWinEnter {:callback (λ []
+                                     ;; short indent
+                                     (when (or= vim.bo.ft :jsonc :json :haskell
+                                                :ocaml)
+                                       (each [_ option (ipairs [:sw :ts :sts])]
+                                         (setlocal! option 2))))
+                         ;; long indent example
+                         ;; (when (or= vim.bo.ft :go)
+                         ;;   (each [_ option (ipairs [:sw :ts :sts])]
+                         ;;     (setlocal! option 8)))
+                         :pattern "*"
+                         : group}))
 
-(autocmd :BufWinEnter {:callback (λ []
-                                   ;; short indent
-                                   (when (or= vim.bo.ft :jsonc :json :haskell
-                                              :ocaml)
-                                     (each [_ option (ipairs [:sw :ts :sts])]
-                                       (setlocal! option 2))))
-                       ;; long indent example
-                       ;; (when (or= vim.bo.ft :go)
-                       ;;   (each [_ option (ipairs [:sw :ts :sts])]
-                       ;;     (setlocal! option 8)))
-                       :group hondana-special-indentation
-                       :pattern "*"})
+;; restore last position (check ShaDa for other session/buffer restoration)
+(let [group (vim.api.nvim_create_augroup :Hondana_LastPosRestoration {})]
+  (autocmd :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
+                                              (not= :.git/COMMIT_EDITMSG))
+                                      (vim.cmd "silent! normal g`\"zv"))
+                         :pattern "*"
+                         : group}))
 
 ;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
 (local fzf-macos :/opt/homebrew/opt/fzf)
