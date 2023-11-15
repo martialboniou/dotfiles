@@ -76,6 +76,6 @@ if (( $+commands[markdown2pdf] )); then # works with `cabal install pandoc`
 fi
 # autoload -U zsh-mime-setup
 # zsh-mime-setup
-alias -g sc="symfony console"
-alias -g lua="luajit"
-alias -g fennel="fennel-bin-luajit"
+alias sc="symfony console"
+alias lua="luajit"
+alias fennel="fennel-bin-luajit"

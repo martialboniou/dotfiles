@@ -1,0 +1,35 @@
+(local fennel (require :fennel))
+
+(local _warn-missing-modules
+       (λ [fnames]
+         "warn if any modules are missing at startup; accept one string too"
+         (-> fnames
+             (type)
+             (= :table)
+             (#(if $ fnames [fnames]))
+             (#(each [_ fname (ipairs $)]
+                 (->> fname
+                      (. package.loaded)
+                      (not)
+                      (#(when $
+                          (->> fname
+                               (.. "luarocks install --local ")
+                               (.. "WARN: please install: ")
+                               (print))))))))))
+
+;; REPL history
+(let [keeplines 1000
+      histfile (-> fennel
+                   (. :runtime-version)
+                   (#($ :as-table))
+                   (. :lua)
+                   (string.find :LuaJIT)
+                   (#(if $ :fennel-bin-luajit :fennel))
+                   (#(.. "~/." $ :_history)))]
+  (match package.loaded.readline
+    rl (rl.set_options {: histfile : keeplines})))
+
+;; pretty-print
+(set _G.pp #(-> $
+                (fennel.view)
+                (print)))

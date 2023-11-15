@@ -52,11 +52,18 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
     - `<C-d>`/`<C-u>` : go down/up in documentation
   - for snippets:
     - `<C-f>`/`<C-b>` : move forward/backward in the selection
+- [Debugger Adapter Protocol](https://github.com/mfussenegger/nvim-dap) with
+  an embedded UI and LLDB adapter probably ready to use
 - others:
   - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
   [trouble](https://github.com/folke/trouble.nvim)
   - [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
     (additional colors for brackets)
+  - [mini.hues](https://github.com/echasnovski/mini.hues) (**minimalist
+    colorscheme**; 5 colors now: gray comment, white foreground, 3 *hue-wise*
+    complementary color (same saturation, same brightness); works well
+    with TreeSitter and LSP semantics (except in `clangd` whose semantics
+    have been disabled))
   - some various plugins for *brackets* and *symbolic expressions*:
     - [nvim-surround](https://github.com/kylechui/nvim-surround) classic
       quotes/brackets manipulation;

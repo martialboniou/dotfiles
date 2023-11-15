@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2023-11-06
+;;; 2023-11-15
 
 (local zero-setup-preferred-preset :recommended)
 
@@ -107,9 +107,7 @@
                                      (vim.keymap.set mode key fun options)))))
            (local lspconfig (require :lspconfig))
            ;; check if there's a clangd in your llvm-local-binary-path
-           (let [M (require :hondana-dev.utils)
-                 ;; local-clangd is optional (current status: unused)
-                 local-clangd (.. llvm-local-binary-path :/clangd)
+           (let [local-clangd (.. llvm-local-binary-path :/clangd) ; unused now
                  capabilities (vim.lsp.protocol.make_client_capabilities)
                  on_attach #(do
                               ;; disable formattings (see hondana-dev.plugins.null-ls)
@@ -124,7 +122,8 @@
              ;; IMPORTANT: null-ls will do the clang-format with extra args
              (set capabilities.offsetEncoding [:utf-16])
              (lspconfig.clangd.setup {:cmd [(if (-> local-clangd
-                                                    (M.is_executable))
+                                                    (vim.fn.executable)
+                                                    (= 1))
                                                 local-clangd
                                                 :clangd)]
                                       : on_attach

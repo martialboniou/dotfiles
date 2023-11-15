@@ -111,10 +111,10 @@
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
-  (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle_executable))]
+  (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle-executable))]
     (-> ok
         (not)
-        (#(if $ "Error: toggle_executable in hondana-dev.remap: " "Sucess: "))
+        (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Sucess: "))
         (.. res)
         (print))))
 

@@ -276,6 +276,18 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
         - luasnip.loaders.from_vscode
           - `lazy_load()`
 
+#### Debugger Adapter Protocol
+
+DAP is ready to run. It may be configued for your `lldb-vscode` (soon, `lldb-dap`).
+Check `hondana-dev/plugins/dap`. You can: 
+
+- toggle a breakpoint with `<leader>dt` (or `:DapToggleBreakpoint`)
+- start debugging with `<leader>dc` (or `:DapContinue`; opens the UI)
+- step into with `<leader>di` (or use the UI)
+- stop debugging with `<leader>dx` (or `:DapTerminate`; closes the UI)
+- (optional) activate a local adapter configuration with `<leader>dN`
+  (check [nvim-dap-projects](https://github.com/ldelossa/nvim-dap-projects))
+
 #### Fennel as the main programming language
 
 Fennel code is used to set up this NeoVim. No worries: you still can add your
@@ -406,6 +418,13 @@ IndentWidth: 4 # depends on your tabstop; here, 4
 Delete `~/.config/nvim/.clang-format` each time you change your tabstop;
 it will rebuild this file with your new setting (you can copy to your
 *Clang* projects' root or use it globally if you enabled this option).
+
+One last word about *clangd*: The default LSP semantics in this server
+don't fit most colorschemes I used. I decided to remove this part of
+the server (thus, the syntax in C, ObjC & C++ is highlighted by using
+TreeSitter). IMO, the lack of extra tokens in the strings brought by
+`clangd` is *no big deal*; the lack of that atrocious parsing for
+the CPP/macros is for the best.
 
 #### Symfony 6 (PHP)
 

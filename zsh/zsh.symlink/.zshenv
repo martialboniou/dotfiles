@@ -104,4 +104,3 @@ repath () {
   _fetch_path
   rehash
 }
-. "$HOME/.cargo/env"
