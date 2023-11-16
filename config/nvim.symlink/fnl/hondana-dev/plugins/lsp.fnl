@@ -29,7 +29,7 @@
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
 ;; change to true if you want the clangd's overthought semantics!
-(local allow-clangd-semantics (-> "shitty colors" (type) (= :string) (not)))
+(local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers

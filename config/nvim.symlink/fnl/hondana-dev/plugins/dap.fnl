@@ -1,4 +1,18 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
+(macro dap-lazykeys! [lkeys]
+  (assert-compile (sequence? lkeys) "expected table for keys")
+  (icollect [_ lkey (ipairs lkeys)]
+    (let [[key expr ?desc ?mode] lkey]
+      (assert-compile (list? expr) "expected s-exp for expr")
+      (icollect [_ v (ipairs [key ?desc])]
+        (assert-compile (= :string (type v))
+                        "expected string for the first AND third arguments"))
+      (let [[f & args] expr]
+        `{1 ,(.. :<leader> key)
+          2 #((#(. $ ,(tostring f)) (require :dap)) ,(unpack args))
+          :desc ,(.. "DAP: " (or ?desc (-> f (tostring) (: :gsub "_" " "))))
+          :mode ,(or ?mode :n)}))))
+
 (local brew-prefix
        ;; returns the status & homebrew prefix ; tested on macOS only
        #(let [handler (io.popen "brew --prefix 2>&1; echo $?")]
@@ -39,46 +53,7 @@
                 :nvim-telescope/telescope-dap.nvim
                 :jbyuki/one-small-step-for-vimkind]
  :cmd [:DapContinue :DapToggleBreakpoint :DapToggleRepl]
- :keys [{1 :<leader>dR
-         2 #(#($.run_to_cursor) (require :dap))
-         :desc "DAP: run to cursor"}
-        {1 :<leader>dC
-         2 #(#($.set_breakpoint (vim.fn.input "[Condition] > ")) (require :dap))
-         :desc "DAP: conditional breakpoint"}
-        {1 :<leader>db
-         2 #(#($.step_back) (require :dap))
-         :desc "DAP: step back"}
-        {1 :<leader>dc 2 #(#($.continue) (require :dap)) :desc "DAP: continue"}
-        {1 :<leader>dd
-         2 #(#($.disconnect) (require :dap))
-         :desc "DAP: disconnect"}
-        {1 :<leader>dg
-         2 #(#($.session) (require :dap))
-         :desc "DAP: get session"}
-        {1 :<leader>di
-         2 #(#($.step_into) (require :dap))
-         :desc "DAP: step into"}
-        {1 :<leader>do
-         2 #(#($.step_over) (require :dap))
-         :desc "DAP: get over"}
-        {1 :<leader>dp
-         2 #(#($.pause.toggle) (require :dap))
-         :desc "DAP: pause"}
-        {1 :<leader>dq 2 #(#($.close) (require :dap)) :desc "DAP: quit"}
-        {1 :<leader>ds
-         2 #(#($.continue) (require :dap))
-         :desc "DAP: start (same as continue)"}
-        {1 :<leader>dr
-         2 #(#($.repl.toggle) (require :dap))
-         :desc "DAP: toggle REPL"}
-        {1 :<leader>dt
-         2 #(#($.toggle_breakpoint) (require :dap))
-         :desc "DAP: toggle breakpoint"}
-        {1 :<leader>dx
-         2 #(#($.terminate) (require :dap))
-         :desc "DAP: terminate"}
-        {1 :<leader>du 2 #(#($.step_out) (require :dap)) :desc "DAP: step out"}
-        ;; DAP.UI.WIDGETS
+ :keys [;; DAP.UI.WIDGETS
         {1 :<leader>dh
          2 #(#($.hover) (require :dap.ui.widgets))
          :desc "DAP: hover variables"}
@@ -87,8 +62,26 @@
                   sidebar (widgets.sidebar widgets.scopes)]
               (sidebar.open))
          :desc "DAP: scopes"}
-        ;; {1 :<leader>dS 2 #(#($.scopes) (require dap.ui.widgets)) :desc "DAP: scopes"}
-        ]
+        ;; insert additional keybindings here
+        ;;
+        ;; DAP standard <leader> keys
+        (unpack (dap-lazykeys! [[:dR (run_to_cursor)]
+                                [:dC
+                                 (set_breakpoint (vim.fn.input "[Condition] > "))
+                                 "conditional breakpoint"]
+                                [:db (step_back)]
+                                [:dc (continue)]
+                                [:dd (disconnect)]
+                                [:dg (session) "get session"]
+                                [:di (step_into)]
+                                [:do (step_over)]
+                                [:dp (pause.toggle) :pause]
+                                [:dq (close) :quit]
+                                [:ds (continue) "start (same as continue)"]
+                                [:dr (repl.toggle) "toggle REPL"]
+                                [:dt (toggle_breakpoint)]
+                                [:dx (terminate)]
+                                [:du (step_out)]]))]
  :config (λ [_ _]
            (let [{&as env} (collect [_ m (pairs [:dap :dapui])]
                              (values m (require m)))]

@@ -3,10 +3,10 @@
      s#
      ,val))
 
-(fn bind [post-leader-key refactor-type mode]
+(λ bind [post-leader-key refactor-type ?mode]
   {1 (.. :<leader> post-leader-key)
    2 #(#($.refactor refactor-type) (require :refactoring))
-   :mode (or mode :n)
+   :mode (or ?mode :n)
    :desc (.. "Refactor: " (string.lower refactor-type))})
 
 (local prompts (set-value-keys! true :java :lua :php :ts))
