@@ -17,7 +17,7 @@ some emoticons won't be displayed at all.
 Showcase
 --------
 
-![NeoVim in action](./resources/nvim.jpg "NeoVim in action")
+![NeoVim in action](../../resources/nvim.jpg "NeoVim in action")
 
 Vim keybinding reminders & tips
 -------------------------------
