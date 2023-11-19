@@ -18,7 +18,6 @@ Vim keybinding reminders & tips
 -------------------------------
 
 - `"+p`  : paste the system clipboard register
-- ```0`` : go to the position before exit 
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
   international Dvorak layout (+ Command Qwerty) on macOS)
@@ -26,10 +25,11 @@ Vim keybinding reminders & tips
   is available to change the working directory **for the current window**
   with `lcd`)
 - useful marks (see ShaDa in `:help`):
-  - ```"` : go to the cursor position when last exiting the current buffer
-  - ```.` : go to the cursor position where the last change was made
-  - ```'` : **go to the cursor position of the last jump** (very useful!)
-  - same keybindings as before but `'` instead of the first ```` : go to the
+  - `` `" `` : go to the cursor position when last exiting the current buffer
+  - `` `. `` : go to the cursor position where the last change was made
+  - `` `' `` : **go to the cursor position of the last jump** (very useful!)
+  - `` `0 `` : go to the position before exit 
+  - same keybindings as before but `'` instead of the first `` ` `` : go to the
     beginning of the line of a specific cursor position
 - `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
   - `I`  : insert in visual block
