@@ -14,6 +14,11 @@ Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
 monospaced font for your terminal (I'm happy with Inconsolata), otherwise
 some emoticons won't be displayed at all.
 
+Showcase
+--------
+
+![NeoVim in action](./resources/nvim.jpg "NeoVim in action")
+
 Vim keybinding reminders & tips
 -------------------------------
 
