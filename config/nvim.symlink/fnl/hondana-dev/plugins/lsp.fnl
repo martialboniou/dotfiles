@@ -46,6 +46,7 @@
         :vimls
         :cssls
         :ocamllsp
+        :gopls
         ;; :zls DON'T USE MASON HERE (see below)
         ;; fennel_ls needs too much work especially
         ;; without macro-path's multiple root-uri

@@ -64,9 +64,12 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
     complementary color (same saturation, same brightness); works well
     with TreeSitter and LSP semantics (except in `clangd` whose semantics
     have been disabled))
-  - some various plugins for *brackets* and *symbolic expressions*:
+  - some various plugins for *word objects*, *brackets* and
+    *symbolic expressions*:
     - [nvim-surround](https://github.com/kylechui/nvim-surround) classic
       quotes/brackets manipulation;
+    - [vim-exchange](https://github.com/tommcdo/vim-exchange) easy text
+      exchange operator
     - **WIP**:
       - try paredit/parinfer solution for Lisp (paredit activated now)
       - disabled ones:

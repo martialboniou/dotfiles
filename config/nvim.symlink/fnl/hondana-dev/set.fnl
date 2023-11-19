@@ -1,46 +1,38 @@
-(import-macros {: set! : set+ : setlocal! : g!} :hibiscus.vim)
+(import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
 (import-macros {: or=} :hibiscus.core)
+
 (local autocmd vim.api.nvim_create_autocmd)
 
-(set! :guicursor "")
+(macro set!! [x ...]
+  "set the vim.opt options to x"
+  (icollect [_ opt (ipairs [...])]
+    (assert-compile (= :string (type opt)) "expected string for every vararg"))
+  (let [out []]
+    (each [_ o (ipairs [...])]
+      (table.insert out `(tset vim.opt ,o ,x)))
+    `(do
+       ,(unpack out))))
 
-(set! :number)
-(set! :relativenumber)
+;; global settings
+(set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch)
+(set!! false :wrap :swapfile :backup :hlsearch)
+(set!! 4 :sw :ts :sts)
 
-(set! :shiftwidth 4)
-(set! :tabstop 4)
-(set! :softtabstop 4)
-(set! :expandtab)
-
-(set! :ignorecase)
-(set! :smartcase)
-(set! :smartindent)
-
-(set! :wrap false)
-
-(set! :swapfile false)
-(set! :backup false)
-(set! :undodir (.. (os.getenv :HOME) :/.vim/undodir))
-(set! :undofile true)
-
-(set! :hlsearch false)
-(set! :incsearch true)
-
-(set! :termguicolors)
-
-(set! :scrolloff 8)
-(set! :signcolumn :yes)
-(vim.cmd "set isfname+=@-@")
-
-(set! :updatetime 50)
-
-(set! :colorcolumn :80)
+;; specific settings
+(vim.opt.isfname:append "@-@")
+(let [map {:guicursor ""
+           :undodir (concat! "/" (os.getenv :HOME) :.vim :undodir)
+           :scrolloff 8
+           :colorcolumn :80
+           :signcolumn :yes
+           :updatetime 50}]
+  (collect [k v (pairs map)] (set! k v)))
 
 ;; these default keys may be remapped in ./remap.fnl
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
-;; you can use lambda in this programming languagea (see below)
+;; you can use lambda in this programming language (see below)
 (vim.cmd.iab ",\\ λ")
 
 ;; special indentation for some filetypes
@@ -69,5 +61,5 @@
 ;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
 (local fzf-macos :/opt/homebrew/opt/fzf)
 (when (= 1 (vim.fn.isdirectory fzf-macos))
-  (set+ rtp fzf-macos)
+  (set+ :rtp fzf-macos)
   (vim.keymap.set :n :<leader>t ":FZF<CR>"))

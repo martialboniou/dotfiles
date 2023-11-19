@@ -25,6 +25,12 @@ Vim keybinding reminders & tips
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
+- useful marks (see ShaDa in `:help`):
+  - ```"` : go to the cursor position when last exiting the current buffer
+  - ```.` : go to the cursor position where the last change was made
+  - ```'` : **go to the cursor position of the last jump** (very useful!)
+  - same keybindings as before but `'` instead of the first ```` : go to the
+    beginning of the line of a specific cursor position
 - `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
   - `I`  : insert in visual block
   - `A`  : append in visual block (use `$` to reach the EOL of each line of
@@ -35,7 +41,7 @@ Vim keybinding reminders & tips
       pattern by using `.`
     - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
       the next one with the same pattern by using `.` (*alias* of
-      `:let @/=expand('<cword>')<CR>cgn`)
+      `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
 - `gf`   : go to file when cursor is above a filename/hyperlink
 - `:map` : check the key mapping
 - `<C-f>` : **command mode** after a `:`; behave like any Vim buffer
@@ -56,6 +62,12 @@ Vim keybinding reminders & tips
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a
   *case-sensitive setup* with `:set noic`)
+- useful text/brackets tools:
+  - `cs` prefix : `nvim-surround`; modify surrounding brackets and tags; eg:
+    - `cs([` : replace a outer block of parentheses by curly brackets
+  - `cx` prefix : `vim-exchange`; **swap two words** (very useful!); eg:
+    - `cxiw` (on a word) : tag the word for swapping
+    - `cxiw` (on a second one) : swap the tagged word and the current one
 - **Netrw** specific:
   - `%` : create file
   - `d` : create directory
@@ -135,10 +147,10 @@ insert
 - *REMINDER*: `:map` to check the key mapping
 - `:Lazy` : check package (I prefer this one to Packer)
 - `:TSPlaygroundToggle` : display the AST (neat!)
-- **IMPORTANT!**: `<leader>ss`/`<leader>sc` : create a template to replace the 
-  *current word* (*memo*: `s` as in `:%s`); the `sc` version stands for **confirmation**
-- `<leader>ss`/`<leader>sc` (in visual) : create a template to replace a *pattern
-  in the selection* (added by me; the `sc` version stands for **confirmation**)
+- **IMPORTANT!**: `<leader>s`` : create a template to replace the *current word*
+  (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation**
+- `<leader>s` (in visual) : create a template to replace a *pattern
+  in the selection*; same confirmation option as above
 - `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*)
@@ -147,11 +159,11 @@ insert
 - `<leader>vh` : telescope view helptags
 - `<leader>vv` : telescope recent files (*memo*: view viewed/view visited);
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
-- `<leader>vb` : telescope buffers (*memo*: view buffers); not in the
-  ThePrimeagen setup
+- `<leader>vb`/`<leader>bb` : telescope buffers (*memo*: view buffers); not
+  in the ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
-- `<leader>a`  : add file in harpoon
+- `<leader>a`  : add file in harpoon (it works with `Netrw` and `mini.files` too)
 - `<leader>e`  : harpoon quick menu (it was `<C-e>`)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard

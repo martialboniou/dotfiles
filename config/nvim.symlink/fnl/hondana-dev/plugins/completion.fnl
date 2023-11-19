@@ -20,7 +20,7 @@
         context (gensym :context)]
     (each [_ ctxt (ipairs [...])]
       (let [c (string.lower ctxt)
-            cap-c (string.gsub c "^%l" string.upper) ; gsub return 2 values
+            cap-c (string.gsub c "^%l" string.upper) ; gsub returns 2 values
             syntaxes {:in_treesitter_capture c :in_syntax_group cap-c}]
         (each [f a (pairs syntaxes)]
           (table.insert clauses `((. ,context ,f) ,a)))))

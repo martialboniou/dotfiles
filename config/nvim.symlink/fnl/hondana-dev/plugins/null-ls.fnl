@@ -1,7 +1,14 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
-;;; 2023-11-06
+;;; 2023-11-19
 
-(local mason-null-ls-preferred-install [:stylua :jq :ocamlformat :clang-format])
+(local mason-null-ls-preferred-install
+       [:stylua
+        :jq
+        :ocamlformat
+        :clang-format
+        :gofumpt
+        :goimports_reviser
+        :golines])
 
 ;; NOTE: clangd lacks a way to customize its own clang-format (LLVM's indent width is 2; I want tabstop)
 (local clang-format-indent-width
@@ -80,8 +87,9 @@
                  :opts (λ []
                          (let [nls (require :null-ls)
                                h (require :null-ls.helpers)
-                               diagno nls.builtins.diagnostics
-                               format nls.builtins.formatting
+                               b nls.builtins
+                               diagno b.diagnostics
+                               format b.formatting
                                ;; formatter for fennel; install https://git.sr.ht/~technomancy/fnlfmt
                                ;; NOTE: use `;; fnlfmt: skip` to skip the following sexp (snippet added)
                                fennel-formatter (h.make_builtin {:name :fennel-formatter
@@ -121,9 +129,9 @@
                                       ;; great bonus for Fennel
                                       fennel-formatter
                                       ;; (go) :Mason install: gofumpt, goimports_reviser & golines
-                                      ;; format.gofumpt           ;; add me when you go
-                                      ;; format.goimports_reviser ;; add me when you go
-                                      ;; format.golines           ;; add me when you go
+                                      format.gofumpt
+                                      format.goimports_reviser
+                                      format.golines
                                       ;; (PHP/Symfony) :Mason install: php-cs-fixer & phpactor
                                       (format.phpcsfixer.with {:extra_args ["--rules=@PhpCsFixer,@Symfony"]})
                                       ;; bonus for Symfony
