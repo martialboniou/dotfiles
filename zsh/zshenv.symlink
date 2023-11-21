@@ -4,4 +4,3 @@ if [[ -d $HOME/.zsh ]] then
 fi
 # to be sure
 source $ZDOTDIR/.zshenv
-#if [ -e /Users/mars/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/mars/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

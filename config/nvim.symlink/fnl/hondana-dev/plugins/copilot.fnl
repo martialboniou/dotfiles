@@ -1,10 +1,13 @@
+(import-macros {: cal!} :hondana-dev.macros)
+
 {1 :zbirenbaum/copilot.lua
  :cmd [:Copilot]
  :keys [{1 "<M-]>" :mode :i}]
  ; the next suggestion key will load me
  :opts (λ []
          (vim.api.nvim_create_user_command :CopilotTrigger
-                                           #(#($.toggle_auto_trigger) (require :copilot.suggestion))
+                                           #(cal! :copilot.suggestion
+                                                  :toggle_auto_trigger)
                                            {})
          ;; NOTE: if cmp disturbs you, use <C-e>/<C-Space> to switch off/back
          {:suggestion {:keymap {; <M-=> was <M-l> but it has been used by

@@ -1,15 +1,11 @@
 (import-macros {: g!} :hibiscus.vim)
-
-(macro repeat-str! [str times]
-  (assert (< 0 times))
-  (assert (= :string (type str)))
-  (let [out []]
-    (for [_ 1 times] (table.insert out str))
-    `(.. ,(unpack out))))
+(import-macros {: cal! : **!} :hondana-dev.macros)
 
 ;; keymap for NeoVim by ThePrimeagen
 (g! :mapleader " ")
 (g! :maplocalleader ",")
+
+;;(local set )
 
 ;; these two lines will be remapped by plugins/mini-files
 (icollect [_ key (ipairs [:pv :<leader>])]
@@ -70,9 +66,8 @@
   (vim.keymap.set :n key (.. :<cmd> navi :<CR>zz)))
 
 ;; <leader>s => search-replace (in normal/visual mode) w/ confirmation
-(let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI"
-                   (repeat-str! :<Left> 4))
-            :v (.. ":s///cgI" (repeat-str! :<Left> 5))}]
+(let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
+            :v (.. ":s///cgI" (**! :<Left> 5))}]
   (collect [mode cmd (pairs cmds)]
     (vim.keymap.set mode :<leader>s cmd)))
 
@@ -111,7 +106,7 @@
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
-  (let [(ok res) (pcall (. (require :hondana-dev.utils) :toggle-executable))]
+  (let [(ok res) (pcall (cal! :hondana-dev.utils :toggle-executable))]
     (-> ok
         (not)
         (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Sucess: "))

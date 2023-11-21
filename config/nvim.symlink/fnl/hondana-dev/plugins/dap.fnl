@@ -1,4 +1,7 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
+(import-macros {: concat!} :hibiscus.vim)
+(import-macros {: cal!} :hondana-dev.macros)
+
 (macro dap-lazykeys! [lkeys]
   (assert-compile (sequence? lkeys) "expected table for keys")
   (icollect [_ lkey (ipairs lkeys)]
@@ -34,20 +37,20 @@
 {1 :mfussenegger/nvim-dap
  :dependencies [{1 :rcarriga/nvim-dap-ui
                  :keys [{1 :<leader>dE
-                         2 #(#($.eval (vim.fn.input "[Expression] > ")) (require :dapui))
+                         2 #(cal! :dapui :eval (vim.fn.input "[Expression] > "))
                          :desc "DAP: evaluate input"}
                         {1 :<leader>dU
-                         2 #(#($.toggle) (require :dapui))
+                         2 #(cal! :dapui :toggle)
                          :desc "DAP: toggle UI"}
                         ;; <leader>de is available in visual too
                         {1 :<leader>de
-                         2 #(#($.eval) (require :dapui))
+                         2 #(cal! :dapui :eval)
                          :mode [:n :v]
                          :desc "DAP: toggle UI"}]}
                 {1 :ldelossa/nvim-dap-projects
                  ;; <leader>dN loads the local "per-project" adapter
                  :keys [{1 :<leader>dN
-                         2 #(#($.search_project_config) (require :nvim-dap-projects))
+                         2 #(cal! :nvim-dap-projects :search_project_config)
                          :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}]}
                 {1 :theHamsta/nvim-dap-virtual-text :opts {:commented true}}
                 :nvim-telescope/telescope-dap.nvim
@@ -55,7 +58,7 @@
  :cmd [:DapContinue :DapToggleBreakpoint :DapToggleRepl]
  :keys [;; DAP.UI.WIDGETS
         {1 :<leader>dh
-         2 #(#($.hover) (require :dap.ui.widgets))
+         2 #(cal! :dap.ui.widgets :hover)
          :desc "DAP: hover variables"}
         {1 :<leader>dS
          2 #(let [widgets (require :dap.ui.widgets)
@@ -94,7 +97,8 @@
                (tset env.dap.listeners.before :event_exited cfg close))
              ;; lldb adapter TODO: move to lldb-dap
              (local lldb-adapter-name :lldb-vscode)
-             (var lldb-adapter (.. :/usr/local/bin/ lldb-adapter-name))
+             (var lldb-adapter
+                  (concat! "/" :/usr :local :bin lldb-adapter-name))
              (when (-> (vim.loop.os_uname)
                        (. :sysname)
                        (= :Darwin))
@@ -102,7 +106,8 @@
                (let [(ok brew-path) (brew-prefix)]
                  (and ok
                       (set lldb-adapter
-                           (.. brew-path :/opt/llvm/bin/ lldb-adapter-name)))))
+                           (concat! "/" brew-path :opt :llvm :bin
+                                    lldb-adapter-name)))))
              (if (-> lldb-adapter (vim.fn.executable) (not= 1))
                  (print "error: dap: unable to set your default adapter for LLVM")
                  (let [cfg env.dap.configurations

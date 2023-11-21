@@ -1,4 +1,6 @@
 ;; less colors hype
+(import-macros {: cal!} :hondana-dev/macros)
+
 (local chosen-theme-idx 0) ;; 0 = last theme (b/c permute)
 (local themes
        [{:foreground "#adb6b4" :n_hues 2 :desc :blue->orange-yellow}
@@ -20,13 +22,13 @@
                          :n_hues (. chosen-theme :n_hues)}})
 
 ;; previous colorscheme
-(local rose-pine
+(local _rose-pine
        {1 :rose-pine/neovim
         :priority 1000
         :lazy false
         :opts {:disable_background true :disable_float_background true}
         :config (λ [_ opts]
-                  (#($.setup opts) (require :rose-pine))
+                  (cal! :rose-pine :setup opts)
                   (vim.cmd.colorscheme :rose-pine-moon)
                   ;; I don't like the dull default color for the punctuation
                   (vim.api.nvim_set_hl 0 "@punctuation" {:fg :White})

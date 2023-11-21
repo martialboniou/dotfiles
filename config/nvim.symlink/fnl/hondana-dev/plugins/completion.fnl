@@ -1,5 +1,6 @@
 ;;; LSP Zero version
-;;; 2023-08-06 - FIX: <Tab> disabled
+;;; 2023-11-20 - FIX: <Tab> disabled
+(import-macros {: cal!} :hondana-dev/macros)
 
 ;; IMPORTANT: noselect = no <CR> in CMP = what I want here
 (local cmp-config-complete-options "menu,menuone,noinsert, noselect")
@@ -58,7 +59,8 @@
 (local cmp-config-preferred-modern-lisp-sources
        [{:name :nvim_lsp_signature_help}
         {:name :nvim_lsp}
-        {:name :conjure} ;; cmp-conjure enabled by plugins.conjure
+        {:name :conjure}
+        ;; cmp-conjure enabled by plugins.conjure
         {:name :luasnip}
         {:name :buffer :keyword_length 4}
         {:name :path}
@@ -73,8 +75,9 @@
                  :build "make install_jsregexp"
                  ;; optional: friendly-snippets
                  :dependencies [:rafamadriz/friendly-snippets]
-                 :config #(#($.lazy_load {:paths (.. (vim.fn.stdpath :config)
-                                                     :/snippets/vscode)}) (require :luasnip.loaders.from_vscode))}
+                 :config #(cal! :luasnip.loaders.from_vscode :lazy_load
+                                {:paths (-> :config (vim.fn.stdpath)
+                                            (.. :/snippets/vscode))})}
                 :saadparwaiz1/cmp_luasnip
                 ;; optional/buffer words
                 :hrsh7th/cmp-buffer
@@ -91,11 +94,8 @@
                 ]
  :opts (λ []
          ;; nvim-lspconfig ensures the lazy loading of LSP Zero
-         (local lsp-zero-cmp (require :lsp-zero.cmp))
-         (lsp-zero-cmp.extend)
+         (cal! :lsp-zero.cmp :extend)
          (local cmp (require :cmp))
-         ;; (local cmp-action-from-lsp-zero (lsp-zero-cmp.action))
-         ;; OLD: -- vim.opt.runtimepath:apped("~/github/lsp_signature.nvim")
          (local lsp-zero (require :lsp-zero))
          (cmp.setup.filetype [:markdown]
                              {:sources (cmp.config.sources cmp-config-preferred-markdown-sources)})
@@ -106,8 +106,7 @@
          {:sources (cmp.config.sources cmp-config-preferred-default-sources)
           :completion {:completeopt cmp-config-complete-options}
           :preselect :none
-          :snippet {:expand (λ [args]
-                              (#($.lsp_expand args.body) (require :luasnip)))}
+          :snippet {:expand #(cal! :luasnip :lsp_expand $.body)}
           :window {:completion (cmp.config.window.bordered)
                    :documentation (cmp.config.window.bordered)}
           ;; :experimental {:ghost_text true}
