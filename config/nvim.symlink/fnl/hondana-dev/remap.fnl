@@ -5,8 +5,6 @@
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
-;;(local set )
-
 ;; these two lines will be remapped by plugins/mini-files
 (icollect [_ key (ipairs [:pv :<leader>])]
   (vim.keymap.set :n (.. :<leader> key) vim.cmd.Ex))
