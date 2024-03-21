@@ -32,5 +32,7 @@ yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^PathOfExileClient$" manage=off
 yabai -m rule --add app="^PathOfBuilding$" manage=off
-# TEMPORARY!!
-yabai -m rule --add app="^clashproto$" manage=off
+yabai -m rule --add app="^darktable$" manage=off
+yabai -m rule --add app="^SIGMA Photo Pro$" manage=off
+yabai -m rule --add app="^ColorChecker Camera Calibration$" manage=off
+yabai -m rule --add app="^NX Studio$" manage=off

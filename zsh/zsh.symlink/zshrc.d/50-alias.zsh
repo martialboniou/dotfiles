@@ -19,6 +19,7 @@ alias po=popd
 alias h=history
 alias top=htop
 alias stop='kill -TSTP' # csh like stop
+alias awk='gawk' # invoke mawk manually b/c non-posix
 alias grep=egrep #rg?
 alias ll='ls -lah'
 alias la='ls -a'

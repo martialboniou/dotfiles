@@ -3,6 +3,7 @@
                             :javascript
                             :json
                             :c
+                            :awk
                             :lua
                             :fennel
                             :vim

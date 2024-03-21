@@ -11,6 +11,8 @@
 (set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch)
 (set!! false :wrap :swapfile :backup :hlsearch)
 (set!! 4 :sw :ts :sts)
+;; enable sidescrolloff for tiny monitors & tiling wm/terms
+(set!! 10 :siso)
 
 ;; specific settings
 (vim.opt.isfname:append "@-@")
