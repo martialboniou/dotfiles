@@ -72,6 +72,7 @@
  ;; check lsp.fnl for the loading LSP Zero -> LSP -> nvim-cmp
  :dependencies [{1 :hrsh7th/cmp-nvim-lsp :dependencies :neovim/nvim-lspconfig}
                 {1 :L3MON4D3/LuaSnip
+                 :version :v2.*
                  :build "make install_jsregexp"
                  ;; optional: friendly-snippets
                  :dependencies [:rafamadriz/friendly-snippets]

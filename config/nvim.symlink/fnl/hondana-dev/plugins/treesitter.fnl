@@ -17,14 +17,13 @@
                             :ocaml
                             :ocaml_interface
                             :zig
-                            :go
-                            ])
+                            :go])
 
-(var stupid-unsupported-keys {})
-(lua "stupid_unsupported_keys =
-          { [\"@parameter.outer\"] = \"v\",
-            [\"@function.outer\"] = \"V\", 
-            [\"@class.outer\"] = \"<C-v>\", }")
+(local selection_modes {})
+;;; written as tset b/c fnlfmt can be confused by these unorthodox keys
+(tset selection_modes "@parameter.outer" :v)
+(tset selection_modes "@function.outer" :V)
+(tset selection_modes "@class.outer" :<C-v>)
 
 [{1 :nvim-treesitter/nvim-treesitter
   :dependencies [:nvim-treesitter/playground]
@@ -51,7 +50,7 @@
                                           :ic "@class.inner"
                                           :as {:query "@scope"
                                                :query_group :locals}}
-                                :selection_modes stupid-unsupported-keys}
+                                : selection_modes}
                        :move {:enable true
                               :set_jumps true
                               :goto_next_start {"]m" "@function.outer"
