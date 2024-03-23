@@ -1,5 +1,5 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
-;;; 2023-11-19
+;;; 2024-03-23
 
 (local mason-null-ls-preferred-install
        [:stylua
@@ -53,6 +53,14 @@
         :to_stdin false
         :to_temp_file true})
 
+;; `gawk -o` is not great; TODO: find a better formatter
+;; INFO: use `:retab` after `<leader>f`
+(local gawk-command-pattern {:command :gawk
+                             :args [:-o- :-f :$FILENAME]
+                             :prepend_extra_args true
+                             :to_stdin true
+                             :to_temp_file false})
+
 (local djlint-command-pattern-for-twig
        {:command :djlint
         :args [;; MANDATORY
@@ -97,6 +105,12 @@
                                                                  :filetypes [:fennel]
                                                                  :generator_opts fnlfmt-command-pattern
                                                                  :factory h.formatter_factory})
+                               ;; formatter for awk (gawk required)
+                               awk-formatter (h.make_builtin {:name :awk-formatter
+                                                              :method nls.methods.FORMATTING
+                                                              :filetypes [:awk]
+                                                              :generator_opts gawk-command-pattern
+                                                              :factory h.formatter_factory})
                                ;; formatter for Twig/Nunjucks template
                                twig-formatter (h.make_builtin {:name :twig-formatter
                                                                :method nls.methods.FORMATTING
@@ -128,6 +142,7 @@
                                         (format.clang_format.with extras))
                                       ;; great bonus for Fennel
                                       fennel-formatter
+                                      awk-formatter
                                       ;; (go) :Mason install: gofumpt, goimports_reviser & golines
                                       format.gofumpt
                                       format.goimports_reviser
