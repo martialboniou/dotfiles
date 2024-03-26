@@ -1,10 +1,9 @@
-# ---[ Global Alias Section ]------------------------------------------
-alias -g awk='gawk' # invoke mawk manually b/c non-posix
-alias -g grep=ggrep #GNU grep here (best to use rg when possible)
-alias -g lua="luajit"
-alias -g fennel="fennel-bin-luajit"
-alias -g rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 # ---[ Alias Section ]-------------------------------------------------
+alias awk='gawk' # invoke mawk manually b/c non-posix
+alias grep=ggrep #GNU grep here (best to use rg when possible)
+alias lua="luajit"
+alias fennel="fennel-bin-luajit"
+alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
 alias l='ls -CF'
 alias ssh='ssh -2'
