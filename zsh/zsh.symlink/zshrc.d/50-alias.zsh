@@ -1,3 +1,8 @@
+# ---[ Global Alias Section ]------------------------------------------
+alias -g awk='gawk' # invoke mawk manually b/c non-posix
+alias -g grep=ggrep #GNU grep here (best to use rg when possible)
+alias -g lua="luajit"
+alias -g fennel="fennel-bin-luajit"
 # ---[ Alias Section ]-------------------------------------------------
 alias c='clear'
 alias l='ls -CF'
@@ -19,8 +24,6 @@ alias po=popd
 alias h=history
 alias top=htop
 alias stop='kill -TSTP' # csh like stop
-alias awk='gawk' # invoke mawk manually b/c non-posix
-alias grep=egrep #rg?
 alias ll='ls -lah'
 alias la='ls -a'
 # List only directories and symbolic
@@ -78,5 +81,3 @@ fi
 # autoload -U zsh-mime-setup
 # zsh-mime-setup
 alias sc="symfony console"
-alias lua="luajit"
-alias fennel="fennel-bin-luajit"

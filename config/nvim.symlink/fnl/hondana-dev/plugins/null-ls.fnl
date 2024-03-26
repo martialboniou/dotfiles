@@ -57,7 +57,7 @@
 ;; INFO: use `:retab` after `<leader>f`
 (local gawk-command-pattern {:command :gawk
                              :args [:-o- :-f :$FILENAME]
-                             :prepend_extra_args true
+                             ; :prepend_extra_args true
                              :to_stdin true
                              :to_temp_file false})
 
