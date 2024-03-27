@@ -38,11 +38,16 @@
                     (pairs.remove_rule char)
                     (pairs.add_rule (lisp-rules char))))})
 
-;;; WIP
-(icollect [_ loc (ipairs [:tommcdo/vim-exchange
-                          :kylechui/nvim-surround
+(icollect [_ pkg (ipairs [:tommcdo/vim-exchange
+                          [:kylechui/nvim-surround
+                           #((. (require :nvim-surround) :setup) $2)]
                           :kovisoft/paredit])]
-  {1 loc : event})
+  (let [seq? (-> pkg (type) (= :table))
+        url (if seq? (. pkg 1) pkg)
+        spec {1 url : event}]
+    (when seq?
+      (tset spec :config (. pkg 2)))
+    spec))
 
 ;;; DOC
 
