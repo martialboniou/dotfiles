@@ -1,6 +1,8 @@
 NeoVim
 ======
 
+(tested on 0.10)
+
 Pre-configuration
 -----------------
 
@@ -375,6 +377,24 @@ Here's some tips for the LISP typists:
   **keyword** in Fennel)
 - (insert mode) <C-k> + `*` + `l`: print `λ` (same as above but this is an 
   universal keybinding for Vim/NeoVim)
+
+**Fennel developers**: if you need to compile some fennel codes using
+**self-contained libraries** from
+[Tangerine](https://github.com/udayvir-singh/tangerine.nvim)
+(like [fennel-conditions](https://gitlab.com/andreyorst/fennel-conditions)
+or [cljlib](https://gitlab.com/andreyorst/fennel-cljlib)), you must
+compile NeoVim using a recent **LuaJit 2.1 with 5.2 compatibility**
+enabled (tested with the latest source code in 06/2024).
+Otherwise, you'll have to use the `fennel` script manually (this one
+uses `lua` by default instead of `luajit`); the resulting code from
+`fennel` always works for every `lua` or `luajit` (even the default
+non-5.2 version embedded in the stable NeoVim).
+My idea is that the table `package.searchers` (or alternative)
+is missing from the non-5.2 compatible versions of LuaJit; it is used
+by Fennel to do the `doto` trick to import macros from a module.
+Check
+[this paper](https://andreyor.st/posts/2023-08-27-fennel-libraries-as-single-files)
+by Andrey Listopadov for more information.
 
 ### Note about specific environment for developers
 

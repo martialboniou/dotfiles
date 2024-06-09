@@ -1,8 +1,6 @@
 # ---[ Alias Section ]-------------------------------------------------
 alias awk='gawk' # invoke mawk manually b/c non-posix
 alias grep=ggrep #GNU grep here (best to use rg when possible)
-alias lua="luajit"
-alias fennel="fennel-bin-luajit"
 alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
 alias l='ls -CF'

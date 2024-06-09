@@ -215,7 +215,8 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Sly
-(hondana/use sly)
+(hondana/use sly
+  :init (when (executable-find inferior-lisp-program) (sly)))
 
 ;;; EXTENSIONS
 
