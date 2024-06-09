@@ -24,14 +24,6 @@ require "tangerine".setup {
     compiler = {
         verbose = false,
         hooks = { "onsave", "oninit", },
-        adviser = function(fennel)
-            -- FIXME:  something or remove
-            -- fennel["macro-path"] = fennel["macro-path"] .. ";" .. test_path .. "/fnl/?"
-            -- print((fennel)["patch-path"])
-            -- fennel.utils.root.options.requireAsInclude = true
-            -- print((fennel).view("[ 1 2 3]"))
-            return fennel
-        end,
     },
     keymaps = {
         float = {
