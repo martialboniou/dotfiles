@@ -2,7 +2,7 @@
 
 function fcode {
     local CODE_PATH=$HOME/Documents/Code
-    dest=$(fd -t d . $CODE_PATH --ignore-file ~/.gitignore --exclude deprecated | fzf)\
-        && cd $dest\
+    dest="$(fd -t d . $CODE_PATH --ignore-file ~/.gitignore --exclude deprecated | fzf)"\
+        && cd "$dest"\
         || return 0
 }
