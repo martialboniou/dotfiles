@@ -6,7 +6,7 @@
 
 (λ minifiles-open-at-location-or-root []
   (local mini-files (require :mini.files))
-  (if (not= nil (mini-files.get_target_window))
+  (if (not= nil (mini-files.get_explorer_state))
       (mini-files.close) ; close if already open
       (let [buf (vim.api.nvim_buf_get_name 0)
             (ok _) (pcall mini-files.open buf true)]
