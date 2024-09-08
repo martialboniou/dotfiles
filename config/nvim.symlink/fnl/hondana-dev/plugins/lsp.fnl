@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2023-11-15
+;;; 2024-09-07
 
 (local zero-setup-preferred-preset :recommended)
 
@@ -34,8 +34,7 @@
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers
-       [:tsserver
-        :rust_analyzer
+       [:rust_analyzer
         :clangd
         :html
         :lua_ls
@@ -46,7 +45,7 @@
         :astro
         :vimls
         :cssls
-        :ocamllsp
+        ;; :ocaml-lsp ; FIXME: restore with opam fixed
         :gopls
         ;; :zls DON'T USE MASON HERE (see below)
         ;; fennel_ls needs too much work especially

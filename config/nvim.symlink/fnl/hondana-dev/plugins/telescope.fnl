@@ -3,6 +3,9 @@
 {1 :nvim-telescope/telescope.nvim
  :dependencies [[:nvim-lua/plenary.nvim]]
  :tag :0.1.8
+ :opts #(do
+          (vim.cmd "hi! link TelescopeMatching String")
+          [])
  :keys (let [tb (λ [f ...] (cal! :telescope.builtin f ...))]
          [;;; PROJECT
           ;;  -> files (memo: project files)
