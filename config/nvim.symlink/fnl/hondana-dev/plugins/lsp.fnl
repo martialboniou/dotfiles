@@ -34,7 +34,8 @@
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
 (local preferred-language-servers
-       [:rust_analyzer
+       [;; ASAP -> :ts-ls
+        :rust_analyzer
         :clangd
         :html
         :lua_ls
@@ -45,7 +46,7 @@
         :astro
         :vimls
         :cssls
-        ;; :ocaml-lsp ; FIXME: restore with opam fixed
+        :ocamllsp
         :gopls
         ;; :zls DON'T USE MASON HERE (see below)
         ;; fennel_ls needs too much work especially

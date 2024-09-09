@@ -4,7 +4,7 @@
 (local mason-null-ls-preferred-install
        [:stylua
         :jq
-        ;; :ocamlformat ; FIXME: restore when opam fixed
+        :ocamlformat
         :clang-format
         :gofumpt
         :goimports_reviser
