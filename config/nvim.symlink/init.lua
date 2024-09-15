@@ -20,10 +20,17 @@ local udayvir_url = "https://github.com/udayvir-singh"
 bootstrap(udayvir_url .. "/hibiscus.nvim")
 bootstrap(udayvir_url .. "/tangerine.nvim")
 
+local globals = vim.tbl_keys(_G)
+-- example of an additional _G for tangerine.fennel
+-- (say, if you need to use tangerine to compile anything):
+--   table.insert(globals, "love") -- here for love2d
+-- otherwise, check :FnlAddG in `fnl/hondana-dev/plugins/init.fnl`
+
 require "tangerine".setup {
     compiler = {
         verbose = false,
         hooks = { "onsave", "oninit", },
+        globals = globals,
     },
     keymaps = {
         float = {

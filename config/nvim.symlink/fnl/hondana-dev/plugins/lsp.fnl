@@ -138,7 +138,9 @@
                                    :single_file_support true
                                    :root_dir (lspconfig.util.root_pattern :fnl)
                                    :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
-                                                       :diagnostics {:globals [:vim]}}}}})
+                                                       ;; I added Löve here (it won't hurt)
+                                                       :diagnostics {:globals [:vim
+                                                                               :love]}}}}})
            (lspconfig.fennel_language_server.setup {})
            ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
            ;; NOTE: I need the zls that fits zig's version
