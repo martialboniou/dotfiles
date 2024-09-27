@@ -29,4 +29,17 @@
              ;; Fennel Macros
              :udayvir-singh/hibiscus.nvim])
 
+;; Marks: marks.nvim to improve the mark navigation
+;; memo:
+;;   - m,: set the next available mark
+;;   - m;: toggle the next available mark at the current line
+;;   - mx: mark x
+;;   - dmx: delete mark x
+;;   - dm-: delete marks on the current line
+;;   - dm<Space>: delete marks in the current buffer
+;;   - m : move to next mark
+(->> :chentoast/marks.nvim
+     (#{1 $ :event :VeryLazy :opts {}})
+     (table.insert core))
+
 core

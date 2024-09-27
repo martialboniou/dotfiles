@@ -41,7 +41,21 @@
 (icollect [_ pkg (ipairs [:tommcdo/vim-exchange
                           [:kylechui/nvim-surround
                            #((. (require :nvim-surround) :setup) $2)]
-                          :kovisoft/paredit])]
+                          [:kovisoft/paredit
+                           ;; fancy keybindings
+                           ;; <> : move left (like <leader><)
+                           ;; >< : move right (like <leader>>)
+                           #(each [direction keys (pairs {:Left "<>"
+                                                          :Right "><"})]
+                              (vim.keymap.set :n keys
+                                              (-> direction
+                                                  (#["<cmd>:call PareditMove"
+                                                     $
+                                                     "()<CR>"])
+                                                  (table.concat))))]
+                          [:opdavies/toggle-checkbox.nvim
+                           #(vim.keymap.set :n :<leader>tt
+                                            ":lua require('toggle-checkbox').toggle()<CR>")]])]
   (let [seq? (-> pkg (type) (= :table))
         url (if seq? (. pkg 1) pkg)
         spec {1 url : event}]
@@ -76,7 +90,8 @@
 ;  <leader>( : toggle paredit (for single entrance) ; )
 ;  (/)       : previous opening/next closing parens until the top-level
 ;  [[/]]     : start of the previous/next defun/top-level sexp
-;  <leader>>/<leader>< : move parens (NOTE: let the shift key down)
+;  <leader>>/<leader><       : move parens (NOTE: let the shift key down)
+;  (local keybindings) ></<> : move parens (same as previous line)
 ;  <leader>J : join (a)|(b) -> (a b)
 ;  <leader>O : split (open; the opposite of <leader>J)
 ;  <leader>W : 
@@ -114,6 +129,13 @@
 ;  {1 :julienvincent/nvim-paredit
 ;   :event :BufReadPost
 ;   :opts {:extension {:fennel {:get_node_root :return}}}}
+
+;; NVIM-SURROUND
+;; classic quotes/brackets manipulation; eg: cs'" => change surroundings
+;
+; <leader>tt : toggle checkbox (useful in markdown/org); append [ ] if nothing
+;;; PROS: lightweight, no need mkdnflow or any specific tool
+;;; CONS: no multi-switch, no way to customize the checked_character `x`
 
 ;;; DANGER! ;; targets ruin the Vim macros (recorded/typed)
 ;;; DANGER! ;; {1 :wellle/targets.vim}

@@ -1,11 +1,15 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
 ;;; 2024-03-23
 
+;; same as mason.setup.ensure_installed
 (local mason-null-ls-preferred-install
        [:stylua
         :jq
         :ocamlformat
         :clang-format
+        :awk-language-server
+        :markdownlint-cli2
+        :markdown-toc
         :gofumpt
         :goimports_reviser
         :golines])

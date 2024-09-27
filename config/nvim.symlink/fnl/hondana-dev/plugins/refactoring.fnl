@@ -1,4 +1,4 @@
-(import-macros {: cal!} :hondana-dev.macros)
+(import-macros {: funcall!} :hondana-dev.macros)
 
 (macro set-value-keys! [val ...]
   `(collect [# s# (ipairs [,...])]
@@ -7,7 +7,7 @@
 
 (λ bind [post-leader-key refactor-type ?mode]
   {1 (.. :<leader> post-leader-key)
-   2 #(cal! :refactoring :refactor refactor-type)
+   2 #(funcall! :refactoring :refactor refactor-type)
    :mode (or ?mode :n)
    :desc (.. "Refactor: " (string.lower refactor-type))})
 

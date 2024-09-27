@@ -18,9 +18,10 @@
 ;;   without errors (I just need to ensure that the missing `package.searchers`
 ;;   in the luajit non-compatible 5.2 is here in my dirty build)
 (when (-> (vim.version) (. :build) (= :dirty))
-  (-> (require :tangerine.fennel)
-      (#((. $ :load) :latest))
-      (#((. $ :install)))))
+  (-> :tangerine.fennel
+      (require)
+      (#($.load :latest))
+      (#($.install))))
 
 ;; bootstrap lazy
 (let [lazy-path (.. (vim.fn.stdpath :data) :/lazy/lazy.nvim)]

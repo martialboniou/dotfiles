@@ -1,4 +1,4 @@
-(import-macros {: cal!} :hondana-dev.macros)
+(import-macros {: funcall!} :hondana-dev.macros)
 
 (macro make-gopher-keys! [...]
   (icollect [_ t# (ipairs [...])]
@@ -9,9 +9,9 @@
 [;;; GO LANG
  {1 :dreamsofcode-io/nvim-dap-go
   :ft :go
-  :keys [{1 :<leader>dgt 2 #(cal! :dap-go :debug_test) :desc "Debug go test"}
+  :keys [{1 :<leader>dgt 2 #(funcall! :dap-go :debug_test) :desc "Debug go test"}
          {1 :<leader>dgl
-          2 #(cal! :dap-go :debug_last)
+          2 #(funcall! :dap-go :debug_last)
           :desc "Debug last go test"}]
   :dependencies [:mfussenegger/nvim-dap]}
  {1 :olexsmir/gopher.nvim

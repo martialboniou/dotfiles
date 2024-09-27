@@ -80,6 +80,10 @@ Vim keybinding reminders & tips
   - `d` : create directory
   - `gn` : change the current directory to the folder under the cursor
   - `gh` : show/hide hidden files
+- paredit-related slurping & barfing (better ergonomics for *lispem*;
+  cursor above a paren or a bracket):
+  - `<>` : move left (default: `<leader><`)
+  - `><` : move right (default: `<leader>>`)
 
 Plugins and new keybindings
 ---------------------------

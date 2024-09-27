@@ -1,10 +1,8 @@
-(import-macros {: cal!} :hondana-dev.macros)
-
 (λ run-random-automaton []
   (local ca (require :cellular-automaton))
   (local animations (vim.tbl_keys ca.animations))
   (when (not= animations {})
-    (cal! :cellular-automaton.manager :clean)
+    (let [cm (require :cellular-automaton)] (cm.clean))
     (local (ok _)
            (pcall ca.start_animation
                   (->> animations (length) (math.random) (. animations))))

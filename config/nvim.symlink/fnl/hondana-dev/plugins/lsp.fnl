@@ -1,7 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-09-07
-
+;;; 2024-09-28
 (local zero-setup-preferred-preset :recommended)
 
 (local lsp-custom-keymaps
@@ -21,37 +20,34 @@
             :<leader>nn #(vim.lsp.buf.rename)}
         :i {:<C-h> #(vim.lsp.buf.signature_help)}})
 
-;; NOTE: stylua is ready to use but still unused here
-(local mason-lspconfig-preferred-install
-       [:rust_analyzer :awk-language-server :ocaml-lsp])
-
-;; NOTE: ocaml-lsp is the same as ocaml-lsp-server via opam
-
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
 ;; change to true if you want the clangd's overthought semantics!
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
-(local preferred-language-servers
-       [;; ASAP -> :ts-ls
-        :rust_analyzer
-        :clangd
-        :html
-        :lua_ls
-        :jsonls
-        :tailwindcss
-        :dockerls
-        :docker_compose_language_service
-        :astro
-        :vimls
-        :cssls
-        :ocamllsp
-        :gopls
-        ;; :zls DON'T USE MASON HERE (see below)
-        ;; fennel_ls needs too much work especially
-        ;; without macro-path's multiple root-uri
-        :fennel_language_server])
+(local preferred-language-servers [;; ASAP -> :ts-ls
+                                   :rust_analyzer
+                                   :clangd
+                                   :html
+                                   :lua_ls
+                                   :jsonls
+                                   :tailwindcss
+                                   :dockerls
+                                   :docker_compose_language_service
+                                   :astro
+                                   :marksman
+                                   :vimls
+                                   :cssls
+                                   :ocamllsp
+                                   :gopls
+                                   ;; :zls DON'T USE MASON HERE (see below)
+                                   :fennel_language_server
+                                   ;; fennel_ls needs too much work especially
+                                   ;; without macro-path's multiple root-uri
+                                   ;; -> just here for testing
+                                   ;; :fennel_ls
+                                   ])
 
 {1 :neovim/nvim-lspconfig
  :event :BufReadPost
@@ -59,14 +55,11 @@
                 {1 :VonHeikemen/lsp-zero.nvim :branch :v2.x :lazy true}
                 ;; {1 :simrat39/rust-tools.nvim}
                 {1 :williamboman/mason.nvim
+                 ;; check hondana-dev.plugins.null-ls for the ensure_installed packages
                  :opts {}
                  :cmd :Mason
                  :run ":MasonUpdate"}
-                {1 :williamboman/mason-lspconfig.nvim
-                 :opts (λ [_ opts]
-                         (when (= (type opts.ensure_installed) :table)
-                           (vim.list_extend opts.ensure_installed
-                                            mason-lspconfig-preferred-install)))}
+                :williamboman/mason-lspconfig.nvim
                 ;; see Autocompletion
                 :hrsh7th/nvim-cmp
                 ;; optional/highlight same word (LSP support)

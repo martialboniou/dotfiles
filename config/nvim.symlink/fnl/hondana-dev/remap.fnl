@@ -1,12 +1,12 @@
 (import-macros {: g!} :hibiscus.vim)
-(import-macros {: cal! : **!} :hondana-dev.macros)
+(import-macros {: **!} :hondana-dev.macros)
 
 ;; keymap for NeoVim by ThePrimeagen
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
 ;; these two lines will be remapped by plugins/mini-files
-(icollect [_ key (ipairs [:pv :<leader>])]
+(each [_ key (ipairs [:pv :<leader>])]
   (vim.keymap.set :n (.. :<leader> key) vim.cmd.Ex))
 
 ;; fast nav
@@ -30,7 +30,7 @@
 (vim.keymap.set :n :<C-u> :<C-u>zz)
 
 ;; keep the cursor in the middle during (back)search
-(icollect [_ key (ipairs [:n :N])]
+(each [_ key (ipairs [:n :N])]
   (vim.keymap.set :n key (.. key :zzzv)))
 
 ;; keep the cursor in the middle during backsearch
@@ -57,21 +57,21 @@
 ;; require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
-(collect [key navi (pairs {:<C-j> :cnext
-                           :<C-k> :cprev
-                           :<leader>j :lnext
-                           :<leader>k :lprev})]
+(each [key navi (pairs {:<C-j> :cnext
+                        :<C-k> :cprev
+                        :<leader>j :lnext
+                        :<leader>k :lprev})]
   (vim.keymap.set :n key (.. :<cmd> navi :<CR>zz)))
 
 ;; <leader>s => search-replace (in normal/visual mode) w/ confirmation
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
             :v (.. ":s///cgI" (**! :<Left> 5))}]
-  (collect [mode cmd (pairs cmds)]
+  (each [mode cmd (pairs cmds)]
     (vim.keymap.set mode :<leader>s cmd)))
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)
-(icollect [_ v (ipairs [:cgn :cc])]
+(each [_ v (ipairs [:cgn :cc])]
   (->> v
        (.. :<leader>)
        (#(vim.keymap.set :n $ ":let @/=expand('<cword>')<CR>cgn"))))
@@ -92,11 +92,11 @@
   (let [t #(-> $ (vim.fn.expand) (vim.fn.toupper))
         ext (t "%:t:e")
         guard (.. (t "%:t:r") "_" (if (= "" ext) "" (.. ext "_")))]
-    (icollect [_ cmd (ipairs [(.. :O "#ifndef " guard)
-                              (.. :o "#define " guard)
-                              :o
-                              (.. :o "#endif // " guard)
-                              :k])]
+    (each [_ cmd (ipairs [(.. :O "#ifndef " guard)
+                          (.. :o "#define " guard)
+                          :o
+                          (.. :o "#endif // " guard)
+                          :k])]
       (vim.cmd.normal cmd))))
 
 (vim.keymap.set :n :<leader>h include-guard-scheme
@@ -104,11 +104,20 @@
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
-  (let [(ok res) (pcall (cal! :hondana-dev.utils :toggle-executable))]
+  (let [utils (require :hondana-dev.utils)
+        (ok res) (pcall utils.toggle-executable)]
     (-> ok
         (not)
-        (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Sucess: "))
+        (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Success: "))
         (.. res)
         (print))))
 
 (vim.keymap.set :n :<leader>x toggle-exec {:silent false})
+
+;; zettelkasten (reminder: CreateAndOpenZkNote is defined in hondana-dev.set)
+;; use <leader>zn/<leader>zo
+(let [utils (require :hondana-dev.utils)
+      keymap #(vim.keymap.set :n (.. :leader :z $1) (. utils $2) {:desc $3})]
+  (keymap :n :create-and-open-zk-note "Create and open zk note")
+  (keymap :o :yank-and-search-markdown-link
+          "Zet Open - Yank and search markdown link"))

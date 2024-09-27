@@ -1,6 +1,6 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
 (import-macros {: concat!} :hibiscus.vim)
-(import-macros {: cal!} :hondana-dev.macros)
+(import-macros {: funcall!} :hondana-dev.macros)
 
 (macro dap-lazykeys! [lkeys]
   (assert-compile (sequence? lkeys) "expected table for keys")
@@ -37,20 +37,21 @@
 {1 :mfussenegger/nvim-dap
  :dependencies [{1 :rcarriga/nvim-dap-ui
                  :keys [{1 :<leader>dE
-                         2 #(cal! :dapui :eval (vim.fn.input "[Expression] > "))
+                         2 #(funcall! :dapui :eval
+                                      (vim.fn.input "[Expression] > "))
                          :desc "DAP: evaluate input"}
                         {1 :<leader>dU
-                         2 #(cal! :dapui :toggle)
+                         2 #(funcall! :dapui :toggle)
                          :desc "DAP: toggle UI"}
                         ;; <leader>de is available in visual too
                         {1 :<leader>de
-                         2 #(cal! :dapui :eval)
+                         2 #(funcall! :dapui :eval)
                          :mode [:n :v]
                          :desc "DAP: toggle UI"}]}
                 {1 :ldelossa/nvim-dap-projects
                  ;; <leader>dN loads the local "per-project" adapter
                  :keys [{1 :<leader>dN
-                         2 #(cal! :nvim-dap-projects :search_project_config)
+                         2 #(funcall! :nvim-dap-projects :search_project_config)
                          :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}]}
                 {1 :theHamsta/nvim-dap-virtual-text :opts {:commented true}}
                 :nvim-telescope/telescope-dap.nvim
@@ -58,7 +59,7 @@
  :cmd [:DapContinue :DapToggleBreakpoint :DapToggleRepl]
  :keys [;; DAP.UI.WIDGETS
         {1 :<leader>dh
-         2 #(cal! :dap.ui.widgets :hover)
+         2 #(funcall! :dap.ui.widgets :hover)
          :desc "DAP: hover variables"}
         {1 :<leader>dS
          2 #(let [widgets (require :dap.ui.widgets)

@@ -2,9 +2,10 @@
 (import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
 (import-macros {: set!!} :hondana-dev.macros.vim)
 
-;; main autocmd/augroup functions & pattern
+;; main functions & pattern
 (local autocmd vim.api.nvim_create_autocmd)
 (local augroup vim.api.nvim_create_augroup)
+(local usercommand vim.api.nvim_create_user_command)
 (local pattern "*")
 
 ;; global settings
@@ -51,3 +52,9 @@
 (when (= 1 (vim.fn.isdirectory fzf-macos))
   (set+ :rtp fzf-macos)
   (vim.keymap.set :n :<leader>t ":FZF<CR>"))
+
+;; zettelkasten
+(let [utils (require :hondana-dev.utils)]
+  (icollect [command fun (pairs {:CreateAndOpenZkNote :create-and-open-zk-note
+                                 :YankAndSearchMarkdownLink :yank-and-search-markdown-link})]
+    (usercommand command (. utils fun) {})))

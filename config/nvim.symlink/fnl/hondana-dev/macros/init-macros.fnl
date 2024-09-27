@@ -1,4 +1,4 @@
-{:cal! (λ [m f & args]
+{:funcall! (λ [m f & args]
          "call a function from its module; these modules are cached; useful for callbacks in keybindings"
          `((. (require ,m) ,f) ,(when args (unpack args))))
  :**! (λ [str times]

@@ -1,6 +1,5 @@
 ;;; LSP Zero version
-;;; 2023-11-20 - FIX: <Tab> disabled
-(import-macros {: cal!} :hondana-dev/macros)
+;;; 2024-09-26
 
 ;; IMPORTANT: noselect = no <CR> in CMP = what I want here
 (local cmp-config-complete-options "menu,menuone,noinsert, noselect")
@@ -76,9 +75,10 @@
                  :build "make install_jsregexp"
                  ;; optional: friendly-snippets
                  :dependencies [:rafamadriz/friendly-snippets]
-                 :config #(cal! :luasnip.loaders.from_vscode :lazy_load
-                                {:paths (-> :config (vim.fn.stdpath)
-                                            (.. :/snippets/vscode))})}
+                 :config #(let [loader (require :luasnip.loaders.from_vscode)]
+                            (loader.lazy_load {:paths (-> :config
+                                                          (vim.fn.stdpath)
+                                                          (.. :/snippets/vscode))}))}
                 :saadparwaiz1/cmp_luasnip
                 ;; optional/buffer words
                 :hrsh7th/cmp-buffer
@@ -95,7 +95,8 @@
                 ]
  :opts (λ []
          ;; nvim-lspconfig ensures the lazy loading of LSP Zero
-         (cal! :lsp-zero.cmp :extend)
+         (let [lzc (require :lsp-zero.cmp)]
+           (lzc.extend))
          (local cmp (require :cmp))
          (local lsp-zero (require :lsp-zero))
          (cmp.setup.filetype [:markdown]
@@ -107,7 +108,7 @@
          {:sources (cmp.config.sources cmp-config-preferred-default-sources)
           :completion {:completeopt cmp-config-complete-options}
           :preselect :none
-          :snippet {:expand #(cal! :luasnip :lsp_expand $.body)}
+          :snippet {:expand #(let [l (require :luasnip)] (l.lsp_expand $.body))}
           :window {:completion (cmp.config.window.bordered)
                    :documentation (cmp.config.window.bordered)}
           ;; :experimental {:ghost_text true}

@@ -31,7 +31,9 @@
   :event [:BufReadPost :BufNewFile]
   :cmd [:TSUpdateSync]
   :config (λ [_ opts]
-            (#($.setup opts) (require :nvim-treesitter.configs)))
+            (-> :nvim-treesitter.configs
+                (require)
+                (#($.setup opts))))
   :opts {:ensure_installed preferred-languages
          :sync_install false
          :auto_install false
