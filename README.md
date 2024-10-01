@@ -159,3 +159,10 @@ The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZ
 All scripts in `.emacs.d/2013-scripts` are currently tested on Emacs 24.3.
 You can access to this archive from this  
 [revision](https://github.com/martialboniou/dotfiles/tree/db66a2a41cd4fc950a378088de126f5ffef67a19).
+
+## Bat
+
+- add a `~/.config/bat/syntaxes/Fennel.sublime-syntax` for
+  [fennel](https://fennel-lang.org) code's syntax highlighting
+  in [bat](https://github.com/sharkdp/bat}
+- you MUST execute `~/.config/bat/BUILD.sh` to refresh the cache 

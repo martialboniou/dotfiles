@@ -94,7 +94,7 @@ Plugins and new keybindings
 - the `<leader>` key is `<Space>` in this configuration
 - the `<localleader>` key is `,` in this configuration
 - `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
-- Harpoon is *Cwd*-dependent; ensure you start NeoVim at the root of
+- Harpoon 2 is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
 - (**MINOR BUG**): the [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
@@ -124,7 +124,7 @@ It's great but:
 ### Example of workflow
 
 - (locally) `<leader>cd` : change locally the working directory
-- `<leader>a` : tag a file in harpoon (first)
+- `<leader>a` : tag a file in harpoon 2 (first)
 - `<leader><leader>` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
   directory (root of the project AKA `:lua print(vim.loop.cwd())`)
@@ -137,8 +137,8 @@ It's great but:
 - (optional) `<C-Space>` : enable completion
 - (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
 - `gd` (on a reference, say, `require`; normal mode) : back to the module
-- `<leader>a` : tag the module in harpoon (second)
-- `<leader>e` : check harpoon (change the order with copy-pasta; this was <C-e> is the original configuration)
+- `<leader>a` : tag the module in Harpoon 2 (second)
+- `<leader>e` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet
@@ -233,6 +233,11 @@ insert
       to a file
 - **Trouble** (fix helper plugin) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
+- Zettelkasten utilities (requires [zk](https://github.com/zk-org/zk)):
+  - `<leader>zn`: add a new note from the `[[<title>]]` at the current line
+  - **(untested)** `<leader>zo`: open Telescope on your zk notebook searching
+    the current square-bracketed word at the cursor by default (ie the
+    *yanked* text surrounded by any `[ ]`)
 - Github Copilot is ready to use. You must `:Copilot auth` the very first time.
   If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
   with `<C-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
@@ -249,7 +254,7 @@ insert
     `=` is just below `]` on the dvorak layout)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
   (setup in `plugins/procrastinate.lua`)
-  - `<leader>z`  : randomly activate an animation
+  - `<leader>zz`  : randomly activate an animation
 
 ### Technical tips
 

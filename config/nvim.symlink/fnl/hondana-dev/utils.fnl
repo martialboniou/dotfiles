@@ -35,14 +35,14 @@
           (.. "you can execute " file " now!")))))
 
 (λ M.create-and-open-zk-note []
-  "source: https://github.com/mischavandenburg/dotfiles/blob/main/nvim/lua/config/zettelkasten.lua"
+  "idea: https://github.com/mischavandenburg/dotfiles/blob/main/nvim/lua/config/zettelkasten.lua"
   (let [line (vim.api.nvim_get_current_line)
         title (line:match "%[%[(.-)%]%]")]
     (if (not title)
         (print "No title found between double square brackets")
-        (let [output (-> [:zk :new :--vim "\"%s\""] (table.concat " ")
+        (let [output (-> [:zk :new :--title "\"%s\" -p"] (table.concat " ")
                          (string.format title) (vim.fn.system))
-              file-path (output:match "New note created: (.+)")
+              file-path (output:match "(.+)\n")
               debug-print #(-> $ (table.concat " ") (print))]
           (when file-path
             (doto (file-path:gsub "%z" "")
@@ -57,6 +57,7 @@
             (debug-print ["Command output:" output]))))))
 
 (λ M.yank-and-search-markdown-link [] ; paredit-skip: [
+  "idea: https://github.com/mischavandenburg/dotfiles/blob/main/nvim/lua/config/zettelkasten.lua"
   (vim.cmd "normal! yi]")
   (let [yanked-text (vim.fn.getreg "\"")
         (brackets-prn capture-prn) zk-brackets-pattern]

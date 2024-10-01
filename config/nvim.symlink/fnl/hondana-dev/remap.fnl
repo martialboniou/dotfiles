@@ -117,7 +117,7 @@
 ;; zettelkasten (reminder: CreateAndOpenZkNote is defined in hondana-dev.set)
 ;; use <leader>zn/<leader>zo
 (let [utils (require :hondana-dev.utils)
-      keymap #(vim.keymap.set :n (.. :leader :z $1) (. utils $2) {:desc $3})]
+      keymap #(vim.keymap.set :n (.. :<leader> :z $1) (. utils $2) {:desc $3})]
   (keymap :n :create-and-open-zk-note "Create and open zk note")
   (keymap :o :yank-and-search-markdown-link
           "Zet Open - Yank and search markdown link"))
