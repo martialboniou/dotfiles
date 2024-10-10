@@ -34,13 +34,16 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 - [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) (enable the
   NeoVim setup based on Fennel scripts; compiles and brings all the REPL commands
   to easily develop in Fennel) 
-- Telescope (used as fuzzy finder) & [Harpoon](https://github.com/ThePrimeagen/harpoon)
+- Telescope (used as fuzzy finder) & [Harpoon 2](https://github.com/ThePrimeagen/harpoon/tree/harpoon2)
 - [mini.files](https://github.com/echasnovski/mini.files) (very good to navigate,
   preview files and manage directories; replace Netrw even if it's still available
   thru `:Ex`; use `<leader><leader>` to open/close it at your current location)
 - Undotree & Fugitive (same in my classic Vim setup)
 - [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter) (interface
-  to a fast parser generator tool and incremental parsing library)
+  to a fast parser generator tool and incremental parsing library) &
+  [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) (a tiny
+  plugin to enhance Neovim's native comments; for example, it supports
+  different comment strings for different Treesitter node types) 
 - Mason-boosted LSP & CMP ([zero](https://github.com/VonHeikemen/lsp-zero.nvim)
   helped!). [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) is
   used for additional formatters, diagnostic tools & for spellchecking.

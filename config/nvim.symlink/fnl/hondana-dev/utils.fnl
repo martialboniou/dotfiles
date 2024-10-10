@@ -6,7 +6,7 @@
         :file_cannot_be_executable "this file cannot be set as executable"
         :file_cannot_be_non_executable "this file cannot be made non executable"})
 
-(local zk-brackets-pattern (values "%[%[(.-)%]%]" "%1"))
+(local zk-brackets-prn-fn #(values "%[%[(.-)%]%]" "%1"))
 
 (λ is-executable [?file]
   "returns a boolean; true if the current buffer file or this file is executable"
@@ -37,17 +37,20 @@
 (λ M.create-and-open-zk-note []
   "idea: https://github.com/mischavandenburg/dotfiles/blob/main/nvim/lua/config/zettelkasten.lua"
   (let [line (vim.api.nvim_get_current_line)
-        title (line:match "%[%[(.-)%]%]")]
+        (brackets-prn capture-prn) (zk-brackets-prn-fn)
+        title (line:match brackets-prn)]
     (if (not title)
         (print "No title found between double square brackets")
-        (let [output (-> [:zk :new :--title "\"%s\" -p"] (table.concat " ")
-                         (string.format title) (vim.fn.system))
+        (let [output (-> [:zk :new :--title "\"%s\"" :-p]
+                         (table.concat " ")
+                         (string.format title)
+                         (vim.fn.system))
               file-path (output:match "(.+)\n")
               debug-print #(-> $ (table.concat " ") (print))]
           (when file-path
             (doto (file-path:gsub "%z" "")
               (: :gsub "\n" "")
-              (: :gsub (.. zk-brackets-pattern "$") "%1")
+              (: :gsub (.. brackets-prn "$") capture-prn)
               (->> (vim.fn.fnameescape) (.. :badd) (vim.cmd)))
             (-> file-path (vim.fn.bufnr) (vim.api.nvim_set_current_buf))
             (debug-print ["Created and opened new note:" title])
@@ -56,16 +59,31 @@
             (debug-print ["Failed to create note:" title])
             (debug-print ["Command output:" output]))))))
 
-(λ M.yank-and-search-markdown-link [] ; paredit-skip: [
+(λ M.yank-and-search-zk-link [] ; paredit-skip: [
   "idea: https://github.com/mischavandenburg/dotfiles/blob/main/nvim/lua/config/zettelkasten.lua"
+  (error "don't use")
   (vim.cmd "normal! yi]")
   (let [yanked-text (vim.fn.getreg "\"")
-        (brackets-prn capture-prn) zk-brackets-pattern]
+        (brackets-prn capture-prn) (zk-brackets-prn-fn)]
     (yanked-text:gsub brackets-prn capture-prn)
     (if (= "" yanked-text) (print "No text found inside brackets")
-        (let [tb (require :telescope.builtin)]
+        (let [tb (require :telescope.builtin)
+              search-dirs (-?> :.zk
+                               (vim.fn.isdirectory)
+                               (#(if (= 1 $)
+                                     nil
+                                     (-> "~/Documents/Notebook"
+                                         (vim.fn.expand)
+                                         (#[$])))))]
           (-> yanked-text (vim.fn.escape "\\.")
-              (#{:search_file $ :hidden true :no_ignore true :follow true})
-              (tb.find_files))))))
+              (#(let [prn {:pick_tags $
+                           :hidden true
+                           :no_ignore true
+                           :follow true}]
+                  (when search-dirs
+                    (tset prn :search_dirs search-dirs))
+                  (let [fennel (require :fennel)]
+                    (print (fennel.view prn)))
+                  prn)) (tb.find_files))))))
 
 M

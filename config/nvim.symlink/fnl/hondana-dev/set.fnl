@@ -56,5 +56,5 @@
 ;; zettelkasten
 (let [utils (require :hondana-dev.utils)]
   (icollect [command fun (pairs {:CreateAndOpenZkNote :create-and-open-zk-note
-                                 :YankAndSearchMarkdownLink :yank-and-search-markdown-link})]
+                                 :YankAndSearchZkLink :yank-and-search-zk-link})]
     (usercommand command (. utils fun) {})))

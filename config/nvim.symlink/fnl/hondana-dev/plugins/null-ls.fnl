@@ -5,6 +5,8 @@
 (local mason-null-ls-preferred-install
        [:stylua
         :jq
+        ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+        :taplo
         :ocamlformat
         :clang-format
         :awk-language-server

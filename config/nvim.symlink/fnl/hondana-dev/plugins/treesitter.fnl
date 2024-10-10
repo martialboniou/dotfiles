@@ -16,6 +16,7 @@
                             :yaml
                             :ocaml
                             :ocaml_interface
+                            :scheme
                             :zig
                             :go])
 
@@ -25,8 +26,24 @@
 (tset selection_modes "@function.outer" :V)
 (tset selection_modes "@class.outer" :<C-v>)
 
+;; NOTE: the `paredit-skip` comments is temporary
 [{1 :nvim-treesitter/nvim-treesitter
-  :dependencies [:nvim-treesitter/playground]
+  :dependencies [:nvim-treesitter/playground
+                 {1 :folke/ts-comments.nvim
+                  ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
+                  :opts {:lang {:fennel ";; %s"}}
+                  :event :VeryLazy
+                  :enabled (-> :nvim-0.10.0 (vim.fn.has) (= 1))}
+                 ;; ARCHIVE - non working solution for the new treesitter changes
+                 ;;  {1 :JoosepAlviste/nvim-ts-context-commentstring
+                 ;;   :event :BufReadPre
+                 ;;   :opts {:enable_autocmd false
+                 ;;          :languages {:fennel ";; %s"}}}
+                 ;; {1 :numToStr/Comment.nvim
+                 ;;  :config #(-> :Comment
+                 ;;               (require)
+                 ;;               (#($.setup {:pre_hook #(vim.bo.commentstring)})))}
+                 ]
   :build ":TSUpdate"
   :event [:BufReadPost :BufNewFile]
   :cmd [:TSUpdateSync]
@@ -55,11 +72,14 @@
                                 : selection_modes}
                        :move {:enable true
                               :set_jumps true
+                              ;; paredit-skip [[[
                               :goto_next_start {"]m" "@function.outer"
                                                 "]]" "@class.outer"}
+                              ;; paredit-skip [[
                               :goto_next_end {"]M" "@function.outer"
                                               "][" "@class.outer"}
                               :goto_previous_start {"[m" "@function.outer"
                                                     "[[" "@class.outer"}
                               :goto_previous_end {"[M" "@function.outer"
+                                                  ;; paredit-skip ]]]]]
                                                   "[]" "@class.outer"}}}}}]
