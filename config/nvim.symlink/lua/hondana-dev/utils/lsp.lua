@@ -1,8 +1,7 @@
--- :fennel:1728578749
+-- :fennel:1728853404
 local Lsp = {}
 Lsp.__index = Lsp
-Lsp.new = function(self, name, _3fconfig)
-  local config = (_3fconfig or {})
+Lsp.new = function(self, name, config)
   return setmetatable({name = name, config = config, ["_client-id"] = nil}, self)
 end
 Lsp["external-client"] = function(self)
@@ -25,11 +24,7 @@ Lsp["external-client"] = function(self)
     return nil
   end
 end
-Lsp.start = function(self, _3fconfig)
-  if _3fconfig then
-    self.config = _3fconfig
-  else
-  end
+Lsp.start = function(self)
   if not self["_client-id"] then
     self["_client-id"] = self["external-client"](self)
   else
@@ -56,8 +51,5 @@ Lsp.stop = function(self)
 end
 Lsp.client = function(self)
   return vim.lsp.get_client_by_id(self["_client-id"])
-end
-Lsp["get-name"] = function(self)
-  return self.name
 end
 return Lsp

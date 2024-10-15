@@ -1,14 +1,14 @@
 (λ run-random-automaton []
   (local ca (require :cellular-automaton))
   (local animations (vim.tbl_keys ca.animations))
-  (when (not= animations {})
-    (let [(ok _) (pcall ca.start_animation
-                        (->> animations
-                             (length)
-                             (math.random)
-                             (. animations)))]
-      (when (not ok)
-        (print "Cellular Automaton: cannot run in this buffer")))))
+  ( (. (require :cellular-automaton.manager) :clean))
+  (let [(ok _) (pcall ca.start_animation
+                      (->> animations
+                           (length)
+                           (math.random)
+                           (. animations)))]
+    (when (not ok)
+      (print "Cellular Automaton: cannot run in this buffer"))))
 
 {1 :Eandrju/cellular-automaton.nvim
  :cmd :CellularAutomaton

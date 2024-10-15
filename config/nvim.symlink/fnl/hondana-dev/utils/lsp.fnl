@@ -4,8 +4,7 @@
 (local Lsp {})
 (set Lsp.__index Lsp)
 
-(fn Lsp.new [self name ?config]
-  (local config (or ?config {}))
+(fn Lsp.new [self name config]
   (setmetatable {;; our instance
                  : name
                  : config
@@ -21,8 +20,7 @@
         (when (not= nil (next v.attached_buffers))
           (lua "return v.id"))))))
 
-(fn Lsp.start [self ?config]
-  (when ?config (set self.config ?config))
+(fn Lsp.start [self]
   (when (not self._client-id)
     (set self._client-id (self:external-client)))
   (when (not self._client-id)
@@ -39,8 +37,5 @@
 
 (fn Lsp.client [self]
   (vim.lsp.get_client_by_id self._client-id))
-
-(fn Lsp.get-name [self]
-  self.name)
 
 Lsp
