@@ -52,9 +52,3 @@
 (when (= 1 (vim.fn.isdirectory fzf-macos))
   (set+ :rtp fzf-macos)
   (vim.keymap.set :n :<leader>t ":FZF<CR>"))
-
-;; zettelkasten
-(let [utils (require :hondana-dev.utils)]
-  (icollect [command fun (pairs {:CreateAndOpenZkNote :create-and-open-zk-note
-                                 :YankAndSearchZkLink :yank-and-search-zk-link})]
-    (usercommand command (. utils fun) {})))

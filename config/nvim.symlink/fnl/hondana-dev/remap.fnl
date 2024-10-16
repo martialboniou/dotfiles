@@ -113,11 +113,3 @@
         (print))))
 
 (vim.keymap.set :n :<leader>x toggle-exec {:silent false})
-
-;; Zettelkasten
-;; use <leader>zn/<leader>zo
-(let [utils (require :hondana-dev.utils)
-      keymap #(vim.keymap.set :n (.. :<leader> :z $1) (. utils $2) {:desc $3})]
-  (keymap :n :create-and-open-zk-note "Create and open Zk note")
-  (keymap :o :yank-and-search-zk-link
-          "Zet Open - Yank and search Zk link"))

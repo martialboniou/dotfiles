@@ -1,19 +1,6 @@
-(local Lsp (require :hondana-dev.utils.lsp))
 (local root-pattern (require :hondana-dev.utils.root-pattern))
 
 (local M {})
-
-;; make one instance from the generic hondana-dev.utils.Lsp class
-;; TODO: remove name-root; here for debugging
-(set M.lsp (let [name-root :zk
-                 name (.. name-root :-mini)
-                 cmd [name-root :lsp]]
-             (Lsp:new name {: name : cmd})))
-
-(fn M._lsp_buf_auto_add [bufnr]
-  (when (and (not= :nofile (vim.api.nvim_buf_get_option bufnr :buftype))
-             (M.notebook-root (vim.api.nvim_buf_get_name bufnr)))
-    (M.lsp:buf_add bufnr)))
 
 (fn M.notebook-root [n-path]
   ((root-pattern.root-pattern :.zk) n-path))

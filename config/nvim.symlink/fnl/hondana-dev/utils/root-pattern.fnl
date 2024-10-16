@@ -59,4 +59,17 @@
                       (when (M.path.exists p) (lua "return path")))))]
     #(M.search-ancestors $ matcher)))
 
+(fn M.find-project-root [startpath root-subdirectory]
+  (let [startpath (if (-> startpath
+                          (vim.fn.isdirectory)
+                          (not= 1))
+                      startpath
+                      (.. startpath "/."))]
+    (each [dir (vim.fs.parents startpath)]
+      (when (->> root-subdirectory
+                 (vim.fs.joinpath dir)
+                 (vim.fn.isdirectory)
+                 (= 1))
+        (lua "return dir")))))
+
 M
