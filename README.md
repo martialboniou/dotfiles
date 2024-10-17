@@ -60,8 +60,9 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 - others:
   - [zk](https://github.com/zk-org/zk-nvim)
     ([Zettelkasten](https://github.com/zk-org/zk) note taking tool)
-  - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
-  [trouble](https://github.com/folke/trouble.nvim)
+  - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim),
+  [trouble](https://github.com/folke/trouble.nvim) &
+  [todo-comments](https://github.com/folke/todo-comments.nvim)
   - [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
     (additional colors for brackets)
   - [mini.hues](https://github.com/echasnovski/mini.hues) (**minimalist

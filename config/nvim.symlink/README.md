@@ -1,7 +1,7 @@
 NeoVim
 ======
 
-(tested on 0.10)
+(tested on 0.10.3-dev)
 
 Pre-configuration
 -----------------
@@ -231,8 +231,17 @@ insert
     - `<leader>rb` (**only in normal mode**) : extract block
     - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
       to a file
-- **Trouble** (fix helper plugin) case:
+- **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
+  - `<leader>xX` : toggle trouble for the current buffer
+  - `<leader>cs` : symbols (Trouble)
+  - `<leader>cl` : LSP definitions etc... (Trouble)
+  - `<leader>xL` : toggle trouble location list
+  - `<leader>xQ` : toggle trouble quickfix list
+- **Todo-comments** (`TODO`, `FIX`, `WARN`, `NOTE`, `TEST`... highlighter) case:
+  - `<leader>]t` : next todo comment
+  - `<leader>[t` : previous todo comment
+  - NOTE: you can also use the specific commands like `:TodoTelescope`...
 - [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
   - `<leader>z`-based
     [keybindings](https://github.com/zk-org/zk-nvim/blob/main/README.md#example-mappings)

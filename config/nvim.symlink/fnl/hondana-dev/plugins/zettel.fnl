@@ -25,7 +25,7 @@
       (let [map #(vim.api.nvim_buf_set_keymap 0 $...)
             opts {:noremap true :silent false}]
         ;; open link under the caret
-        (map :n :<CR> "<Cmdlua vim.lsp.buf.definition()<CR>" opts)
+        (map :n :<CR> "<Cmd>lua vim.lsp.buf.definition()<CR>" opts)
         ;; overrides `<leader>zn` + znt/znc for visual ZkNewFromContentSelection
         (map :n :<leader>zn
              "<Cmd>ZkNew { dir = vim.fn.expand('%:p:h'), title = vim.fn.input('Title: ') }<CR>"
