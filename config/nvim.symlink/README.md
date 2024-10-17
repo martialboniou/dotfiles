@@ -233,7 +233,15 @@ insert
       to a file
 - **Trouble** (fix helper plugin) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
-- Zettelkasten utilities (requires [zk](https://github.com/zk-org/zk)):
+- [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
+  - `<leader>z`-based
+    [keybindings](https://github.com/zk-org/zk-nvim/blob/main/README.md#example-mappings)
+    - global mappings (`<leader>` *+* zn`, `zo`, `zt` & `zf` (incl. visual))
+    - markdown-specific keybindings:
+      - example: `<leader>znt` in visual : new note using the current selection as title
+  - `:ZkNotes` (key: `<leader>zo`) : check your global notebook according to
+    your `~/.config/zk/config.toml` if there's no `.zk` in the vicinity
+    of the current buffer
   - `<leader>zn`: add a new note from the `[[<title>]]` at the current line
   - **(untested)** `<leader>zo`: open Telescope on your zk notebook searching
     the current square-bracketed word at the cursor by default (ie the

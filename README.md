@@ -58,6 +58,8 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 - [Debugger Adapter Protocol](https://github.com/mfussenegger/nvim-dap) with
   an embedded UI and LLDB adapter probably ready to use
 - others:
+  - [zk](https://github.com/zk-org/zk-nvim)
+    ([Zettelkasten](https://github.com/zk-org/zk) note taking tool)
   - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim) &
   [trouble](https://github.com/folke/trouble.nvim)
   - [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
