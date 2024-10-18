@@ -75,10 +75,10 @@
                  :build "make install_jsregexp"
                  ;; optional: friendly-snippets
                  :dependencies [:rafamadriz/friendly-snippets]
-                 :config #(let [loader (require :luasnip.loaders.from_vscode)]
-                            (loader.lazy_load {:paths (-> :config
-                                                          (vim.fn.stdpath)
-                                                          (.. :/snippets/vscode))}))}
+                 :config #(let [{: lazy_load} (require :luasnip.loaders.from_vscode)]
+                            (lazy_load {:paths (-> :config
+                                                   (vim.fn.stdpath)
+                                                   (.. :/snippets/vscode))}))}
                 :saadparwaiz1/cmp_luasnip
                 ;; optional/buffer words
                 :hrsh7th/cmp-buffer
@@ -95,30 +95,34 @@
                 ]
  :opts (λ []
          ;; nvim-lspconfig ensures the lazy loading of LSP Zero
-         (let [lzc (require :lsp-zero.cmp)]
-           (lzc.extend))
-         (local cmp (require :cmp))
-         (local lsp-zero (require :lsp-zero))
-         (cmp.setup.filetype [:markdown]
-                             {:sources (cmp.config.sources cmp-config-preferred-markdown-sources)})
-         (cmp.setup.filetype [:gitcommit]
-                             {:sources (cmp.config.sources cmp-config-preferred-git-sources)})
-         (cmp.setup.filetype [:fennel :clojure]
-                             {:sources (cmp.config.sources cmp-config-preferred-modern-lisp-sources)})
-         {:sources (cmp.config.sources cmp-config-preferred-default-sources)
-          :completion {:completeopt cmp-config-complete-options}
-          :preselect :none
-          :snippet {:expand #(let [l (require :luasnip)] (l.lsp_expand $.body))}
-          :window {:completion (cmp.config.window.bordered)
-                   :documentation (cmp.config.window.bordered)}
-          ;; :experimental {:ghost_text true}
-          :mapping (let [overrides {(or cmp-custom-keymaps.previous-word
-                                         :<C-p>) (cmp.mapping.select_prev_item {:behavior cmp.SelectBehavior.Select})
-                                    (or cmp-custom-keymaps.next-word :<C-n>) (cmp.mapping.select_next_item {:behavior cmp.SelectBehavior.Select})
-                                    (or cmp-custom-keymaps.complete :<C-Space>) (cmp.mapping.complete)
-                                    (or cmp-custom-keymaps.confirm :<C-y>) (cmp.mapping.confirm {:select true})
-                                    (or cmp-custom-keymaps.abort :<C-e>) (cmp.mapping.abort)
-                                    :<Tab> vim.NIL
-                                    :<S-Tab> vim.NIL}
-                         mappings (lsp-zero.defaults.cmp_mappings overrides)]
-                     mappings)})}
+         (let [{: extend} (require :lsp-zero.cmp)] (extend))
+         (let [{: setup
+                :SelectBehavior {:Select behavior}
+                :config cc
+                :mapping cm} (require :cmp)
+               {: defaults} (require :lsp-zero)]
+           (setup.filetype [:markdown]
+                           {:sources (cc.sources cmp-config-preferred-markdown-sources)})
+           (setup.filetype [:gitcommit]
+                           {:sources (cc.sources cmp-config-preferred-git-sources)})
+           (setup.filetype [:fennel :clojure]
+                           {:sources (cc.sources cmp-config-preferred-modern-lisp-sources)})
+           {:sources (cc.sources cmp-config-preferred-default-sources)
+            :completion {:completeopt cmp-config-complete-options}
+            :preselect :none
+            :snippet {:expand #(let [l (require :luasnip)]
+                                 (l.lsp_expand $.body))}
+            :window {:completion (cc.window.bordered)
+                     :documentation (cc.window.bordered)}
+            ;; :experimental {:ghost_text true}
+            :mapping (let [overrides {(or cmp-custom-keymaps.previous-word
+                                           :<C-p>) (cm.select_prev_item {: behavior})
+                                      (or cmp-custom-keymaps.next-word :<C-n>) (cm.select_next_item {: behavior})
+                                      (or cmp-custom-keymaps.complete
+                                           :<C-Space>) (cm.complete)
+                                      (or cmp-custom-keymaps.confirm :<C-y>) (cm.confirm {:select true})
+                                      (or cmp-custom-keymaps.abort :<C-e>) (cm.abort)
+                                      :<Tab> vim.NIL
+                                      :<S-Tab> vim.NIL}
+                           mappings (defaults.cmp_mappings overrides)]
+                       mappings)}))}

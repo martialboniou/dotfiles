@@ -99,41 +99,40 @@
                 {1 :jose-elias-alvarez/null-ls.nvim
                  :dependencies [:nvim-lua/plenary.nvim]
                  :opts (λ []
-                         (let [nls (require :null-ls)
-                               h (require :null-ls.helpers)
-                               b nls.builtins
-                               diagno b.diagnostics
-                               format b.formatting
+                         (let [{:builtins {:diagnostics diagno
+                                           :formatting format}
+                                : methods} (require :null-ls)
+                               {: make_builtin : formatter_factory} (require :null-ls.helpers)
                                ;; formatter for fennel; install https://git.sr.ht/~technomancy/fnlfmt
                                ;; NOTE: use `;; fnlfmt: skip` to skip the following sexp (snippet added)
-                               fennel-formatter (h.make_builtin {:name :fennel-formatter
-                                                                 :method nls.methods.FORMATTING
-                                                                 :filetypes [:fennel]
-                                                                 :generator_opts fnlfmt-command-pattern
-                                                                 :factory h.formatter_factory})
+                               fennel-formatter (make_builtin {:name :fennel-formatter
+                                                               :method methods.FORMATTING
+                                                               :filetypes [:fennel]
+                                                               :generator_opts fnlfmt-command-pattern
+                                                               :factory formatter_factory})
                                ;; formatter for awk (gawk required)
-                               awk-formatter (h.make_builtin {:name :awk-formatter
-                                                              :method nls.methods.FORMATTING
-                                                              :filetypes [:awk]
-                                                              :generator_opts gawk-command-pattern
-                                                              :factory h.formatter_factory})
+                               awk-formatter (make_builtin {:name :awk-formatter
+                                                            :method methods.FORMATTING
+                                                            :filetypes [:awk]
+                                                            :generator_opts gawk-command-pattern
+                                                            :factory formatter_factory})
                                ;; formatter for Twig/Nunjucks template
-                               twig-formatter (h.make_builtin {:name :twig-formatter
-                                                               :method nls.methods.FORMATTING
-                                                               :filetypes [:html.twig.js.css]
-                                                               :generator_opts djlint-command-pattern-for-twig
-                                                               :factory h.formatter_factory})
+                               twig-formatter (make_builtin {:name :twig-formatter
+                                                             :method methods.FORMATTING
+                                                             :filetypes [:html.twig.js.css]
+                                                             :generator_opts djlint-command-pattern-for-twig
+                                                             :factory formatter_factory})
                                ;; FIXME: just here for testing
-                               warn-really-in-markdown (h.make_builtin {:method nls.methods.DIAGNOSTICS
-                                                                        :filetypes [:markdown]
-                                                                        :generator {:fn markdown-really-diagnostics-generator}})]
+                               warn-really-in-markdown (make_builtin {:method methods.DIAGNOSTICS
+                                                                      :filetypes [:markdown]
+                                                                      :generator {:fn markdown-really-diagnostics-generator}})]
                            {:sources [;; NOTE: the LSP Lua server is good for comments' alignment;
                                       ;;       if you prefer stylua, :MasonInstall stylua and
                                       ;;       uncomment the following line
                                       ; format.stylua
                                       diagno.eslint
                                       diagno.twigcs
-                                      ;; (FIXME: restore me) nls.builtins.completion.spell
+                                      ;; FIXME: restore me: builtins.completion.spell
                                       ;; clang-format with more options than with clangd in LSP
                                       ;;   ensure clangd.setup has capabilities.offsetEncoding
                                       ;;   set to [:utf-16] (check hondana-dev.plugins.lsp)

@@ -33,17 +33,7 @@
                   ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
                   :opts {:lang {:fennel ";; %s"}}
                   :event :VeryLazy
-                  :enabled (-> :nvim-0.10.0 (vim.fn.has) (= 1))}
-                 ;; ARCHIVE - non working solution for the new treesitter changes
-                 ;;  {1 :JoosepAlviste/nvim-ts-context-commentstring
-                 ;;   :event :BufReadPre
-                 ;;   :opts {:enable_autocmd false
-                 ;;          :languages {:fennel ";; %s"}}}
-                 ;; {1 :numToStr/Comment.nvim
-                 ;;  :config #(-> :Comment
-                 ;;               (require)
-                 ;;               (#($.setup {:pre_hook #(vim.bo.commentstring)})))}
-                 ]
+                  :enabled (-> :nvim-0.10.0 (vim.fn.has) (= 1))}]
   :build ":TSUpdate"
   :event [:BufReadPost :BufNewFile]
   :cmd [:TSUpdateSync]
@@ -73,6 +63,8 @@
                        :move {:enable true
                               :set_jumps true
                               ;; paredit-skip [[[
+                              ;; NOTE: neither [t nor ]t b/c todo-comments
+                              ;;       check hondana-dev.plugins.quickfix
                               :goto_next_start {"]m" "@function.outer"
                                                 "]]" "@class.outer"}
                               ;; paredit-skip [[

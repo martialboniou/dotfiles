@@ -16,11 +16,11 @@
 
 (fn make-zk-keys-for-notebook []
   "Add the key mappings only for markdown files in a zk notebook"
-  (let [U (require :zk.util)]
+  (let [{: notebook_root} (require :zk.util)]
     ;; ensure there's a .zk at the root
     (when (-> "%:p"
               (vim.fn.expand)
-              (U.notebook_root)
+              (notebook_root)
               (not= nil))
       (let [map #(vim.api.nvim_buf_set_keymap 0 $...)
             opts {:noremap true :silent false}]
@@ -52,29 +52,27 @@
    :event :VeryLazy
    : keys
    :opts {:picker :telescope}
-   :config #(let [zk (require :zk)] (zk.setup $2))
-   :init #(let [zk (require :zk)
-                commands (require :zk.commands)
+   :config #(let [{: setup} (require :zk)] (setup $2))
+   :init #(let [{: edit} (require :zk)
+                {: add : del} (require :zk.commands)
                 group (vim.api.nvim_create_augroup :Hondana_AfterFtpluginMarkdown
                                                    {})
                 ;; callback make-zk-keys-for-notebook
                 callback make-zk-keys-for-notebook
                 pattern :markdown]
             ;; replace ZkNotes to aim for your global notebook via `~/.config/zk/config.toml`
-            (commands.del :ZkNotes)
-            (commands.add :ZkNotes
-                          #(let [rp (require :hondana-dev.utils.root-pattern)
-                                 notebook? (rp.find-project-root (vim.fn.getcwd 0)
-                                                                 :.zk)
-                                 path (when (not notebook?)
-                                        (let [utils (require :hondana-dev.utils.zk)]
-                                          (utils.get-notebook-global-path)))]
-                             (zk.edit (if (not path) $
-                                          ;; open your global notebook if no other choices
-                                          (vim.tbl_extend :force
-                                                          {:notebook_path path}
-                                                          (or $ {})))
-                                      {:title "Zk Notes"})))
+            (del :ZkNotes)
+            (add :ZkNotes
+                 #(let [{: find-project-root} (require :hondana-dev.utils.root-pattern)
+                        notebook? (find-project-root (vim.fn.getcwd 0) :.zk)
+                        path (when (not notebook?)
+                               (let [{: get-notebook-global-path} (require :hondana-dev.utils.zk)]
+                                 (get-notebook-global-path)))]
+                    (edit (if (not path) $
+                              ;; open your global notebook if no other choices
+                              (vim.tbl_extend :force {:notebook_path path}
+                                              (or $ {})))
+                          {:title "Zk Notes"})))
             ;; specific keys for after/plugin/markdown
             (vim.api.nvim_create_autocmd :FileType
                                          {: callback : group : pattern}))})

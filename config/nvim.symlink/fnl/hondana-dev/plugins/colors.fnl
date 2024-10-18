@@ -45,7 +45,7 @@
         :event [:BufReadPost :BufNewFile]
         :dependencies [:nvim-treesitter/nvim-treesitter]
         :config (λ []
-                  (local rainbow (require :rainbow-delimiters))
+                  (local {: strategy} (require :rainbow-delimiters))
                   (set vim.g.rainbow_delimiters
                        {:blacklist [:c :cpp :h :hpp :m]
                         ;; shuffle colors
@@ -57,8 +57,8 @@
                                     :RainbowDelimiterRed
                                     :RainbowDelimiterViolet]
                         :query {"" :rainbow-delimiters :latex :rainbow-blocks}
-                        :strategy {"" (. rainbow.strategy :global)
-                                   :commonlisp (. rainbow.strategy :local)}}))})
+                        :strategy {"" (. strategy :global)
+                                   :commonlisp (. strategy :local)}}))})
 
 (local icons {1 :nvim-tree/nvim-web-devicons
               :opts {:override_by_extension {:fnl {:icon "🌱"

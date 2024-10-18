@@ -87,6 +87,7 @@
                                 [:dx (terminate)]
                                 [:du (step_out)]]))]
  :config (λ [_ _]
+           ;; TODO: simplify this
            (let [{&as env} (collect [_ m (pairs [:dap :dapui])]
                              (values m (require m)))]
              (env.dapui.setup)

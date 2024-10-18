@@ -100,7 +100,7 @@
                                  (each [mode map (pairs lsp-custom-keymaps)]
                                    (each [key fun (pairs map)]
                                      (vim.keymap.set mode key fun options)))))
-           (local lspconfig (require :lspconfig))
+           (local {:util {: root_pattern} &as lspconfig} (require :lspconfig))
            ;; check if there's a clangd in your llvm-local-binary-path
            (let [local-clangd (.. llvm-local-binary-path :/clangd) ; unused now
                  capabilities (vim.lsp.protocol.make_client_capabilities)
@@ -129,7 +129,7 @@
                  {:default_config {:cmd [:fennel-language-server]
                                    :filetypes [:fennel]
                                    :single_file_support true
-                                   :root_dir (lspconfig.util.root_pattern :fnl)
+                                   :root_dir (root_pattern :fnl)
                                    :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
                                                        ;; I added Löve here (it won't hurt)
                                                        :diagnostics {:globals [:vim
@@ -141,8 +141,7 @@
              (tset (require :lspconfig.configs) :zls
                    {:default_config {:cmd [:zls]
                                      :filetypes [:zig]
-                                     :root_dir (lspconfig.util.root_pattern :build.zig
-                                                                            :*.zig
-                                                                            :.git)}})
+                                     :root_dir (root_pattern :build.zig :*.zig
+                                                             :.git)}})
              (lspconfig.zls.setup {}))
            (lsp-zero.setup))}

@@ -36,10 +36,10 @@
             (when (= 0 (vim.fn.isdirectory cw))
               (hlist:add (harpoon-path-list cw)))))
         (minifiles-buf?)
-        (let [minifiles (require :mini.files)
-              (ok res) (pcall (. minifiles :get_explorer_state))]
+        (let [{: get_explorer_state : get_fs_entry} (require :mini.files)
+              (ok res) (pcall get_explorer_state)]
           (when (and ok (not= res nil))
-            (local fs-entry (minifiles.get_fs_entry))
+            (local fs-entry (get_fs_entry))
             (when (= :file fs-entry.fs_type)
               (hlist:add (harpoon-path-list fs-entry.path)))))
         (hlist:add))))

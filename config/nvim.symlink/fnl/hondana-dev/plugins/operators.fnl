@@ -31,16 +31,17 @@
                ;; very annoying (does it work?)
                :enable_check_bracket_line false}
         :config (λ [_ opts]
-                  (local pairs (require :nvim-autopairs))
-                  (pairs.setup opts)
-                  ;; lisp exceptions for quotes & backticks
-                  (each [_ char (ipairs ["'" "`"])]
-                    (pairs.remove_rule char)
-                    (pairs.add_rule (lisp-rules char))))})
+                  (let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
+                    (setup opts)
+                    ;; lisp exceptions for quotes & backticks
+                    (each [_ char (ipairs ["'" "`"])]
+                      (remove_rule char)
+                      (add_rule (lisp-rules char)))))})
 
 (icollect [_ pkg (ipairs [:tommcdo/vim-exchange
                           [:kylechui/nvim-surround
-                           #((. (require :nvim-surround) :setup) $2)]
+                           #(let [{: setup} (require :nvim-surround)]
+                              (setup $2))]
                           [:kovisoft/paredit
                            ;; fancy keybindings
                            ;; <> : move left (like <leader><)

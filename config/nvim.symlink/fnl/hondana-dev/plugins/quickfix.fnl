@@ -26,9 +26,9 @@
   :event :VeryLazy
   :opts {}
   :init #(let [map #(vim.keymap.set $...)
-               tc (require :todo-comments)]
+               {: jump_next : jump_prev} (require :todo-comments)]
            ;; paredit-skip [
-           (map :n "]t" #(tc.jump_next) {:desc "Next todo comment"})
-           (map :n "[t" #(tc.jump_prev) {:desc "Previous todo comment"})
+           (map :n "]t" jump_next {:desc "Next todo comment"})
+           (map :n "[t" jump_prev {:desc "Previous todo comment"})
            ;; paredit-skip ]
            nil)}]

@@ -19,7 +19,17 @@
 (vim.keymap.set :v :K ":m '<-2<CR>gv=gv")
 
 ;; (vim.keymap.set :n :Y :yg$)
-(vim.keymap.set :n :J "mzJ`z")
+;; NOTE: previous version by ThePrimeagen leaves marks:
+;;       (vim.keymap.set :n :J "mzJ`z")
+(λ new-shift-j []
+  ":join with position tracking (and without using marks)"
+  {:author "https://gitlab.com/martialhb"}
+  (let [(_ c) (-> 0 (vim.api.nvim_win_get_cursor) (unpack))]
+    (-> [:join "|normal " (+ c 1) "|"]
+        (table.concat)
+        (vim.cmd))))
+
+(vim.keymap.set :n :J new-shift-j)
 
 ;; doesn't move the cursor while appending line
 ;; the following one is bad C-d is delete (also used in terms)
@@ -52,9 +62,10 @@
 
 ;; the following one works with the snippet forward keybindings
 ;; (as this bind is for the s mode)
+;; NOTE: require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
+;;       in your path
 (vim.keymap.set :n :<C-f> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
-;; require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer in your path
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
 (each [key navi (pairs {:<C-j> :cnext
@@ -104,8 +115,8 @@
 
 ;; toggle the executability of the current file
 (λ toggle-exec []
-  (let [utils (require :hondana-dev.utils)
-        (ok res) (pcall utils.toggle-executable)]
+  (let [{: toggle-executable} (require :hondana-dev.utils)
+        (ok res) (pcall toggle-executable)]
     (-> ok
         (not)
         (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Success: "))
