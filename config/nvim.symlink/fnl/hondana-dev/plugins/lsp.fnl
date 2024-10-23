@@ -124,7 +124,34 @@
                                       : on_attach
                                       : capabilities}))
            ;; Lua
-           (lspconfig.lua_ls.setup (lsp-zero.nvim_lua_ls))
+           ;; TODO: try folke/lazydev.nvim and get rid of that!
+           (lspconfig.lua_ls.setup ;;(lsp-zero.nvim_lua_ls)
+                                   {:on_init (fn [client]
+                                               (when client.workspace_folders
+                                                 (let [path (. client.workspace_folders
+                                                               1 :name)
+                                                       checkfile (fn [...]
+                                                                   (vim.uv.fs_stat ...))
+                                                       json (.. path
+                                                                :/.luarc.json)]
+                                                   (when (or (checkfile json)
+                                                             (checkfile (.. json
+                                                                            :c)))
+                                                     (lua :return))))
+                                               (set client.config.settings.Lua
+                                                    (vim.tbl_deep_extend :force
+                                                                         client.config.settings.Lua
+                                                                         {:diagnostics {:globals [:love]}
+                                                                          :runtime {:version :LuaJIT}
+                                                                          :workspace {:library ;; NOTE: mandatory for lazy packages
+                                                                                      (vim.api.nvim_get_runtime_file ""
+                                                                                                                              true)
+                                                                                      :checkThirdParty false}})))
+                                    :settings {:Lua {:diagnostics {:globals [:vim
+                                                                             :love]}
+                                                     :workspace {:checkThirdParty false
+                                                                 :library (vim.api.nvim_get_runtime_file ""
+                                                                                                         true)}}}})
            (tset (require :lspconfig.configs) :fennel_language_server
                  {:default_config {:cmd [:fennel-language-server]
                                    :filetypes [:fennel]

@@ -34,8 +34,9 @@
                     lazy-path]))
   (vim.opt.runtimepath:prepend lazy-path))
 
-(let [opts {:checker {:enabled false}
+(let [{: setup} (require :lazy)
+      opts {:checker {:enabled false}
             :defaults {:lazy true}
             :performance {:rtp {:reset false :disabled_plugins [:tutor]}}
             :spec plugins}]
-  (#($.setup opts) (require :lazy)))
+  (setup opts))

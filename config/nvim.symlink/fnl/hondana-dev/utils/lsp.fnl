@@ -1,19 +1,40 @@
 ;; generic LSP interface
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
 
+;; this table is a placeholder for your persistent init data (better empty)
 (local Lsp {})
-(set Lsp.__index Lsp)
 
-(fn Lsp.new [self name config]
-  (setmetatable {;; our instance
-                 : name
-                 : config
-                 :_client-id nil} self))
+;; usage
+;; (let [Lsp (require ...)])
+(eval-compiler
+  (local lib-name ...)
+  )
+;; (macro check []
+;;   `(let [Lsp (require ,lib-name)]
+;;      (->> {:name :zk-lsp-demo :cmd [:zk :lsp]}
+;;           (Lsp:new)
+;;           (: :client)
+;;           ;; (.. "test::" ,n "::client")
+;;           (print))))
+
+;; (local e (check lib))
+;; (vim.schedule (let [Lsp (require lib-name)]
+;;                 (-> {:name :zk-lsp-demo :cmd [:zk :lsp]} (Lsp:new) (: :client)
+;;                     (print))))
+;(fn Lsp.e [self] (macrodebug (check)))
+
+(fn Lsp.new [self config ?options]
+  (when (not config.name)
+    (error "must pass a name field"))
+  (let [o (vim.tbl_extend :force {: config} (or ?options {}))]
+    (setmetatable o self)
+    (set self.__index self)
+    o))
 
 (fn Lsp.external-client [self]
   (let [ac-symbol (if (= 1 (vim.fn.has :nvim-0.10)) ;; 
                       :get_clients :get_active_clients)
-        active-clients ((. vim.lsp ac-symbol) {:name self.name})]
+        active-clients ((. vim.lsp ac-symbol) {:name self.config.name})]
     (when (not= nil (next active-clients))
       ;; return first lsp server that is actually in use
       (each [_ v (ipairs active-clients)]

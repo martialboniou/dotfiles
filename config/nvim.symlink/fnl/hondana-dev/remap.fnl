@@ -24,8 +24,10 @@
 (λ new-shift-j []
   ":join with position tracking (and without using marks)"
   {:author "https://gitlab.com/martialhb"}
-  (let [(_ c) (-> 0 (vim.api.nvim_win_get_cursor) (unpack))]
-    (-> [:join "|normal " (+ c 1) "|"]
+  (let [[_ c] (-> 0 (vim.api.nvim_win_get_cursor))]
+    (-> c
+        (+ 1)
+        (#[:join "|normal " $ "|"])
         (table.concat)
         (vim.cmd))))
 
@@ -65,7 +67,6 @@
 ;; NOTE: require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
 ;;       in your path
 (vim.keymap.set :n :<C-f> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
-
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
 (each [key navi (pairs {:<C-j> :cnext
