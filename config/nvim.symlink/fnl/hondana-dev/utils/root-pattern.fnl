@@ -3,7 +3,7 @@
 
 ;; BEWARE: cannot be cross-compiled
 (macro is-windows []
-  (let [uname (vim.loop.os_uname)]
+  (let [uname (vim.uv.os_uname)]
     (-> :Windows (uname.version:match) (not= nil))))
 
 (set M.path (let [is-fs-root #(if (is-windows)
@@ -21,7 +21,7 @@
                                           "/")
                                       result)))))]
               {:escape-wildcards #($:gsub "([%[%]%?*])" "\\%1")
-               :exists #(let [stat (vim.loop.fs_stat $)]
+               :exists #(let [stat (vim.uv.fs_stat $)]
                           (-> stat
                               (and stat.type)
                               (or false)))
@@ -30,9 +30,9 @@
                           (table.concat "/"))
                :iterate-parents #(let [it (fn [_ v]
                                             (when (and v (not (is-fs-root v)))
-                                              (let [dv (dirname v)]
-                                                (when (and dv
-                                                           (vim.loop.fs_realpath v))
+                                              (let [v (dirname v)]
+                                                (when (and v
+                                                           (vim.uv.fs_realpath v))
                                                   (values v $)))))]
                                    (values it $ $))}))
 
@@ -41,10 +41,9 @@
   (if (func startpath)
       startpath
       (do
-        (var guard 100)
-        (each [path (M.path.iterate-parents startpath)]
+        (var guard 99)
+        (each [path (M.path.iterate-parents startpath) &until (= 0 guard)]
           (set guard (- guard 1))
-          (when (= 0 guard) (lua :return))
           (when (func path)
             (lua "return path"))))))
 

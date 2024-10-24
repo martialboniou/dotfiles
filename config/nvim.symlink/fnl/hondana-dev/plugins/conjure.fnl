@@ -4,9 +4,7 @@
 {1 :Olical/conjure
  :ft [:fennel :scheme :rust :clojure]
  :init #(do
-          (g! "conjure#mapping#doc_word" :<localleader>K)
-          (g! "conjure#debug" false)
           ;; (g! "conjure#filetype#fennel" :conjure.client.fennel.stdio)
-          )
- :dependencies [; :Olical/aniseed
-                {1 :PaterJason/cmp-conjure :dependencies :hrsh7th/nvim-cmp}]}
+          (g! "conjure#mapping#doc_word" :<localleader>K)
+          (g! "conjure#debug" false))
+ :dependencies [{1 :PaterJason/cmp-conjure :dependencies :hrsh7th/nvim-cmp}]}

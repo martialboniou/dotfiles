@@ -58,8 +58,8 @@
 (local cmp-config-preferred-modern-lisp-sources
        [{:name :nvim_lsp_signature_help}
         {:name :nvim_lsp}
-        {:name :conjure}
         ;; cmp-conjure enabled by plugins.conjure
+        {:name :conjure}
         {:name :luasnip}
         {:name :buffer :keyword_length 4}
         {:name :path}

@@ -1,7 +1,8 @@
 NeoVim
 ======
 
-(tested on 0.10.3-dev)
+- aimed for version 0.10
+- tested on version 0.10.3-dev
 
 Pre-configuration
 -----------------
@@ -80,10 +81,15 @@ Vim keybinding reminders & tips
   - `d` : create directory
   - `gn` : change the current directory to the folder under the cursor
   - `gh` : show/hide hidden files
-- paredit-related slurping & barfing (better ergonomics for *lispem*;
-  cursor above a paren or a bracket):
-  - `<>` : move left (default: `<leader><`)
-  - `><` : move right (default: `<leader>>`)
+- slurping & barfing using the `julienvincent/nvim-paredit` for lisp:
+  - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
+  - `>)` : slurp forward
+  - `>(` : barf backward
+  - `>e` : drag element forwards (useful for fennel/clojure pairs between `{}`)
+  - `gE` has been disabled (because of [Tangerine](https://github.com/udayvir-singh/tangerine.nvim);
+    and also, `E`, `W` & `B` for now)
+  - NOTE: this version might work better than the `kovisoft/paredit` but the
+          plugin is not as *smart* (no autopairing included, no clean deletion)`
 
 Plugins and new keybindings
 ---------------------------
@@ -127,7 +133,7 @@ It's great but:
 - `<leader>a` : tag a file in harpoon 2 (first)
 - `<leader><leader>` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
-  directory (root of the project AKA `:lua print(vim.loop.cwd())`)
+  directory (root of the project AKA `:lua print(vim.uv.cwd())`)
   respectively
 - make a file, say, a module
   - edit the current buffer from `<leader><leader>`

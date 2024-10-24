@@ -1,3 +1,4 @@
+;; fennel-ls: macro-file
 ;; NeoVim related macros
 {:set!! (λ [x ...]
           "set the vim.opt options to x"

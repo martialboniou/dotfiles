@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-09-28
+;;; 2024-10-23
 (local zero-setup-preferred-preset :recommended)
 
 (local lsp-custom-keymaps
@@ -26,28 +26,28 @@
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
-(local preferred-language-servers [;; ASAP -> :ts-ls
-                                   :rust_analyzer
-                                   :clangd
-                                   :html
-                                   :lua_ls
-                                   :jsonls
-                                   :tailwindcss
-                                   :dockerls
-                                   :docker_compose_language_service
-                                   :astro
-                                   :marksman
-                                   :vimls
-                                   :cssls
-                                   :ocamllsp
-                                   :gopls
-                                   ;; :zls DON'T USE MASON HERE (see below)
-                                   :fennel_language_server
-                                   ;; fennel_ls needs too much work especially
-                                   ;; without macro-path's multiple root-uri
-                                   ;; -> just here for testing
-                                   ;; :fennel_ls
-                                   ])
+(local preferred-language-servers
+       [;; TODO: restore :ts-ls
+        :rust_analyzer
+        :clangd
+        :html
+        :lua_ls
+        :jsonls
+        :tailwindcss
+        :dockerls
+        :docker_compose_language_service
+        :astro
+        :marksman
+        :vimls
+        :cssls
+        :ocamllsp
+        :gopls
+        ;; :zls DON'T USE MASON HERE (see below)
+        ; :fennel_language_server
+        ;; fennel_ls needs too much work especially
+        ;; without macro-path's multiple root-uri '
+        ;; -> just here for testing
+        :fennel_ls])
 
 {1 :neovim/nvim-lspconfig
  :event :BufReadPost
@@ -62,7 +62,7 @@
                 :williamboman/mason-lspconfig.nvim
                 ;; see Autocompletion
                 :hrsh7th/nvim-cmp
-                ;; optional/highlight same word (LSP support)
+                ;; optional/highlight same word -> LSP support
                 :rrethy/vim-illuminate
                 {;; optional/fancy navbar with LSP (+ other tools)
                  1 :glepnir/lspsaga.nvim
@@ -100,75 +100,69 @@
                                  (each [mode map (pairs lsp-custom-keymaps)]
                                    (each [key fun (pairs map)]
                                      (vim.keymap.set mode key fun options)))))
-           (local {:util {: root_pattern} &as lspconfig} (require :lspconfig))
+           (local {:util {: root_pattern}
+                   : clangd
+                   : lua_ls
+                   : fennel_ls
+                   : fennel_language_server
+                   : zls} (require :lspconfig))
            ;; check if there's a clangd in your llvm-local-binary-path
            (let [local-clangd (.. llvm-local-binary-path :/clangd) ; unused now
                  capabilities (vim.lsp.protocol.make_client_capabilities)
                  on_attach #(do
                               ;; disable formattings (see hondana-dev.plugins.null-ls)
-                              (set $1.server_capabilities.documentFormattingProvider
+                              (set $.server_capabilities.documentFormattingProvider
                                    false)
-                              (set $1.server_capabilities.documentRangeFormattingProvider
+                              (set $.server_capabilities.documentRangeFormattingProvider
                                    false)
                               ;; disable semantics if not allowed
                               (or allow-clangd-semantics
-                                  (set $1.server_capabilities.semanticTokensProvider
+                                  (set $.server_capabilities.semanticTokensProvider
                                        nil)))]
-             ;; IMPORTANT: null-ls will do the clang-format with extra args
+             ;; NOTE: null-ls will do the clang-format with extra args
              (set capabilities.offsetEncoding [:utf-16])
-             (lspconfig.clangd.setup {:cmd [(if (-> local-clangd
-                                                    (vim.fn.executable)
-                                                    (= 1))
-                                                local-clangd
-                                                :clangd)]
-                                      : on_attach
-                                      : capabilities}))
+             (clangd.setup {:cmd [(if (-> local-clangd
+                                          (vim.fn.executable)
+                                          (= 1))
+                                      local-clangd
+                                      :clangd)]
+                            : on_attach
+                            : capabilities}))
            ;; Lua
-           ;; TODO: try folke/lazydev.nvim and get rid of that!
-           (lspconfig.lua_ls.setup ;;(lsp-zero.nvim_lua_ls)
-                                   {:on_init (fn [client]
-                                               (when client.workspace_folders
-                                                 (let [path (. client.workspace_folders
-                                                               1 :name)
-                                                       checkfile (fn [...]
-                                                                   (vim.uv.fs_stat ...))
-                                                       json (.. path
-                                                                :/.luarc.json)]
-                                                   (when (or (checkfile json)
-                                                             (checkfile (.. json
-                                                                            :c)))
-                                                     (lua :return))))
-                                               (set client.config.settings.Lua
-                                                    (vim.tbl_deep_extend :force
-                                                                         client.config.settings.Lua
-                                                                         {:diagnostics {:globals [:love]}
-                                                                          :runtime {:version :LuaJIT}
-                                                                          :workspace {:library ;; NOTE: mandatory for lazy packages
-                                                                                      (vim.api.nvim_get_runtime_file ""
-                                                                                                                              true)
-                                                                                      :checkThirdParty false}})))
-                                    :settings {:Lua {:diagnostics {:globals [:vim
-                                                                             :love]}
-                                                     :workspace {:checkThirdParty false
-                                                                 :library (vim.api.nvim_get_runtime_file ""
-                                                                                                         true)}}}})
-           (tset (require :lspconfig.configs) :fennel_language_server
-                 {:default_config {:cmd [:fennel-language-server]
-                                   :filetypes [:fennel]
-                                   :single_file_support true
-                                   :root_dir (root_pattern :fnl)
-                                   :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
-                                                       ;; I added Löve here (it won't hurt)
-                                                       :diagnostics {:globals [:vim
-                                                                               :love]}}}}})
-           (lspconfig.fennel_language_server.setup {})
-           ;; INSTALL https://sr.ht/~xerool/fennel-ls if you use fennel_ls (not recommended)
+           ;; TODO: try folke/lazydev.nvim and get rid of that overheat at workspace.library!
+           (lua_ls.setup {:on_init (fn [client]
+                                     (when client.workspace_folders
+                                       (let [path (. client.workspace_folders 1
+                                                     :name)
+                                             checkfile (fn [...]
+                                                         (vim.uv.fs_stat ...))
+                                             json (.. path :/.luarc.json)]
+                                         (when (or (checkfile json)
+                                                   (checkfile (.. json :c)))
+                                           (lua :return))))
+                                     (set client.config.settings.Lua
+                                          (vim.tbl_deep_extend :force
+                                                               client.config.settings.Lua
+                                                               {:runtime {:version :LuaJIT}
+                                                                :workspace {:checkThirdParty false
+                                                                            :library (vim.api.nvim_list_runtime_paths)}})))
+                          :settings {:Lua {:diagnostics {:globals [:vim :love]}}}})
+           (fennel_ls.setup {:settings {;;  :root_dir #(. (vim.fs.find [:fnl ] {:upward true :type :directory :path $}) 1)
+                                        :fennel-ls {:fennel-path "./?.fnl;./?/init.fnl;src/?.fnl;src/?/init.fnl"
+                                                    :macro-path "./?.fnl;./?/init-macros.fnl;./?/init.fnl;src/?.fnl;src/?/init-macros.fnl;src/?/init.fnl"
+                                                    :version :lua51
+                                                    :extra-globals :vim}}})
+           ;; (fennel_language_server.setup {:cmd [:fennel-language-server]
+           ;;                                :filetypes [:fennel]
+           ;;                                :single_file_support true
+           ;;                                :root_dir (root_pattern :fnl)
+           ;;                                :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
+           ;;                                                    ;; I added Löve here (it won't hurt)
+           ;;                                                    :diagnostics {:globals [:vim
+           ;;                                                                            :love]}}}})
            ;; NOTE: I need the zls that fits zig's version
            (when (-> :zls (vim.fn.executable) (= 1))
-             (tset (require :lspconfig.configs) :zls
-                   {:default_config {:cmd [:zls]
-                                     :filetypes [:zig]
-                                     :root_dir (root_pattern :build.zig :*.zig
-                                                             :.git)}})
-             (lspconfig.zls.setup {}))
+             (zls.setup {:cmd [:zls]
+                         :filetypes [:zig]
+                         :root_dir (root_pattern :build.zig :.git)}))
            (lsp-zero.setup))}

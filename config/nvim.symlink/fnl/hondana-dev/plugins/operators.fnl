@@ -15,45 +15,31 @@
       (: :with_pair (cond.not_before_regex_check "%w"))
       (: :with_pair #(not (lisp-ft? vim.bo.filetype)))))
 
-(local _autopairs
-       {1 :windwp/nvim-autopairs
-        : event
-        ;; inactive in echasnovski/mini.files + lisp (paredit instead)
-        :opts {:disable_filetype [:TelescopePrompt
-                                  :minifiles
-                                  :vim
-                                  ;; disabled in lisp (if enabled, check :config)
-                                  :lisp
-                                  :scheme
-                                  :fennel
-                                  :shen
-                                  :clojure]
-               ;; very annoying (does it work?)
-               :enable_check_bracket_line false}
-        :config (λ [_ opts]
-                  (let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
-                    (setup opts)
-                    ;; lisp exceptions for quotes & backticks
-                    (each [_ char (ipairs ["'" "`"])]
-                      (remove_rule char)
-                      (add_rule (lisp-rules char)))))})
-
 (icollect [_ pkg (ipairs [:tommcdo/vim-exchange
                           [:kylechui/nvim-surround
                            #(let [{: setup} (require :nvim-surround)]
                               (setup $2))]
-                          [:kovisoft/paredit
-                           ;; fancy keybindings
-                           ;; <> : move left (like <leader><)
-                           ;; >< : move right (like <leader>>)
-                           #(each [direction keys (pairs {:Left "<>"
-                                                          :Right "><"})]
-                              (vim.keymap.set :n keys
-                                              (-> direction
-                                                  (#["<cmd>:call PareditMove"
-                                                     $
-                                                     "()<CR>"])
-                                                  (table.concat))))]
+                          ;; TEST: a new treesitter-based paredit (used in fennel)
+                          ;; NOTE: no auto-pairs included
+                          [:julienvincent/nvim-paredit
+                           #(let [{: setup} (require :nvim-paredit)]
+                              (setup {:keys {;; as tangerine.nvim is core, gE must be `:FnlBuffer`
+                                             :gE false
+                                             ;; FIX: DANGER!
+                                             :E false
+                                             :W false
+                                             :B false}}))]
+                          [:windwp/nvim-autopairs
+                           #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
+                              (setup {:disable_filetype [:TelescopePrompt
+                                                         :minifiles
+                                                         :vim]
+                                      ;; FIX: very annoying (does it work?)
+                                      :enable_check_bracket_line false})
+                              ;; lisp exceptions for quotes & backticks
+                              (each [_ char (ipairs ["'" "`"])]
+                                (remove_rule char)
+                                (add_rule (lisp-rules char))))]
                           [:opdavies/toggle-checkbox.nvim
                            #(vim.keymap.set :n :<leader>tt
                                             ":lua require('toggle-checkbox').toggle()<CR>")]])]
@@ -72,8 +58,8 @@
 ;    cxiw => first time on the word A, prepare A for swapping
 ;            second time on a second word B, swap A and B
 
-;; AUTOPAIRS (disabled)
-;  CHECK: I'd like a magic tool that closes all the treesitter brackets
+;; AUTOPAIRS (temporarily enabled)
+;  INFO: I'd like a magic tool that closes all the treesitter brackets
 ;         when we want instead of a stupid pairing tool
 
 ;; NVIM-SURROUND
@@ -85,6 +71,13 @@
 
 ;; PAREDIT
 ;; s-expression editing = paredit as recommended by monkoose in the nvlime-tutor
+;; - version julienvincent (currently active)
+;  ,@ : splice sexp (unwrap around cursor; `,` = localleader)
+;  >) : slurp forward
+;  >( : barf backward
+;  >e : drag element forwards (useful for fennel/clojure pairs between {})
+;
+;; - version kovisoft (old; unused)
 ;; (https://github.com/monkoose/nvlime#Quickstart)
 ;
 ;  **normal mode** (most commands require to press the shift key)

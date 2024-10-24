@@ -76,14 +76,14 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
       quotes/brackets manipulation;
     - [vim-exchange](https://github.com/tommcdo/vim-exchange) easy text
       exchange operator
+    - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
+      Telescope & mini.files; quotes and backticks are skipped from
+      *autopairing* for Lisp languages)
     - **WIP**:
       - try paredit/parinfer solution for Lisp (paredit activated now)
       - disabled ones:
           - [targets](https://github.com/wellle/targets.vim) for additional text
             objects (dangerous; broke the *Vim* macros (recorded & typed));
-          - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
-            Telescope & mini.files; quotes and backticks are skipped from
-            *autopairing* for Lisp languages)
 - sources:
   - [Tangerine configuration](https://github.com/Massolari/neovim)
   ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)

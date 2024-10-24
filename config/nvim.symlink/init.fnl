@@ -25,7 +25,7 @@
 
 ;; bootstrap lazy
 (let [lazy-path (.. (vim.fn.stdpath :data) :/lazy/lazy.nvim)]
-  (when (not (vim.loop.fs_stat lazy-path))
+  (when (not (vim.uv.fs_stat lazy-path))
     (vim.fn.system [:git
                     :clone
                     "--filter=blob:none"

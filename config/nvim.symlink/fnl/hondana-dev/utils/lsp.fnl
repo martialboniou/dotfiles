@@ -1,27 +1,20 @@
 ;; generic LSP interface
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
 
-;; this table is a placeholder for your persistent init data (better empty)
+;; this table is a placeholder for your persistent init data (better left empty)
 (local Lsp {})
 
-;; usage
-;; (let [Lsp (require ...)])
-(eval-compiler
-  (local lib-name ...)
-  )
-;; (macro check []
-;;   `(let [Lsp (require ,lib-name)]
-;;      (->> {:name :zk-lsp-demo :cmd [:zk :lsp]}
-;;           (Lsp:new)
-;;           (: :client)
-;;           ;; (.. "test::" ,n "::client")
-;;           (print))))
-
-;; (local e (check lib))
-;; (vim.schedule (let [Lsp (require lib-name)]
-;;                 (-> {:name :zk-lsp-demo :cmd [:zk :lsp]} (Lsp:new) (: :client)
-;;                     (print))))
-;(fn Lsp.e [self] (macrodebug (check)))
+;; USAGE
+;; example in a lua file made by `zk init && zk new --title="Test Lsp"
+;
+;; (let [Lsp (require :hondana-dev.utils.lsp)]
+;;   (do
+;;     (-> {:name :zk-foo :cmd [:zk :lsp]}
+;;         (#(doto (Lsp:new $)
+;;             (: :start)
+;;             (#(-> ($:client) (. :name) (= :zk-foo) (#(when $ (print :checked)))))
+;;             (: :stop)))))
+;;   nil)
 
 (fn Lsp.new [self config ?options]
   (when (not config.name)

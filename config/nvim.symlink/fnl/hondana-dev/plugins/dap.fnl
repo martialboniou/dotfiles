@@ -101,7 +101,7 @@
              (local lldb-adapter-name :lldb-vscode)
              (var lldb-adapter
                   (concat! "/" :/usr :local :bin lldb-adapter-name))
-             (when (-> (vim.loop.os_uname)
+             (when (-> (vim.uv.os_uname)
                        (. :sysname)
                        (= :Darwin))
                ;; fetch the absolute path on homebrew

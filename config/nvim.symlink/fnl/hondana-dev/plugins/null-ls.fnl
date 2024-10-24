@@ -1,5 +1,5 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
-;;; 2024-03-23
+;;; 2024-10-23
 
 ;; same as mason.setup.ensure_installed
 (local mason-null-ls-preferred-install
@@ -126,10 +126,9 @@
                                warn-really-in-markdown (make_builtin {:method methods.DIAGNOSTICS
                                                                       :filetypes [:markdown]
                                                                       :generator {:fn markdown-really-diagnostics-generator}})]
-                           {:sources [;; NOTE: the LSP Lua server is good for comments' alignment;
-                                      ;;       if you prefer stylua, :MasonInstall stylua and
-                                      ;;       uncomment the following line
-                                      ; format.stylua
+                           {:sources [;; NOTE: stylua: skip a block with `-- stylua: ignore start` until `-- stylua: ignore end`
+                                      (let [extras {:extras_args {:indent_type :Spaces}}]
+                                        (format.stylua.with extras))
                                       diagno.eslint
                                       diagno.twigcs
                                       ;; FIXME: restore me: builtins.completion.spell

@@ -3,15 +3,15 @@
 (local width-preview 30)
 
 (λ minifiles-open-at-location-or-root []
-  (let [{: open &as mf} (require :mini.files)]
-    (if (not= nil (mf.get_explorer_state))
-        (mf.close) ; close if already open
+  (let [{: open : close : get_explorer_state} (require :mini.files)]
+    (if (not= nil (get_explorer_state))
+        (close) ; close if already open
         (let [buf (vim.api.nvim_buf_get_name 0)
               (ok _) (pcall open buf true)]
           (when (not ok) ; not created yet?
             (print "Mini.files cannot open the current directory; open cwd instead")
             ;; open at the root of the project instead
-            (open (vim.loop.cwd) true))))))
+            (open (vim.uv.cwd) true))))))
 
 {1 :echasnovski/mini.files
  :keys [{1 :<leader><leader>
@@ -19,7 +19,7 @@
          2 #(minifiles-open-at-location-or-root)
          :desc "Open mini.files (directory of the current file)"}
         {1 :<leader>pv
-         2 #(let [mf (require :mini.files)] (mf.open (vim.loop.cwd) true))
+         2 #(let [{: open} (require :mini.files)] (open (vim.uv.cwd) true))
          :desc "Open mini.files (cwd)"}]
  :opts {:mappings {:reveal_cwd "@"}
         :options {:use_as_default_explorer true}
