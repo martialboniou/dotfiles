@@ -147,11 +147,49 @@
                                                                 :workspace {:checkThirdParty false
                                                                             :library (vim.api.nvim_list_runtime_paths)}})))
                           :settings {:Lua {:diagnostics {:globals [:vim :love]}}}})
-           (fennel_ls.setup {:settings {;;  :root_dir #(. (vim.fs.find [:fnl ] {:upward true :type :directory :path $}) 1)
-                                        :fennel-ls {:fennel-path "./?.fnl;./?/init.fnl;src/?.fnl;src/?/init.fnl"
-                                                    :macro-path "./?.fnl;./?/init-macros.fnl;./?/init.fnl;src/?.fnl;src/?/init-macros.fnl;src/?/init.fnl"
-                                                    :version :lua51
-                                                    :extra-globals :vim}}})
+           (fennel_ls.setup (let [fennel-path "./?.fnl;./?/init.fnl;src/?.fnl;src/?/init.fnl"
+                                  macro-path "./?.fnl;./?/init-macros.fnl;./?/init.fnl;src/?.fnl;src/?/init-macros.fnl;src/?/init.fnl"]
+                              ;; TODO: make an utility function from that
+                              (let [tangerine-path (-> :data
+                                                       (vim.fn.stdpath)
+                                                       (.. :/lazy/tangerine.nvim/fnl))
+                                    hibiscus-macro-path (-> :data
+                                                            (vim.fn.stdpath)
+                                                            (.. :/lazy/hibiscus.nvim/fnl))
+                                    user-macro-path (-> :config
+                                                        (vim.fn.stdpath)
+                                                        (.. :/fnl))
+                                    fennel-path (if (-> tangerine-path
+                                                        (vim.fn.isdirectory)
+                                                        (= 1))
+                                                    (.. ";" tangerine-path
+                                                        "/?.fnl;" tangerine-path
+                                                        :/?/init.fnl)
+                                                    fennel-path)
+                                    macro-path (if (-> hibiscus-macro-path
+                                                       (vim.fn.isdirectory)
+                                                       (= 1))
+                                                   (.. ";" hibiscus-macro-path
+                                                       "/?.fnl;"
+                                                       hibiscus-macro-path
+                                                       "/?/init-macros.fnl;"
+                                                       hibiscus-macro-path
+                                                       :/?/init.fnl)
+                                                   macro-path)
+                                    macro-path (if (-> user-macro-path
+                                                       (vim.fn.isdirectory)
+                                                       (= 1))
+                                                   (.. ";" user-macro-path
+                                                       "/?.fnl;" user-macro-path
+                                                       "/?/init-macros.fnl;"
+                                                       user-macro-path
+                                                       :/?/init.fnl)
+                                                   macro-path)]
+                                {:settings {;;  :root_dir #(. (vim.fs.find [:fnl ] {:upward true :type :directory :path $}) 1)
+                                            :fennel-ls {: fennel-path
+                                                        : macro-path
+                                                        :version :lua51
+                                                        :extra-globals :vim}}})))
            ;; (fennel_language_server.setup {:cmd [:fennel-language-server]
            ;;                                :filetypes [:fennel]
            ;;                                :single_file_support true

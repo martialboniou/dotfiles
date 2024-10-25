@@ -23,12 +23,9 @@
                           ;; NOTE: no auto-pairs included
                           [:julienvincent/nvim-paredit
                            #(let [{: setup} (require :nvim-paredit)]
-                              (setup {:keys {;; as tangerine.nvim is core, gE must be `:FnlBuffer`
-                                             :gE false
-                                             ;; FIX: DANGER!
-                                             :E false
-                                             :W false
-                                             :B false}}))]
+                              (setup {:dragging {:auto_drag_pairs false}
+                                      :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
+                                             }}))]
                           [:windwp/nvim-autopairs
                            #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
                               (setup {:disable_filetype [:TelescopePrompt
@@ -76,6 +73,8 @@
 ;  >) : slurp forward
 ;  >( : barf backward
 ;  >e : drag element forwards (useful for fennel/clojure pairs between {})
+;  ,o : raise form
+;  ,O : raise element
 ;
 ;; - version kovisoft (old; unused)
 ;; (https://github.com/monkoose/nvlime#Quickstart)

@@ -33,7 +33,9 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   a colorscheme only; everything loads when needed)
 - [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) (enable the
   NeoVim setup based on Fennel scripts; compiles and brings all the REPL commands
-  to easily develop in Fennel) 
+  to easily develop in Fennel; **BEWARE**: the default `gE` keybinding used to evaluate
+  a buffer or selection is `gB` in this setup; you should probably only use `gL`,
+  `gC` or `gO` to *peek*, compile to or check the Lua output respectively) 
 - Telescope (used as fuzzy finder) & [Harpoon 2](https://github.com/ThePrimeagen/harpoon/tree/harpoon2)
 - [mini.files](https://github.com/echasnovski/mini.files) (very good to navigate,
   preview files and manage directories; replace Netrw even if it's still available

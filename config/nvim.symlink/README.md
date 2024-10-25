@@ -86,8 +86,12 @@ Vim keybinding reminders & tips
   - `>)` : slurp forward
   - `>(` : barf backward
   - `>e` : drag element forwards (useful for fennel/clojure pairs between `{}`)
-  - `gE` has been disabled (because of [Tangerine](https://github.com/udayvir-singh/tangerine.nvim);
-    and also, `E`, `W` & `B` for now)
+  - `,o`/`,O` : raise form/element
+  - **IMPORTANT**: core changes:
+    - `W`/`B`  : move to the next/previous head element
+    - `E`/`gE` : move to the next/previous tail element (`gE` was the default
+    [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval* keybinding;
+    it's `gB` in this setup)
   - NOTE: this version might work better than the `kovisoft/paredit` but the
           plugin is not as *smart* (no autopairing included, no clean deletion)`
 
@@ -370,7 +374,6 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
   (NOTE: `<leader>g` is a prefix for git-related actions (as `<leader>gs` and
   other FuGITive commands); here, `g` followed by a **capital letter** is
   the pattern.):
-  - `gE` : **E**valuate
   - `gL` : **L**ua output
   - `gC` : **C**ompile the file in the current active Fennel buffer into a Lua
     file (this keybinding is not available in the default configuration; don't
@@ -381,6 +384,8 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
     `lua/`-rooted directory tree; to move back to the Fennel buffer, remember
     `<C-6>` is your friend; also, don't forget to `gC`/`:FnlCompileBuffer`
     before `gO`)
+  - `gB` : **B**uffer evaluation (**IMPORTANT:** it was `gE` before but it collides
+    with the Vim core mechanics and/or [paredit](https://github.com/julienvincent/nvim-paredit))
   - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
 - from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
   evaluation is stored in a register, try `"cp`):

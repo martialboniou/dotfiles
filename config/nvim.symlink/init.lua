@@ -9,9 +9,9 @@ local function bootstrap(url)
     if vim.fn.isdirectory(path) == 0 then
         print(name .. ": installing in data dir...")
 
-        vim.fn.system { "git", "clone", url, path }
+        vim.fn.system({ "git", "clone", url, path })
 
-        vim.cmd "redraw"
+        vim.cmd("redraw")
         print(name .. ": finished installing")
     end
 end
@@ -26,13 +26,14 @@ local globals = vim.tbl_keys(_G)
 --   table.insert(globals, "love") -- here for love2d
 -- otherwise, check :FnlAddG in `fnl/hondana-dev/plugins/init.fnl`
 
-require "tangerine".setup {
+require("tangerine").setup({
     compiler = {
         verbose = false,
-        hooks = { "onsave", "oninit", },
+        hooks = { "onsave", "oninit" },
         globals = globals,
     },
     keymaps = {
+        eval_buffer = "gB",
         float = {
             kill = "<C-c>",
         },
@@ -43,9 +44,11 @@ require "tangerine".setup {
             return {
                 "lua-format",
                 "--spaces-inside-table-braces",
-                "--column-table-limit", math.floor(width / 1.7),
-                "--column-limit", width,
+                "--column-table-limit",
+                math.floor(width / 1.7),
+                "--column-limit",
+                width,
             }
         end,
     },
-}
+})
