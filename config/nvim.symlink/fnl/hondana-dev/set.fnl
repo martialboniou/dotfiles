@@ -35,7 +35,11 @@
 ;; special indentation for some filetypes
 (let [group (augroup :Hondana_SpecialIndentation {})
       options [:sw :ts :sts]
-      callback #(when (or= vim.bo.ft :jsonc :json :haskell :ocaml)
+      callback #(when (or= vim.bo.ft ;; 2-space indent
+                           ;; I'm a Common Lisp & Fennel/Lua user
+                           :fennel :lisp :clojure :scheme :racket ;;
+                           ;; others
+                           :jsonc :json :haskell :ocaml :janet)
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (autocmd :BufWinEnter {: callback : group : pattern}))
 

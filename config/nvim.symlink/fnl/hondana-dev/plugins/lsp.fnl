@@ -150,41 +150,40 @@
            (fennel_ls.setup (let [fennel-path "./?.fnl;./?/init.fnl;src/?.fnl;src/?/init.fnl"
                                   macro-path "./?.fnl;./?/init-macros.fnl;./?/init.fnl;src/?.fnl;src/?/init-macros.fnl;src/?/init.fnl"]
                               ;; TODO: make an utility function from that
-                              (let [tangerine-path (-> :data
-                                                       (vim.fn.stdpath)
-                                                       (.. :/lazy/tangerine.nvim/fnl))
-                                    hibiscus-macro-path (-> :data
-                                                            (vim.fn.stdpath)
-                                                            (.. :/lazy/hibiscus.nvim/fnl))
+                              (let [data-lazy-path #(-> :data
+                                                        (vim.fn.stdpath)
+                                                        (.. :/lazy/ $ :/fnl))
+                                    is-directory #(-> $ (vim.fn.isdirectory)
+                                                      (= 1))
+                                    make-path (fn [name ?type]
+                                                (.. ";" name :/?.fnl
+                                                    (if (and ?type
+                                                             (= :macro ?type))
+                                                        (.. ";" name
+                                                            :/?/init-macros.fnl)
+                                                        "")
+                                                    ";" name :/?/init.fnl))
+                                    append-path (fn [mode ...]
+                                                  (-> (icollect [_ package (ipairs [...])]
+                                                        (if (is-directory package)
+                                                            (make-path package
+                                                                       mode)
+                                                            ""))
+                                                      (table.concat)))
+                                    tangerine-fennel-path (data-lazy-path :tangerine.nvim)
+                                    hibiscus-macro-path (data-lazy-path :hibiscus.nvim)
                                     user-macro-path (-> :config
                                                         (vim.fn.stdpath)
                                                         (.. :/fnl))
-                                    fennel-path (if (-> tangerine-path
-                                                        (vim.fn.isdirectory)
-                                                        (= 1))
-                                                    (.. ";" tangerine-path
-                                                        "/?.fnl;" tangerine-path
-                                                        :/?/init.fnl)
-                                                    fennel-path)
-                                    macro-path (if (-> hibiscus-macro-path
-                                                       (vim.fn.isdirectory)
-                                                       (= 1))
-                                                   (.. ";" hibiscus-macro-path
-                                                       "/?.fnl;"
-                                                       hibiscus-macro-path
-                                                       "/?/init-macros.fnl;"
-                                                       hibiscus-macro-path
-                                                       :/?/init.fnl)
-                                                   macro-path)
-                                    macro-path (if (-> user-macro-path
-                                                       (vim.fn.isdirectory)
-                                                       (= 1))
-                                                   (.. ";" user-macro-path
-                                                       "/?.fnl;" user-macro-path
-                                                       "/?/init-macros.fnl;"
-                                                       user-macro-path
-                                                       :/?/init.fnl)
-                                                   macro-path)]
+                                    fennel-path (if (is-directory tangerine-fennel-path)
+                                                    (.. fennel-path
+                                                        (make-path tangerine-fennel-path)
+                                                        fennel-path))
+                                    macro-path (let [addons (append-path :macro
+                                                                         hibiscus-macro-path
+                                                                         user-macro-path)]
+                                                 (if (= "" addons) macro-path
+                                                     (.. macro-path addons)))]
                                 {:settings {;;  :root_dir #(. (vim.fs.find [:fnl ] {:upward true :type :directory :path $}) 1)
                                             :fennel-ls {: fennel-path
                                                         : macro-path
