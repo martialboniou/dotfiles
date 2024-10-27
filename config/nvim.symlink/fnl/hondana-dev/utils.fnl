@@ -1,3 +1,5 @@
+(import-macros {: or=} :hibiscus.core)
+
 (local M {})
 
 (local message
@@ -33,5 +35,9 @@
           (when (not (is-executable))
             (error message.file_cannot_be_executable))
           (.. "you can execute " file " now!")))))
+
+(λ M.lisp-ft? [ft]
+  "true if the filetype `ft` has the Lisp syntax"
+  (or= ft :fennel :lisp :clojure :scheme :racket :shen :janet :hy))
 
 M

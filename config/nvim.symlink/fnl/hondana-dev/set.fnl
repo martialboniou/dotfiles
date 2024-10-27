@@ -32,14 +32,14 @@
 ;; you can use lambda in this programming language (see below)
 (vim.cmd.iab ",\\ λ")
 
-;; special indentation for some filetypes
+;; 2-space indentation for some filetypes
 (let [group (augroup :Hondana_SpecialIndentation {})
       options [:sw :ts :sts]
-      callback #(when (or= vim.bo.ft ;; 2-space indent
-                           ;; I'm a Common Lisp & Fennel/Lua user
-                           :fennel :lisp :clojure :scheme :racket ;;
-                           ;; others
-                           :jsonc :json :haskell :ocaml :janet)
+      {: lisp-ft?} (require :hondana-dev.utils)
+      callback #(when (or ;; I'm a Common Lisp & Fennel/Lua user
+                          (lisp-ft? vim.bo.ft) ;;
+                          ;; others
+                          (or= vim.bo.ft :jsonc :json :haskell :ocaml))
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (autocmd :BufWinEnter {: callback : group : pattern}))
 

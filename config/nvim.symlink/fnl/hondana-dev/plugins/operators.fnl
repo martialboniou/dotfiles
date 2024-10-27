@@ -1,5 +1,9 @@
 ;; various operators for words/brackets (surround, vim-exchange, paredit)
 (import-macros {: or=} :hibiscus.core)
+(import-macros {: set!} :hibiscus.vim)
+
+;; paredit choice (NOTE: may proc autopairs)
+(local paredit-version (not :julienvincent))
 
 ;; main loading event
 (local event [:BufReadPost :BufNewFile])
@@ -8,18 +12,16 @@
 (local _all-parens "[%(%)%{%}%[%]]")
 (local _opening-parens "[%(%{%[]")
 
-(λ _lisp-ft? [ft]
-  (or= ft :lisp :scheme :fennel :shen :clojure))
-
-(λ _lisp-rules [tag]
+(λ non-lisp-rules [tag]
   (local Rule (require :nvim-autopairs.rule))
   (local cond (require :nvim-autopairs.conds))
-  (-> tag
-      (Rule tag) ; same open/close tag
-      (: :with_pair (cond.not_before_regex_check "%w"))
-      (: :with_pair #(not (_lisp-ft? vim.bo.filetype)))))
+  (let [{: lisp-ft?} (require :hondana-dev.utils)]
+    (-> tag
+        (Rule tag) ; same open/close tag
+        (: :with_pair (cond.not_before_regex_check "%w"))
+        (: :with_pair #(not (lisp-ft? vim.bo.filetype))))))
 
-(λ get-closing-for-line [line]
+(λ _get-closing-for-line [line]
   (var i -1)
   (var clo "")
   (while true
@@ -53,41 +55,59 @@
                                  [:kylechui/nvim-surround
                                   #(let [{: setup} (require :nvim-surround)]
                                      (setup $2))]
-                                 ;; TEST: a new treesitter-based paredit (used in fennel)
-                                 ;; NOTE: no auto-pairs included
-                                 [:kovisoft/paredit
-                                  ;; fancy keybindings
-                                  ;; <> : move left (like <leader><)
-                                  ;; >< : move right (like <leader>>)
-                                  #(each [direction keys (pairs {:Left "<>"
-                                                                 :Right "><"})]
-                                     (vim.keymap.set :n keys
-                                                     (-> direction
-                                                         (#["<Cmd>:call PareditMove"
-                                                            $
-                                                            "()<CR>"])
-                                                         (table.concat))))]
-                                 ;; [:julienvincent/nvim-paredit
-                                 ;;  #(let [{: setup} (require :nvim-paredit)]
-                                 ;;     (setup {:dragging {:auto_drag_pairs false}
-                                 ;;             :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
-                                 ;;                    }}))]
-                                 ;; [:windwp/nvim-autopairs
-                                 ;; NOTE: enable if julienvincent/nvim-paredit is too
-                                 ;;  #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
-                                 ;;     (setup {:disable_filetype [:TelescopePrompt
-                                 ;;                                :minifiles
-                                 ;;                                :vim]
-                                 ;;             ;; FIX: disable if annoying by uncomment the next line
-                                 ;;             ;; :enable_check_bracket_line false
-                                 ;;             })
-                                 ;;     ;; lisp exceptions for quotes & backticks
-                                 ;;     (each [_ char (ipairs ["'" "`"])]
-                                 ;;       (remove_rule char)
-                                 ;;       (add_rule (lisp-rules char))))]
                                  [:opdavies/toggle-checkbox.nvim
                                   #(vim.keymap.set :n :<leader>tt
-                                                   ":lua require('toggle-checkbox').toggle()<CR>")]])]
+                                                   ":lua require('toggle-checkbox').toggle()<CR>")]
+                                 ;; TEST: a new treesitter-based paredit (used in fennel)
+                                 ;; NOTE: put this code at the end (usage of `unpack`)
+                                 (if (not= :julienvincent paredit-version)
+                                     [:kovisoft/paredit
+                                      #(do
+                                         (set vim.g.paredit_matchlines 300)
+                                         ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
+                                         ;; => solution: syntax=lisp to avoid comment/string parens' matching
+                                         (let [group (vim.api.nvim_create_augroup :KovisoftParedit_NoSyntaxHack
+                                                                                  {})
+                                               callback #(when (or= vim.bo.ft
+                                                                    :fennel
+                                                                    :scheme)
+                                                           (set! :syntax :lisp))]
+                                           (vim.api.nvim_create_autocmd [:BufWinEnter]
+                                                                        {: callback
+                                                                         : group
+                                                                         :pattern "*"}))
+                                         ;; fancy keybindings
+                                         ;; <> : move left (like <leader><)
+                                         ;; >< : move right (like <leader>>)
+                                         (each [direction keys (pairs {:Left "<>"
+                                                                       :Right "><"})]
+                                           (vim.keymap.set :n keys
+                                                           (-> direction
+                                                               (#["<Cmd>:call PareditMove"
+                                                                  $
+                                                                  "()<CR>"])
+                                                               (table.concat)))))]
+                                     (unpack [[:julienvincent/nvim-paredit
+                                               #(let [{: setup} (require :nvim-paredit)]
+                                                  (setup {:dragging {:auto_drag_pairs false}
+                                                          :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
+                                                                 }}))]
+                                              [:windwp/nvim-autopairs
+                                               ;; NOTE: enable if julienvincent/nvim-paredit is too
+                                               #(let [{: setup
+                                                       : add_rule
+                                                       : remove_rule} (require :nvim-autopairs)]
+                                                  (setup {:disable_filetype [:TelescopePrompt
+                                                                             :minifiles
+                                                                             :vim]
+                                                          ;; FIX: disable if annoying by uncomment the next line
+                                                          ;; :enable_check_bracket_line false
+                                                          })
+                                                  ;; lisp exceptions for quotes & backticks
+                                                  (each [_ char (ipairs ["'"
+                                                                         "`"])]
+                                                    (remove_rule char)
+                                                    (add_rule (non-lisp-rules char))))]]))])]
          (let [seq? (-> pkg (type) (= :table))
                url (if seq? (. pkg 1) pkg)
                spec {1 url : event}]
@@ -113,16 +133,26 @@ operators
 ;    cxiw => first time on the word A, prepare A for swapping
 ;            second time on a second word B, swap A and B
 
-;; AUTOPAIRS (temporarily enabled)
+;; AUTOPAIRS (temporarily enabled with julienvincent/nvim-paredit)
 ;  INFO: I'd like a magic tool that closes all the treesitter brackets
 ;         when we want instead of a stupid pairing tool
 
 ;; NVIM-SURROUND
 ;; classic quotes/brackets manipulation; eg: cs'" => change surroundings
 ;; additional text objects; eg: ; REM ((
-;    cin) => change inners of the parens (cursor out)
-;    da,  => delete between commas (cursor in)
-;    d2i) => change inners including outer parens (cursor in)
+;  cin) => change inners of the parens (cursor out)
+;  da,  => delete between commas (cursor in)
+;  d2i) => change inners including outer parens (cursor in)
+;
+
+;; TOGGLE-CHECKBOX
+;; toggle a markdown/org box; [ ] becomes [x]; [x] becomes [ ]; append [ ] 
+;; if nothing while respecting the list tag (say, `-`)
+;  <leader>tt : toggle checkbox (useful in markdown/org)
+;
+;;   - pros: lightweight, no need mkdnflow or any specific tool
+;;   - cons: no multi-switch, no way to customize the checked_character `x`
+;
 
 ;; PAREDIT
 ;; s-expression editing = paredit as recommended by monkoose in the nvlime-tutor
@@ -192,20 +222,12 @@ operators
 ;  more info: https://github.com/kovisoft/slimv/blob/master/doc/paredit.txt
 ; use: `:cal PareditInitBuffer()`
 ;;; TODO: replace paredit by parinfer-rust if smoother
-;;; NEXT = UNUSED
 ;; s-expression editing; eg:
 ;    <( => barfing backward
 ;    >) => slurping forward
 ;  {1 :julienvincent/nvim-paredit
 ;   :event :BufReadPost
 ;   :opts {:extension {:fennel {:get_node_root :return}}}}
-
-;; NVIM-SURROUND
-;; classic quotes/brackets manipulation; eg: cs'" => change surroundings
-;
-; <leader>tt : toggle checkbox (useful in markdown/org); append [ ] if nothing
-;;; PROS: lightweight, no need mkdnflow or any specific tool
-;;; CONS: no multi-switch, no way to customize the checked_character `x`
 
 ;;; DANGER! ;; targets ruin the Vim macros (recorded/typed)
 ;;; DANGER! ;; {1 :wellle/targets.vim}
