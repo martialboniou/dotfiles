@@ -1,7 +1,7 @@
 # What?
 
 Some useful dotfiles for developers using applications such as Zsh, Tmux,
-(Neo)Vim... on POSIX systems. Used mainly on macOS and linux.
+(Neo)Vim... on POSIX systems. Used mainly on macOS, OpenBSD and Linux.
 
 # For whom?
 
@@ -57,6 +57,10 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
     - `<C-d>`/`<C-u>` : go down/up in documentation
   - for snippets:
     - `<C-f>`/`<C-b>` : move forward/backward in the selection
+- [match-up](https://github.com/andymass/vim-matchup) to improve the text
+  matching with `%` (including parens & tags) with Treesitter integration;
+  no more issues with parens matched inside strings or comments in your Lisp
+  code
 - [Debugger Adapter Protocol](https://github.com/mfussenegger/nvim-dap) with
   an embedded UI and LLDB adapter probably ready to use
 - others:
@@ -70,7 +74,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   - [mini.hues](https://github.com/echasnovski/mini.hues) (**minimalist
     colorscheme**; 5 colors now: gray comment, white foreground, 3 *hue-wise*
     complementary color (same saturation, same brightness); works well
-    with TreeSitter and LSP semantics (except in `clangd` whose semantics
+    with Treesitter and LSP semantics (except in `clangd` whose semantics
     have been disabled))
   - some various plugins for *word objects*, *brackets* and
     *symbolic expressions*:
@@ -78,14 +82,23 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
       quotes/brackets manipulation;
     - [vim-exchange](https://github.com/tommcdo/vim-exchange) easy text
       exchange operator
-    - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
-      Telescope & mini.files; quotes and backticks are skipped from
-      *autopairing* for Lisp languages)
-    - **WIP**:
-      - try paredit/parinfer solution for Lisp (paredit activated now)
+    - **Work in progress**:
+      - [paredit](https://github.com/kovisoft/paredit) is enabled for all
+        Lisp code
+      - TODO: try other paredit/parinfer solution for Lisp; a Emacs puni-like
+        plugin for NeoVim with Treesitter support and the following current
+        [paredit](https://github.com/kovisoft/paredit) tricks would be neat:
+        - auto-whitespace before any opening inner bracket (Lisp wants
+          `(() ())` not `(()())`)
+        - smooth deletion
+        - electric return
       - disabled ones:
-          - [targets](https://github.com/wellle/targets.vim) for additional text
-            objects (dangerous; broke the *Vim* macros (recorded & typed));
+        - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
+          Telescope & mini.files; quotes and backticks are skipped from
+          *autopairing* for Lisp languages; can be activated if
+          [nvim-paredit](https://github.com/julienvincent/nvim-paredit) is too)
+        - [targets](https://github.com/wellle/targets.vim) for additional text
+          objects (dangerous; broke the *Vim* macros (recorded & typed));
 - sources:
   - [Tangerine configuration](https://github.com/Massolari/neovim)
   ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)

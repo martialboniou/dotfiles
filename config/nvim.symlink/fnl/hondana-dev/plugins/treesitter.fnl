@@ -42,6 +42,9 @@
                 (require)
                 (#($.setup opts))))
   :opts {:ensure_installed preferred-languages
+         :matchup {;; special vim-matchup (check hondana-dev.plugins.operators)
+                   :enable true
+                   :disable []}
          :sync_install false
          :auto_install false
          :rainbow {:enable true :extended_mode true}

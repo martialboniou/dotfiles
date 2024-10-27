@@ -4,48 +4,106 @@
 ;; main loading event
 (local event [:BufReadPost :BufNewFile])
 
-(λ lisp-ft? [ft]
+;; parens
+(local _all-parens "[%(%)%{%}%[%]]")
+(local _opening-parens "[%(%{%[]")
+
+(λ _lisp-ft? [ft]
   (or= ft :lisp :scheme :fennel :shen :clojure))
 
-(λ lisp-rules [tag]
+(λ _lisp-rules [tag]
   (local Rule (require :nvim-autopairs.rule))
   (local cond (require :nvim-autopairs.conds))
   (-> tag
       (Rule tag) ; same open/close tag
       (: :with_pair (cond.not_before_regex_check "%w"))
-      (: :with_pair #(not (lisp-ft? vim.bo.filetype)))))
+      (: :with_pair #(not (_lisp-ft? vim.bo.filetype)))))
 
-(icollect [_ pkg (ipairs [:tommcdo/vim-exchange
-                          [:kylechui/nvim-surround
-                           #(let [{: setup} (require :nvim-surround)]
-                              (setup $2))]
-                          ;; TEST: a new treesitter-based paredit (used in fennel)
-                          ;; NOTE: no auto-pairs included
-                          [:julienvincent/nvim-paredit
-                           #(let [{: setup} (require :nvim-paredit)]
-                              (setup {:dragging {:auto_drag_pairs false}
-                                      :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
-                                             }}))]
-                          [:windwp/nvim-autopairs
-                           #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
-                              (setup {:disable_filetype [:TelescopePrompt
-                                                         :minifiles
-                                                         :vim]
-                                      ;; FIX: very annoying (does it work?)
-                                      :enable_check_bracket_line false})
-                              ;; lisp exceptions for quotes & backticks
-                              (each [_ char (ipairs ["'" "`"])]
-                                (remove_rule char)
-                                (add_rule (lisp-rules char))))]
-                          [:opdavies/toggle-checkbox.nvim
-                           #(vim.keymap.set :n :<leader>tt
-                                            ":lua require('toggle-checkbox').toggle()<CR>")]])]
-  (let [seq? (-> pkg (type) (= :table))
-        url (if seq? (. pkg 1) pkg)
-        spec {1 url : event}]
-    (when seq?
-      (tset spec :config (. pkg 2)))
-    spec))
+(λ get-closing-for-line [line]
+  (var i -1)
+  (var clo "")
+  (while true
+    (set i (string.find line _all-parens (+ 1 i)))
+    (when (not i) (lua :break))
+    (let [ch (string.sub line i i)
+          st (string.sub clo 1 1)]
+      (if (= "{" ch)
+          (set clo (.. "}" clo))
+          (if (= "}" ch)
+              (do
+                (when (not= "}" st) (lua "return \"\""))
+                (set clo (string.sub clo 2)))
+              (if (= "(" ch)
+                  (set clo (.. ")" clo))
+                  (if (= ")" ch)
+                      (do
+                        (when (not= ")" st)
+                          (lua "return \"\""))
+                        (set clo (string.sub clo 2)))
+                      (if (= "[" ch)
+                          (set clo (.. "]" clo))
+                          (if (= "]" ch)
+                              (do
+                                (when (not= "]" st) (lua "return \"\""))
+                                (set clo (string.sub clo 2)))))))))))
+  clo)
+
+(local operators ;;
+       (icollect [_ pkg (ipairs [:tommcdo/vim-exchange
+                                 [:kylechui/nvim-surround
+                                  #(let [{: setup} (require :nvim-surround)]
+                                     (setup $2))]
+                                 ;; TEST: a new treesitter-based paredit (used in fennel)
+                                 ;; NOTE: no auto-pairs included
+                                 [:kovisoft/paredit
+                                  ;; fancy keybindings
+                                  ;; <> : move left (like <leader><)
+                                  ;; >< : move right (like <leader>>)
+                                  #(each [direction keys (pairs {:Left "<>"
+                                                                 :Right "><"})]
+                                     (vim.keymap.set :n keys
+                                                     (-> direction
+                                                         (#["<Cmd>:call PareditMove"
+                                                            $
+                                                            "()<CR>"])
+                                                         (table.concat))))]
+                                 ;; [:julienvincent/nvim-paredit
+                                 ;;  #(let [{: setup} (require :nvim-paredit)]
+                                 ;;     (setup {:dragging {:auto_drag_pairs false}
+                                 ;;             :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
+                                 ;;                    }}))]
+                                 ;; [:windwp/nvim-autopairs
+                                 ;; NOTE: enable if julienvincent/nvim-paredit is too
+                                 ;;  #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
+                                 ;;     (setup {:disable_filetype [:TelescopePrompt
+                                 ;;                                :minifiles
+                                 ;;                                :vim]
+                                 ;;             ;; FIX: disable if annoying by uncomment the next line
+                                 ;;             ;; :enable_check_bracket_line false
+                                 ;;             })
+                                 ;;     ;; lisp exceptions for quotes & backticks
+                                 ;;     (each [_ char (ipairs ["'" "`"])]
+                                 ;;       (remove_rule char)
+                                 ;;       (add_rule (lisp-rules char))))]
+                                 [:opdavies/toggle-checkbox.nvim
+                                  #(vim.keymap.set :n :<leader>tt
+                                                   ":lua require('toggle-checkbox').toggle()<CR>")]])]
+         (let [seq? (-> pkg (type) (= :table))
+               url (if seq? (. pkg 1) pkg)
+               spec {1 url : event}]
+           (when seq?
+             (tset spec :config (. pkg 2)))
+           spec)))
+
+(table.insert operators ;;
+              {;; NOTE: check hondana-dev.plugins.treesitter for additional settings
+               1 :andymass/vim-matchup
+               :lazy false
+               :init #(do
+                        (set vim.g.matchup_matchparen_offscreen
+                             {:method :popup}))})
+
+operators
 
 ;;; DOC
 
@@ -68,7 +126,7 @@
 
 ;; PAREDIT
 ;; s-expression editing = paredit as recommended by monkoose in the nvlime-tutor
-;; - version julienvincent (currently active)
+;; - version julienvincent (currently inactive)
 ;  ,@ : splice sexp (unwrap around cursor; `,` = localleader)
 ;  >) : slurp forward
 ;  >( : barf backward
@@ -76,7 +134,26 @@
 ;  ,o : raise form
 ;  ,O : raise element
 ;
-;; - version kovisoft (old; unused)
+;;   - pros
+;;     - maintained Lua code
+;;     - Treesitter
+;;   - cons
+;;     - one must implement at least autospacing & electric return
+;;       like in kovisoft/paredit using nvim-autopairs (WIP)
+;; 
+;; - version kovisoft (old; currently active)
+;  <>/>< : paredit move left/right
+;
+;;   - pros
+;;     - autospacing before new inner opening parens (great for all lisp!)
+;;     - easy deletion (when the matching is not broken)
+;;     - `electric return` (great to expand the code during editing;
+;;       add a return before closing parens; merge them with
+;;       `vim.lsp.buf.format`)
+;;   - cons
+;;     - pairs easily broken (need parens in comments sometimes)
+;;     - (minor!) cursor must be on the parens to slurp/barf (but one
+;;       only need two keys instead of four)
 ;; (https://github.com/monkoose/nvlime#Quickstart)
 ;
 ;  **normal mode** (most commands require to press the shift key)

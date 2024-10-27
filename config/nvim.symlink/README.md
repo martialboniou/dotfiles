@@ -81,19 +81,22 @@ Vim keybinding reminders & tips
   - `d` : create directory
   - `gn` : change the current directory to the folder under the cursor
   - `gh` : show/hide hidden files
-- slurping & barfing using the `julienvincent/nvim-paredit` for lisp:
-  - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
-  - `>)` : slurp forward
-  - `>(` : barf backward
-  - `>e` : drag element forwards (useful for fennel/clojure pairs between `{}`)
-  - `,o`/`,O` : raise form/element
-  - **IMPORTANT**: core changes:
-    - `W`/`B`  : move to the next/previous head element
-    - `E`/`gE` : move to the next/previous tail element (`gE` was the default
-    [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval* keybinding;
-    it's `gB` in this setup)
-  - NOTE: this version might work better than the `kovisoft/paredit` but the
-          plugin is not as *smart* (no autopairing included, no clean deletion)`
+- slurping & barfing using the `kovisoft/paredit` plugin for lisp:
+  - `<>` : move left the bracket at the current position (as `<leader><`)
+  - `><` : move right the bracket at the current position (as `<leader>>`)
+  - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to *normal
+    mode* without moving the cursor back
+  - NOTE: if `julienvincent/nvim-paredit` is activated, you must use:
+    - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
+    - `>)` : slurp forward
+    - `>(` : barf backward
+    - `>e` : drag element forwards (useful for fennel/clojure pairs between `{}`)
+    - `,o`/`,O` : raise form/element
+    - **IMPORTANT**: core changes:
+      - `W`/`B`  : move to the next/previous head element
+      - `E`/`gE` : move to the next/previous tail element (`gE` was the default
+      [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval*
+      keybinding; it's `gB` in this setup)
 
 Plugins and new keybindings
 ---------------------------
@@ -284,6 +287,30 @@ insert
   - `<leader>zz`  : randomly activate an animation
 
 ### Technical tips
+
+#### Matchup
+
+[match-up](https://github.com/andymass/vim-matchup) is activated to navigate
+and operate on sets of matching text. It extends `%`, supports language
+syntax with a Treesitter integration and, displays popup when the matching
+element is offscreen. I've had issues with matching parens in my code
+with parens inside strings or comments (very stressful in lisp code as
+the Fennel source code of this Neovim setup). `matchup` works just fine.
+
+#### Paredit
+
+I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
+[nvim-paredit](https://github.com/julienvincent/nvim-paredit) and
+[nvim-autopairs](https://github.com/windwp/nvim-autopairs).
+
+- Pros:
+  - auto-whitespace before any inner opening bracket (greatly used in Fennel
+    & Clojure)
+  - smooth deletion
+  - electric return to expand the closing parens during edition
+    (`vim.lsp.buf.format` to clean up)
+- Cons:
+  - can lose the tracking (no Treesitter safety)
 
 #### Language Server Protocol
 
@@ -496,7 +523,7 @@ it will rebuild this file with your new setting (you can copy to your
 One last word about *clangd*: The default LSP semantics in this server
 don't fit most colorschemes I used. I decided to remove this part of
 the server (thus, the syntax in C, ObjC & C++ is highlighted by using
-TreeSitter). IMO, the lack of extra tokens in the strings brought by
+Treesitter). IMO, the lack of extra tokens in the strings brought by
 `clangd` is *no big deal*; the lack of that atrocious parsing for
 the CPP/macros is for the best.
 
@@ -537,5 +564,5 @@ The plugin `cmp-emoji` has been added. Type `:` to open the completion menu
 anywhere in a **markdown** file or a `git commit` message. This completion is
 disabled for other buffers but in comments or strings (ensure there's a space
 after the opening `"` before typing the `:`). NOTE: The emoji's completion is
-disabled for strings in Fennel code because TreeSitter sees symbols (starting
+disabled for strings in Fennel code because Treesitter sees symbols (starting
 with colon) as strings.
