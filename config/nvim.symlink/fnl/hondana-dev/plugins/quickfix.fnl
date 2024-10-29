@@ -27,8 +27,6 @@
   :opts {}
   :init #(let [map #(vim.keymap.set $...)
                {: jump_next : jump_prev} (require :todo-comments)]
-           ;; paredit-skip [
            (map :n "]t" jump_next {:desc "Next todo comment"})
            (map :n "[t" jump_prev {:desc "Previous todo comment"})
-           ;; paredit-skip ]
            nil)}]

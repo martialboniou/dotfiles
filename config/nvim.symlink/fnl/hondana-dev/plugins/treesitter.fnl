@@ -65,16 +65,14 @@
                                 : selection_modes}
                        :move {:enable true
                               :set_jumps true
-                              ;; paredit-skip [[[
                               ;; NOTE: neither [t nor ]t b/c todo-comments
                               ;;       check hondana-dev.plugins.quickfix
                               :goto_next_start {"]m" "@function.outer"
                                                 "]]" "@class.outer"}
-                              ;; paredit-skip [[
                               :goto_next_end {"]M" "@function.outer"
                                               "][" "@class.outer"}
                               :goto_previous_start {"[m" "@function.outer"
                                                     "[[" "@class.outer"}
                               :goto_previous_end {"[M" "@function.outer"
-                                                  ;; paredit-skip ]]]]]
                                                   "[]" "@class.outer"}}}}}]
+

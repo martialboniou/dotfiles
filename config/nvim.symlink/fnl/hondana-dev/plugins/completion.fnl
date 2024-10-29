@@ -24,48 +24,55 @@
             syntaxes {:in_treesitter_capture c :in_syntax_group cap-c}]
         (each [f a (pairs syntaxes)]
           (table.insert clauses `((. ,context ,f) ,a)))))
-    `(fn []
+    `(λ []
        (let [,context (require :cmp.config.context)]
          (or ,(unpack clauses))))))
 
-(local cmp-config-preferred-default-sources
-       [{:name :nvim_lsp_signature_help}
-        {:name :nvim_lsp}
-        {:name :luasnip}
-        {:name :buffer :keyword_length 4}
-        {:name :path}
-        {:name :emoji
-         :entry_filter (make-emoji-restrictions :comment :string)
-         :insert true}])
+(local cmp-config-preferred-sources
+       {1 [{:name :nvim_lsp_signature_help}
+           {:name :nvim_lsp}
+           {:name :luasnip}
+           {:name :buffer :keyword_length 4}
+           {:name :path}
+           {:name :emoji
+            :entry_filter (make-emoji-restrictions :comment :string)
+            :insert true}]
+        :markdown [{:name :nvim_lsp_signature_help}
+                   {:name :nvim_lsp}
+                   {:name :luasnip}
+                   {:name :buffer :keyword_length 3}
+                   {:name :path}
+                   {:name :emoji :insert true}]
+        :gitcommit [{:name :nvim_lsp_signature_help}
+                    {:name :nvim_lsp}
+                    {:name :luasnip}
+                    {:name :buffer :keyword_length 4}
+                    {:name :path}
+                    {:name :git}
+                    {:name :emoji :insert true}]
+        :lisp [{:name :nvim_lsp_signature_help}
+               {:name :nvim_lsp}
+               ;; cmp-conjure enabled by plugins.conjure
+               {:name :conjure}
+               {:name :luasnip}
+               {:name :buffer :keyword_length 4}
+               {:name :path}
+               {:name :emoji
+                :entry_filter (make-emoji-restrictions :comment)
+                :insert true}]})
 
-(local cmp-config-preferred-markdown-sources
-       [{:name :nvim_lsp_signature_help}
-        {:name :nvim_lsp}
-        {:name :luasnip}
-        {:name :buffer :keyword_length 3}
-        {:name :path}
-        {:name :emoji :insert true}])
+(fn cmp-config [?name]
+  (let [n (or ?name 1)]
+    (-> cmp-config-preferred-sources
+        (#(or (. $ n) (. $ 1))))))
 
-(local cmp-config-preferred-git-sources
-       [{:name :nvim_lsp_signature_help}
-        {:name :nvim_lsp}
-        {:name :luasnip}
-        {:name :buffer :keyword_length 4}
-        {:name :path}
-        {:name :git}
-        {:name :emoji :insert true}])
-
-(local cmp-config-preferred-modern-lisp-sources
-       [{:name :nvim_lsp_signature_help}
-        {:name :nvim_lsp}
-        ;; cmp-conjure enabled by plugins.conjure
-        {:name :conjure}
-        {:name :luasnip}
-        {:name :buffer :keyword_length 4}
-        {:name :path}
-        {:name :emoji
-         :entry_filter (make-emoji-restrictions :comment)
-         :insert true}])
+(fn extract-fts [fts]
+  (if (-> fts (type) (= :table))
+      (if (not= nil (. fts :source))
+          (values (. fts 1) (. fts :source))
+          (values fts (. fts 1)))
+      ;; not a table
+      (values fts fts)))
 
 {1 :hrsh7th/nvim-cmp
  ;; check lsp.fnl for the loading LSP Zero -> LSP -> nvim-cmp
@@ -101,13 +108,14 @@
                 :config cc
                 :mapping cm} (require :cmp)
                {: defaults} (require :lsp-zero)]
-           (setup.filetype [:markdown]
-                           {:sources (cc.sources cmp-config-preferred-markdown-sources)})
-           (setup.filetype [:gitcommit]
-                           {:sources (cc.sources cmp-config-preferred-git-sources)})
-           (setup.filetype [:fennel :clojure]
-                           {:sources (cc.sources cmp-config-preferred-modern-lisp-sources)})
-           {:sources (cc.sources cmp-config-preferred-default-sources)
+           ;; special sources
+           (each [_ fts (ipairs [:markdown
+                                 :gitcommit
+                                 {1 [:fennel :clojure] :source :lisp}])]
+             (let [(filetypes source) (extract-fts fts)
+                   sources (cc.sources (cmp-config source))]
+               (setup.filetype filetypes {: sources})))
+           {:sources (cc.sources (cmp-config))
             :completion {:completeopt cmp-config-complete-options}
             :preselect :none
             :snippet {:expand #(let [l (require :luasnip)]

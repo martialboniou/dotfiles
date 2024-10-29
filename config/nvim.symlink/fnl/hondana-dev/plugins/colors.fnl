@@ -31,7 +31,7 @@
         :priority 1000
         :lazy false
         :opts {:disable_background true :disable_float_background true}
-        :config (λ [_ opts]
+        :config (fn [_ opts]
                   (-> :rose-pine
                       (require)
                       (#($.setup opts)))

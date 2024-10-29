@@ -10,7 +10,7 @@
 
 (local zk-brackets-prn-fn #(values "%[%[(.-)%]%]" "%1"))
 
-(λ is-executable [?file]
+(fn is-executable [?file]
   "returns a boolean; true if the current buffer file or this file is executable"
   (let [file-in-buffer? (= nil ?file)
         file (or ?file (vim.fn.expand "%:p"))

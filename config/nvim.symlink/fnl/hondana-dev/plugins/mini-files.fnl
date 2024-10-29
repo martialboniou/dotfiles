@@ -31,26 +31,26 @@
                (require)
                (#($.setup opts)))
            (var show-dotfiles true)
-           (λ filter-show [_] true)
-           (λ filter-hide [fs-entry]
-             (not (vim.startswith fs-entry.name ".")))
-           (λ toggle-dotfiles []
-             (set show-dotfiles (not show-dotfiles))
-             (local new-filter (or (and show-dotfiles filter-show) filter-hide))
-             (let [mf :mini.files]
-               (mf.refresh {:content {:filter new-filter}})))
-           (vim.api.nvim_create_autocmd :User
-                                        {:callback (λ [args]
-                                                     (local buf-id
-                                                            args.data.buf_id)
-                                                     (vim.keymap.set :n
-                                                                     hidden-files-toggle-key
-                                                                     toggle-dotfiles
-                                                                     {:buffer buf-id}))
-                                         :pattern :MiniFilesBufferCreate})
-           (vim.api.nvim_create_autocmd :User
-                                        {:callback (λ [args]
-                                                     (tset (. vim.wo
-                                                              args.data.win_id)
-                                                           :relativenumber true))
-                                         :pattern :MiniFilesWindowUpdate}))}
+           (let [filter-show #true
+                 filter-hide (λ [fs-entry]
+                               (not (vim.startswith fs-entry.name ".")))
+                 toggle-dotfiles (λ []
+                                   (set show-dotfiles (not show-dotfiles))
+                                   (let [{: refresh} (require :mini-files)
+                                         new-filter (or (and show-dotfiles
+                                                             filter-show)
+                                                        filter-hide)]
+                                     (refresh {:content {:filter new-filter}})))]
+             (let [callback (λ [args]
+                              (local buf-id args.data.buf_id)
+                              (vim.keymap.set :n hidden-files-toggle-key
+                                              toggle-dotfiles {:buffer buf-id}))]
+               (vim.api.nvim_create_autocmd :User
+                                            {: callback
+                                             :pattern :MiniFilesBufferCreate}))
+             (let [callback (λ [args]
+                              (tset (. vim.wo args.data.win_id) :relativenumber
+                                    true))]
+               (vim.api.nvim_create_autocmd :User
+                                            {: callback
+                                             :pattern :MiniFilesWindowUpdate}))))}

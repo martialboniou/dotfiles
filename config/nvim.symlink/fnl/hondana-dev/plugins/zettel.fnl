@@ -14,7 +14,7 @@
         (tset key k v)))
     keys))
 
-(fn make-zk-keys-for-notebook []
+(λ make-zk-keys-for-notebook []
   "Add the key mappings only for markdown files in a zk notebook"
   (let [{: notebook_root} (require :zk.util)]
     ;; ensure there's a .zk at the root

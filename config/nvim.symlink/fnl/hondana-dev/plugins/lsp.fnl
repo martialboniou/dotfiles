@@ -1,6 +1,6 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-10-23
+;;; 2024-10-28
 (local zero-setup-preferred-preset :recommended)
 
 (local lsp-custom-keymaps
@@ -26,28 +26,45 @@
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
-(local preferred-language-servers
-       [;; TODO: restore :ts-ls
-        :rust_analyzer
-        :clangd
-        :html
-        :lua_ls
-        :jsonls
-        :tailwindcss
-        :dockerls
-        :docker_compose_language_service
-        :astro
-        :marksman
-        :vimls
-        :cssls
-        :ocamllsp
-        :gopls
-        ;; :zls DON'T USE MASON HERE (see below)
-        ; :fennel_language_server
-        ;; fennel_ls needs too much work especially
-        ;; without macro-path's multiple root-uri '
-        ;; -> just here for testing
-        :fennel_ls])
+(local preferred-language-servers [;; TODO: restore :ts-ls
+                                   :rust_analyzer
+                                   :clangd
+                                   :html
+                                   :lua_ls
+                                   :jsonls
+                                   :tailwindcss
+                                   :dockerls
+                                   :docker_compose_language_service
+                                   :astro
+                                   :marksman
+                                   :vimls
+                                   :cssls
+                                   :ocamllsp
+                                   :gopls
+                                   ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
+                                   ;; fennel_ls is hard to setup but it looks promising
+                                   ])
+
+(lua "---@param names string[]\n---@return string[]")
+(λ lazy-get-plugin-paths [names]
+  {:author :uga-rosa-at-zenn-dev}
+  (let [{: plugins} (require :lazy.core.config)
+        paths []]
+    (each [_ name (ipairs names)]
+      (let [plugin (. plugins name)]
+        (if plugin
+            (table.insert paths (.. plugin.dir :/lua))
+            (vim.notify (.. "Invalid plugin name: " name)))))
+    paths))
+
+(λ library [plugins]
+  (let [paths (lazy-get-plugin-paths plugins)
+        make-libraries #(icollect [_ l (ipairs [$...])]
+                          (.. "${3rd}/" l :/library))]
+    (each [_ path (ipairs [(-> :config (vim.fn.stdpath) (.. :/lua))
+                           (.. vim.env.VIMRUNTIME :/lua)
+                           (unpack (make-libraries :luv :busted :luassert))])]
+      (table.insert paths path))))
 
 {1 :neovim/nvim-lspconfig
  :event :BufReadPost
@@ -100,12 +117,8 @@
                                  (each [mode map (pairs lsp-custom-keymaps)]
                                    (each [key fun (pairs map)]
                                      (vim.keymap.set mode key fun options)))))
-           (local {:util {: root_pattern}
-                   : clangd
-                   : lua_ls
-                   : fennel_ls
-                   : fennel_language_server
-                   : zls} (require :lspconfig))
+           (local {:util {: root_pattern} : clangd : lua_ls : fennel_ls : zls}
+                  (require :lspconfig))
            ;; check if there's a clangd in your llvm-local-binary-path
            (let [local-clangd (.. llvm-local-binary-path :/clangd) ; unused now
                  capabilities (vim.lsp.protocol.make_client_capabilities)
@@ -128,8 +141,12 @@
                                       :clangd)]
                             : on_attach
                             : capabilities}))
-           ;; Lua
-           ;; TODO: try folke/lazydev.nvim and get rid of that overheat at workspace.library!
+           ;; NOTE: I need the zls that fits zig's version
+           (when (-> :zls (vim.fn.executable) (= 1))
+             (zls.setup {:cmd [:zls]
+                         :filetypes [:zig]
+                         :root_dir (root_pattern :build.zig :.git)}))
+           ;; TODO: try folke/lazydev.nvim for a smoother setup
            (lua_ls.setup {:on_init (fn [client]
                                      (when client.workspace_folders
                                        (let [path (. client.workspace_folders 1
@@ -144,62 +161,24 @@
                                           (vim.tbl_deep_extend :force
                                                                client.config.settings.Lua
                                                                {:runtime {:version :LuaJIT}
-                                                                :workspace {:checkThirdParty false
-                                                                            :library (vim.api.nvim_list_runtime_paths)}})))
-                          :settings {:Lua {:diagnostics {:globals [:vim :love]}}}})
-           (fennel_ls.setup (let [fennel-path "./?.fnl;./?/init.fnl;src/?.fnl;src/?/init.fnl"
-                                  macro-path "./?.fnl;./?/init-macros.fnl;./?/init.fnl;src/?.fnl;src/?/init-macros.fnl;src/?/init.fnl"]
-                              ;; TODO: make an utility function from that
-                              (let [data-lazy-path #(-> :data
-                                                        (vim.fn.stdpath)
-                                                        (.. :/lazy/ $ :/fnl))
-                                    is-directory #(-> $ (vim.fn.isdirectory)
-                                                      (= 1))
-                                    make-path (fn [name ?type]
-                                                (.. ";" name :/?.fnl
-                                                    (if (and ?type
-                                                             (= :macro ?type))
-                                                        (.. ";" name
-                                                            :/?/init-macros.fnl)
-                                                        "")
-                                                    ";" name :/?/init.fnl))
-                                    append-path (fn [mode ...]
-                                                  (-> (icollect [_ package (ipairs [...])]
-                                                        (if (is-directory package)
-                                                            (make-path package
-                                                                       mode)
-                                                            ""))
-                                                      (table.concat)))
-                                    tangerine-fennel-path (data-lazy-path :tangerine.nvim)
-                                    hibiscus-macro-path (data-lazy-path :hibiscus.nvim)
-                                    user-macro-path (-> :config
-                                                        (vim.fn.stdpath)
-                                                        (.. :/fnl))
-                                    fennel-path (if (is-directory tangerine-fennel-path)
-                                                    (.. fennel-path
-                                                        (make-path tangerine-fennel-path)
-                                                        fennel-path))
-                                    macro-path (let [addons (append-path :macro
-                                                                         hibiscus-macro-path
-                                                                         user-macro-path)]
-                                                 (if (= "" addons) macro-path
-                                                     (.. macro-path addons)))]
-                                {:settings {;;  :root_dir #(. (vim.fs.find [:fnl ] {:upward true :type :directory :path $}) 1)
-                                            :fennel-ls {: fennel-path
-                                                        : macro-path
-                                                        :version :lua51
-                                                        :extra-globals :vim}}})))
-           ;; (fennel_language_server.setup {:cmd [:fennel-language-server]
-           ;;                                :filetypes [:fennel]
-           ;;                                :single_file_support true
-           ;;                                :root_dir (root_pattern :fnl)
-           ;;                                :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
-           ;;                                                    ;; I added Löve here (it won't hurt)
-           ;;                                                    :diagnostics {:globals [:vim
-           ;;                                                                            :love]}}}})
-           ;; NOTE: I need the zls that fits zig's version
-           (when (-> :zls (vim.fn.executable) (= 1))
-             (zls.setup {:cmd [:zls]
-                         :filetypes [:zig]
-                         :root_dir (root_pattern :build.zig :.git)}))
+                                                                :diagnostics {:globals [:vim
+                                                                                        :love]
+                                                                              :disable [:missing-fields]}
+                                                                :workspace {:checkThirdParty :Disable
+                                                                            :library (library [:lazy.nvim])
+                                                                            ;; (vim.api.nvim_list_runtime_paths)
+                                                                            }})))
+                          :settings {:Lua {}}})
+           ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
+           ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
+           ;; AFTER having installed your lazy packages (at least the tangerine/hibiscus ones)
+           (when (-> :fennel-ls (vim.fn.executable) (= 1))
+             ;; NOTE: change root project with `:lcd` if needed
+             (fennel_ls.setup {:root_dir ;; search in vicinity instead of visiting
+                               ;; the ancestors with root_pattern from nvim-lspconfig
+                               #(. (vim.fs.find [:fnl]
+                                                          {:upward true
+                                                           :type :directory
+                                                           :path (vim.fn.getcwd)})
+                                             1)}))
            (lsp-zero.setup))}

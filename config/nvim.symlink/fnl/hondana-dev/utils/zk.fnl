@@ -2,11 +2,11 @@
 
 (local M {})
 
-(fn M.notebook-root [n-path]
+(λ M.notebook-root [n-path]
   ((root-pattern :.zk) n-path))
 
 ;; required command: taplo (installed via Mason for example)
-(fn M.get-notebook-global-path []
+(λ M.get-notebook-global-path []
   "extract `notebook.dir` from the `~/.config/zk/config.toml"
   (let [config-file (-> "~/.config/zk/config.toml"
                         (vim.fn.expand))

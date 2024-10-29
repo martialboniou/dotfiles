@@ -19,8 +19,7 @@
 (λ harpoon-path-list [fpath]
   ;; FIXME: use a harpoon core function to build `value`?
   (let [path (require :plenary.path)
-        key-fn (or (?. (require :harpoon) :config :settings :key)
-                   #(vim.uv.cwd))
+        key-fn (or (?. (require :harpoon) :config :settings :key) #(vim.uv.cwd))
         buf-name (path:new fpath)
         context {:row 1 :col 0}
         value (buf-name:make_relative (key-fn))]
