@@ -436,6 +436,27 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
   - doc word:
     - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
 
+##### LSP server for Fennel
+
+This setup requires [fennel-ls](https://sr.ht/~xerool/fennel-ls/), a language
+server for intelligent editing of the Fennel programming language. This script in
+*alpha* stage **must be installed manually** (to be up-to-date). 
+
+To setup this language server for your Fennel code inside `~/.config/nvim/fnl/`,
+you must run NeoVim at least once (in order to install
+[Tangerine](https://github.com/udayvir-singh/tangerine.nvim)), then run the bash
+script `./build-project.sh` from the previous directory; this will dump a
+`flsproject.fnl` file generated with the correct paths (including the
+[Hibiscus](https://github.com/udayvir-singh/hibiscus.nvim) macro path used
+in this NeoVim setup).
+After this, your next NeoVim session should have a working LSP for Fennel.
+As the LSP server is its early stage, **rerun** `~/.config/nvim/fnl/build-flsproject.sh`
+after each [`dotfiles`](https://github.com/martialboniou/dotfiles) update
+(I'll improve this step in the future according to the improvements in the language
+server).
+
+##### Random tips
+
 Here's some tips for the LISP typists:
 - (insert mode) `,\<Space>` : print `λ` (only in this configuration; a viable
   **keyword** in Fennel)
@@ -527,7 +548,7 @@ Treesitter). IMO, the lack of extra tokens in the strings brought by
 `clangd` is *no big deal*; the lack of that atrocious parsing for
 the CPP/macros is for the best.
 
-#### Symfony 6 (PHP)
+#### Symfony 6+ (PHP)
 
 If you want to use this install to make NeoVim as
 a *ready-to-go* Symfony editor (and get rid of VSCode), do it so.

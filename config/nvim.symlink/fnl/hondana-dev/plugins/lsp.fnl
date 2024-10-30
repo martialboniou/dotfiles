@@ -171,14 +171,14 @@
                           :settings {:Lua {}}})
            ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
            ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
-           ;; AFTER having installed your lazy packages (at least the tangerine/hibiscus ones)
            (when (-> :fennel-ls (vim.fn.executable) (= 1))
              ;; NOTE: change root project with `:lcd` if needed
-             (fennel_ls.setup {:root_dir ;; search in vicinity instead of visiting
+             (fennel_ls.setup {:root_dir ;; search in the vicinity instead of visiting
                                ;; the ancestors with root_pattern from nvim-lspconfig
-                               #(. (vim.fs.find [:fnl]
-                                                          {:upward true
-                                                           :type :directory
-                                                           :path (vim.fn.getcwd)})
-                                             1)}))
+                               ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
+                               #(-> [:fnl]
+                                              (vim.fs.find {:upward true
+                                                            :type :directory
+                                                            :path (vim.fn.getcwd)})
+                                              (. 1))}))
            (lsp-zero.setup))}
