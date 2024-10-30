@@ -8,8 +8,6 @@
         :file_cannot_be_executable "this file cannot be set as executable"
         :file_cannot_be_non_executable "this file cannot be made non executable"})
 
-(local zk-brackets-prn-fn #(values "%[%[(.-)%]%]" "%1"))
-
 (fn is-executable [?file]
   "returns a boolean; true if the current buffer file or this file is executable"
   (let [file-in-buffer? (= nil ?file)

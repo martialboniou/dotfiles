@@ -1,7 +1,7 @@
 /lazy-lock.json
 /.clang-format
-/lua/*
-!/lua/**/
+#/lua/*
+#!/lua/**/
 /lua/hondana-dev/*
 !/lua/hondana-dev/**/
 /lua/hondana-dev/utils/*

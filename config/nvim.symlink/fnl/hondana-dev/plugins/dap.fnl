@@ -86,46 +86,43 @@
                                 [:dt (toggle_breakpoint)]
                                 [:dx (terminate)]
                                 [:du (step_out)]]))]
- :config (λ [_ _]
-           ;; TODO: simplify this
-           (let [{&as env} (collect [_ m (pairs [:dap :dapui])]
-                             (values m (require m)))]
-             (env.dapui.setup)
-             (let [cfg :dapui_config
-                   open #(env.dapui.open)
-                   close #(env.dapui.close)]
-               (tset env.dap.listeners.after :event_initialized cfg open)
-               (tset env.dap.listeners.before :event_terminated cfg close)
-               (tset env.dap.listeners.before :event_exited cfg close))
-             ;; lldb adapter TODO: move to lldb-dap
-             (local lldb-adapter-name :lldb-vscode)
-             (var lldb-adapter
-                  (concat! "/" :/usr :local :bin lldb-adapter-name))
-             (when (-> (vim.uv.os_uname)
-                       (. :sysname)
-                       (= :Darwin))
-               ;; fetch the absolute path on homebrew
-               (let [(ok brew-path) (brew-prefix)]
-                 (and ok
-                      (set lldb-adapter
-                           (concat! "/" brew-path :opt :llvm :bin
-                                    lldb-adapter-name)))))
-             (if (-> lldb-adapter (vim.fn.executable) (not= 1))
-                 (print "error: dap: unable to set your default adapter for LLVM")
-                 (let [cfg env.dap.configurations
-                       ada env.dap.adapters]
-                   (set ada.lldb {:type :executable
-                                  :command lldb-adapter
-                                  :env {:LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY :YES}
-                                  :name :lldb})
-                   (set cfg.c
-                        [{:name :Launch
-                          :type :lldb
-                          :request :launch
-                          :cwd "${workspaceFolder}"
-                          :stopOnEntry false
-                          :args []
-                          :runInTerminal true
-                          :program #(vim.fn.input "Path to executable: "
-                                                  (.. (vim.fn.getcwd) "/") :file)}])
-                   (set cfg.cpp cfg.c)))))}
+ :config #(let [{&as env} (collect [_ m (pairs [:dap :dapui])]
+                            (values m (require m)))]
+            (env.dapui.setup)
+            (let [cfg :dapui_config
+                  open #(env.dapui.open)
+                  close #(env.dapui.close)]
+              (tset env.dap.listeners.after :event_initialized cfg open)
+              (tset env.dap.listeners.before :event_terminated cfg close)
+              (tset env.dap.listeners.before :event_exited cfg close))
+            ;; lldb adapter TODO: move to lldb-dap
+            (local lldb-adapter-name :lldb-vscode)
+            (var lldb-adapter (concat! "/" :/usr :local :bin lldb-adapter-name))
+            (when (-> (vim.uv.os_uname)
+                      (. :sysname)
+                      (= :Darwin))
+              ;; fetch the absolute path on homebrew
+              (let [(ok brew-path) (brew-prefix)]
+                (and ok
+                     (set lldb-adapter
+                          (concat! "/" brew-path :opt :llvm :bin
+                                   lldb-adapter-name)))))
+            (if (-> lldb-adapter (vim.fn.executable) (not= 1))
+                (print "error: dap: unable to set your default adapter for LLVM")
+                (let [cfg env.dap.configurations
+                      ada env.dap.adapters]
+                  (set ada.lldb {:type :executable
+                                 :command lldb-adapter
+                                 :env {:LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY :YES}
+                                 :name :lldb})
+                  (set cfg.c
+                       [{:name :Launch
+                         :type :lldb
+                         :request :launch
+                         :cwd "${workspaceFolder}"
+                         :stopOnEntry false
+                         :args []
+                         :runInTerminal true
+                         :program #(vim.fn.input "Path to executable: "
+                                                 (.. (vim.fn.getcwd) "/") :file)}])
+                  (set cfg.cpp cfg.c))))}

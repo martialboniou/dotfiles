@@ -450,7 +450,7 @@ script `./build-project.sh` from the previous directory; this will dump a
 [Hibiscus](https://github.com/udayvir-singh/hibiscus.nvim) macro path used
 in this NeoVim setup).
 After this, your next NeoVim session should have a working LSP for Fennel.
-As the LSP server is its early stage, **rerun** `~/.config/nvim/fnl/build-flsproject.sh`
+As the LSP server is in its early stage, **rerun** `~/.config/nvim/fnl/build-flsproject.sh`
 after each [`dotfiles`](https://github.com/martialboniou/dotfiles) update
 (I'll improve this step in the future according to the improvements in the language
 server).

@@ -3,9 +3,8 @@
 (import-macros {: set!!} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
-(local autocmd vim.api.nvim_create_autocmd)
-(local augroup vim.api.nvim_create_augroup)
-(local usercommand vim.api.nvim_create_user_command)
+(local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
+
 (local pattern "*")
 
 ;; global settings
@@ -25,7 +24,7 @@
            :updatetime 50}]
   (collect [k v (pairs map)] (set! k v)))
 
-;; these default keys may be remapped in ./remap.fnl
+;; these default keys may be remapped in `hondana-dev.remap`
 (g! :mapleader " ")
 (g! :maplocalleader ",")
 
