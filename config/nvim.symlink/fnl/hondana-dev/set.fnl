@@ -22,7 +22,7 @@
            :colorcolumn :80
            :signcolumn :yes
            :updatetime 50}]
-  (collect [k v (pairs map)] (set! k v)))
+  (each [k v (pairs map)] (set! k v)))
 
 ;; these default keys may be remapped in `hondana-dev.remap`
 (g! :mapleader " ")

@@ -1,24 +1,27 @@
 ;; inspired by https://github.com/zk-org/zk-nvim/blob/main/lua/zk/root_pattern_util.lua
 (local M {})
 
-;; BEWARE: cannot be cross-compiled
-(macro is-windows []
+;; NOTE: cannot be cross-compiled
+(macro root-comparator-or-root [path only-root]
+  "returns a multi-value with the filesystem root according to the operating
+  system and a comparator function matching the root itself"
   (let [uname (vim.uv.os_uname)]
-    (-> :Windows (uname.version:match) (not= nil))))
+    (if (-> :Windows (uname.version:match) (not= nil))
+        (if only-root
+            `(: (: ,path :sub 1 2) :upper)
+            `(fn [,path] (: ,path :match "^%a:$")))
+        (if only-root
+            "/"
+            `(fn [,path] (= "/" ,path))))))
 
-(set M.path (let [is-fs-root #(if (is-windows)
-                                  ($:match "^%a:$")
-                                  (= "/" $))
-                  dirname (fn [path]
+(set M.path (let [dirname (fn [path]
                             (let [strip-dir-pat "/([^/]+)$"
                                   strip-sep-pat "/$"]
                               (when (and path (not= 0 (length path)))
                                 (let [result (: (path:gsub strip-sep-pat "")
                                                 :gsub strip-dir-pat "")]
                                   (if (= 0 (length result))
-                                      (if (is-windows)
-                                          (: (path:sub 1 2) :upper)
-                                          "/")
+                                      (root-comparator-or-root path true)
                                       result)))))]
               {:escape-wildcards #($:gsub "([%[%]%?*])" "\\%1")
                :exists #(let [stat (vim.uv.fs_stat $)]
@@ -29,7 +32,8 @@
                           (vim.tbl_flatten)
                           (table.concat "/"))
                :iterate-parents #(let [it (fn [_ v]
-                                            (when (and v (not (is-fs-root v)))
+                                            (when (and v
+                                                       (not (root-comparator-or-root v)))
                                               (let [v (dirname v)]
                                                 (when (and v
                                                            (vim.uv.fs_realpath v))
