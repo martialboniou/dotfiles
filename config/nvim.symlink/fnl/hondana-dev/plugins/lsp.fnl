@@ -163,8 +163,9 @@
                                                                {:runtime {:version :LuaJIT}
                                                                 :diagnostics {:globals [:vim
                                                                                         :love]
-                                                                              :disable [:missing-fields]}
-                                                                :workspace {:checkThirdParty :Disable
+                                                                              ;; :disable [:missing-fields]
+                                                                              }
+                                                                :workspace {:checkThirdParty :false
                                                                             :library (library [:lazy.nvim])
                                                                             ;; (vim.api.nvim_list_runtime_paths)
                                                                             }})))

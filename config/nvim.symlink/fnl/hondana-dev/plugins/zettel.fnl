@@ -66,7 +66,7 @@
                  #(let [{: find-project-root} (require :hondana-dev.utils.root-pattern)
                         notebook? (find-project-root (vim.fn.getcwd 0) :.zk)
                         path (when (not notebook?)
-                               (let [{: get-notebook-global-path} (require :hondana-dev.utils.zk)]
+                               (let [{: get-notebook-global-path} (require :hondana-dev.utils.zk-notes)]
                                  (get-notebook-global-path)))]
                     (edit (if (not path) $
                               ;; open your global notebook if no other choices

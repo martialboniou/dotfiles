@@ -2,12 +2,15 @@
 
 (local M {})
 
+(lua "---@type string[]")
 (local message
        {:file_not_attached "this buffer is not attached to a file"
         :file_already_executable "this file is already executable"
         :file_cannot_be_executable "this file cannot be set as executable"
         :file_cannot_be_non_executable "this file cannot be made non executable"})
 
+(lua "---@param _3ffile? string
+---@return boolean")
 (fn is-executable [?file]
   "returns a boolean; true if the current buffer file or this file is executable"
   (let [file-in-buffer? (= nil ?file)
@@ -34,6 +37,8 @@
             (error message.file_cannot_be_executable))
           (.. "you can execute " file " now!")))))
 
+(lua "---@param ft string
+---@return boolean")
 (λ M.lisp-ft? [ft]
   "true if the filetype `ft` has the Lisp syntax"
   (or= ft :fennel :lisp :clojure :scheme :racket :shen :janet :hy))

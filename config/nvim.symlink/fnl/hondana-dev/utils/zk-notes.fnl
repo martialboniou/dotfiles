@@ -1,9 +1,8 @@
-(local {: root-pattern} (require :hondana-dev.utils.root-pattern))
-
 (local M {})
 
 (λ M.notebook-root [n-path]
-  ((root-pattern :.zk) n-path))
+  (let [{: root-pattern} (require :hondana-dev.utils.root-pattern)]
+    ((root-pattern :.zk) n-path)))
 
 ;; required command: taplo (installed via Mason for example)
 (λ M.get-notebook-global-path []

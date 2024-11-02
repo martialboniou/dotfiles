@@ -9,12 +9,25 @@
     (if (-> :Windows (uname.version:match) (not= nil))
         (if only-root
             `(: (: ,path :sub 1 2) :upper)
-            `(fn [,path] (: ,path :match "^%a:$")))
+            `(fn [,path]
+               (if (or (not ,path) (= "" ,path)) (error "wrong filesytem")
+                   ;; :else
+                   (: ,path :match "^%a:$"))))
         (if only-root
             "/"
             `(fn [,path] (= "/" ,path))))))
 
-(set M.path (let [dirname (fn [path]
+(lua "---@alias string_iterator
+---| fun(_: any, v: string): nil 
+---| fun(_: any, v: string): string, string")
+
+(lua "---@class Path
+---@field escape-wildcards fun(name: string): string
+---@field exists fun(path: string): boolean
+---@field join fun(...: string?): string
+---@field iterate-parents fun(path: string): string_iterator, string, string")
+
+(local Path (let [dirname (fn [path]
                             (let [strip-dir-pat "/([^/]+)$"
                                   strip-sep-pat "/$"]
                               (when (and path (not= 0 (length path)))
@@ -40,6 +53,14 @@
                                                   (values v $)))))]
                                    (values it $ $))}))
 
+(lua "---@type Path")
+(set M.path Path)
+
+(lua "---@alias matcher
+---|fun(startpath: string, func: fun(path: string): boolean): string
+---|fun(startpath: string, func: fun(path: string): boolean): nil")
+
+(lua "---@type matcher")
 (fn M.search-ancestors [startpath func]
   (vim.validate {:func [func :f]})
   (if (func startpath)
@@ -51,7 +72,10 @@
           (when (func path)
             (lua "return path"))))))
 
+(lua "---@param ... string?\n---@return fun(string): string?")
+
 (fn M.root-pattern [...]
+  ;; FIX: tbl_flatten is deprecated
   (let [patterns (vim.tbl_flatten [...])
         matcher (fn [path]
                   (each [_ pattern (ipairs patterns)]
@@ -61,6 +85,10 @@
                                            (vim.fn.glob true true)))]
                       (when (M.path.exists p) (lua "return path")))))]
     #(M.search-ancestors $ matcher)))
+
+(lua "---@param startpath string
+---@param root_subdirectory string
+---@return nil|string")
 
 (fn M.find-project-root [startpath root-subdirectory]
   (let [startpath (if (-> startpath

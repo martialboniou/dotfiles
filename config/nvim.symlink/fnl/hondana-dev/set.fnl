@@ -5,6 +5,7 @@
 ;; main functions & pattern
 (local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
 
+(lua "---@type string")
 (local pattern "*")
 
 ;; global settings
@@ -25,7 +26,9 @@
   (each [k v (pairs map)] (set! k v)))
 
 ;; these default keys may be remapped in `hondana-dev.remap`
+(lua "---@type string")
 (g! :mapleader " ")
+(lua "---@type string")
 (g! :maplocalleader ",")
 
 ;; you can use lambda in this programming language (see below)
@@ -51,6 +54,7 @@
                          : pattern}))
 
 ;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
+(lua "---@type string")
 (local fzf-macos :/opt/homebrew/opt/fzf)
 (when (= 1 (vim.fn.isdirectory fzf-macos))
   (set+ :rtp fzf-macos)

@@ -1,4 +1,4 @@
-;; various operators for words/brackets (surround, vim-exchange, paredit)
+;; various operators for words/brackets (surround, vim-exchange, paredit, matchup, ...)
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set!} :hibiscus.vim)
 
