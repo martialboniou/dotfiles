@@ -47,35 +47,41 @@
         (map :v :<leader>za ":'<,'>lua vim.lsp.buf.range_code_action()<CR>"
              opts)))))
 
-(let [keys (make-lazy-zk-keys)]
-  {1 :zk-org/zk-nvim
-   :event :VeryLazy
-   : keys
-   :opts {:picker :telescope}
-   :config #(let [{: setup} (require :zk)] (setup $2))
-   :init #(let [{: edit} (require :zk)
-                {: add : del} (require :zk.commands)
-                group (vim.api.nvim_create_augroup :Hondana_AfterFtpluginMarkdown
-                                                   {})
-                ;; callback make-zk-keys-for-notebook
-                callback make-zk-keys-for-notebook
-                pattern :markdown]
-            ;; replace ZkNotes to aim for your global notebook via `~/.config/zk/config.toml`
-            (del :ZkNotes)
-            (add :ZkNotes
-                 #(let [{: find-project-root} (require :hondana-dev.utils.root-pattern)
-                        notebook? (find-project-root (vim.fn.getcwd 0) :.zk)
-                        path (when (not notebook?)
-                               (let [{: get-notebook-global-path} (require :hondana-dev.utils.zk-notes)]
-                                 (get-notebook-global-path)))]
-                    (edit (if (not path) $
-                              ;; open your global notebook if no other choices
-                              (vim.tbl_extend :force {:notebook_path path}
-                                              (or $ {})))
-                          {:title "Zk Notes"})))
-            ;; specific keys for after/plugin/markdown
-            (vim.api.nvim_create_autocmd :FileType
-                                         {: callback : group : pattern}))})
+(lua "---@type LazyKeysSpec[]")
+(local keys (make-lazy-zk-keys))
+(lua "---@type LazySpec")
+(local zettel
+       {1 :zk-org/zk-nvim
+        :event :VeryLazy
+        : keys
+        :opts {:picker :telescope}
+        :config #(let [{: setup} (require :zk)] (setup $2))
+        :init #(let [{: edit} (require :zk)
+                     {: add : del} (require :zk.commands)
+                     group (vim.api.nvim_create_augroup :Hondana_AfterFtpluginMarkdown
+                                                        {})
+                     ;; callback make-zk-keys-for-notebook
+                     callback make-zk-keys-for-notebook
+                     pattern :markdown]
+                 ;; replace ZkNotes to aim for your global notebook via `~/.config/zk/config.toml`
+                 (del :ZkNotes)
+                 (add :ZkNotes
+                      #(let [{: find-project-root} (require :hondana-dev.utils.root-pattern)
+                             notebook? (find-project-root (vim.fn.getcwd 0)
+                                                          :.zk)
+                             path (when (not notebook?)
+                                    (let [{: get-notebook-global-path} (require :hondana-dev.utils.zk-notes)]
+                                      (get-notebook-global-path)))]
+                         (edit (if (not path) $
+                                   ;; open your global notebook if no other choices
+                                   (vim.tbl_extend :force {:notebook_path path}
+                                                   (or $ {})))
+                               {:title "Zk Notes"})))
+                 ;; specific keys for after/plugin/markdown
+                 (vim.api.nvim_create_autocmd :FileType
+                                              {: callback : group : pattern}))})
+
+zettel
 
 ;;; examples of telescope usage
 ;; :Telescope zk notes createdAfter=3\ days\ ago

@@ -11,6 +11,8 @@
             `(do
                ,(unpack out))))
  :lazy-types (λ []
+               {:deprecated :v1.0
+                :fnl/docstring "DON'T use; types.lua is incomplete"}
                "create a Lua escape hatch from the lazy types for the Lua language server;
                 this should print the annotations at comptime"
                (let [file (-> :data (vim.fn.stdpath)

@@ -1,4 +1,5 @@
 ;; core plugins for this NeoVim
+(lua "---@type LazySpec")
 (local core [;; Fennel Integration
              {1 :udayvir-singh/tangerine.nvim
               :priority 1500

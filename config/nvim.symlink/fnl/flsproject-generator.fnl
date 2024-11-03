@@ -2,10 +2,15 @@
 (when (-> _G.vim (not))
   (error "you cannot execute this outside of nvim"))
 
+(local (ok fennel) (pcall require :tangerine.fennel.latest))
+
+(when (not ok)
+  (error "ensure nvim `vim.opt.rtp` has the tangerine lazy path set before loading this script"))
+
 (local file :flsproject.fnl)
 
 (λ build-flsproject []
-  (let [{: view} (require :fennel)
+  (let [{: view} fennel
         data-lazy-path #(-> :data
                             (_G.vim.fn.stdpath)
                             (.. :/lazy/ $ :/fnl))

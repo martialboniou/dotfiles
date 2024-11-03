@@ -1,5 +1,3 @@
-(import-macros {: lazy-types} :hondana-dev.macros.vim)
-(lazy-types)
 ;; less colors hype
 ;; 0 = last theme (b/c permute)
 

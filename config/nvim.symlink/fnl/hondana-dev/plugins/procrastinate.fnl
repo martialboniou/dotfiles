@@ -11,8 +11,12 @@
       (when (not ok)
         (print "Cellular Automaton: cannot run in this buffer")))))
 
-{1 :Eandrju/cellular-automaton.nvim
- :cmd :CellularAutomaton
- :keys [{1 :<leader>zz
-         2 run-random-automaton
-         :desc "Procrastinate with Cellular Automaton"}]}
+(lua "---@type LazySpec")
+(local procrastinate ;;
+       {1 :Eandrju/cellular-automaton.nvim
+        :cmd :CellularAutomaton
+        :keys [{1 :<leader>zz
+                2 run-random-automaton
+                :desc "Procrastinate with Cellular Automaton"}]})
+
+procrastinate

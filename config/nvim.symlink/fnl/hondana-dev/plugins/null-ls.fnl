@@ -1,7 +1,8 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
-;;; 2024-10-23
+;;; 2024-11-03
 
 ;; same as mason.setup.ensure_installed
+(lua "---@type string[]")
 (local mason-null-ls-preferred-install
        [:stylua
         :jq
@@ -27,6 +28,7 @@
 ;;            every local `.clang-format` files) by setting the following to true
 ;; NOTE: delete `~/.config/nvim/.clang-format` when you change your tabstop,
 ;;       it will rebuild this file with your new setting
+(lua "---@type boolean")
 (local override-clang-format-globally false)
 
 (local clang-format-global-file
@@ -53,6 +55,9 @@
 
 ;; NOTE: ocamlformat requires a `.ocamlformat` file at the root of a dune project
 
+(lua "---@alias command_pattern {command: string, args: string[], to_stdin: boolean, to_temp_file: boolean}")
+
+(lua "---@type command_pattern")
 (local fnlfmt-command-pattern
        {:command :fnlfmt
         :args [:--fix :$FILENAME]
@@ -61,12 +66,14 @@
 
 ;; `gawk -o` is not great; TODO: find a better formatter
 ;; INFO: use `:retab` after `<leader>f`
+(lua "---@type command_pattern")
 (local gawk-command-pattern {:command :gawk
                              :args [:-o- :-f :$FILENAME]
                              ; :prepend_extra_args true
                              :to_stdin true
                              :to_temp_file false})
 
+(lua "---@type command_pattern")
 (local djlint-command-pattern-for-twig
        {:command :djlint
         :args [;; MANDATORY
@@ -79,6 +86,23 @@
         :to_stdin false
         :to_temp_file true})
 
+;; TODO: WIP
+(lua "--- from vim.diagnostic
+---@class vim.Diagnostic
+---@field bufnr? integer
+---@field lnum integer
+---@field end_lnum? integer
+---@field col integer
+---@field end_col? integer
+---@field severity? any vim.diagnostic.Severity
+---@field message string
+---@field source? string
+---@field code? string|integer
+--- @field _tags? { deprecated: boolean, unnecessary: boolean}
+--- @field user_data? any arbitrary data plugins can add
+--- @field namespace? integer")
+
+;; (lua "---@alias fun(params: any): {col: number, row: number, end_col: number, source: string, message: string, severity?: vim.diagnostic.SeverityFilter}")
 (λ markdown-really-diagnostics-generator [params]
   (local diagnostics {})
   (each [i line (ipairs params.content)]
@@ -93,70 +117,74 @@
                         :severity vim.diagnostic.severity.WARN})))
   diagnostics)
 
-{1 :jay-babu/mason-null-ls.nvim
- :event [:BufReadPost :BufNewFile]
- :dependencies [:williamboman/mason.nvim
-                {1 :jose-elias-alvarez/null-ls.nvim
-                 :dependencies [:nvim-lua/plenary.nvim]
-                 :opts (λ []
-                         (let [{:builtins {:diagnostics diagno
-                                           :formatting format}
-                                : methods} (require :null-ls)
-                               {: make_builtin : formatter_factory} (require :null-ls.helpers)
-                               ;; formatter for fennel; install https://git.sr.ht/~technomancy/fnlfmt
-                               ;; NOTE: use `;; fnlfmt: skip` to skip the following sexp (snippet added)
-                               fennel-formatter (make_builtin {:name :fennel-formatter
-                                                               :method methods.FORMATTING
-                                                               :filetypes [:fennel]
-                                                               :generator_opts fnlfmt-command-pattern
-                                                               :factory formatter_factory})
-                               ;; formatter for awk (gawk required)
-                               awk-formatter (make_builtin {:name :awk-formatter
-                                                            :method methods.FORMATTING
-                                                            :filetypes [:awk]
-                                                            :generator_opts gawk-command-pattern
-                                                            :factory formatter_factory})
-                               ;; formatter for Twig/Nunjucks template
-                               twig-formatter (make_builtin {:name :twig-formatter
-                                                             :method methods.FORMATTING
-                                                             :filetypes [:html.twig.js.css]
-                                                             :generator_opts djlint-command-pattern-for-twig
-                                                             :factory formatter_factory})
-                               ;; FIXME: just here for testing
-                               warn-really-in-markdown (make_builtin {:method methods.DIAGNOSTICS
-                                                                      :filetypes [:markdown]
-                                                                      :generator {:fn markdown-really-diagnostics-generator}})]
-                           {:sources [;; NOTE: stylua: skip a block with `-- stylua: ignore start` until `-- stylua: ignore end`
-                                      (let [extras {:extras_args {:indent_type :Spaces}}]
-                                        (format.stylua.with extras))
-                                      diagno.eslint
-                                      diagno.twigcs
-                                      ;; FIXME: restore me: builtins.completion.spell
-                                      ;; clang-format with more options than with clangd in LSP
-                                      ;;   ensure clangd.setup has capabilities.offsetEncoding
-                                      ;;   set to [:utf-16] (check hondana-dev.plugins.lsp)
-                                      (let [extras (if (and override-clang-format-globally
-                                                            (-> clang-format-global-file
-                                                                (vim.fn.filereadable)
-                                                                (= 1)))
-                                                       {:extra_args (->> clang-format-global-file
-                                                                         (.. "--style=file:")
-                                                                         (#[$]))}
-                                                       {})]
-                                        (format.clang_format.with extras))
-                                      ;; great bonus for Fennel
-                                      fennel-formatter
-                                      awk-formatter
-                                      ;; (go) :Mason install: gofumpt, goimports_reviser & golines
-                                      format.gofumpt
-                                      format.goimports_reviser
-                                      format.golines
-                                      ;; (PHP/Symfony) :Mason install: php-cs-fixer & phpactor
-                                      (format.phpcsfixer.with {:extra_args ["--rules=@PhpCsFixer,@Symfony"]})
-                                      ;; bonus for Symfony
-                                      twig-formatter
-                                      ;; diagnostic test: warn really in markdown
-                                      warn-really-in-markdown]
-                            :debug true}))}]
- :opts {:ensure_installed mason-null-ls-preferred-install
-        :automatic_installation false}}
+(lua "---@type LazySpec")
+(local null-ls-archived ;;
+       {1 :jay-babu/mason-null-ls.nvim
+        :event [:BufReadPost :BufNewFile]
+        :dependencies [:williamboman/mason.nvim
+                       {1 :jose-elias-alvarez/null-ls.nvim
+                        :dependencies [:nvim-lua/plenary.nvim]
+                        :opts (λ []
+                                (let [{:builtins {:diagnostics diagno
+                                                  :formatting format}
+                                       : methods} (require :null-ls)
+                                      {: make_builtin : formatter_factory} (require :null-ls.helpers)
+                                      ;; formatter for fennel; install https://git.sr.ht/~technomancy/fnlfmt
+                                      ;; NOTE: use `;; fnlfmt: skip` to skip the following sexp (snippet added)
+                                      fennel-formatter (make_builtin {:name :fennel-formatter
+                                                                      :method methods.FORMATTING
+                                                                      :filetypes [:fennel]
+                                                                      :generator_opts fnlfmt-command-pattern
+                                                                      :factory formatter_factory})
+                                      ;; formatter for awk (gawk required)
+                                      awk-formatter (make_builtin {:name :awk-formatter
+                                                                   :method methods.FORMATTING
+                                                                   :filetypes [:awk]
+                                                                   :generator_opts gawk-command-pattern
+                                                                   :factory formatter_factory})
+                                      ;; formatter for Twig/Nunjucks template
+                                      twig-formatter (make_builtin {:name :twig-formatter
+                                                                    :method methods.FORMATTING
+                                                                    :filetypes [:html.twig.js.css]
+                                                                    :generator_opts djlint-command-pattern-for-twig
+                                                                    :factory formatter_factory})
+                                      ;; FIXME: just here for testing
+                                      warn-really-in-markdown (make_builtin {:method methods.DIAGNOSTICS
+                                                                             :filetypes [:markdown]
+                                                                             :generator {:fn markdown-really-diagnostics-generator}})]
+                                  {:sources [;; NOTE: stylua: skip a block with `-- stylua: ignore start` until `-- stylua: ignore end`
+                                             (let [extras {:extras_args {:indent_type :Spaces}}]
+                                               (format.stylua.with extras))
+                                             diagno.eslint
+                                             diagno.twigcs
+                                             ;; FIXME: restore me: builtins.completion.spell
+                                             ;; clang-format with more options than with clangd in LSP
+                                             ;;   ensure clangd.setup has capabilities.offsetEncoding
+                                             ;;   set to [:utf-16] (check hondana-dev.plugins.lsp)
+                                             (let [extras (if (and override-clang-format-globally
+                                                                   (-> clang-format-global-file
+                                                                       (vim.fn.filereadable)
+                                                                       (= 1)))
+                                                              {:extra_args (->> clang-format-global-file
+                                                                                (.. "--style=file:")
+                                                                                (#[$]))}
+                                                              {})]
+                                               (format.clang_format.with extras))
+                                             ;; great bonus for Fennel
+                                             fennel-formatter
+                                             awk-formatter
+                                             ;; (go) :Mason install: gofumpt, goimports_reviser & golines
+                                             format.gofumpt
+                                             format.goimports_reviser
+                                             format.golines
+                                             ;; (PHP/Symfony) :Mason install: php-cs-fixer & phpactor
+                                             (format.phpcsfixer.with {:extra_args ["--rules=@PhpCsFixer,@Symfony"]})
+                                             ;; bonus for Symfony
+                                             twig-formatter
+                                             ;; diagnostic test: warn really in markdown
+                                             warn-really-in-markdown]
+                                   :debug true}))}]
+        :opts {:ensure_installed mason-null-ls-preferred-install
+               :automatic_installation false}})
+
+null-ls-archived

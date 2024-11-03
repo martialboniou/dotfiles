@@ -7,14 +7,21 @@
                     :desc ,(.. "Go to the #" unit " harpooned file")}))
   out)
 
+(lua "---@return boolean")
 (λ netrw-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)]
     (= :netrw buf-type)))
 
+(lua "---@return boolean")
 (λ minifiles-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)
         buf-name (vim.api.nvim_buf_get_name 0)]
     (or (and (= :minifiles buf-type) (= buf-name "")) (= nil buf-name))))
+
+(lua "--- from harpoon.list
+---@alias HarpoonItem {value: string, context: any}
+---@param fpath string
+---@return HarpoonItem")
 
 (λ harpoon-path-list [fpath]
   ;; FIXME: use a harpoon core function to build `value`?
@@ -43,22 +50,26 @@
               (hlist:add (harpoon-path-list fs-entry.path)))))
         (hlist:add))))
 
-{1 :theprimeagen/harpoon
- :branch :harpoon2
- :dependencies [:nvim-lua/plenary.nvim]
- :keys [{1 :<leader>a
-         2 #(harpoon-file-explorer)
-         ;;  👍 : error if the cursor in Netrw or mini.files not on a file
-         :desc "Harpoon the current file"}
-        {1 :<leader>e
-         ;; it was <C-e> but <C-a>/<C-e> = cursor navi in terms
-         2 #(let [h (require :harpoon)]
-              (h.ui:toggle_quick_menu (h:list)))
-         :desc "Toggle the harpoon's quick menu"}
-        ;; h,t,n,s = keys for Dvorak layout
-        ;; (you can add more to access #5+ harpooned files)
-        (unpack (nav-file-mapping! :h :t :n :s))]
- :lazy true
- ;; setup as method is MANDATORY
- :config #(let [h (require :harpoon)]
-            (h:setup {:settings {:save_on_toggle true}}))}
+(lua "---@type LazySpec")
+(local harpoon2
+       {1 :theprimeagen/harpoon
+        :branch :harpoon2
+        :dependencies [:nvim-lua/plenary.nvim]
+        :keys [{1 :<leader>a
+                2 #(harpoon-file-explorer)
+                ;;  👍 : error if the cursor in Netrw or mini.files not on a file
+                :desc "Harpoon the current file"}
+               {1 :<leader>e
+                ;; it was <C-e> but <C-a>/<C-e> = cursor navi in terms
+                2 #(let [h (require :harpoon)]
+                     (h.ui:toggle_quick_menu (h:list)))
+                :desc "Toggle the harpoon's quick menu"}
+               ;; h,t,n,s = keys for Dvorak layout
+               ;; (you can add more to access #5+ harpooned files)
+               (unpack (nav-file-mapping! :h :t :n :s))]
+        :lazy true
+        ;; setup as method is MANDATORY
+        :config #(let [h (require :harpoon)]
+                   (h:setup {:settings {:save_on_toggle true}}))})
+
+harpoon2

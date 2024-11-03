@@ -3,15 +3,21 @@
 (import-macros {: set!} :hibiscus.vim)
 
 ;; paredit choice (NOTE: may proc autopairs)
+(lua "---@type boolean")
 (local paredit-version (not :julienvincent))
 
 ;; main loading event
+;; FIX: Event?
+(lua "---@type string[]")
 (local event [:BufReadPost :BufNewFile])
 
 ;; parens
+(lua "---@type string")
 (local _all-parens "[%(%)%{%}%[%]]")
+(lua "---@type string")
 (local _opening-parens "[%(%{%[]")
 
+(lua "---@param tag string")
 (λ non-lisp-rules [tag]
   (local Rule (require :nvim-autopairs.rule))
   (local cond (require :nvim-autopairs.conds))
@@ -21,10 +27,15 @@
         (: :with_pair (cond.not_before_regex_check "%w"))
         (: :with_pair #(not (lisp-ft? vim.bo.filetype))))))
 
+(lua "---@param line string\n---@return string")
+
 (λ _get-closing-for-line [line]
-  (var i -1)
+  (var i nil)
+  (set i -1)
   (var clo "")
   (while true
+    ;; (let [(n _) (string.find line _all-parens (+ 1 i))]
+    ;;   (set i n))
     (set i (string.find line _all-parens (+ 1 i)))
     (when (not i) (lua :break))
     (let [ch (string.sub line i i)
@@ -50,6 +61,7 @@
                                 (set clo (string.sub clo 2)))))))))))
   clo)
 
+(lua "---@type LazySpec")
 (var operators [])
 (let [url-config-specs ;; sequence of LazySpecURL or of {1 LazySpecURL 2 LazyConfigFn}
       [:tommcdo/vim-exchange
