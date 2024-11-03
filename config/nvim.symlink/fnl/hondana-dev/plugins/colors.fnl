@@ -1,12 +1,24 @@
+(import-macros {: lazy-types} :hondana-dev.macros.vim)
+(lazy-types)
 ;; less colors hype
 ;; 0 = last theme (b/c permute)
+
+(lua "---@type number")
 (local chosen-theme-idx 0)
+
+(lua "---@class Theme
+---@field foreground string
+---@field n_hues number
+---@field desc string")
+
+(lua "---@type Theme[]")
 
 (local themes
        [{:foreground "#adb6b4" :n_hues 2 :desc :blue->orange-yellow}
         {:foreground "#efefee" :n_hues 2 :desc :pink->cyan}
         {:foreground "#aabcbb" :n_hues 3 :desc :cyan->green->pink}])
 
+(lua "---@type number")
 (local chosen-theme (-> themes
                         (#(. $ (-> $
                                    (length)
@@ -15,6 +27,7 @@
                                          (% $)))
                                    (+ 1))))))
 
+(lua "---@type LazySpec")
 (local mini-hues {1 :echasnovski/mini.hues
                   :version false
                   :priority 1000
@@ -25,21 +38,7 @@
                          :foreground (. chosen-theme :foreground)
                          :n_hues (. chosen-theme :n_hues)}})
 
-;; previous colorscheme
-(local _rose-pine
-       {1 :rose-pine/neovim
-        :priority 1000
-        :lazy false
-        :opts {:disable_background true :disable_float_background true}
-        :config (fn [_ opts]
-                  (-> :rose-pine
-                      (require)
-                      (#($.setup opts)))
-                  (vim.cmd.colorscheme :rose-pine-moon)
-                  ;; I don't like the dull default color for the punctuation
-                  (vim.api.nvim_set_hl 0 "@punctuation" {:fg :White})
-                  (vim.api.nvim_set_hl 0 :Operator {:fg :Pink}))})
-
+(lua "---@type LazySpec")
 (local rainbow-delimiters
        {1 :HiPhish/rainbow-delimiters.nvim
         :event [:BufReadPost :BufNewFile]
@@ -60,9 +59,13 @@
                         :strategy {"" (. strategy :global)
                                    :commonlisp (. strategy :local)}}))})
 
+(lua "---@type LazySpec")
 (local icons {1 :nvim-tree/nvim-web-devicons
               :opts {:override_by_extension {:fnl {:icon "🌱"
                                                    :color "#428850"
                                                    :name :fnl}}}})
 
-(-> mini-hues (#[$ rainbow-delimiters icons]))
+(lua "---@type LazySpec")
+(local colors (-> mini-hues (#[$ rainbow-delimiters icons])))
+
+colors

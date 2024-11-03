@@ -1,5 +1,7 @@
 (local M {})
 
+(lua "---@param n_path string\n---@return nil|string")
+
 (λ M.notebook-root [n-path]
   (let [{: root-pattern} (require :hondana-dev.utils.root-pattern)]
     ((root-pattern :.zk) n-path)))
@@ -17,6 +19,8 @@
     (when (-> dir (vim.fn.isdirectory) (= 1))
       ;; check if the global notebook is initialized
       (M.notebook-root dir))))
+
+(lua "---@param _3fbufnr? number\n---@return string")
 
 (fn M.resolve-notebook-path [?bufnr]
   "check buffer, cwd or ~/.config/zk/config.toml:"

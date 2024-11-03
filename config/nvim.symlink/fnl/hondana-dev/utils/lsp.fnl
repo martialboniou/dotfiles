@@ -39,7 +39,7 @@
     (setmetatable o self)
     o))
 
-(lua "---@return number?")
+(lua "---@return nil|number")
 (fn Lsp.external-client [self]
   (let [ac-symbol (if (= 1 (vim.fn.has :nvim-0.10)) ;; 
                       :get_clients :get_active_clients)
