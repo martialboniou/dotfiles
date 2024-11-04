@@ -1,23 +1,24 @@
 ;; various operators for words/brackets (surround, vim-exchange, paredit, matchup, ...)
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set!} :hibiscus.vim)
+(import-macros {: tc} :hondana-dev.macros)
 
 ;; paredit choice (NOTE: may proc autopairs)
-(lua "---@type boolean")
+(tc type boolean)
 (local paredit-version (not :julienvincent))
 
 ;; main loading event
 ;; FIX: Event?
-(lua "---@type string[]")
+(tc type "string[]")
 (local event [:BufReadPost :BufNewFile])
 
 ;; parens
-(lua "---@type string")
+(tc type string)
 (local _all-parens "[%(%)%{%}%[%]]")
-(lua "---@type string")
+(tc type string)
 (local _opening-parens "[%(%{%[]")
 
-(lua "---@param tag string")
+(tc param tag string)
 (λ non-lisp-rules [tag]
   (local Rule (require :nvim-autopairs.rule))
   (local cond (require :nvim-autopairs.conds))
@@ -27,8 +28,7 @@
         (: :with_pair (cond.not_before_regex_check "%w"))
         (: :with_pair #(not (lisp-ft? vim.bo.filetype))))))
 
-(lua "---@param line string\n---@return string")
-
+(tc param line string return string)
 (λ _get-closing-for-line [line]
   (var i nil)
   (set i -1)
@@ -61,8 +61,8 @@
                                 (set clo (string.sub clo 2)))))))))))
   clo)
 
-(lua "---@type LazySpec")
-(var operators [])
+(tc type LazySpec)
+(var P [])
 (let [url-config-specs ;; sequence of LazySpecURL or of {1 LazySpecURL 2 LazyConfigFn}
       [:tommcdo/vim-exchange
        [:kylechui/nvim-surround
@@ -112,7 +112,7 @@
                         (each [_ char (ipairs ["'" "`"])]
                           (remove_rule char)
                           (add_rule (non-lisp-rules char))))]]))]]
-  (set operators ;;
+  (set P ;;
        (icollect [_ pkg (ipairs url-config-specs)]
          (let [seq? (-> pkg (type) (= :table))
                url (if seq? (. pkg 1) pkg)
@@ -121,7 +121,7 @@
              (set spec.config (. pkg 2)))
            spec))))
 
-(table.insert operators ;;
+(table.insert P ;;
               {;; NOTE: check hondana-dev.plugins.treesitter for additional settings
                1 :andymass/vim-matchup
                :lazy false
@@ -129,7 +129,7 @@
                         (set vim.g.matchup_matchparen_offscreen
                              {:method :popup}))})
 
-operators
+P
 
 ;;; DOC
 

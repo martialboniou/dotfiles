@@ -1,22 +1,19 @@
+(import-macros {: tc} :hondana-dev.macros)
 ;; less colors hype
 ;; 0 = last theme (b/c permute)
 
-(lua "---@type number")
+(tc type number)
 (local chosen-theme-idx 0)
 
-(lua "---@class Theme
----@field foreground string
----@field n_hues number
----@field desc string")
+(tc class Theme field foreground string field n_hues number field desc string)
 
-(lua "---@type Theme[]")
-
+(tc type "Theme[]")
 (local themes
        [{:foreground "#adb6b4" :n_hues 2 :desc :blue->orange-yellow}
         {:foreground "#efefee" :n_hues 2 :desc :pink->cyan}
         {:foreground "#aabcbb" :n_hues 3 :desc :cyan->green->pink}])
 
-(lua "---@type number")
+(tc type number)
 (local chosen-theme (-> themes
                         (#(. $ (-> $
                                    (length)
@@ -25,7 +22,7 @@
                                          (% $)))
                                    (+ 1))))))
 
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local mini-hues {1 :echasnovski/mini.hues
                   :version false
                   :priority 1000
@@ -36,7 +33,7 @@
                          :foreground (. chosen-theme :foreground)
                          :n_hues (. chosen-theme :n_hues)}})
 
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local rainbow-delimiters
        {1 :HiPhish/rainbow-delimiters.nvim
         :event [:BufReadPost :BufNewFile]
@@ -57,13 +54,13 @@
                         :strategy {"" (. strategy :global)
                                    :commonlisp (. strategy :local)}}))})
 
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local icons {1 :nvim-tree/nvim-web-devicons
               :opts {:override_by_extension {:fnl {:icon "🌱"
                                                    :color "#428850"
                                                    :name :fnl}}}})
 
-(lua "---@type LazySpec")
-(local colors (-> mini-hues (#[$ rainbow-delimiters icons])))
+(tc type LazySpec)
+(local P (-> mini-hues (#[$ rainbow-delimiters icons])))
 
-colors
+P

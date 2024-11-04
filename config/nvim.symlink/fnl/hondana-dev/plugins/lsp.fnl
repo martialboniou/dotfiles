@@ -1,10 +1,11 @@
 ;;; LSP setup (LSP Zero powered)
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-11-03
-(lua "---@type string")
+;;; 2024-11-04
+(import-macros {: tc} :hondana-dev.macros)
+(tc type string)
 (local zero-setup-preferred-preset :recommended)
 
-(lua "---@type table<string, table<string, fun(): nil>>")
+(tc type "table<string, table<string, fun(): nil>>")
 (local lsp-custom-keymaps
        {:n {:<leader>f #(vim.lsp.buf.format)
             :gd #(vim.lsp.buf.definition)
@@ -23,14 +24,14 @@
         :i {:<C-h> #(vim.lsp.buf.signature_help)}})
 
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
-(lua "---@type string")
+(tc type string)
 (local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
 ;; change to true if you want the clangd's overthought semantics!
-(lua "---@type boolean")
+(tc type boolean)
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
-(lua "---@type string[]")
+(tc type "string[]")
 (local preferred-language-servers [;; TODO: restore :ts-ls
                                    :rust_analyzer
                                    :clangd
@@ -50,7 +51,7 @@
                                    ;; fennel_ls is hard to setup but it looks promising
                                    ])
 
-(lua "---@param names string[]\n---@return string[]")
+(tc param names "string[]" return "string[]")
 (λ lazy-get-plugin-paths [names]
   {:author :uga-rosa-at-zenn-dev}
   (let [{: plugins} (require :lazy.core.config)
@@ -62,7 +63,7 @@
             (vim.notify (.. "Invalid plugin name: " name)))))
     paths))
 
-(lua "---@param plugins string[]")
+(tc param plugins "string[]")
 (λ library [plugins]
   (let [paths (lazy-get-plugin-paths plugins)
         make-libraries #(icollect [_ l (ipairs [$...])]
@@ -72,8 +73,8 @@
                            (unpack (make-libraries :luv :busted :luassert))])]
       (table.insert paths path))))
 
-(lua "---@type LazySpec")
-(local lsp ;;
+(tc type LazySpec)
+(local P ;;
        {1 :neovim/nvim-lspconfig
         :event :BufReadPost
         :dependencies [;; LSP Zero
@@ -199,4 +200,4 @@
                                                      (. 1))}))
                   (lsp-zero.setup))})
 
-lsp
+P

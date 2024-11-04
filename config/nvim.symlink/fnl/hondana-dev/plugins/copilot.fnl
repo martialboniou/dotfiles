@@ -1,5 +1,5 @@
 (lua "---@type LazySpec")
-(local copilot ;;
+(local P ;;
        {1 :zbirenbaum/copilot.lua
         :cmd [:Copilot]
         :keys [{1 "<M-]>" :mode :i}]
@@ -22,4 +22,4 @@
                                        :next "<M-]>"
                                        :prev "<M-[>"}}})})
 
-copilot
+P

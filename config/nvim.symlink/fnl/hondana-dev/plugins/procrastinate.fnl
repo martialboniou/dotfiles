@@ -12,11 +12,11 @@
         (print "Cellular Automaton: cannot run in this buffer")))))
 
 (lua "---@type LazySpec")
-(local procrastinate ;;
+(local P ;;
        {1 :Eandrju/cellular-automaton.nvim
         :cmd :CellularAutomaton
         :keys [{1 :<leader>zz
                 2 run-random-automaton
                 :desc "Procrastinate with Cellular Automaton"}]})
 
-procrastinate
+P

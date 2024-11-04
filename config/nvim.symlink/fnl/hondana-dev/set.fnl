@@ -20,7 +20,7 @@
 (let [map {:guicursor ""
            :undodir (concat! "/" (os.getenv :HOME) :.vim :undodir)
            :scrolloff 8
-           :colorcolumn :80
+           :colorcolumn :100
            :signcolumn :yes
            :updatetime 50}]
   (each [k v (pairs map)] (set! k v)))

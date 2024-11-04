@@ -1,12 +1,13 @@
+(import-macros {: tc} :hondana-dev/macros)
 ;;; LSP Zero version
-;;; 2024-09-26
+;;; 2024-11-04
 
 ;; IMPORTANT: noselect = no <CR> in CMP = what I want here
-(lua "---@type string")
+(tc type :string)
 (local cmp-config-complete-options "menu,menuone,noinsert, noselect")
 
 ;; IMPORTANT: <Tab>/<S-Tab> disabled in CMP
-(lua "---@type table<string, string>")
+(tc type "table<string, string>")
 (local cmp-custom-keymaps {:previous-word :<C-p>
                            :next-word :<C-n>
                            :complete :<C-Space>
@@ -30,9 +31,11 @@
        (let [,context (require :cmp.config.context)]
          (or ,(unpack clauses))))))
 
-(lua "---@alias bool_fun fun(): boolean")
-(lua "---@alias source {name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
-(lua "---@type table<number|string, source[]>")
+(tc alias bool_fun "fun(): boolean")
+(tc alias source
+    "{name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
+
+; (tc type "table<number|string, source[]>")
 
 (local cmp-config-preferred-sources
        {1 [{:name :nvim_lsp_signature_help}
@@ -67,21 +70,21 @@
                 :entry_filter (make-emoji-restrictions :comment)
                 :insert true}]})
 
-(lua "---@param _3fname? string\n---@return source[]")
+(tc param ?name string return "source[]")
 
 (fn cmp-config [?name]
   (let [n (or ?name 1)]
     (-> cmp-config-preferred-sources
         (#(or (. $ n) (. $ 1))))))
 
-(lua "---@alias fts\n---| string\n---| {[1]: string[], source: nil|string}")
+(tc alias "fts\n---| string\n---| {[1]: string[], source: nil|string}")
 
-(lua "---@alias extract_fts
+(tc alias :extract_fts "
 ---| fun(fts: fts): string[], string
 ---| fun(fts: fts): string[], nil
 ---| fun(fts: fts): string, string")
 
-(lua "---@type extract_fts")
+(tc type :extract_fts)
 (fn extract-fts [fts]
   (if (-> fts (type) (= :table))
       (if (not= nil (. fts :source))
@@ -90,9 +93,8 @@
       ;; not a table
       (values fts fts)))
 
-;; TODO: error type-checking with LazySpec
-(lua "---@type LazySpec")
-(local completion ;;
+(tc type LazySpec)
+(local P ;;
        {1 :hrsh7th/nvim-cmp
         ;; check lsp.fnl for the loading LSP Zero -> LSP -> nvim-cmp
         :dependencies [{1 :hrsh7th/cmp-nvim-lsp
@@ -158,4 +160,4 @@
                                   mappings (defaults.cmp_mappings overrides)]
                               mappings)}))})
 
-completion
+P

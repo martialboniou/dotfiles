@@ -1,3 +1,4 @@
+(import-macros {: tc} :hondana-dev.macros)
 (macro nav-file-mapping! [...]
   (local out [])
   (each [unit key (ipairs [...])]
@@ -7,21 +8,20 @@
                     :desc ,(.. "Go to the #" unit " harpooned file")}))
   out)
 
-(lua "---@return boolean")
+(tc return boolean)
 (λ netrw-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)]
     (= :netrw buf-type)))
 
-(lua "---@return boolean")
+(tc return boolean)
 (λ minifiles-buf? []
   (let [buf-type (vim.api.nvim_buf_get_option 0 :filetype)
         buf-name (vim.api.nvim_buf_get_name 0)]
     (or (and (= :minifiles buf-type) (= buf-name "")) (= nil buf-name))))
 
-(lua "--- from harpoon.list
----@alias HarpoonItem {value: string, context: any}
----@param fpath string
----@return HarpoonItem")
+(lua "--- from harpoon.list")
+(tc alias HarpoonItem "{value: string, context: any}" param fpath string return
+    HarpoonItem)
 
 (λ harpoon-path-list [fpath]
   ;; FIXME: use a harpoon core function to build `value`?
@@ -50,8 +50,8 @@
               (hlist:add (harpoon-path-list fs-entry.path)))))
         (hlist:add))))
 
-(lua "---@type LazySpec")
-(local harpoon2
+(tc type LazySpec)
+(local P ;;
        {1 :theprimeagen/harpoon
         :branch :harpoon2
         :dependencies [:nvim-lua/plenary.nvim]
@@ -72,4 +72,4 @@
         :config #(let [h (require :harpoon)]
                    (h:setup {:settings {:save_on_toggle true}}))})
 
-harpoon2
+P

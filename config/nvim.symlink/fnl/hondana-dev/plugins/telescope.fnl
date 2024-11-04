@@ -1,5 +1,5 @@
 (lua "---@type LazySpec")
-(local telescope ;;
+(local P ;;
        {1 :nvim-telescope/telescope.nvim
         :dependencies [[:nvim-lua/plenary.nvim]]
         :tag :0.1.8
@@ -38,4 +38,4 @@
                           :desc "Open a fuzzy buffer picker"}))
                      (unpack))])})
 
-telescope
+P

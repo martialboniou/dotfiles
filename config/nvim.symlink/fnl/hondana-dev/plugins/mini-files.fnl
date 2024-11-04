@@ -17,7 +17,7 @@
             (open (vim.uv.cwd) true))))))
 
 (lua "---@type LazySpec")
-(local mini-files
+(local P
        {1 :echasnovski/mini.files
         :keys [{1 :<leader><leader>
                 ;; open/close at the current file location if possible
@@ -63,4 +63,4 @@
                                                    {: callback
                                                     :pattern :MiniFilesWindowUpdate}))))})
 
-mini-files
+P

@@ -1,7 +1,7 @@
 ;; NOTE: todo-comments.nvim will colorize your todo comments (here as an example) 
 (lua "---@type LazySpec")
 
-(local quickfix ;;
+(local P ;;
        [{1 :folke/trouble.nvim
          :opts {}
          :cmd :Trouble
@@ -34,4 +34,4 @@
                   (map :n "[t" jump_prev {:desc "Previous todo comment"})
                   nil)}])
 
-quickfix
+P

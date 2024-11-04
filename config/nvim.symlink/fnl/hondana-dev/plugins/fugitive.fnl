@@ -1,5 +1,5 @@
 (lua "---@type LazySpec")
-(local fugitive ;;
+(local P ;;
        {1 :tpope/vim-fugitive
         :cmd :Git
         :init #(let [group (vim.api.nvim_create_augroup :ThePrimeagen_Fugitive
@@ -24,4 +24,4 @@
                                               {: callback : group : pattern}))
         :keys [{1 :<leader>gs 2 vim.cmd.Git :desc "Open fuGITive status"}]})
 
-fugitive
+P

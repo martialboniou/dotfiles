@@ -1,8 +1,9 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
-;;; 2024-11-03
+;;; 2024-11-04
+(import-macros {: tc} :hondana-dev.macros)
 
 ;; same as mason.setup.ensure_installed
-(lua "---@type string[]")
+(tc type "string[]")
 (local mason-null-ls-preferred-install
        [:stylua
         :jq
@@ -18,6 +19,7 @@
         :golines])
 
 ;; NOTE: clangd lacks a way to customize its own clang-format (LLVM's indent width is 2; I want tabstop)
+(tc type number)
 (local clang-format-indent-width
        (-> :tabstop
            (#(. vim.opt $))
@@ -28,9 +30,10 @@
 ;;            every local `.clang-format` files) by setting the following to true
 ;; NOTE: delete `~/.config/nvim/.clang-format` when you change your tabstop,
 ;;       it will rebuild this file with your new setting
-(lua "---@type boolean")
+(tc type boolean)
 (local override-clang-format-globally false)
 
+(tc type string)
 (local clang-format-global-file
        (-> :config (vim.fn.stdpath) (.. :/.clang-format) (vim.fn.expand)))
 
@@ -47,17 +50,19 @@
                  ;; I prefer BraceWrappingAfterFunction for C/C++; not for Zig
                  "  AfterFunction: true"
                  (->> clang-format-indent-width (.. "IndentWidth: "))]]
-    (->> (icollect [_ line (ipairs options)] (.. line "\n"))
-         (unpack)
-         (..)
-         (: file :write))
-    (: file :close)))
+    (when file
+      (->> (icollect [_ line (ipairs options)] (.. line "\n"))
+           (unpack)
+           (..)
+           (file:write))
+      (file:close))))
 
 ;; NOTE: ocamlformat requires a `.ocamlformat` file at the root of a dune project
 
-(lua "---@alias command_pattern {command: string, args: string[], to_stdin: boolean, to_temp_file: boolean}")
+(tc alias command_pattern
+    "{command: string, args: string[], to_stdin: boolean, to_temp_file: boolean}"
+    type command_pattern)
 
-(lua "---@type command_pattern")
 (local fnlfmt-command-pattern
        {:command :fnlfmt
         :args [:--fix :$FILENAME]
@@ -66,14 +71,14 @@
 
 ;; `gawk -o` is not great; TODO: find a better formatter
 ;; INFO: use `:retab` after `<leader>f`
-(lua "---@type command_pattern")
+(tc type command_pattern)
 (local gawk-command-pattern {:command :gawk
                              :args [:-o- :-f :$FILENAME]
                              ; :prepend_extra_args true
                              :to_stdin true
                              :to_temp_file false})
 
-(lua "---@type command_pattern")
+(tc type command_pattern)
 (local djlint-command-pattern-for-twig
        {:command :djlint
         :args [;; MANDATORY
@@ -87,22 +92,26 @@
         :to_temp_file true})
 
 ;; TODO: WIP
-(lua "--- from vim.diagnostic
----@class vim.Diagnostic
----@field bufnr? integer
----@field lnum integer
----@field end_lnum? integer
----@field col integer
----@field end_col? integer
----@field severity? any vim.diagnostic.Severity
----@field message string
----@field source? string
----@field code? string|integer
---- @field _tags? { deprecated: boolean, unnecessary: boolean}
---- @field user_data? any arbitrary data plugins can add
---- @field namespace? integer")
+(lua "--- from vim.diagnostic")
 
-;; (lua "---@alias fun(params: any): {col: number, row: number, end_col: number, source: string, message: string, severity?: vim.diagnostic.SeverityFilter}")
+;; fnlfmt: skip
+(tc class vim.Diagnostic
+    field bufnr? integer
+    field lnum integer field
+    end_lnum? integer
+    field col integer
+    field end_col? integer
+    field severity? any vim.diagnostic.Severity 
+    field message string 
+    field source? string 
+    field code? :string|integer
+    field _tags? "{deprecated: boolean, unnecessary: boolean}"
+    field user_data? any arbitrary data plugins can add
+    field namespace? integer)
+
+;; (tc type
+;;     "fun(params: any): {col: number, row: number, end_col: number, source: string, message: string, severity?: vim.diagnostic.SeverityFilter}")
+
 (λ markdown-really-diagnostics-generator [params]
   (local diagnostics {})
   (each [i line (ipairs params.content)]
@@ -117,8 +126,8 @@
                         :severity vim.diagnostic.severity.WARN})))
   diagnostics)
 
-(lua "---@type LazySpec")
-(local null-ls-archived ;;
+(tc type LazySpec)
+(local P ;;
        {1 :jay-babu/mason-null-ls.nvim
         :event [:BufReadPost :BufNewFile]
         :dependencies [:williamboman/mason.nvim
@@ -187,4 +196,4 @@
         :opts {:ensure_installed mason-null-ls-preferred-install
                :automatic_installation false}})
 
-null-ls-archived
+P

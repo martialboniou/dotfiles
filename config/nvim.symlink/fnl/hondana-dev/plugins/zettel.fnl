@@ -50,7 +50,7 @@
 (lua "---@type LazyKeysSpec[]")
 (local keys (make-lazy-zk-keys))
 (lua "---@type LazySpec")
-(local zettel
+(local P ;;
        {1 :zk-org/zk-nvim
         :event :VeryLazy
         : keys
@@ -81,7 +81,7 @@
                  (vim.api.nvim_create_autocmd :FileType
                                               {: callback : group : pattern}))})
 
-zettel
+P
 
 ;;; examples of telescope usage
 ;; :Telescope zk notes createdAfter=3\ days\ ago

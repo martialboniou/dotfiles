@@ -1,8 +1,9 @@
+(import-macros {: tc} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
 
 ;; for now, conjure is used in cmp (check plugins/completions)
-(lua "---@type LazySpec")
-(local conjure ;;
+(tc type LazySpec)
+(local P ;;
        {1 :Olical/conjure
         :ft [:fennel :scheme :rust :clojure]
         :init #(do
@@ -12,4 +13,4 @@
         :dependencies [{1 :PaterJason/cmp-conjure
                         :dependencies :hrsh7th/nvim-cmp}]})
 
-conjure
+P

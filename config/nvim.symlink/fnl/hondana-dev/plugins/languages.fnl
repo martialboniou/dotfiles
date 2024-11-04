@@ -7,7 +7,7 @@
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
 (lua "---@type LazySpec")
-(local languages
+(local P ;; 
        [;;; GO LANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go
@@ -25,4 +25,4 @@
          :keys (make-gopher-keys! :json :yaml)
          :build #(vim.cmd " silent! GoInstallDeps ")}])
 
-languages
+P

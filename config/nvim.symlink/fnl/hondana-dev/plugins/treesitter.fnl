@@ -30,7 +30,7 @@
 
 ;; NOTE: the `paredit-skip` comments is temporary
 (lua "---@type LazySpec")
-(local treesitter ;;
+(local P ;;
        [{1 :nvim-treesitter/nvim-treesitter
          :dependencies [:nvim-treesitter/playground
                         {1 :folke/ts-comments.nvim
@@ -81,4 +81,4 @@
                                      :goto_previous_end {"[M" "@function.outer"
                                                          "[]" "@class.outer"}}}}}])
 
-treesitter
+P
