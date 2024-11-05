@@ -3,6 +3,11 @@ NeoVim
 
 - aimed for version 0.10
 - tested on version 0.10.3-dev
+- developer guidance:
+  - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
+    (or at least, after the 09/21/2024 master branch)
+    - Fennel 1.5.1 is highly recommended
+    - Fennel 1.5.0 is required (probably no `tset` in this setup)
 
 Pre-configuration
 -----------------

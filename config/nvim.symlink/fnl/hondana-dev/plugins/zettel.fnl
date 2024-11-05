@@ -11,7 +11,7 @@
               {1 :<leader>zf 2 ":'<,'>ZkMatch<CR>" :mode :v}]]
     (each [_ key (ipairs keys)]
       (each [k v (pairs {:noremap true :silent false})]
-        (tset key k v)))
+        (set (. key k) v)))
     keys))
 
 (λ make-zk-keys-for-notebook []

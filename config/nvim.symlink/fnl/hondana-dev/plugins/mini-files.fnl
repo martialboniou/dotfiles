@@ -57,8 +57,9 @@
                                                    {: callback
                                                     :pattern :MiniFilesBufferCreate}))
                     (let [callback (λ [args]
-                                     (tset (. vim.wo args.data.win_id)
-                                           :relativenumber true))]
+                                     (set (. vim.wo args.data.win_id
+                                             :relativenumber)
+                                          true))]
                       (vim.api.nvim_create_autocmd :User
                                                    {: callback
                                                     :pattern :MiniFilesWindowUpdate}))))})

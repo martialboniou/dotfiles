@@ -1,21 +1,21 @@
 -- the new version of this NeoVim configuration requires fennel
 
-local nvim_dir = vim.fn.stdpath [[config]]
+local nvim_dir = vim.fn.stdpath([[config]])
 
 local function bootstrap(url)
-    local name = url:gsub(".*/", "")
-    local path = vim.fn.stdpath("data") .. "/lazy/" .. name
+	local name = url:gsub(".*/", "")
+	local path = vim.fn.stdpath("data") .. "/lazy/" .. name
 
-    vim.opt.rtp:prepend(path)
+	vim.opt.rtp:prepend(path)
 
-    if vim.fn.isdirectory(path) == 0 then
-        print(name .. ": installing in data dir...")
+	if vim.fn.isdirectory(path) == 0 then
+		print(name .. ": installing in data dir...")
 
-        vim.fn.system({ "git", "clone", url, path })
+		vim.fn.system({ "git", "clone", url, path })
 
-        vim.cmd("redraw")
-        print(name .. ": finished installing")
-    end
+		vim.cmd("redraw")
+		print(name .. ": finished installing")
+	end
 end
 
 local udayvir_url = "https://github.com/udayvir-singh"
@@ -29,37 +29,40 @@ local globals = vim.tbl_keys(_G)
 -- otherwise, check :FnlAddG in `fnl/hondana-dev/plugins/init.fnl`
 
 require("tangerine").setup({
-    -- the default `init.fnl` has been renamed to `boot.fnl` as
-    -- a newcomer may erase the mandatory file `init.lua` while
-    -- using a command like `:FnlCompile`
-    vimrc = nvim_dir .. "/boot.fnl",
-    -- don't auto-recompile the `fnl/` files but those inside the
-    -- `hondana-dev` subdirectory; use the `custom` option to add
-    -- your own code
-    source = nvim_dir .. "/fnl/hondana-dev",
-    target = nvim_dir .. "/lua/hondana-dev",
-    compiler = {
-        verbose = false,
-        hooks = { "onsave", "oninit" },
-        globals = globals,
-    },
-    keymaps = {
-        eval_buffer = "gB",
-        float = {
-            kill = "<C-c>",
-        },
-    },
-    eval = {
-        luafmt = function()
-            local width = vim.o.colorcolumn
-            return {
-                "lua-format",
-                "--spaces-inside-table-braces",
-                "--column-table-limit",
-                math.floor(width / 1.7),
-                "--column-limit",
-                width,
-            }
-        end,
-    },
+	-- the default `init.fnl` has been renamed to `boot.fnl` as
+	-- a newcomer may erase the mandatory file `init.lua` while
+	-- using a command like `:FnlCompile`
+	vimrc = nvim_dir .. "/boot.fnl",
+	-- don't auto-recompile the `fnl/` files but those inside the
+	-- `hondana-dev` subdirectory; use the `custom` option to add
+	-- your own code
+	source = nvim_dir .. "/fnl/hondana-dev",
+	target = nvim_dir .. "/lua/hondana-dev",
+	compiler = {
+		verbose = false,
+		hooks = { "onsave", "oninit" },
+		globals = globals,
+		adviser = function(fennel)
+			return fennel
+		end,
+	},
+	keymaps = {
+		eval_buffer = "gB",
+		float = {
+			kill = "<C-c>",
+		},
+	},
+	eval = {
+		luafmt = function()
+			local width = vim.o.colorcolumn
+			return {
+				"lua-format",
+				"--spaces-inside-table-braces",
+				"--column-table-limit",
+				math.floor(width / 1.7),
+				"--column-limit",
+				width,
+			}
+		end,
+	},
 })

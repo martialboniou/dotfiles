@@ -23,10 +23,11 @@
 
 (lua "---@type table<string, string>")
 (local selection_modes {})
-;;; written as tset b/c fnlfmt can be confused by these unorthodox keys
-(tset selection_modes "@parameter.outer" :v)
-(tset selection_modes "@function.outer" :V)
-(tset selection_modes "@class.outer" :<C-v>)
+;;; unorthodox keys so invert k&v
+(each [v k (pairs {:v "@parameter.outer"
+                   :V "@function.outer"
+                   :<C-v> "@class.outer"})]
+  (set (. selection_modes k) v))
 
 ;; NOTE: the `paredit-skip` comments is temporary
 (lua "---@type LazySpec")

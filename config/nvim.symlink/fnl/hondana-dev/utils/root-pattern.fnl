@@ -5,17 +5,16 @@
 (macro root-comparator-or-root [path only-root]
   "returns a multi-value with the filesystem root according to the operating
   system and a comparator function matching the root itself"
-  (let [uname (vim.uv.os_uname)]
-    (if (-> :Windows (uname.version:match) (not= nil))
-        (if only-root
-            `(: (: ,path :sub 1 2) :upper)
-            `(fn [,path]
-               (if (or (not ,path) (= "" ,path)) (error "wrong filesytem")
-                   ;; :else
-                   (: ,path :match "^%a:$"))))
-        (if only-root
-            "/"
-            `(fn [,path] (= "/" ,path))))))
+  (if (= :Windows _G.jit.os)
+      (if only-root
+          `(: (: ,path :sub 1 2) :upper)
+          `(fn [,path]
+             (if (or (not ,path) (= "" ,path)) (error "wrong filesytem")
+                 ;; :else
+                 (: ,path :match "^%a:$"))))
+      (if only-root
+          "/"
+          `(fn [,path] (= "/" ,path)))))
 
 (lua "---@alias string_iterator
 ---| fun(_: any, v: string): nil 

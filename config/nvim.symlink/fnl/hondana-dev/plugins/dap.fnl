@@ -98,11 +98,11 @@
                      (let [cfg :dapui_config
                            open #(env.dapui.open)
                            close #(env.dapui.close)]
-                       (tset env.dap.listeners.after :event_initialized cfg
-                             open)
-                       (tset env.dap.listeners.before :event_terminated cfg
-                             close)
-                       (tset env.dap.listeners.before :event_exited cfg close))
+                       (set (. env.dap.listeners.after.event_initialized cfg)
+                            open)
+                       (set (. env.dap.listeners.before.event_terminated cfg)
+                            close)
+                       (set (. env.dap.listeners.before.event_exited cfg) close))
                      ;; lldb adapter TODO: move to lldb-dap
                      (local lldb-adapter-name :lldb-vscode)
                      (var lldb-adapter
