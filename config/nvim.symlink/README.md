@@ -490,7 +490,7 @@ Notice that for convenience, one of the Tangerine's `fennel.lua` files (normally
 the *latest* one) will be linked to `~/.config/nvim/fnl/fennel.lua`. Delete this
 file if you need to update it (the *latest* version is technically a `require`
 to another file in the `tangerine/fennel` tree but this setup targets the very last
-static file instead and, it won't be the *lastest* at some point).
+static file instead and, it won't be the *latest* at some point).
 Check `~/.config/nvim/boot.fnl`.
 
 ### Note about specific environment for developers

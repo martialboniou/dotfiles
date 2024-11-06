@@ -1,10 +1,9 @@
+(import-macros {: tc} :hondana-dev.macros)
 ;; generic LSP interface
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
 
 ;; this table is a placeholder for your persistent init data (better left empty)
-(lua "---@class Lsp
----@field config vim.lsp.ClientConfig
----@field _client-id? number?")
+(tc class Lsp field config vim.lsp.ClientConfig field _client-id? number?)
 
 (local Lsp {})
 (set Lsp.__index Lsp)
@@ -22,16 +21,14 @@
 ;;   nil)
 
 ;; from vim.lsp
-(lua "---@class vim.lsp.ClientConfig
----@field name string additional slot for name")
+(tc class vim.lsp.ClientConfig field name string additional slot for name)
 
-(lua "---@class vim.lsp.Client
----@field stop fun(force?: boolean)")
+(tc class vim.lsp.Client field stop "fun(force?: boolean)")
 
-(lua "---@param config vim.lsp.ClientConfig
----@param _3foptions? table table from a subclass
----@return Lsp")
+(tc param config vim.lsp.ClientConfig param ?options table
+    "table from a subclass")
 
+(tc return Lsp)
 (fn Lsp.new [self config ?options]
   (when (not config.name)
     (error "must pass a name field"))
@@ -39,7 +36,7 @@
     (setmetatable o self)
     o))
 
-(lua "---@return nil|number")
+(tc return :nil|number)
 (fn Lsp.external-client [self]
   (let [ac-symbol (if (= 1 (vim.fn.has :nvim-0.10)) ;; 
                       :get_clients :get_active_clients)
@@ -56,8 +53,7 @@
   (when (not self._client-id)
     (set self._client-id (vim.lsp.start_client self.config))))
 
-(lua "---@param _3fbufnr? number
----@return boolean")
+(tc param ?bufnr number return boolean)
 (fn Lsp.buf-add [self ?bufnr]
   (self:start)
   (vim.lsp.buf_attach_client (or ?bufnr 0) self._client_id))
@@ -67,7 +63,7 @@
     (when client (client.stop))
     (set self._client-id nil)))
 
-(lua "---@return vim.lsp.Client? client rpc object")
+(tc return vim.lsp.Client? client rpc object)
 (fn Lsp.client [self]
   (vim.lsp.get_client_by_id self._client-id))
 

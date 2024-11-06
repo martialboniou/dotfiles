@@ -1,3 +1,4 @@
+(import-macros {: tc} :hondana-dev/macros)
 ;; inspired by https://github.com/zk-org/zk-nvim/blob/main/lua/zk/root_pattern_util.lua
 (local M {})
 
@@ -16,16 +17,15 @@
           "/"
           `(fn [,path] (= "/" ,path)))))
 
-(lua "---@alias string_iterator
----| fun(_: any, v: string): nil 
----| fun(_: any, v: string): string, string")
+(tc alias string_iterator ;; TODO: improve this in tc
+    "\n---| fun(_: any, v: string): nil"
+    "\n---| fun(_: any, v: string): string, string")
 
-(lua "---@class Path
----@field escape-wildcards fun(name: string): string
----@field exists fun(path: string): boolean
----@field join fun(...: string?): string
----@field iterate-parents fun(path: string): string_iterator, string, string")
-
+(tc class Path)
+(tc field escape-wildcards "fun(name: string): string")
+(tc field exists "fun(path: string): boolean")
+(tc field join "fun(...: string?): string")
+(tc field iterate-parents "fun(path: string): string_iterator, string, string")
 (local Path (let [dirname (fn [path]
                             (let [strip-dir-pat "/([^/]+)$"
                                   strip-sep-pat "/$"]
@@ -52,14 +52,14 @@
                                                   (values v $)))))]
                                    (values it $ $))}))
 
-(lua "---@type Path")
+(tc type Path)
 (set M.path Path)
 
-(lua "---@alias matcher
----|fun(startpath: string, func: fun(path: string): boolean): string
----|fun(startpath: string, func: fun(path: string): boolean): nil")
+(tc alias matcher
+    "\n---| fun(startpath: string, func: fun(path: string): boolean): string"
+    "\n---| fun(startpath: string, func: fun(path: string): boolean): nil")
 
-(lua "---@type matcher")
+(tc type matcher)
 (fn M.search-ancestors [startpath func]
   (vim.validate {:func [func :f]})
   (if (func startpath)
@@ -71,8 +71,7 @@
           (when (func path)
             (lua "return path"))))))
 
-(lua "---@param ... string?\n---@return fun(string): string?")
-
+(tc param ... string? return "fun(string): string")
 (fn M.root-pattern [...]
   ;; FIX: tbl_flatten is deprecated
   (let [patterns (vim.tbl_flatten [...])
@@ -85,10 +84,7 @@
                       (when (M.path.exists p) (lua "return path")))))]
     #(M.search-ancestors $ matcher)))
 
-(lua "---@param startpath string
----@param root_subdirectory string
----@return nil|string")
-
+(tc param startpath string param root_subdirectory string return :nil|string)
 (fn M.find-project-root [startpath root-subdirectory]
   (let [startpath (if (-> startpath
                           (vim.fn.isdirectory)

@@ -1,7 +1,7 @@
+(import-macros {: tc} :hondana-dev.macros)
 (local M {})
 
-(lua "---@param n_path string\n---@return nil|string")
-
+(tc param n_path string return :nil|string)
 (λ M.notebook-root [n-path]
   (let [{: root-pattern} (require :hondana-dev.utils.root-pattern)]
     ((root-pattern :.zk) n-path)))
@@ -20,8 +20,7 @@
       ;; check if the global notebook is initialized
       (M.notebook-root dir))))
 
-(lua "---@param _3fbufnr? number\n---@return string")
-
+(tc param ?bufnr number return string)
 (fn M.resolve-notebook-path [?bufnr]
   "check buffer, cwd or ~/.config/zk/config.toml:"
   (var path (vim.api.nvim_buf_get_name (or ?bufnr 0)))
