@@ -1,7 +1,6 @@
 ;; core plugins for this NeoVim
 (lua "---@type LazySpec")
 
-;; core plugin
 (local P [;; Fennel Integration
           {1 :udayvir-singh/tangerine.nvim
            :priority 1500
@@ -23,22 +22,12 @@
                                        "(#($ :compiler :globals))"
                                        "(table.insert $))"
                                        :<q-args>
-                                       ")"]
-                          install-lua [":command! FnlInstall lua"
-                                       ;; DON'T TOUCH this whitespace
-                                       " "
-                                       "require(\"tangerine.fennel\")"
-                                       ".load(\"latest\")"
-                                       ".install()"]]
+                                       ")"]]
                       ;; additional commands:
                       ;;   FnlAddG adds globals to the tangerine.fennel's compiler
                       ;; usage (example to compile love2d.org's code from tangerine)
                       ;;   :FnlAddG love
-                      (-> addG-fennel (table.concat " ") (vim.cmd))
-                      ;;   FnlInstall installs fennel in the vim context; mandatory
-                      ;;   to eval/compile any self-contained library using the
-                      ;;   *doto trick* (like cljlib or conditions by https://gitlab.com/andreyorst)
-                      (-> install-lua (table.concat) (vim.cmd)))}
+                      (-> addG-fennel (table.concat " ") (vim.cmd)))}
           ;; Fennel Macros
           :udayvir-singh/hibiscus.nvim])
 

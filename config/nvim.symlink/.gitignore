@@ -1,7 +1,5 @@
 /lazy-lock.json
 /.clang-format
-#/lua/*
-#!/lua/**/
 /lua/hondana-dev/*
 !/lua/hondana-dev/**/
 /lua/hondana-dev/utils/*
@@ -11,3 +9,6 @@
 !/lua/hondana-dev/plugins/unchecked/**
 # plugins/* will contain the fennel-generated lazy files
 # plugins/unchecked/* will contain unverified lua lazy specs
+/fnl/flsproject.fnl
+/fnl/fennel.lua
+/fnl/*health.log

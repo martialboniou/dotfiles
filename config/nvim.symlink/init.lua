@@ -2,6 +2,7 @@
 
 local nvim_dir = vim.fn.stdpath([[config]])
 
+---@type fun(url: string)
 local function bootstrap(url)
 	local name = url:gsub(".*/", "")
 	local path = vim.fn.stdpath("data") .. "/lazy/" .. name
@@ -18,13 +19,15 @@ local function bootstrap(url)
 	end
 end
 
+---@type string
 local udayvir_url = "https://github.com/udayvir-singh"
 bootstrap(udayvir_url .. "/hibiscus.nvim")
 bootstrap(udayvir_url .. "/tangerine.nvim")
 
+---@type string[]
 local globals = vim.tbl_keys(_G)
 -- example of an additional _G for tangerine.fennel
--- (say, if you need to use tangerine to compile anything):
+-- (say, if you need to use Tangerine to compile anything):
 --   table.insert(globals, "love") -- here for love2d
 -- otherwise, check :FnlAddG in `fnl/hondana-dev/plugins/init.fnl`
 
@@ -42,7 +45,20 @@ require("tangerine").setup({
 		verbose = false,
 		hooks = { "onsave", "oninit" },
 		globals = globals,
+		-- Fennel self-contained libraries shouldn't compile on Luajit non-compatable 5.2
+		-- - I recommend to compile with the `fennel` script using Lua (or luajit with 5.2
+		--   compatibility)
+		-- - I recommend to separate the macro libraries from the modules (and name them
+		--   according to the pattern `*-macros.fnl` to avoid the auto-compilation by
+		--   `tangerine.nvim`)
+		-- - I also use a neovim 0.10 based on luajit with 5.2 compatibility;
+		--   so I can compile these self-contained libraries from `tangerine.nvim`
+		--   without errors: this `adviser` function adds the required `requiredAsInclude`
+		--   option; useful to embed both Fennel & Lua modules (as a self-contained
+		--   library has Fennel macros inside a module)
 		adviser = function(fennel)
+			---@diagnostic disable-next-line:deprecated
+			table.insert(package.loaders or package.searchers, fennel.make_searcher({ requireAsInclude = true }))
 			return fennel
 		end,
 	},
