@@ -319,10 +319,20 @@ I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
 
 #### Language Server Protocol
 
-About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero):
+**IMPORTANT**: In this setup, LSP doesn't start on the `BufNewFile` event but on 
+the loading of an existing resource in a buffer. This is motivated by the aim of
+reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchmark).
+Use `:LspStart` to force the LSP launch in the current buffer (say, a *scratch* buffer).
+
+This following technical note naively shows the dependencies and setup of the
+lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero) in
+the current NeoVim setup:
+
+```markdown
 - LSP
   - neovim/nvim-lspconfig
     - event: BufReadPost
+    - cmd: LspStart
     - dependencies:
       - williamboman/mason.nvim
         - run: `:MasonUpdate`
@@ -362,6 +372,7 @@ About the lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP 
       - requirements
         - luasnip.loaders.from_vscode
           - `lazy_load()`
+```
 
 #### Debugger Adapter Protocol
 

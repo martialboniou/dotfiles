@@ -76,7 +76,9 @@
 (tc type LazySpec)
 (local P ;;
        {1 :neovim/nvim-lspconfig
+       ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
         :event :BufReadPost
+        :cmd :LspStart
         :dependencies [;; LSP Zero
                        {1 :VonHeikemen/lsp-zero.nvim :branch :v2.x :lazy true}
                        ;; {1 :simrat39/rust-tools.nvim}

@@ -34,7 +34,7 @@
                  (-> [:vb :bb]
                      (#(icollect [_ key (ipairs $)]
                          {1 (.. :<leader> key)
-                          2 #(tb.buffers)
+                          2 #(tb.buffers {:ignore_current_buffer true})
                           :desc "Open a fuzzy buffer picker"}))
                      (unpack))])})
 

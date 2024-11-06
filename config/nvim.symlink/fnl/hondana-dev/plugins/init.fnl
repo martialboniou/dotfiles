@@ -1,7 +1,7 @@
+(import-macros {: tc} :hondana-dev.macros)
 ;; core plugins for this NeoVim
-(lua "---@type LazySpec")
-
-(local P [;; Fennel Integration
+(tc type LazySpec)
+(local T [;; Fennel Integration
           {1 :udayvir-singh/tangerine.nvim
            :priority 1500
            :lazy false
@@ -31,6 +31,10 @@
           ;; Fennel Macros
           :udayvir-singh/hibiscus.nvim])
 
+;; ensure P can match a table type
+(tc type "LazySpec[]")
+(local P T)
+
 ;; Marks: marks.nvim to improve the mark navigation
 ;; memo:
 ;;   - m,: set the next available mark
@@ -43,8 +47,6 @@
 (->> :chentoast/marks.nvim
      (#{1 $ :event :VeryLazy :opts {}})
      (table.insert P))
-
-;; --[[@as table]]
 
 (let [init #(set vim.g.startuptime_tries 10)]
   (->> :dstein64/vim-startuptime

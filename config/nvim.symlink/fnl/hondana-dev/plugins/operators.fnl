@@ -61,65 +61,74 @@
                                 (set clo (string.sub clo 2)))))))))))
   clo)
 
-(tc type LazySpec)
-(var P [])
-(let [url-config-specs ;; sequence of LazySpecURL or of {1 LazySpecURL 2 LazyConfigFn}
-      [:tommcdo/vim-exchange
-       [:kylechui/nvim-surround
-        #(let [{: setup} (require :nvim-surround)]
-           (setup $2))]
-       [:opdavies/toggle-checkbox.nvim
-        #(vim.keymap.set :n :<leader>tt
-                         ":lua require('toggle-checkbox').toggle()<CR>")]
-       ;; TEST: a new treesitter-based paredit (used in fennel)
-       ;; NOTE: put this code at the end (usage of `unpack`)
-       (if (not= :julienvincent paredit-version)
-           [:kovisoft/paredit
-            #(do
-               (set vim.g.paredit_matchlines 300)
-               ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
-               ;; => solution: syntax=lisp to avoid comment/string parens' matching
-               (let [group (vim.api.nvim_create_augroup :KovisoftParedit_NoSyntaxHack
-                                                        {})
-                     callback #(when (or= vim.bo.ft :fennel :scheme)
-                                 (set! :syntax :lisp))]
-                 (vim.api.nvim_create_autocmd [:BufWinEnter]
-                                              {: callback : group :pattern "*"}))
-               ;; fancy keybindings
-               ;; <> : move left (like <leader><)
-               ;; >< : move right (like <leader>>)
-               (each [direction keys (pairs {:Left "<>" :Right "><"})]
-                 (vim.keymap.set :n keys
-                                 (-> direction
-                                     (#["<Cmd>:call PareditMove" $ "()<CR>"])
-                                     (table.concat)))))]
-           ;; :else (cleaner setup but incomplete: no autospacing, electric return, smooth deletion with autopairs...
-           (unpack [[:julienvincent/nvim-paredit
-                     #(let [{: setup} (require :nvim-paredit)]
-                        (setup {:dragging {:auto_drag_pairs false}
-                                :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
-                                       }}))]
-                    [:windwp/nvim-autopairs
-                     ;; NOTE: enable if julienvincent/nvim-paredit is too
-                     #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
-                        (setup {:disable_filetype [:TelescopePrompt
-                                                   :minifiles
-                                                   :vim]
-                                ;; FIX: disable if annoying by uncomment the next line
-                                ;; :enable_check_bracket_line false
-                                })
-                        ;; lisp exceptions for quotes & backticks
-                        (each [_ char (ipairs ["'" "`"])]
-                          (remove_rule char)
-                          (add_rule (non-lisp-rules char))))]]))]]
-  (set P ;;
-       (icollect [_ pkg (ipairs url-config-specs)]
-         (let [seq? (-> pkg (type) (= :table))
-               url (if seq? (. pkg 1) pkg)
-               spec {1 url : event}]
-           (when seq?
-             (set spec.config (. pkg 2)))
-           spec))))
+(tc alias LazyConfig "\n---| fun(self:LazyPlugin, opts:table)" "\n---| true")
+(tc alias LazyUrlConfig "{[1]:string, [2]:LazyConfig} | string")
+
+(tc type "LazyUrlConfig[]")
+(local url-config-specs
+       [:tommcdo/vim-exchange
+        [:kylechui/nvim-surround
+         #(let [{: setup} (require :nvim-surround)]
+            (setup $2))]
+        [:opdavies/toggle-checkbox.nvim
+         #(vim.keymap.set :n :<leader>tt
+                          ":lua require('toggle-checkbox').toggle()<CR>")]
+        ;; TEST: a new treesitter-based paredit (used in fennel)
+        ;; NOTE: put this code at the end (usage of `unpack`)
+        (if (not= :julienvincent paredit-version)
+            [:kovisoft/paredit
+             #(do
+                (set vim.g.paredit_matchlines 300)
+                ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
+                ;; => solution: syntax=lisp to avoid comment/string parens' matching
+                (let [group (vim.api.nvim_create_augroup :KovisoftParedit_NoSyntaxHack
+                                                         {})
+                      callback #(when (or= vim.bo.ft :fennel :scheme)
+                                  (set! :syntax :lisp))]
+                  (vim.api.nvim_create_autocmd [:BufWinEnter]
+                                               {: callback
+                                                : group
+                                                :pattern "*"}))
+                ;; fancy keybindings
+                ;; <> : move left (like <leader><)
+                ;; >< : move right (like <leader>>)
+                (each [direction keys (pairs {:Left "<>" :Right "><"})]
+                  (vim.keymap.set :n keys
+                                  (-> direction
+                                      (#["<Cmd>:call PareditMove" $ "()<CR>"])
+                                      (table.concat)))))]
+            ;; :else (cleaner setup but incomplete: no autospacing, electric return, smooth deletion with autopairs...
+            (unpack [[:julienvincent/nvim-paredit
+                      #(let [{: setup} (require :nvim-paredit)]
+                         (setup {:dragging {:auto_drag_pairs false}
+                                 :keys {;; NOTE: gE from tangerine.nvim was `:FnlBuffer`; it's now gB
+                                        }}))]
+                     [:windwp/nvim-autopairs
+                      ;; NOTE: enable if julienvincent/nvim-paredit is too
+                      #(let [{: setup : add_rule : remove_rule} (require :nvim-autopairs)]
+                         (setup {:disable_filetype [:TelescopePrompt
+                                                    :minifiles
+                                                    :vim]
+                                 ;; FIX: disable if annoying by uncomment the next line
+                                 ;; :enable_check_bracket_line false
+                                 })
+                         ;; lisp exceptions for quotes & backticks
+                         (each [_ char (ipairs ["'" "`"])]
+                           (remove_rule char)
+                           (add_rule (non-lisp-rules char))))]]))])
+
+(tc param spec "LazyUrlConfig[]" return "LazySpec[]")
+(fn make-lazyspec [spec]
+  (icollect [_ pkg (ipairs spec)]
+    (let [seq? (-> pkg (type) (= :table))
+          url (if seq? (. pkg 1) pkg)
+          spec {1 url : event}]
+      (when seq?
+        (set spec.config (. pkg 2)))
+      spec)))
+
+(tc type "LazySpec[]")
+(local P (make-lazyspec url-config-specs))
 
 (table.insert P ;;
               {;; NOTE: check hondana-dev.plugins.treesitter for additional settings
