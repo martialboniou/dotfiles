@@ -22,21 +22,15 @@
 ;;             (: :stop)))))
 ;;   nil)
 
-;; from vim.lsp
-(tc class vim.lsp.ClientConfig field name string additional slot for name)
+(tc param config vim.lsp.ClientConfig param ;;
+    ?options table "table from a subclass" ;;
+    return Lsp)
 
-(tc class vim.lsp.Client field stop "fun(force?: boolean)")
-
-(tc param config vim.lsp.ClientConfig param ?options table
-    "table from a subclass")
-
-(tc return Lsp)
 (fn Lsp.new [self config ?options]
   (when (not config.name)
     (error "must pass a name field"))
   (let [o (vim.tbl_extend :force {: config} (or ?options {}))]
-    (setmetatable o self)
-    o))
+    (setmetatable o self)))
 
 (tc return :nil|number)
 (fn Lsp.external-client [self]
@@ -58,7 +52,7 @@
 (tc param ?bufnr number return boolean)
 (fn Lsp.buf-add [self ?bufnr]
   (self:start)
-  (vim.lsp.buf_attach_client (or ?bufnr 0) self._client_id))
+  (vim.lsp.buf_attach_client (or ?bufnr 0) self._client-id))
 
 (fn Lsp.stop [self]
   (let [client (self:client)]
