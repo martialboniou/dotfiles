@@ -77,12 +77,14 @@
     (-> cmp-config-preferred-sources
         (#(or (. $ n) (. $ 1))))))
 
-(tc alias "fts\n---| string\n---| {[1]: string[], source: nil|string}")
+(tc alias fts ;;
+    "| string" ;;
+    "| {[1]: string[], source: nil|string}")
 
-(tc alias :extract_fts "
----| fun(fts: fts): string[], string
----| fun(fts: fts): string[], nil
----| fun(fts: fts): string, string")
+(tc alias :extract_fts ;;
+    "| fun(fts: fts): string[], string" ;;
+    "| fun(fts: fts): string[], nil" ;;
+    "| fun(fts: fts): string, string")
 
 (tc type :extract_fts)
 (fn extract-fts [fts]

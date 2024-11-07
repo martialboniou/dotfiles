@@ -61,7 +61,7 @@
                                 (set clo (string.sub clo 2)))))))))))
   clo)
 
-(tc alias LazyConfig "\n---| fun(self:LazyPlugin, opts:table)" "\n---| true")
+(tc alias LazyConfig "| fun(self:LazyPlugin, opts:table)" "| true")
 (tc alias LazyUrlConfig "{[1]:string, [2]:LazyConfig} | string")
 
 (tc type "LazyUrlConfig[]")

@@ -3,7 +3,9 @@
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
 
 ;; this table is a placeholder for your persistent init data (better left empty)
-(tc class Lsp field config vim.lsp.ClientConfig field _client-id? number?)
+(tc class Lsp ;;
+    field config vim.lsp.ClientConfig ;;
+    field private _client-id? number?)
 
 (local Lsp {})
 (set Lsp.__index Lsp)

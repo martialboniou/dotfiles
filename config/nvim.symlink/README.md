@@ -188,8 +188,8 @@ insert
 - `<leader>vh` : telescope view helptags
 - `<leader>vv` : telescope recent files (*memo*: view viewed/view visited);
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
-- `<leader>vb`/`<leader>bb` : telescope buffers (*memo*: view buffers); not
-  in the ThePrimeagen setup
+- `<leader>vb`/`<leader>bb` : telescope buffers (*memo*: view buffers); **doesn't show
+  the current one**; not in the ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
 - `<leader>a`  : add file in harpoon (it works with `Netrw` and `mini.files` too)

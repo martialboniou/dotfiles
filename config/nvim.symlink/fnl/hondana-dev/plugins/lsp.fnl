@@ -76,7 +76,7 @@
 (tc type LazySpec)
 (local P ;;
        {1 :neovim/nvim-lspconfig
-       ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
+        ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
         :event :BufReadPost
         :cmd :LspStart
         :dependencies [;; LSP Zero
@@ -146,9 +146,9 @@
                                      (set $.server_capabilities.documentRangeFormattingProvider
                                           false)
                                      ;; disable semantics if not allowed
-                                     (or allow-clangd-semantics
-                                         (set $.server_capabilities.semanticTokensProvider
-                                              nil)))]
+                                     (when (not allow-clangd-semantics)
+                                       (set $.server_capabilities.semanticTokensProvider
+                                            false)))]
                     ;; NOTE: null-ls will do the clang-format with extra args
                     (set capabilities.offsetEncoding [:utf-16])
                     (clangd.setup {:cmd [(if (-> local-clangd

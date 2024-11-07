@@ -57,7 +57,10 @@
                                                  (do
                                                    (set post-anno# true)
                                                    (.. "\n---@" str#))
-                                                 (.. " " str#)))))))
+                                                 ;; pipe case
+                                                 (if (str#:match "^|.*")
+                                                     (.. "\n---" str#)
+                                                     (.. " " str#))))))))
                                (table.concat))
                     ;; TODO: not efficient!
                     chunk# (filter-optional chunk#)]
