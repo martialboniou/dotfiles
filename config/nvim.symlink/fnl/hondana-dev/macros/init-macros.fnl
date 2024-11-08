@@ -31,11 +31,12 @@
           (for [_ 1 times] (table.insert out str))
           `(.. ,(unpack out))))
  :tc (λ [...]
-       "make a Lua escape hatch for typechecking with lua-language-server"
+       "make a Lua escape hatch for typechecking with lua-language-server.
+       tc stands for typechecking"
        (var starter# true)
        ;; the second token will NEVER be an annotation (otherwise, use another tc macro)
        (var post-anno# false)
-       `(lua ,(let [filter-optional #($:gsub "(param)%s+%?(%w+)" "%1 _3f%2?")
+       `(lua ,(let [filter-optional #($:gsub "%?([%w|_|-]+)" "_3f%1?")
                     chunk# (-> (icollect [_# token# (ipairs [...])]
                                  (let [str# (tostring token#)]
                                    (if starter#

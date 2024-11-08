@@ -1,12 +1,13 @@
 (import-macros {: tc} :hondana-dev.macros)
 ;; generic LSP interface
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
+;; check lsp-types.fnl for common types
 
-;; this table is a placeholder for your persistent init data (better left empty)
 (tc class Lsp ;;
-    field config vim.lsp.ClientConfig ;;
+    field config LspClientConfig ;;
     field private _client-id? number?)
 
+;; this table is a placeholder for your persistent init data (better left empty)
 (local Lsp {})
 (set Lsp.__index Lsp)
 
@@ -22,7 +23,7 @@
 ;;             (: :stop)))))
 ;;   nil)
 
-(tc param config vim.lsp.ClientConfig param ;;
+(tc param config LspClientConfig param ;;
     ?options table "table from a subclass" ;;
     return Lsp)
 

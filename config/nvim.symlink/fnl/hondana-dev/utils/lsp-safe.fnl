@@ -1,16 +1,17 @@
 (import-macros {: tc} :hondana-dev.macros)
 ;; generic safe LSP interface
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
+;; check lsp-types.fnl for common types
 
-;; this table is a placeholder for your persistent init data (better left empty)
 (tc class SafeLsp ;;
-    field config vim.lsp.ClientConfig ;;
+    field config LspClientConfig ;;
     ;; metamethods accessing private slots
     field start "fun(self: SafeLsp): nil" ;;
     field stop "fun(self: SafeLsp): nil" ;;
-    field buf-add "fun(self: SafeLsp, _3fbufnr?: number): boolean" ;;
+    field buf-add "fun(self: SafeLsp, ?bufnr: number): boolean" ;;
     field client "fun(_: any): vim.lsp.Client?" "client rpc object")
 
+;; this table is a placeholder for your persistent init data (better left empty)
 (local SafeLsp {})
 (set SafeLsp.__index SafeLsp)
 
@@ -26,7 +27,7 @@
 ;;             (: :stop)))))
 ;;   nil)
 
-(tc param config vim.lsp.ClientConfig ;;
+(tc param config LspClientConfig ;;
     param ?options table "table from a subclass" ;;
     return SafeLsp)
 
