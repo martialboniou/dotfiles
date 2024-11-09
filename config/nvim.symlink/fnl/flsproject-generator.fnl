@@ -1,6 +1,6 @@
 ;; this Fennel code doesn't need to be compiled
 (when (-> _G.vim (not))
-  (error "you cannot execute this outside of nvim"))
+  (error "you cannot execute this without nvim"))
 
 (local (ok fennel) (pcall require :tangerine.fennel.latest))
 

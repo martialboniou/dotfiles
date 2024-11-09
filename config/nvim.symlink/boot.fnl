@@ -1,9 +1,17 @@
+(import-macros {: tc} :hondana-dev.macros)
+
 (require :hondana-dev/remap)
 (require :hondana-dev/set)
 
 (macro imports! [...]
   (icollect [_ e (ipairs [...])]
     {:import e}))
+
+;; prohibit false warnings from `with-open`
+;; - `xpcall` invalidates the need of nil checking
+;; - `or` variable can be nil (no big deal here)
+(lua "---@diagnostic disable: need-check-nil")
+(lua "---@diagnostic disable: cast-local-type")
 
 ;; set the list of your plugin specs' directories here
 (local plugins (imports! :hondana-dev.plugins :hondana-dev.plugins.unchecked))
@@ -28,6 +36,7 @@
 
 ;; OPTIONAL (not required but very handy)
 ;; auto-link fennel.lua from Tangerine to `~/.config/nvim/fnl/fennel.lua`
+(tc type boolean)
 (local developer-mode true)
 (when (and developer-mode (-> :Windows (not= _G.jit.os)))
   (local fennel-link (-?> :config (vim.fn.stdpath) (.. :/fnl/fennel.lua)))
@@ -41,6 +50,7 @@
           make-command #[:ln :-s $ fennel-link]]
       (var file (get-file (.. :tangerine.fennel. version)))
       (var first-line "")
+      ;;
       (if (or (not file) (with-open [fin (io.open file)]
                            (set first-line ((fin:lines)))
                            (= "" first-line)))
@@ -57,6 +67,9 @@
                              (with-open [fin (io.open target)]
                                (not= "" ((fin:lines)))))
                     (set file target)))))
+            ;;
+            (lua "---@diagnostic enable: need-check-nil")
+            (lua "---@diagnostic enable: cast-local-type")
             ;; async
             (var handle nil)
             (local {:new_pipe new
@@ -64,6 +77,9 @@
                     :read_start start
                     :read_stop stop
                     : close} vim.uv)
+            ;;
+            ;; prohibit false warnings from `&` destructuring
+            (lua "---@diagnostic disable: redefined-local")
             (let [[cmd & args] (make-command file)
                   pipes [(new) (new)] ;; no input in this stdio
                   stdio [nil (unpack pipes)]

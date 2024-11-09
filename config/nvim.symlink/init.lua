@@ -1,5 +1,4 @@
 -- the new version of this NeoVim configuration requires fennel
-
 local nvim_dir = vim.fn.stdpath([[config]])
 
 ---@type fun(url: string)
