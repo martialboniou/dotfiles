@@ -141,12 +141,17 @@ brew install reattach-to-user-namespace
 
 ## Tmux (my terminal manager)
 
-- Ensure the version (`tmux -V`) is 3.1+
+- ensure the version (`tmux -V`) is 3.1+
+- this setup requires `fzf`, `fzf-tmux`, `bat` and `git`*(!)*; on macOS, you
+  need `reattach-to-user-namespace` too (as mentionned at the end of the
+  [zsh](#zsh-my-shell) section)
 - `fn a` is the prefix when skhd is activated on macOS; `F5` otherwise.
   I use `<C-a>` and `<C-e>` to navigate in a terminal (move cursor at the
   beginning and end of the current line respectively). `<C-b>` was the default
   but it is in conflict with the *snippet backward* default keybinding in
-  (Neo)Vim.
+  (Neo)Vim
+- the TPM `SessionX` is ready to install (using `F5`+`I`); use `F5`+`o` to
+  open it; read the [documentation](https://github.com/omerxx/tmux-sessionx?tab=readme-ov-file#working-with-sessionx-)
 
 ## Yabai (my additional macOS window manager)
 
