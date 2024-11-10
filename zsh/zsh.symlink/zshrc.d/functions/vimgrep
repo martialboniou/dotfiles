@@ -8,7 +8,7 @@ function vimgrep {
         echo "Argument missing"
         return 1
     fi
-    rg --json "$@" 2> /dev/null |\
+    rg -uu --json "$@" 2> /dev/null |\
         jq -c 'select(.type == "begin") | .data.path.text' |\
         head -$LIMIT |\
         xargs nvim
