@@ -179,10 +179,11 @@
                                                  (vim.tbl_deep_extend :force
                                                                       client.config.settings.Lua
                                                                       {:runtime {:version :LuaJIT}
-                                                                       :diagnostics {:globals [:vim
-                                                                                               :love]
-                                                                                     ;; :disable [:missing-fields]
-                                                                                     }
+                                                                       :diagnostics {:unusedLocalExclude ["_*"]
+                                                                                     :disable [:unused-vararg
+                                                                                               :deprecated]
+                                                                                     :globals [:vim
+                                                                                               :love]}
                                                                        :workspace {:checkThirdParty :false
                                                                                    :library (library [:lazy.nvim])
                                                                                    ;; (vim.api.nvim_list_runtime_paths)

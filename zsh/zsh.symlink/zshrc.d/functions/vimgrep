@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+# load max 35 files from a ripgrep search in nvim
+# this fast version doesn't care about the cursor position of the first match (KISS!)
+function vimgrep {
+    local LIMIT=35
+    if [ $# -eq 0 ]; then
+        echo "Argument missing"
+        return 1
+    fi
+    rg --json "$@" 2> /dev/null |\
+        jq -c 'select(.type == "begin") | .data.path.text' |\
+        head -$LIMIT |\
+        xargs nvim
+}
+

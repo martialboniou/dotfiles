@@ -29,7 +29,7 @@
         (: :with_pair #(not (lisp-ft? vim.bo.filetype))))))
 
 (tc param line string return string)
-(λ _get-closing-for-line [line]
+(λ get-closing-for-line [line]
   (var i nil)
   (set i -1)
   (var clo "")
@@ -60,6 +60,8 @@
                                 (when (not= "]" st) (lua "return \"\""))
                                 (set clo (string.sub clo 2)))))))))))
   clo)
+;; unused for now
+(local _ get-closing-for-line)
 
 (tc alias LazyConfig "| fun(self:LazyPlugin, opts:table)" "| true")
 (tc alias LazyUrlConfig "{[1]:string, [2]:LazyConfig} | string")

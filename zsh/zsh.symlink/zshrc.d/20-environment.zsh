@@ -5,9 +5,10 @@ EMACSNAMESERVER=$USERNAME
     local editor
     # vemacs = emacs w/ vimpulse (Vim emu)
     editors=(
-        "vim"
-        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vim" # replace vim by vemacs ASAP
         "nvim"
+        "vim"
+        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vim"
+        "emacs -nw"
         "vi"
         "nano"
     )
@@ -31,6 +32,7 @@ export PS_PERSONALITY='linux'
 export MANSECT=3:2:9:8:1:5:4:7:6:n
 
 # Syntax highlight for less with 'source-highlight'
-PAGER='less -X -M'
+PAGER='bat'
+# PAGER='less -X -M'
 export LESSOPEN="| $SRC_HILITE_LESSPIPE %s"
 export LESS=' -R '

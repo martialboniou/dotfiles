@@ -36,7 +36,11 @@
        (var starter# true)
        ;; the second token will NEVER be an annotation (otherwise, use another tc macro)
        (var post-anno# false)
-       `(lua ,(let [filter-optional #($:gsub "%?([%w|_|-]+)" "_3f%1?")
+       `(lua ,(let [;; TODO: think about a way to convert variables with dashes
+                    ;; without touching any `@field` or keys:
+                    ;; eg. Fennel: var-name -> var_name
+                    ;;     Fennel: tab.field-name -> tab["field-name"]
+                    filter-optional #($:gsub "%?([%w|_|-]+)" "_3f%1?")
                     chunk# (-> (icollect [_# token# (ipairs [...])]
                                  (let [str# (tostring token#)]
                                    (if starter#

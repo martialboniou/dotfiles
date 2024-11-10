@@ -1,3 +1,4 @@
+# OBSOLETE
 DEFAULT_RUBY_VERSION=2.6.10
 
 install_ruby_source () {

@@ -4,10 +4,11 @@
     "version": "LuaJIT"
   },
   "diagnostics": {
+    "unusedLocalExclude": [
+      "_*"
+    ],
     "disable": [
-      "unused-local",
       "unused-vararg",
-      "unused-function",
       "deprecated"
     ],
     "globals": [

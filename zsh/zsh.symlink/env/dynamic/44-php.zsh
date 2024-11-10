@@ -1,5 +1,6 @@
 (){
-  local PHP_LOCALPATH="/opt/php@7.4"
+  # UNUSED
+  local PHP_LOCALPATH="/opt/php_"
   local PHP_FULLPATH="${HOMEBREW_PREFIX}${PHP_LOCALPATH}"
   [[ -d "${PHP_FULLPATH}" ]] &&
     export PATH="${PHP_FULLPATH}/bin:${PHP_FULLPATH}/sbin:$PATH" &&
