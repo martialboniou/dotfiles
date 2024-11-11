@@ -135,13 +135,31 @@ With your `fzf` install, you should have the file `~/.fzf.zsh`; it can let you o
 the default settings written in `~/.zsh/zshrc.d/20-environment.zsh`
 (here, `fd` & `bat` are required).
 
-Check the configuration of the `zsh` auto-completion in `~/.zsh/zshrc.d/80-complete.zsh`:
+Check the configuration of the `zsh` auto-completion in `~/.zsh/zshrc.d/80-complete.zsh`.
+Since the end of 2024, it's a work in progress to upgrade some very old functions. For
+now, the key bindings are:
+- *normal way*:
+  - `<TAB>`    : next completion
+  - `<SHIFT-TAB>` : previous completion (can be used directly if you expect a better result)
+  - `<SPACE>`  : validate
+  - `<CTRL-c>` : back
+- *menu way*:
+  - `<CTRL-n>` (instead of `<TAB>`) : **menu**
+    - in the menu, you can type:
+      - arrow keys
+      - same keys as in the *normal way* (`<TAB>`, `<SHIFT-TAB>`...)
+      - `<SPACE>` : ok too
+      - `<RET>` : ok **AND stay in the menu** (very cool as a file finder)
+      - `<CTRL+p>` (or `<BACKSPACE>`) : undo (eg. you want the word but you mistyped `<RET>`
+      instead of `<SPACE>`; `<CTRL-P>` then `<SPACE>` is what you need)
 - `<CTRL-x>x` : complete the zsh *aliases*
 
 The starting point is the `.zshenv` then visit:
 
 -   `.zsh/zshrc.d/` subdirectory for environment setting and functions' configuration;
 -   `.zsh/env/` subdirectory for `path` customization.
+-   `.zprofile` ensures the `.zshenv` setup is not destroyed by a side effect in `/etc/profile`
+-   `.zlogin` manages the `tmux` reattachment when quitting
 
 Notice that the numbers in front of file names show you the loading **order** like on a lot GNU Debian classical library setup in `/etc`.
 

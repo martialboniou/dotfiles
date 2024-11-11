@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+# might be deprecated, switch to `fzf-cd-widgets`
 function fcd {
     dest=$(fd -t d . . --ignore-file ~/.gitignore --exclude deprecated --exclude "/Applications*" | fzf)\
         && cd $dest\

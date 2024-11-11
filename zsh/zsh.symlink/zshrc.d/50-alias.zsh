@@ -52,7 +52,6 @@ alias cdc='cd ~; clear'
 # zsh functions -- see modules
 alias mcd='mkcdir' # AKA mkdir+cd
 # NOTE: the following aliases require fd
-alias ff='fcd'     # ie fzf <- cd .
 alias ffc='fcode'  # ie fzf <- cd ~/Documents/Code
 alias fcf='fcode'  # ie fzf <- cd ~/Documents/Code
 
