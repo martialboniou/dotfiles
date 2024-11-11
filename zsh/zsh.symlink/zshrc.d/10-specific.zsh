@@ -33,8 +33,6 @@ if [ "`uname`" = "Darwin" ]; then
   if (( $+commands[gtar] )); then
     alias tar='gtar' # GNU tar = gtar
   fi
-  alias ghci='EDITOR=mvim ghci'
-  alias gvim=mvim
   function wman() {
     url="man:${1}"
     echo `open $url` # install Bwana; ManOpen is DEPRECATED

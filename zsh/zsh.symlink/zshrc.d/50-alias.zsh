@@ -9,7 +9,6 @@ alias pa='ps aux'
 #alias vi='vim -c ":cd %:p:h"'
 alias vv='fv'  # ie fzf -> nvim
 alias mc='mc -bs'
-alias man='PAGER=less man -a'
 alias mv='nocorrect mv'       # no spelling correction on mv
 alias cp='nocorrect cp'       # no spelling correction on cp
 alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
@@ -26,9 +25,9 @@ alias ll='ls -lah'
 alias la='ls -a'
 # List only directories and symbolic
 # links that point to directories
-alias lsd='ls -ld *(-/DN)'
+alias lsld='ls -ld *(-/DN)' # NOTE lsld was lsd but https://github.com/lsd-rs/lsd
 # List only file beginning with "."
-alias lsa='ls -ld .*'
+alias lsla='ls -ld .*'
 # web cat
 alias wcat='wget -q -O -'
 alias dog=wcat

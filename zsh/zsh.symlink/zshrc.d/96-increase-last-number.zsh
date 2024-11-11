@@ -7,4 +7,4 @@ _increase_number()
 }
 zle -N increase-number _increase_number
 bindkey '^Xa' increase-number
-bindkey -s '^Xx' '^[-^Xa'
+#bindkey -s '^Xx' '^[-^Xa' # TODO: NOT WORKING? (also check ./80-complete.zsh)

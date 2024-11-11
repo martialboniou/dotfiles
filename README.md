@@ -118,10 +118,25 @@ Because the best shell make the most beautiful pearls. Zsh (by default on macOS)
 
 For example, some functions are useful to navigate in directories:
 
--   Ctrl-U: go **up** in directory;
--   Ctrl-P: go to the **previous** visited directory;
+- `<CTRL-u>` : go **up** in directory;
+- `<CTRL-p>` : go to the **previous** visited directory;
 
 are great bindings to change directory without touching your command line (and so letting ugly `cd ..` in your history).
+
+If you're lost using `zsh`, `bindkey` shows you what you may need.
+
+If `fzf` is normally installed, try:
+- `<ALT-c>`  : `fzf-cd-widget` (ie navigate in the subdirectories without touching the command line;
+  *memo*: **alt**ernative `cd`)
+- `<CTRL-t>` : `fzf-file-widget` (output the files/subdirectories selection)
+- `<CTRL-r>` : `fzf-history-widget` (output the shell history selection)
+
+With your `fzf` install, you should have the file `~/.fzf.zsh`; it can let you override
+the default settings written in `~/.zsh/zshrc.d/20-environment.zsh`
+(here, `fd` & `bat` are required).
+
+Check the configuration of the `zsh` auto-completion in `~/.zsh/zshrc.d/80-complete.zsh`:
+- `<CTRL-x>x` : complete the zsh *aliases*
 
 The starting point is the `.zshenv` then visit:
 
@@ -131,7 +146,8 @@ The starting point is the `.zshenv` then visit:
 Notice that the numbers in front of file names show you the loading **order** like on a lot GNU Debian classical library setup in `/etc`.
 
 `tmux` must be installed in order to use `.zsh/zshrc.d/99-tmux-sessions.zsh`.
-On macOS, install the following package (see [tmux-MacOSX-pasteboard](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)):
+On macOS, install the following package
+(see [tmux-MacOSX-pasteboard](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)):
 
 ```sh
 brew install reattach-to-user-namespace
@@ -142,8 +158,8 @@ brew install reattach-to-user-namespace
 ## Tmux (my terminal manager)
 
 - ensure the version (`tmux -V`) is 3.1+
-- this setup requires `fzf`, `fzf-tmux`, `bat` and `git`*(!)*; on macOS, you
-  need `reattach-to-user-namespace` too (as mentionned at the end of the
+- this setup requires `fzf`, `bat` and `git`*(!)*; on macOS, you need
+  `reattach-to-user-namespace` too (as mentionned at the end of the
   [zsh](#zsh-my-shell) section)
 - `fn a` is the prefix when skhd is activated on macOS; `F5` otherwise.
   I use `<C-a>` and `<C-e>` to navigate in a terminal (move cursor at the

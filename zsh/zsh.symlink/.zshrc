@@ -47,7 +47,8 @@ if [[ -d "${ZDOT_SRC_ZSH}" ]]; then
  end
 fi
 
-# FZF configuration
+# FZF configuration 
+# .fzf.zsh can override any variables set in `~/.zsh/zshrc.d/20-environment.zsh`
 [ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
 if (( $+commands[nvim] )); then
   alias "vim"="nvim"
