@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
 function fcode {
-    local CODE_PATH=$HOME/Documents/Code
+    local CODE_PATH
+    [[ -v DEVELOPER_ROOT ]] && CODE_PATH="${DEVELOPER_ROOT}" || CODE_PATH="${HOME}"
     dest="$(fd -t d . $CODE_PATH --ignore-file ~/.gitignore --exclude deprecated | fzf)"\
         && cd "$dest"\
         || return 0

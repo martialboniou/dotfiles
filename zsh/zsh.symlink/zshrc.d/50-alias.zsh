@@ -4,7 +4,6 @@ alias grep=ggrep #GNU grep here (best to use rg when possible)
 alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
 alias l='ls -CF'
-alias ssh='ssh -2'
 alias pa='ps aux'
 #alias vi='vim -c ":cd %:p:h"'
 alias vv='fv'  # ie fzf -> nvim
@@ -52,8 +51,7 @@ alias cdc='cd ~; clear'
 # zsh functions -- see modules
 alias mcd='mkcdir' # AKA mkdir+cd
 # NOTE: the following aliases require fd
-alias ffc='fcode'  # ie fzf <- cd ~/Documents/Code
-alias fcf='fcode'  # ie fzf <- cd ~/Documents/Code
+alias ff='fcode' # ie fzf <- cd ~/Documents/Code or any $DEVELOPER_ROOT; might be renamed on AIX
 
 # Dump specific
 alias purge="rm -i *~" # emacs temp files to the void

@@ -133,33 +133,44 @@ If `fzf` is normally installed, try:
 
 With your `fzf` install, you should have the file `~/.fzf.zsh`; it can let you override
 the default settings written in `~/.zsh/zshrc.d/20-environment.zsh`
-(here, `fd` & `bat` are required).
+(here, `fd` & `bat` are required). Here's some useful `fzf`-based functions (or *aliases*):
+- `ff` : go to a subdirectory of your projects' root (set `DEVELOPER_ROOT` in `~/.zsh/.zshrc`;
+`~/Documents/Code` by default)
+- `vv` : select a file to open in `nvim` (also, `vimgrep` using `rg` to open all the matching
+files in `nvim`; eg. `vimgrep nvim ~/.zsh`)
 
 Check the configuration of the `zsh` auto-completion in `~/.zsh/zshrc.d/80-complete.zsh`.
 Since the end of 2024, it's a work in progress to upgrade some very old functions. For
 now, the key bindings are:
-- *normal way*:
+- *normal way* (by default using `<TAB>`, there's no menu *ie* `NO_ALWAYS_LAST_PROMPT`):
   - `<TAB>`    : next completion
   - `<SHIFT-TAB>` : previous completion (can be used directly if you expect a better result)
   - `<SPACE>`  : validate
-  - `<CTRL-c>` : back
+  - `<CTRL-C>` : back
 - *menu way*:
-  - `<CTRL-n>` (instead of `<TAB>`) : **menu**
+  - `<CTRL-n>` (instead of `<TAB>`) : activate the **menu** (you can now select and **multi-select**)
     - in the menu, you can type:
-      - arrow keys
+      - arrow keys or vi motion keys (`h`, `j`...)
       - same keys as in the *normal way* (`<TAB>`, `<SHIFT-TAB>`...)
       - `<SPACE>` : ok too
       - `<RET>` : ok **AND stay in the menu** (very cool as a file finder)
-      - `<CTRL+p>` (or `<BACKSPACE>`) : undo (eg. you want the word but you mistyped `<RET>`
+      - `<CTRL-P>` (or `<BACKSPACE>`) : undo (eg. you want the word but you mistyped `<RET>`
       instead of `<SPACE>`; `<CTRL-P>` then `<SPACE>` is what you need)
-- `<CTRL-x>x` : complete the zsh *aliases*
+- (experimental; requires the old [matcher](https://github.com/burke/matcher))
+  - `<CTRL-X><CTRL-N>` : matches files with *30 characters max* inside `git ls-files` if possible;
+  it's **menu-based** by default to be able to multi-select
+  - (optional) if `activate_simple_matcher` is set:
+    - `<CTRL-X><CTRL-T>` : same matcher but without menu (the lack of multi-select makes this option
+    unneeded)
+- `<CTRL-X>X` : complete the zsh *aliases*
 
 The starting point is the `.zshenv` then visit:
 
--   `.zsh/zshrc.d/` subdirectory for environment setting and functions' configuration;
--   `.zsh/env/` subdirectory for `path` customization.
--   `.zprofile` ensures the `.zshenv` setup is not destroyed by a side effect in `/etc/profile`
--   `.zlogin` manages the `tmux` reattachment when quitting
+- `.zsh/zshrc.d/` subdirectory for environment setting and functions' configuration;
+- `.zsh/env/` subdirectory for `path` customization.
+- `.zprofile` ensures the `.zshenv` setup is not destroyed by a side effect in `/etc/profile`
+  (eg. `/usr/libexec/path_helper` for Bourne shells on macOS)
+- `.zlogin` manages the `tmux` reattachment when quitting
 
 Notice that the numbers in front of file names show you the loading **order** like on a lot GNU Debian classical library setup in `/etc`.
 

@@ -29,6 +29,9 @@
 #       changes during the session); use the alias 'd' to get the dirs
 #       listing
 
+# your developer project home
+export DEVELOPER_ROOT="${HOME}/Documents/Code"
+
 # files
 ZDOT_SRC_ZSH=${ZDOTDIR}/zshrc.d
 ZDOT_FUNCTIONS=${ZDOT_SRC_ZSH}/functions

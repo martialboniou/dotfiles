@@ -101,6 +101,7 @@ _fetch_path () {
     # NOTE: IMPORTANT variable to ensure this function is called ONCE too (see below)
   fi
   export __ENV_PATH=${PATH}
+  [[ -v MANPATH && ! ${MANPATH} -eq "" ]] && export __ENV_MANPATH=${MANPATH} # normally unused
 }
 
 # NOTE: don't fetch path if already done

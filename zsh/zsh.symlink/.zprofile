@@ -27,3 +27,8 @@
     export PATH=${__ENV_PATH}:${PATH} && \
     _flush_path && \
     unset __ENV_PATH
+
+# same for MANPATH (probably unset)
+[[ -v __ENV_MANPATH ]] && \
+    export MANPATH=${__ENV_MANPATH}:${MANPATH} && \
+    unset __ENV_MANPATH
