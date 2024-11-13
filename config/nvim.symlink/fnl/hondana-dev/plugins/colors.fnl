@@ -24,12 +24,12 @@
 
 (tc type LazySpec)
 (local mini-hues {1 :echasnovski/mini.hues
-                  :version false
                   :priority 1000
                   :lazy false
                   :opts {:saturation :high
                          :background "#181818"
-                         :accent :bg
+                         ;; :accent :bg ; is not multi-pane friendly (IMO, too neutral!)
+                         :accent :blue
                          :foreground (. chosen-theme :foreground)
                          :n_hues (. chosen-theme :n_hues)}})
 

@@ -158,6 +158,9 @@ It's great but:
 - `<leader>a` : tag the module in Harpoon 2 (second)
 - `<leader>e` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
+- (deprecated) `<leader>tn` : `FZF` (check [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+  for a smoother *fuzzy finder* experience for NeoVim; you will find some key bindings in the
+  [next](#cheat-sheet) section)
 
 ### Cheat sheet
 

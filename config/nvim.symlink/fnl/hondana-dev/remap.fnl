@@ -1,10 +1,11 @@
+(import-macros {: tc} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
 (import-macros {: **!} :hondana-dev.macros)
 
 ;; keymap for NeoVim by ThePrimeagen
-(lua "---@type string")
+(tc type string)
 (g! :mapleader " ")
-(lua "---@type string")
+(tc type string)
 (g! :maplocalleader ",")
 
 ;; these two lines will be remapped by plugins/mini-files

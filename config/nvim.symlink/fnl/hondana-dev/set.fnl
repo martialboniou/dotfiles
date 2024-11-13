@@ -1,3 +1,4 @@
+(import-macros {: tc} :hondana-dev.macros)
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
 (import-macros {: set!!} :hondana-dev.macros.vim)
@@ -5,11 +6,20 @@
 ;; main functions & pattern
 (local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
 
-(lua "---@type string")
+(tc type string)
 (local pattern "*")
 
+;; if activated, no background for cursorline
+;; FIXME: (tc type "fun(): fun(number, string, table)")
+(let [group (augroup :Hondana_HiCursorLine {})
+      callback #(vim.api.nvim_set_hl 0 :Cursorline {:bg :NONE})]
+  ;; ensure no conflicts with any colorschemes in `hondana-dev.plugins.colors` 
+  (autocmd [:ColorScheme :VimEnter] {: callback : group : pattern}))
+
 ;; global settings
-(set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch)
+(set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch
+       :cursorline)
+
 (set!! false :wrap :swapfile :backup :hlsearch)
 (set!! 4 :sw :ts :sts)
 ;; enable sidescrolloff for tiny monitors & tiling wm/terms
@@ -26,9 +36,9 @@
   (each [k v (pairs map)] (set! k v)))
 
 ;; these default keys may be remapped in `hondana-dev.remap`
-(lua "---@type string")
+(tc type string)
 (g! :mapleader " ")
-(lua "---@type string")
+(tc type string)
 (g! :maplocalleader ",")
 
 ;; you can use lambda in this programming language (see below)
@@ -54,8 +64,8 @@
                          : pattern}))
 
 ;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
-(lua "---@type string")
+(tc type string)
 (local fzf-macos :/opt/homebrew/opt/fzf)
 (when (= 1 (vim.fn.isdirectory fzf-macos))
   (set+ :rtp fzf-macos)
-  (vim.keymap.set :n :<leader>t ":FZF<CR>"))
+  (vim.keymap.set :n :<leader>tn ":FZF<CR>"))
