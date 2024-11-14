@@ -1,8 +1,10 @@
-(lua "---@type string")
+(import-macros {: tc} :hondana-dev.macros)
+
+(tc type string)
 (local hidden-files-toggle-key :gh)
-(lua "---@type number")
+(tc type number)
 (local width-focus 30)
-(lua "---@type number")
+(tc type number)
 (local width-preview 30)
 
 (λ minifiles-open-at-location-or-root []
@@ -16,7 +18,7 @@
             ;; open at the root of the project instead
             (open (vim.uv.cwd) true))))))
 
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local P
        {1 :echasnovski/mini.files
         :keys [{1 :<leader><leader>

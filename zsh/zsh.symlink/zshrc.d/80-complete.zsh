@@ -30,6 +30,7 @@ zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!
 zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d -- %f'
 zstyle ':completion:*:*:*:*:warnings' format ' %F{red} -- no matches found -- %f'
 zstyle ':completion:*:*:*:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors 'ma=48;2;76;86;106' # gray selection, red match
 zstyle ':completion:*' group-name ''
 #
 # expand alias on <CTRL>+X followed by X

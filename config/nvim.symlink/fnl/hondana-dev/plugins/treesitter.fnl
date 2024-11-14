@@ -1,4 +1,6 @@
-(lua "---@type string[]")
+(import-macros {: tc} :hondana-dev.macros)
+
+(tc type "string[]")
 (local preferred-languages [:typescript
                             :tsx
                             :javascript
@@ -21,7 +23,7 @@
                             :zig
                             :go])
 
-(lua "---@type table<string, string>")
+(tc type "table<string, string>")
 (local selection_modes {})
 ;;; unorthodox keys so invert k&v
 (each [v k (pairs {:v "@parameter.outer"
@@ -30,7 +32,8 @@
   (set (. selection_modes k) v))
 
 ;; NOTE: the `paredit-skip` comments is temporary
-(lua "---@type LazySpec")
+
+(tc type LazySpec)
 (local P ;;
        [{1 :nvim-treesitter/nvim-treesitter
          :dependencies [:nvim-treesitter/playground

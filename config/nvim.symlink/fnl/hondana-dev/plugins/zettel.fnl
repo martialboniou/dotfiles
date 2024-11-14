@@ -1,3 +1,5 @@
+(import-macros {: tc} :hondana-dev.macros)
+
 ;; Zettelkasten is a note taking tool
 ;; - notes are written in markdown
 ;; - a notebook has a `.zk` directory at the root (check `zk init`)
@@ -47,9 +49,9 @@
         (map :v :<leader>za ":'<,'>lua vim.lsp.buf.range_code_action()<CR>"
              opts)))))
 
-(lua "---@type LazyKeysSpec[]")
+(tc type "LazyKeysSpec[]")
 (local keys (make-lazy-zk-keys))
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local P ;;
        {1 :zk-org/zk-nvim
         :event :VeryLazy
