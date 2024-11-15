@@ -63,15 +63,16 @@
             (vim.notify (.. "Invalid plugin name: " name)))))
     paths))
 
-(tc param plugins "string[]")
+(tc param plugins "string[]" return "string[]")
 (λ library [plugins]
   (let [paths (lazy-get-plugin-paths plugins)
         make-libraries #(icollect [_ l (ipairs [$...])]
                           (.. "${3rd}/" l :/library))]
-    (each [_ path (ipairs [(-> :config (vim.fn.stdpath) (.. :/lua))
+    (each [_ path (ipairs [;; (-> :config (vim.fn.stdpath) (.. :/lua)) ;; NOTE: for tests only
                            (.. vim.env.VIMRUNTIME :/lua)
                            (unpack (make-libraries :luv :busted :luassert))])]
-      (table.insert paths path))))
+      (table.insert paths path))
+    paths))
 
 (tc type LazySpec)
 (local P ;;
@@ -141,6 +142,7 @@
                         capabilities (vim.lsp.protocol.make_client_capabilities)
                         on_attach #(do
                                      ;; disable formattings (see hondana-dev.plugins.null-ls)
+                                     ;; FIXME: broken with the newest LSP?
                                      (set $.server_capabilities.documentFormattingProvider
                                           false)
                                      (set $.server_capabilities.documentRangeFormattingProvider
@@ -150,7 +152,7 @@
                                        (set $.server_capabilities.semanticTokensProvider
                                             false)))]
                     ;; NOTE: null-ls will do the clang-format with extra args
-                    (set capabilities.offsetEncoding [:utf-16])
+                    (set capabilities.general.positionEncodings [:utf-16])
                     (clangd.setup {:cmd [(if (-> local-clangd
                                                  (vim.fn.executable)
                                                  (= 1))
@@ -175,6 +177,7 @@
                                                           (checkfile (.. json
                                                                          :c)))
                                                   (lua :return))))
+                                            ;; don't put a `.luarc.json` in $HOME
                                             (set client.config.settings.Lua
                                                  (vim.tbl_deep_extend :force
                                                                       client.config.settings.Lua
@@ -185,9 +188,10 @@
                                                                                      :globals [:vim
                                                                                                :love]}
                                                                        :workspace {:checkThirdParty :false
-                                                                                   :library (library [:lazy.nvim])
-                                                                                   ;; (vim.api.nvim_list_runtime_paths)
-                                                                                   }})))
+                                                                                   ;; set the lazy plugins you need
+                                                                                   ;; avoid `(vim.api.nvim_list_runtime_paths)`
+                                                                                   :library (library [:lazy.nvim
+                                                                                                      :harpoon])}})))
                                  :settings {:Lua {}}})
                   ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
                   ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`

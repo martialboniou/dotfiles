@@ -2,10 +2,8 @@
 
 (tc type string)
 (local hidden-files-toggle-key :gh)
-(tc type number)
-(local width-focus 30)
-(tc type number)
-(local width-preview 30)
+(tc type "integer,integer")
+(local (width-focus width-preview) (values 30 30))
 
 (λ minifiles-open-at-location-or-root []
   (let [{: open : close : get_explorer_state} (require :mini.files)]

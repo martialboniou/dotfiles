@@ -3,10 +3,6 @@
 ;; source/idea: https://github.com/zk-org/zk-nvim/blob/main/lua/zk/lsp.lua
 ;; check lsp-types.fnl for common types
 
-(tc class Lsp ;;
-    field config LspClientConfig ;;
-    field private _client-id? number?)
-
 ;; this table is a placeholder for your persistent init data (better left empty)
 (local Lsp {})
 (set Lsp.__index Lsp)
@@ -63,5 +59,12 @@
 (tc return vim.lsp.Client? client rpc object)
 (fn Lsp.client [self]
   (vim.lsp.get_client_by_id self._client-id))
+
+(tc class "LspClientConfig: vim.lsp.ClientConfig" ;;
+    field name string additional slot for name)
+
+(tc class Lsp ;;
+    field config LspClientConfig ;;
+    field private _client-id? number?)
 
 Lsp

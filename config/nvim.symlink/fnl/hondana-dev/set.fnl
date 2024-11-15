@@ -2,6 +2,7 @@
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
 (import-macros {: set!!} :hondana-dev.macros.vim)
+(import-macros {: tc-source} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
 (local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
@@ -10,7 +11,6 @@
 (local pattern "*")
 
 ;; if activated, no background for cursorline
-;; FIXME: (tc type "fun(): fun(number, string, table)")
 (let [group (augroup :Hondana_HiCursorLine {})
       callback #(vim.api.nvim_set_hl 0 :Cursorline {:bg :NONE})]
   ;; ensure no conflicts with any colorschemes in `hondana-dev.plugins.colors` 

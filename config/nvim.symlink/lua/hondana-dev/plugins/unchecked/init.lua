@@ -1,2 +1,2 @@
----@type LazySpec
+--- @type LazySpec
 return {}

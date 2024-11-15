@@ -22,7 +22,7 @@
        #(let [handler (io.popen "brew --prefix 2>&1; echo $?")]
           (when handler
             (let [lines {}]
-              (each [line (: handler :lines)]
+              (each [line (handler:lines)]
                 (table.insert lines line))
               (io.close handler)
               ;; result on one line; if not status != 0 too so ok as is (faster!)

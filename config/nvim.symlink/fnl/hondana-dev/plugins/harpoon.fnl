@@ -19,10 +19,7 @@
         buf-name (vim.api.nvim_buf_get_name 0)]
     (or (and (= :minifiles buf-type) (= buf-name "")) (= nil buf-name))))
 
-(lua "--- from harpoon.list")
-(tc alias HarpoonItem "{value: string, context: any}" param fpath string return
-    HarpoonItem)
-
+(tc param fpath string return HarpoonItem)
 (λ harpoon-path-list [fpath]
   ;; FIXME: use a harpoon core function to build `value`?
   (let [path (require :plenary.path)

@@ -9,4 +9,10 @@
             (each [_ o (ipairs [...])]
               (table.insert out `(set (. vim.opt ,o) ,x)))
             `(do
-               ,(unpack out))))}
+               ,(unpack out))))
+ :tc-source (λ [directory]
+              "make a Lua espace hatch for typechecking with lua-language-server by
+  printing a `@source` annotation for a Neovim subdirectory"
+              (let [path# (.. _G.vim.env.VIMRUNTIME :/lua)]
+                (when path#
+                  `(tc ,(.. "source file://" path# directory)))))}

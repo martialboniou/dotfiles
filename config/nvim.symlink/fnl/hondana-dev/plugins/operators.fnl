@@ -60,11 +60,8 @@
                                 (when (not= "]" st) (lua "return \"\""))
                                 (set clo (string.sub clo 2)))))))))))
   clo)
-;; unused for now
-(local _ get-closing-for-line)
 
-(tc alias LazyConfig "| fun(self:LazyPlugin, opts:table)" "| true")
-(tc alias LazyUrlConfig "{[1]:string, [2]:LazyConfig} | string")
+(local _ get-closing-for-line)
 
 (tc type "LazyUrlConfig[]")
 (local url-config-specs
@@ -136,9 +133,10 @@
               {;; NOTE: check hondana-dev.plugins.treesitter for additional settings
                1 :andymass/vim-matchup
                :lazy false
-               :init #(do
-                        (set vim.g.matchup_matchparen_offscreen
-                             {:method :popup}))})
+               :init #(set vim.g.matchup_matchparen_offscreen {:method :popup})})
+
+(tc alias FnConfig "| fun(self:LazyPlugin, opts:table)" "| true")
+(tc alias LazyUrlConfig "{[1]:string, [2]:FnConfig} | string")
 
 P
 

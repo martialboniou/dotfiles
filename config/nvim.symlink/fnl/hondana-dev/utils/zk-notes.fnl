@@ -18,6 +18,7 @@
         dir (vim.fn.expand (output:match "(.+)\n"))]
     (when (-> dir (vim.fn.isdirectory) (= 1))
       ;; check if the global notebook is initialized
+      (tc cast dir string)
       (M.notebook-root dir))))
 
 (tc param ?bufnr number return string)

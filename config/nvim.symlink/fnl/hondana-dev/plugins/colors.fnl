@@ -5,8 +5,6 @@
 (tc type number)
 (local chosen-theme-idx 0)
 
-(tc class Theme field foreground string field n_hues number field desc string)
-
 (tc type "Theme[]")
 (local themes
        [{:foreground "#adb6b4" :n_hues 2 :desc :blue->orange-yellow}
@@ -62,5 +60,7 @@
 
 (tc type LazySpec)
 (local P (-> mini-hues (#[$ rainbow-delimiters icons])))
+
+(tc class Theme field foreground string field n_hues number field desc string)
 
 P

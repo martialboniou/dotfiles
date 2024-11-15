@@ -31,12 +31,7 @@
        (let [,context (require :cmp.config.context)]
          (or ,(unpack clauses))))))
 
-(tc alias bool_fun "fun(): boolean")
-(tc alias source
-    "{name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
-
-; (tc type "table<number|string, source[]>")
-
+(tc type "table<number|string, source[]>")
 (local cmp-config-preferred-sources
        {1 [{:name :nvim_lsp_signature_help}
            {:name :nvim_lsp}
@@ -71,20 +66,10 @@
                 :insert true}]})
 
 (tc param ?name string return "source[]")
-
 (fn cmp-config [?name]
   (let [n (or ?name 1)]
     (-> cmp-config-preferred-sources
         (#(or (. $ n) (. $ 1))))))
-
-(tc alias fts ;;
-    "| string" ;;
-    "| {[1]: string[], source: nil|string}")
-
-(tc alias :extract_fts ;;
-    "| fun(fts: fts): string[], string" ;;
-    "| fun(fts: fts): string[], nil" ;;
-    "| fun(fts: fts): string, string")
 
 (tc type :extract_fts)
 (fn extract-fts [fts]
@@ -161,5 +146,18 @@
                                              :<S-Tab> vim.NIL}
                                   mappings (defaults.cmp_mappings overrides)]
                               mappings)}))})
+
+(tc alias bool_fun "fun(): boolean")
+(tc alias source
+    "{name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
+
+(tc alias fts ;;
+    "| string" ;;
+    "| {[1]: string[], source: nil|string}")
+
+(tc alias :extract_fts ;;
+    "| fun(fts: fts): string[], string" ;;
+    "| fun(fts: fts): string[], nil" ;;
+    "| fun(fts: fts): string, string")
 
 P

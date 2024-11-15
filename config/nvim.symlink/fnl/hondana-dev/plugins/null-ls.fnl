@@ -1,5 +1,6 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
 ;;; 2024-11-04
+;;; TODO: replace by none-ls
 (import-macros {: tc} :hondana-dev.macros)
 
 ;; same as mason.setup.ensure_installed
@@ -91,39 +92,25 @@
         :to_stdin false
         :to_temp_file true})
 
-;; TODO: WIP
-(lua "--- from vim.diagnostic")
-
-;; fnlfmt: skip
-(tc class vim.Diagnostic
-    field bufnr? integer
-    field lnum integer field
-    end_lnum? integer
-    field col integer
-    field end_col? integer
-    field severity? any vim.diagnostic.Severity 
-    field message string 
-    field source? string 
-    field code? :string|integer
-    field private _tags? "{deprecated: boolean, unnecessary: boolean}"
-    field user_data? any arbitrary data plugins can add
-    field namespace? integer)
-
-;; (tc type
-;;     "fun(params: any): {col: number, row: number, end_col: number, source: string, message: string, severity?: vim.diagnostic.SeverityFilter}")
+(tc param params "{content: string[]}" return "vim.Diagnostic[]")
 
 (λ markdown-really-diagnostics-generator [params]
+  (tc type "vim.Diagnostic[]")
   (local diagnostics {})
   (each [i line (ipairs params.content)]
+    (tc type "integer|nil,integer|nil")
     (local (col end-col) (line:find :really))
-    (and col end-col
-         (table.insert diagnostics
-                       {: col
-                        :row i
-                        :end_col (+ end-col 1)
-                        :source :no-really
-                        :message "Don't use 'really!'"
-                        :severity vim.diagnostic.severity.WARN})))
+    (when (and col end-col)
+      (tc type vim.Diagnostic)
+      (local diagnostic
+             {:lnum 0
+              : col
+              :row i
+              :end_col (+ end-col 1)
+              :source :no-really
+              :message "Don't use 'really!'"
+              :severity vim.diagnostic.severity.WARN})
+      (table.insert diagnostics diagnostic)))
   diagnostics)
 
 (tc type LazySpec)
