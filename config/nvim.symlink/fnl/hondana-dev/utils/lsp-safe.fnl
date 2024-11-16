@@ -19,7 +19,7 @@
 ;;             (: :stop)))))
 ;;   nil)
 
-(tc param config SafeLspClientConfig ;;
+(tc param config LspClientConfig ;;
     param ?options table "table from a subclass" ;;
     return SafeLsp)
 
@@ -64,11 +64,8 @@
         (when (not= nil (next v.attached_buffers))
           (lua "return v.id"))))))
 
-(tc class "SafeLspClientConfig: vim.lsp.ClientConfig" ;;
-    field name string additional slot for name)
-
 (tc class SafeLsp ;;
-    field config SafeLspClientConfig ;;
+    field config LspClientConfig ;;
     ;; metamethods accessing private slots
     field start "fun(self: SafeLsp): nil" ;;
     field stop "fun(self: SafeLsp): nil" ;;

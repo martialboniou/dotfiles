@@ -147,7 +147,6 @@
                                   mappings (defaults.cmp_mappings overrides)]
                               mappings)}))})
 
-(tc alias bool_fun "fun(): boolean")
 (tc alias source
     "{name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
 

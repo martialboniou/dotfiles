@@ -68,8 +68,7 @@
   (let [paths (lazy-get-plugin-paths plugins)
         make-libraries #(icollect [_ l (ipairs [$...])]
                           (.. "${3rd}/" l :/library))]
-    (each [_ path (ipairs [;; (-> :config (vim.fn.stdpath) (.. :/lua)) ;; NOTE: for tests only
-                           (.. vim.env.VIMRUNTIME :/lua)
+    (each [_ path (ipairs [(.. vim.env.VIMRUNTIME :/lua)
                            (unpack (make-libraries :luv :busted :luassert))])]
       (table.insert paths path))
     paths))

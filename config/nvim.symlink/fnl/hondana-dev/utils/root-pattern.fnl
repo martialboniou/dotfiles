@@ -17,10 +17,6 @@
           "/"
           `(fn [,path] (= "/" ,path)))))
 
-(tc alias string_iterator ;;
-    "| fun(_: any, v: string): nil" ;;
-    "| fun(_: any, v: string): string, string")
-
 (tc class Path)
 (tc field escape-wildcards "fun(name: string): string")
 (tc field exists "fun(path: string): boolean")
@@ -54,10 +50,6 @@
 
 (tc type Path)
 (set M.path Path)
-
-(tc alias matcher ;;
-    "| fun(startpath: string, func: fun(path: string): boolean): string" ;;
-    "| fun(startpath: string, func: fun(path: string): boolean): nil")
 
 (tc type matcher)
 (fn M.search-ancestors [startpath func]
