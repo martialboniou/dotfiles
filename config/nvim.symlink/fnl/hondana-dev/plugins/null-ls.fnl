@@ -1,6 +1,5 @@
 ;;; Additional Formatters, Diagnostic tools and Spellchecking
 ;;; 2024-11-04
-;;; TODO: replace by none-ls
 (import-macros {: tc} :hondana-dev.macros)
 
 ;; same as mason.setup.ensure_installed
@@ -92,8 +91,8 @@
         :to_stdin false
         :to_temp_file true})
 
-(tc param params "{content: string[]}" return "vim.Diagnostic[]")
-
+(tc param params "{content: string[]}")
+(tc return "vim.Diagnostic[]")
 (λ markdown-really-diagnostics-generator [params]
   (tc type "vim.Diagnostic[]")
   (local diagnostics {})

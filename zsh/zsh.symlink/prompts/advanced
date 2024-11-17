@@ -70,6 +70,12 @@ setprompt () {
 
     PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~ | ${COLUMNS}x${LINES} | %y\a%}'
 
+    # Unicode version
+    PR_HBAR="─"
+    PR_ULCORNER="┌"
+    PR_LLCORNER="└"
+    PR_URCORNER="┐"
+    PR_LRCORNER="┘"
 
 # IMPORTANT! it's a string so DON'T change the text formatting!!
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\

@@ -36,3 +36,4 @@ yabai -m rule --add app="^darktable$" manage=off
 yabai -m rule --add app="^SIGMA Photo Pro$" manage=off
 yabai -m rule --add app="^ColorChecker Camera Calibration$" manage=off
 yabai -m rule --add app="^NX Studio$" manage=off
+yabai -m rule --add app='^GIMP$' title='(^GNU|GIMP$)' manage=off
