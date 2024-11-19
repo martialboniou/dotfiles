@@ -31,8 +31,6 @@
                    :<C-v> "@class.outer"})]
   (set (. selection_modes k) v))
 
-;; NOTE: the `paredit-skip` comments is temporary
-
 (tc type LazySpec)
 (local P ;;
        [{1 :nvim-treesitter/nvim-treesitter

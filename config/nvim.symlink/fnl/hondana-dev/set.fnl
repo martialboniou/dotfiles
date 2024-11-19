@@ -55,6 +55,11 @@
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (autocmd :BufWinEnter {: callback : group : pattern}))
 
+;; shen programming language comments
+(let [group (augroup :Hondana_ShenComments {})
+      callback #(setlocal! :commentstring "\\\\ %s")]
+  (autocmd [:BufNewFile :BufRead] {: callback : group :pattern :*.shen}))
+
 ;; restore last position (check ShaDa for other session/buffer restoration)
 (let [group (augroup :Hondana_LastPosRestoration {})]
   (autocmd :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
