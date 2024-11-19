@@ -72,4 +72,30 @@
               ;; $2 = data
               (start p #(when $2 (print $2)))))))))
 
+(tc type boolean)
+(var tangerine-wrapper-done false)
+(fn M.tangerine-new-create-float []
+  "wraps around the original tangerine.utils.window.create-float once to attach
+  an additional keymap to the floating window buffer"
+  (when tangerine-wrapper-done (lua :return))
+  (let [(has-window window) (pcall require :tangerine.utils.window)]
+    (if has-window
+        (do
+          (tc type function)
+          (let [original-create-float window.create-float]
+            ;; around wrapper
+            (set window.create-float
+                 (fn [lineheight filetype hl-normal ?hl-border]
+                   ;; fn instead of λ or double assertions
+                   (let [buffer (original-create-float lineheight filetype
+                                                       hl-normal ?hl-border)]
+                     ;; additional keymap
+                     (vim.api.nvim_buf_set_keymap buffer :n :<C-c>
+                                                  :<Cmd>FnlWinKill<CR>
+                                                  {:silent true :noremap true})
+                     buffer)))
+            (set tangerine-wrapper-done true)))
+        ;; :else
+        (vim.fn.notify "hondana-dev.utils.boot-helper: No changes expected for tangerine.utils.window.create-float is considered to be a minor issue."))))
+
 M

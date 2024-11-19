@@ -24,7 +24,7 @@ local udayvir_url = "https://github.com/udayvir-singh"
 bootstrap(udayvir_url .. "/hibiscus.nvim")
 bootstrap(udayvir_url .. "/tangerine.nvim")
 
----@type TangerineGlobals
+---@type TangerineLuaGlobals
 local globals = vim.tbl_keys(_G)
 -- example of an additional _G for tangerine.fennel
 -- (say, if you need to use Tangerine to compile anything):
@@ -68,9 +68,7 @@ setup({
     },
     keymaps = {
         eval_buffer = "gB",
-        float = {
-            kill = "<C-c>",
-        },
+        -- NOTE: float.kill = <Esc> AND <C-c> (see below)
     },
     eval = {
         luafmt = function()
@@ -87,6 +85,13 @@ setup({
     },
 })
 
+-- I want to kill the peek buffer on <C-c> AND <Esc> (default setup)
+-- HACK: rewrite a major function to add <C-c> to `:FnlWinKill`
+local has_helper, helper = pcall(require, "hondana-dev.utils.boot-helper")
+if has_helper then
+    helper["tangerine-new-create-float"]()
+end
+
 ---@class TangerineFloatKeymaps
 ---@field next? string
 ---@field prev? string
@@ -98,15 +103,15 @@ setup({
 ---@field eval_buffer string
 ---@field peek_buffer? string
 ---@field goto_output? string
----@field float TangerineFloatKeymaps
----@alias TangerineGlobals string[]
+---@field float? TangerineFloatKeymaps
+---@alias TangerineLuaGlobals string[]
 ---@alias TangerineHook 'onsave'|'onload'|'oninit'
 ---@class TangerineCompilerConfig
 ---@field float? boolean
 ---@field clean? boolean
 ---@field force? boolean
 ---@field verbose? boolean
----@field globals? TangerineGlobals
+---@field globals? TangerineLuaGlobals
 ---@field adviser? fun(fennel: any): any
 ---@field version? string
 ---@field hooks? TangerineHook[]
