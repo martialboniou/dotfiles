@@ -38,6 +38,7 @@
 (tc type LazySpec)
 (local P {1 :mfussenegger/nvim-dap
           :dependencies [{1 :rcarriga/nvim-dap-ui
+                          :dependencies :nvim-neotest/nvim-nio
                           :keys [{1 :<leader>dE
                                   2 #(funcall! :dapui :eval
                                                (vim.fn.input "[Expression] > "))
