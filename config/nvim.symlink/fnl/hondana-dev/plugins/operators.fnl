@@ -77,17 +77,19 @@
         (if (not= :julienvincent paredit-version)
             [:kovisoft/paredit
              #(do
+                (local {:nvim_create_autocmd au :nvim_create_augroup augroup}
+                       vim.api)
                 (set vim.g.paredit_matchlines 300)
                 ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
                 ;; => solution: syntax=lisp to avoid comment/string parens' matching
-                (let [group (vim.api.nvim_create_augroup :KovisoftParedit_NoSyntaxHack
-                                                         {})
-                      callback #(when (or= vim.bo.ft :fennel :scheme)
-                                  (set! :syntax :lisp))]
-                  (vim.api.nvim_create_autocmd [:BufWinEnter]
-                                               {: callback
-                                                : group
-                                                :pattern "*"}))
+                (let [group (augroup :KovisoftParedit_NoSyntaxHack {})
+                      callback #(set! :syntax :lisp)]
+                  (au :FileType
+                      {: callback : group :pattern [:fennel :scheme :query]}))
+                ;; tressitter's query filetype needs paredit too
+                (let [group (augroup :KovisoftParedit_Enable_Query {})
+                      callback #(vim.cmd "cal PareditInitBuffer()")]
+                  (au :FileType {: callback : group :pattern :query}))
                 ;; fancy keybindings
                 ;; <> : move left (like <leader><)
                 ;; >< : move right (like <leader>>)

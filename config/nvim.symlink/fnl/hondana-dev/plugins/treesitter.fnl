@@ -34,8 +34,7 @@
 (tc type LazySpec)
 (local P ;;
        [{1 :nvim-treesitter/nvim-treesitter
-         :dependencies [:nvim-treesitter/playground
-                        {1 :folke/ts-comments.nvim
+         :dependencies [{1 :folke/ts-comments.nvim
                          ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
                          :opts {:lang {:fennel ";; %s"}}
                          :event :VeryLazy

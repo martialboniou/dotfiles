@@ -2,7 +2,6 @@
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
 (import-macros {: set!!} :hondana-dev.macros.vim)
-(import-macros {: tc-source} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
 (local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
