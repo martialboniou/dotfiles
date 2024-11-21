@@ -151,6 +151,7 @@
                                        (set $.server_capabilities.semanticTokensProvider
                                             false)))]
                     ;; NOTE: null-ls will do the clang-format with extra args
+                    (set capabilities.offsetEncoding [:utf-16])
                     (set capabilities.general.positionEncodings [:utf-16])
                     (clangd.setup {:cmd [(if (-> local-clangd
                                                  (vim.fn.executable)
