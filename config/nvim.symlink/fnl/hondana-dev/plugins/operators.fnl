@@ -137,6 +137,9 @@
                :lazy false
                :init #(set vim.g.matchup_matchparen_offscreen {:method :popup})})
 
+;; NOTE: only for the `:EasyAlign` command as previously used in my old $VIMRC for Vim 7.3+
+(table.insert P {1 :junegunn/vim-easy-align :cmd :EasyAlign})
+
 (tc alias FnConfig "| fun(self:LazyPlugin, opts:table)" "| true")
 (tc alias LazyUrlConfig "{[1]:string, [2]:FnConfig} | string")
 

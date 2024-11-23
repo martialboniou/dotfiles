@@ -106,7 +106,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   for Lazy installation of LSP, Autocompletion and Formatter)
   - [0 to LSP : Neovim RC From Scratch](https://www.youtube.com/watch?v=w7i4amO_zaE)
   (smooth vanilla NeoVim tutorial based on `packer`; inspiration for settings/keybindings)
-- tested on macOS (aarch) using NeoVim 0.9, tmux & iTerm2 (should work with 0.8)
+- tested on macOS (aarch) using NeoVim 0.10, tmux & iTerm2
 
 NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from
@@ -227,7 +227,7 @@ The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZ
 
 ### Previous version (obsolete)
 
-All scripts in `.emacs.d/2013-scripts` are currently tested on Emacs 24.3.
+All scripts in `.emacs.d/2013-scripts` are dead and tested on Emacs 24.3 only.
 You can access to this archive from this  
 [revision](https://github.com/martialboniou/dotfiles/tree/db66a2a41cd4fc950a378088de126f5ffef67a19).
 

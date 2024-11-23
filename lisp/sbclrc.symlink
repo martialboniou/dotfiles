@@ -1,4 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UNICODE (I've used this in the past; don't remember why...)
+;; (setf (sb-impl::%readtable-normalization *readtable*) nil)
+;; (setf (sb-impl::%readtable-normalization sb-impl::*standard-readtable*) nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ASDF from QUICKLISP
 #-quicklisp
 (let* ((quicklisp-directory-name  (merge-pathnames ".quicklisp/" (user-homedir-pathname)))

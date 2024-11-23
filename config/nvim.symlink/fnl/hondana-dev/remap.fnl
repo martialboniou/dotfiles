@@ -37,18 +37,16 @@
 (vim.keymap.set :n :J new-shift-j)
 
 ;; doesn't move the cursor while appending line
-;; the following one is bad C-d is delete (also used in terms)
+;; the following one is bad <C-d> is delete (also used in terms)
 ;; page down
 (vim.keymap.set :n :<C-d> :<C-d>zz)
 
-;; page up (CHECK: any conflict?)
+;; page up
 (vim.keymap.set :n :<C-u> :<C-u>zz)
 
 ;; keep the cursor in the middle during (back)search
 (each [_ key (ipairs [:n :N])]
   (vim.keymap.set :n key (.. key :zzzv)))
-
-;; keep the cursor in the middle during backsearch
 
 ;; greatest remap ever
 ;;   paste a buffer but doesn't keep the deleted selection
@@ -69,14 +67,14 @@
 ;; (as this bind is for the s mode)
 ;; NOTE: require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
 ;;       in your path
-(vim.keymap.set :n :<C-f> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+(vim.keymap.set :n :<C-q> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
 (each [key navi (pairs {:<C-j> :cnext
                         :<C-k> :cprev
                         :<leader>j :lnext
                         :<leader>k :lprev})]
-  (vim.keymap.set :n key (.. :<cmd> navi :<CR>zz)))
+  (vim.keymap.set :n key (.. :<Cmd> navi :<CR>zz)))
 
 ;; <leader>s => search-replace (in normal/visual mode) w/ confirmation
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))

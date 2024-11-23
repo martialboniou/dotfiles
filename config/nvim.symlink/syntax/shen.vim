@@ -9,6 +9,8 @@ setlocal lispwords-=let
 setlocal lispwords-=if
 setlocal lispwords-=do
 setlocal lispwords+=defprolog
+setlocal lispwords+=datatype
+setlocal lispwords+=package
 
 setlocal iskeyword+=@,$,+,-,*,/,.,>,<,=,:,!,'
 
@@ -45,6 +47,7 @@ syntax keyword shenSyntax external
 syntax keyword shenSyntax fix
 syntax keyword shenSyntax freeze
 syntax keyword shenSyntax fst
+syntax keyword shenSyntax fn
 syntax keyword shenSyntax function
 syntax keyword shenSyntax gensym
 syntax keyword shenSyntax get-time
@@ -190,6 +193,7 @@ syntax keyword shenSpecial <--
 syntax keyword shenSpecial :=
 syntax match shenSpecial ";"
 syntax keyword shenSpecial ->
+syntax keyword shenSpecial ==>
 syntax keyword shenSpecial where
 syntax region shenSpecial start="*" end="*"
 

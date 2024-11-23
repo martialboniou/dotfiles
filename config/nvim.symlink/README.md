@@ -207,7 +207,7 @@ insert
   more natural; same order as in quickfix/**Trouble**)
 - **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
-- `<C-f>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
+- `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
 - **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
 - FuGITive (inside the fugitive buffer only):
   - `<leader>p` : `git push`

@@ -4,7 +4,7 @@
 (import-macros {: set!!} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
-(local {:nvim_create_autocmd autocmd :nvim_create_augroup augroup} vim.api)
+(local {:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api)
 
 (tc type string)
 (local pattern "*")
@@ -13,7 +13,7 @@
 (let [group (augroup :Hondana_HiCursorLine {})
       callback #(vim.api.nvim_set_hl 0 :Cursorline {:bg :NONE})]
   ;; ensure no conflicts with any colorschemes in `hondana-dev.plugins.colors` 
-  (autocmd [:ColorScheme :VimEnter] {: callback : group : pattern}))
+  (au [:ColorScheme :VimEnter] {: callback : group : pattern}))
 
 ;; global settings
 (set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch
@@ -50,22 +50,22 @@
       callback #(when (or ;; I'm a Common Lisp & Fennel/Lua user
                           (lisp-ft? vim.bo.ft) ;;
                           ;; others
-                          (or= vim.bo.ft :jsonc :json :haskell :ocaml))
+                          (or= vim.bo.ft :jsonc :json :haskell :ocaml :markdown))
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
-  (autocmd :BufWinEnter {: callback : group : pattern}))
+  (au :BufWinEnter {: callback : group : pattern}))
 
 ;; shen programming language comments
 (let [group (augroup :Hondana_ShenComments {})
       callback #(setlocal! :commentstring "\\\\ %s")]
-  (autocmd [:BufNewFile :BufRead] {: callback : group :pattern :*.shen}))
+  (au [:BufNewFile :BufRead] {: callback : group :pattern :*.shen}))
 
-;; restore last position (check ShaDa for other session/buffer restoration)
+;; TEST: restore last position (check ShaDa for other session/buffer restoration)
 (let [group (augroup :Hondana_LastPosRestoration {})]
-  (autocmd :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
-                                              (not= :.git/COMMIT_EDITMSG))
-                                      (vim.cmd "silent! normal g`\"zv"))
-                         : group
-                         : pattern}))
+  (au :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
+                                         (not= :.git/COMMIT_EDITMSG))
+                                 (vim.cmd "silent! normal g`\"zv"))
+                    : group
+                    : pattern}))
 
 ;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
 (tc type string)
