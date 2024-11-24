@@ -57,6 +57,9 @@ Vim keybinding reminders & tips
       `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
 - `gf`   : go to file when cursor is above a filename/hyperlink
 - `:map` : check the key mapping
+- `:set spell` : enables Vim spellchecking
+  - `:set spelllang=FR_fr` (as an example) starts a new dictionary (and download it
+    first if not available)
 - `<C-f>` : **command mode** after a `:`; behave like any Vim buffer
 - navigation with some `z` commands when *wrap* mode is off (default in this setup):
   - `zz`  : center cursor position vertically (**BEWARE**: `ZZ` means save and close buffer; works
