@@ -79,10 +79,33 @@
                                        :lookahead true
                                        ;; default select keys
                                        ;; (eg. vif => visual selection of the inner function)
-                                       :keymaps {:af "@function.outer"
+                                       :keymaps {;; classes
                                                  :ac "@class.outer"
-                                                 :if "@function.inner"
                                                  :ic "@class.inner"
+                                                 ;; INFO: idea from Josean Martinez
+                                                 ;;
+                                                 ;; BEWARE: methods/functions (m, not f)
+                                                 :am "@function.outer"
+                                                 :im "@function.inner"
+                                                 ;; function calls
+                                                 :af "@call.outer"
+                                                 :if "@call.inner"
+                                                 ;; args
+                                                 :aa "@parameter.outer"
+                                                 :ia "@parameter.inner"
+                                                 ;; ifs
+                                                 :ai "@conditional.outer"
+                                                 :ii "@conditional.inner"
+                                                 ;; loops
+                                                 :al "@loop.outer"
+                                                 :il "@loop.inner"
+                                                 ;; =s (technically :=)
+                                                 :a= "@assignment.outer"
+                                                 :i= "@assignment.outer"
+                                                 ;; lhs/rhs of =s
+                                                 :l= "@assignment.lhs"
+                                                 :r= "@assignment.rhs"
+                                                 ;; scopes
                                                  :as {:query "@scope"
                                                       :query_group :locals}}
                                        : selection_modes}
@@ -92,16 +115,17 @@
                                      ;;       check hondana-dev.plugins.quickfix
                                      ;;
                                      ;; 2024-11-25: new settings
-                                     :goto_next_start {"]f" "@function.outer"
+                                     ;; TODO: add more?
+                                     :goto_next_start {"]m" "@function.outer"
                                                        "]c" "@class.outer"
                                                        "]a" "@parameter.inner"}
-                                     :goto_next_end {"]F" "@function.outer"
+                                     :goto_next_end {"]M" "@function.outer"
                                                      "]C" "@class.outer"
                                                      "]A" "@parameter.inner"}
-                                     :goto_previous_start {"[f" "@function.outer"
+                                     :goto_previous_start {"[m" "@function.outer"
                                                            "[c" "@class.outer"
                                                            "[a" "@parameter.inner"}
-                                     :goto_previous_end {"[F" "@function.outer"
+                                     :goto_previous_end {"[M" "@function.outer"
                                                          "[C" "@class.outer"
                                                          "[A" "@parameter.inner"}}}}}])
 

@@ -247,6 +247,37 @@ insert
        - `<leader>vrr`/`<leader>rr` : **v**iew **r**efe**r**ences OR simply, **RefeRences**
          (*BEWARE*: `<leader>r` + another key is used by the *refactoring* plugin; see below)
        - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **new name**
+- **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
+  - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
+  - `<leader>xX` : toggle trouble for the current buffer
+  - `<leader>cs` : symbols (Trouble)
+  - `<leader>cl` : LSP definitions etc... (Trouble)
+  - `<leader>xL` : toggle trouble location list
+  - `<leader>xQ` : toggle trouble quickfix list
+- **Todo-comments** (`TODO`, `FIX`, `WARN`, `NOTE`, `TEST`... highlighter) case:
+  - `<leader>]t` : next todo comment
+  - `<leader>[t` : previous todo comment
+  - NOTE: you can also use the specific commands like `:TodoTelescope`...
+- **Treesitter**
+  - selection text-objects (prefix with `v` for `visual`, `c` for change, `d` for delete...):
+    - `ac`       : *outer* class
+    - `am`       : *outer* method/function (**BEWARE**: `f` is for function *call*)
+    - `af`       : *outer* function call
+    - `aa`       : *outer* argument/parameter
+    - `ai`       : *outer* if (it seeks any conditional nodes)
+    - `al`       : *outer* loop
+    - `a=`       : *outer* assignment
+    - for any previous selections, replace the first `a` by `i` for the *inner* version
+    - `l=`/`r=`  : LHS/RHS of an assignment
+    - `as`       : `@scope`
+  - move text-objects (go to...):
+    - `]c`       : *next* start *outer* class
+    - `]m`       : *next* start *outer* method/function
+    - `]a`       : *next* start *inner* argument/parameter
+    - `]C`       : *next* end *outer* class
+    - `]M`       : *next* end *outer* method/function
+    - `]A`       : *next* end *inner* argument/parameter
+    - for any previous *moves*, replace the first `]` by `[` for the *previous* version
 - Primeagen's refactoring plugin (inspired by Martin Fowler):
   - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
     by default):
@@ -259,17 +290,6 @@ insert
     - `<leader>rb` (**only in normal mode**) : extract block
     - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
       to a file
-- **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
-  - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
-  - `<leader>xX` : toggle trouble for the current buffer
-  - `<leader>cs` : symbols (Trouble)
-  - `<leader>cl` : LSP definitions etc... (Trouble)
-  - `<leader>xL` : toggle trouble location list
-  - `<leader>xQ` : toggle trouble quickfix list
-- **Todo-comments** (`TODO`, `FIX`, `WARN`, `NOTE`, `TEST`... highlighter) case:
-  - `<leader>]t` : next todo comment
-  - `<leader>[t` : previous todo comment
-  - NOTE: you can also use the specific commands like `:TodoTelescope`...
 - [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
   - `<leader>z`-based
     [keybindings](https://github.com/zk-org/zk-nvim/blob/main/README.md#example-mappings)
