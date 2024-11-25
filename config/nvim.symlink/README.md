@@ -55,7 +55,9 @@ Vim keybinding reminders & tips
     - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
       the next one with the same pattern by using `.` (*alias* of
       `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
-- `gf`   : go to file when cursor is above a filename/hyperlink
+- `gf`   : **f**etch a file using the filename/hyperlink at the cursor position (it `wget`s an URL)
+- `gx`   : `vim.ui.open` a file e**x**plorer/browser using the hyperlink at the cursor position
+  (it calls the command `open` on macOS)
 - `:map` : check the key mapping
 - `:set spell` : enables Vim spellchecking
   - `:set spelllang=FR_fr` (as an example) starts a new dictionary (and download it
