@@ -12,3 +12,5 @@
 /fnl/flsproject.fnl
 /fnl/fennel.lua
 /fnl/*health.log
+/fnl/hondana-dev/private*
+/fls-tests

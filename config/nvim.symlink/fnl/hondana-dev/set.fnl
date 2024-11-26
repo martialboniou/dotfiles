@@ -40,6 +40,10 @@
 (tc type string)
 (g! :maplocalleader ",")
 
+;; netrw (use right splitting & tree by default)
+(g! netrw_altv 1)
+(g! netrw_liststyle 3)
+
 ;; you can use lambda in this programming language (see below)
 (vim.cmd.iab ",\\ λ")
 

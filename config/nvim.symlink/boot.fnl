@@ -2,6 +2,7 @@
 
 (require :hondana-dev/remap)
 (require :hondana-dev/set)
+(local (_ _) (pcall require :hondana-dev/private))
 
 (macro imports! [...]
   (icollect [_ e (ipairs [...])]
