@@ -1,5 +1,4 @@
 ;; various operators for words/brackets (surround, vim-exchange, paredit, matchup, ...)
-(import-macros {: or=} :hibiscus.core)
 (import-macros {: set!} :hibiscus.vim)
 (import-macros {: tc} :hondana-dev.macros)
 
@@ -87,6 +86,7 @@
                   (au :FileType
                       {: callback : group :pattern [:fennel :scheme :query]}))
                 ;; tressitter's query filetype needs paredit too
+                ;; FIXME: sometimes doesn't work (especially when typing `o` after `:TreeInspect`
                 (let [group (augroup :KovisoftParedit_Enable_Query {})
                       callback #(vim.cmd "cal PareditInitBuffer()")]
                   (au :FileType {: callback : group :pattern :query}))

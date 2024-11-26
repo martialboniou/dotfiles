@@ -49,15 +49,16 @@
       {: lisp-ft?} (require :hondana-dev.utils)
       callback #(when (or ;; I'm a Common Lisp & Fennel/Lua user
                           (lisp-ft? vim.bo.ft) ;;
-                          ;; others
-                          (or= vim.bo.ft :jsonc :json :haskell :ocaml :markdown))
+                          ;; others: markdown, JS & ML family
+                          (or= vim.bo.ft :markdown :jsonc :json :javascript
+                               :typescript :haskell :ocaml))
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (au :BufWinEnter {: callback : group : pattern}))
 
 ;; shen programming language comments
 (let [group (augroup :Hondana_ShenComments {})
       callback #(setlocal! :commentstring "\\\\ %s")]
-  (au [:BufNewFile :BufRead] {: callback : group :pattern :*.shen}))
+  (au :FileType {: callback : group :pattern :shen}))
 
 ;; TEST: restore last position (check ShaDa for other session/buffer restoration)
 (let [group (augroup :Hondana_LastPosRestoration {})]

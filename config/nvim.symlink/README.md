@@ -183,9 +183,10 @@ insert
   - `<shift-K>`: move up the whole selection
 - *REMINDER*: `:map` to check the key mapping
 - `:Lazy` : check package (I prefer this one to Packer)
-- `:InspectTree` : display the AST via Treesitter (neat! it was `:TSPlaygroundToggle` before but
+- `:InspectTree` : display the *Syntax Tree* from Treesitter (neat! it was `:TSPlaygroundToggle` before but
   playground is a part of NeoVim now)
-- `:EditQuery` : display a *scratch* window to edit the Treesitter queries in Scheme
+  - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch window to edit
+    the Treesitter queries in Scheme (the `:EditQuery` command does it too)
 - **IMPORTANT!**: `<leader>s`` : create a template to replace the *current word*
   (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation**
 - `<leader>s` (in visual) : create a template to replace a *pattern
