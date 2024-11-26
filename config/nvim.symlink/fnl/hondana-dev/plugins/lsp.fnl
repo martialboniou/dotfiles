@@ -32,7 +32,7 @@
 
 ;; WARN: this will be replaced by mason-lspconfig in version 3
 (tc type "string[]")
-(local preferred-language-servers [;; TODO: restore :ts-ls
+(local preferred-language-servers [:ts_ls
                                    :rust_analyzer
                                    :clangd
                                    :html
