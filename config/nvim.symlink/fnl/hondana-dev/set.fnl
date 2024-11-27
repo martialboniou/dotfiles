@@ -59,6 +59,11 @@
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (au :BufWinEnter {: callback : group : pattern}))
 
+;; visible yank
+(let [group (augroup :Hondana_Highlight_Yank {:clear true})
+      callback #(vim.highlight.on_yank)]
+  (au :TextYankPost {: callback : group}))
+
 ;; shen programming language comments
 (let [group (augroup :Hondana_ShenComments {})
       callback #(setlocal! :commentstring "\\\\ %s")]
