@@ -3,7 +3,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 
 ;; paredit choice (NOTE: may proc autopairs)
-(tc type boolean)
+(tc type string|boolean)
 (local paredit-version (not :julienvincent))
 
 ;; main loading event

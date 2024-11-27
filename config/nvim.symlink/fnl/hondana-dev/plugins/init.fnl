@@ -1,7 +1,30 @@
 (import-macros {: tc} :hondana-dev.macros)
-;; core plugins for this NeoVim
-(tc type LazySpec)
-(local T [;; Fennel Integration
+
+;; additional command for the Tangerine's lazy config function:
+;;   FnlAddG adds globals to the tangerine.fennel's compiler
+;; usage (example to compile love2d.org's code from tangerine):
+;;   :FnlAddG love
+(tc type "fun(self:LazyPlugin, opts:table)")
+(fn config []
+  (let [addG-fennel [":command!"
+                     :-nargs=*
+                     :FnlAddG
+                     :Fnl
+                     "("
+                     "#(->"
+                     "(require :tangerine.utils.env)"
+                     "(. :get)"
+                     "(#($ :compiler :globals))"
+                     "(table.insert $))"
+                     :<q-args>
+                     ")"]]
+    (-> addG-fennel (table.concat " ") (vim.cmd))))
+
+;;; * Core plugins for this NeoVim *
+
+;; ensure P can match a table type
+(tc type "LazySpec[]")
+(local P [;; Fennel Integration
           {1 :udayvir-singh/tangerine.nvim
            :priority 1500
            :lazy false
@@ -10,47 +33,56 @@
                    :desc "Compile into a Lua file"}
                   [:gd :<cmd>FnlCompile<CR>]]
            ;; the setup has already been done from `.config/nvim/init.lua`
-           ;; TODO: clean up; make an utility function
-           :config #(let [addG-fennel [":command!"
-                                       :-nargs=*
-                                       :FnlAddG
-                                       :Fnl
-                                       "("
-                                       "#(->"
-                                       "(require :tangerine.utils.env)"
-                                       "(. :get)"
-                                       "(#($ :compiler :globals))"
-                                       "(table.insert $))"
-                                       :<q-args>
-                                       ")"]]
-                      ;; additional commands:
-                      ;;   FnlAddG adds globals to the tangerine.fennel's compiler
-                      ;; usage (example to compile love2d.org's code from tangerine)
-                      ;;   :FnlAddG love
-                      (-> addG-fennel (table.concat " ") (vim.cmd)))}
+           : config}
           ;; Fennel Macros
           :udayvir-singh/hibiscus.nvim])
 
-;; ensure P can match a table type
-(tc type "LazySpec[]")
-(local P T)
+;;; * Uncategorized plugins *
 
 ;; Marks: marks.nvim to improve the mark navigation
 ;; memo:
-;;   - m,: set the next available mark
-;;   - m;: toggle the next available mark at the current line
-;;   - mx: mark x
-;;   - dmx: delete mark x
-;;   - dm-: delete marks on the current line
-;;   - dm<Space>: delete marks in the current buffer
-;;   - m : move to next mark
+;;   - m,  : set the next available mark
+;;   - m;  : toggle the next available mark at the current line
+;;   - mx  : mark x
+;;   - dmx : delete mark x
+;;   - dm- : delete marks on the current line
+;;   - dm<Space> : delete marks in the current buffer
+;;   - m   : move to next mark
 (->> :chentoast/marks.nvim
      (#{1 $ :event :VeryLazy :opts {}})
      (table.insert P))
 
+;; StartupTime: benchmarks startup event timing using the command `:StartupTime`
+;; memo:
+;;   - K  : get additional information of an event
+;;   - gf : load the sourcing event's corresponding file in a split window
+;;   - :help startuptime-configuration : for customization
 (let [init #(set vim.g.startuptime_tries 10)]
   (->> :dstein64/vim-startuptime
        (#{1 $ :cmd :StartupTime : init})
        (table.insert P)))
+
+;; WhichKey: displays available keybindings in a popup as you type
+;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
+(->> :folke/which-key.nvim
+     (#{1 $
+        :event :VeryLazy
+        :config #(let [{: add : setup} (require :which-key)]
+                   (setup)
+                   ;; TODO: customize (REMINDER: `:hidden true` to disable)
+                   ;; HACK: shouldn't be here
+                   (add {1 :<leader>I :desc "Paredit raise"})
+                   (add {1 :<leader>J :desc "Paredit join"})
+                   (add {1 :<leader>O :desc "Paredit split"})
+                   (add {1 :<leader>S :desc "Paredit splice"})
+                   (add {1 :<leader>W :desc "Paredit wrap"})
+                   (add {1 "<leader>(" :desc "Paredit toggle"})
+                   (add {1 :<leader>< :desc "Paredit move left"})
+                   (add {1 :<leader>> :desc "Paredit move right"})
+                   (add {1 :<leader><Up>
+                         :desc "Paredit killing backward splice"})
+                   (add {1 :<leader><Down>
+                         :desc "Paredit killing forward splice"}))})
+     (table.insert P))
 
 P

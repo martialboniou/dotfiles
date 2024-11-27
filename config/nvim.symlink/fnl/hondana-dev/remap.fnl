@@ -51,22 +51,23 @@
 ;; greatest remap ever
 ;;   paste a buffer but doesn't keep the deleted selection
 ;;   so you can paste the same again
-(vim.keymap.set :x :<leader>p "\"_dP")
+(vim.keymap.set :x :<leader>p "\"_dP"
+                {:desc "Paste without keeping the replaced seletion"})
 
 ;; next greatest remap ever : asbjornHaland
-;; yank for the clipboard
-(vim.keymap.set [:n :v] :<leader>y "\"+y")
-(vim.keymap.set :n :<leader>Y "\"+Y")
+;; yank to the clipboard
+(vim.keymap.set [:n :v] :<leader>y "\"+y" {:desc "Yank to the clipboard"})
+(vim.keymap.set :n :<leader>Y "\"+Y" {:desc "Yank line to the clipboard"})
 ;; delete for the clipboard
-(vim.keymap.set [:n :v] :<leader>d "\"_d")
+(vim.keymap.set [:n :v] :<leader>d "\"_d"
+                {:desc "Delete & keep it in the clipboard"})
 
 ;; ThePrimeagen thing; can be changed when foot controller is plugged
 (vim.keymap.set :i :<C-c> :<Esc>)
 
 ;; the following one works with the snippet forward keybindings
 ;; (as this bind is for the s mode)
-;; NOTE: require https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
-;;       in your path
+;; NOTE: need https://github.com/ThePrimeagen/.dotfiles/tree/master/bin/.local/scripts/tmux-sessionizer
 (vim.keymap.set :n :<C-q> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
@@ -80,18 +81,21 @@
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
             :v (.. ":s///cgI" (**! :<Left> 5))}]
   (each [mode cmd (pairs cmds)]
-    (vim.keymap.set mode :<leader>s cmd)))
+    (vim.keymap.set mode :<leader>s cmd {:desc "Search/Replace template"})))
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)
 (each [_ v (ipairs [:cgn :cc])]
   (->> v
        (.. :<leader>)
-       (#(vim.keymap.set :n $ ":let @/=expand('<cword>')<CR>cgn"))))
+       (#(vim.keymap.set :n $ ":let @/=expand('<cword>')<CR>cgn"
+                         {:desc "Replace the current word using `cgn` (. to propagate)"}))))
 
 ;; added by https://gitlab.com/martialhb
 ; - change local current directory
-(vim.keymap.set :n :<leader>cd ":lcd %:h<CR>")
+(vim.keymap.set :n :<leader>cd ":lcd %:h<CR>"
+                {:desc "Change local directory according to this file location"})
+
 ; - center the buffer vertically according to the cursor's position
 (vim.keymap.set :n "z;" ":<C-u>normal! zszH<CR>")
 ;; TODO: test the following command; find a better keybinding
@@ -125,4 +129,5 @@
         (.. res)
         (print))))
 
-(vim.keymap.set :n :<leader>x toggle-exec {:silent false})
+(vim.keymap.set :n :<leader>x toggle-exec
+                {:silent false :desc "Toggle the current file as executable"})
