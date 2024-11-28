@@ -1,6 +1,8 @@
 (import-macros {: tc} :hondana-dev/macros)
-;;; LSP Zero version
-;;; 2024-11-04
+;;; 2024-11-28
+
+;; F = utility functions at the end of this module
+(local F {})
 
 ;; IMPORTANT: noselect = no <CR> in CMP = what I want here
 (tc type :string)
@@ -8,11 +10,12 @@
 
 ;; IMPORTANT: <Tab>/<S-Tab> disabled in CMP
 (tc type "table<string, string>")
-(local cmp-custom-keymaps {:previous-word :<C-p>
-                           :next-word :<C-n>
-                           :complete :<C-Space>
-                           :confirm :<C-y>
-                           :abort :<C-e>})
+(local cmp-custom-keymaps ;;
+       {:previous-word :<C-p>
+        :next-word :<C-n>
+        :complete :<C-Space>
+        :confirm :<C-y>
+        :abort :<C-e>})
 
 ;; NOTE: <C-f>/<C-b> = jump forward/backward (<C-b> CANNOT be used in tmux; I chose F5/`fn a` as a tmux prefix)
 ;;       <C-u>/<C-d> = scroll
@@ -36,7 +39,7 @@
        {1 [{:name :nvim_lsp_signature_help}
            {:name :nvim_lsp}
            {:name :luasnip}
-           {:name :buffer :keyword_length 4}
+           {:name :buffer :keyword_length 3}
            {:name :path}
            {:name :emoji
             :entry_filter (make-emoji-restrictions :comment :string)
@@ -50,7 +53,7 @@
         :gitcommit [{:name :nvim_lsp_signature_help}
                     {:name :nvim_lsp}
                     {:name :luasnip}
-                    {:name :buffer :keyword_length 4}
+                    {:name :buffer :keyword_length 3}
                     {:name :path}
                     {:name :git}
                     {:name :emoji :insert true}]
@@ -59,27 +62,45 @@
                ;; cmp-conjure enabled by plugins.conjure
                {:name :conjure}
                {:name :luasnip}
-               {:name :buffer :keyword_length 4}
+               {:name :buffer :keyword_length 3}
                {:name :path}
                {:name :emoji
                 :entry_filter (make-emoji-restrictions :comment)
                 :insert true}]})
 
-(tc param ?name string return "source[]")
-(fn cmp-config [?name]
-  (let [n (or ?name 1)]
-    (-> cmp-config-preferred-sources
-        (#(or (. $ n) (. $ 1))))))
+;;; OPTIONS AS SETUP
+(fn opts []
+  (let [{: setup
+         :SelectBehavior {:Select behavior}
+         ;; WARN: abbrev'd names
+         :config cc
+         :mapping cm} (require :cmp)]
+    ;; special sources
+    (each [_ fts (ipairs [:markdown
+                          :gitcommit
+                          {1 [:fennel :clojure] :source :lisp}])]
+      (let [(filetypes source) (F.extract-fts fts)
+            sources (cc.sources (F.cmp-config source))]
+        (setup.filetype filetypes {: sources})))
+    {:sources (cc.sources (F.cmp-config))
+     :completion {:completeopt cmp-config-complete-options}
+     :preselect :none
+     :snippet {:expand #(let [l (require :luasnip)]
+                          (l.lsp_expand $.body))}
+     :window {:completion (cc.window.bordered)
+              :documentation (cc.window.bordered)}
+     ;; :experimental {:ghost_text true}
+     :mapping (let [overrides ;;
+                    {(or cmp-custom-keymaps.previous-word :<C-p>) (cm.select_prev_item {: behavior})
+                     (or cmp-custom-keymaps.next-word :<C-n>) (cm.select_next_item {: behavior})
+                     (or cmp-custom-keymaps.complete :<C-Space>) (cm.complete)
+                     (or cmp-custom-keymaps.confirm :<C-y>) (cm.confirm {:select true})
+                     (or cmp-custom-keymaps.abort :<C-e>) (cm.abort)
+                     :<Tab> vim.NIL
+                     :<S-Tab> vim.NIL}]
+                (cm.preset.insert overrides))}))
 
-(tc type :extract_fts)
-(fn extract-fts [fts]
-  (if (-> fts (type) (= :table))
-      (if (not= nil (. fts :source))
-          (values (. fts 1) (. fts :source))
-          (values fts nil))
-      ;; not a table
-      (values fts fts)))
-
+;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
        {1 :hrsh7th/nvim-cmp
@@ -106,47 +127,27 @@
                        {1 :hrsh7th/cmp-emoji
                         ;; :dependencies { :nvim-treesitter/nvim-treesitter }
                         }
-                       :ray-x/lsp_signature.nvim
-                       ;; :hrsh7th/cmp-nvim-lsp-signature-help ; replaced by previous
-                       ]
-        :opts (λ [_ _]
-                ;; nvim-lspconfig ensures the lazy loading of LSP Zero
-                (let [{: extend} (require :lsp-zero.cmp)] (extend))
-                (let [{: setup
-                       :SelectBehavior {:Select behavior}
-                       :config cc
-                       :mapping cm} (require :cmp)
-                      {: defaults} (require :lsp-zero)]
-                  ;; special sources
-                  (each [_ fts (ipairs [:markdown
-                                        :gitcommit
-                                        {1 [:fennel :clojure] :source :lisp}])]
-                    (let [(filetypes source) (extract-fts fts)
-                          sources (cc.sources (cmp-config source))]
-                      (setup.filetype filetypes {: sources})))
-                  {:sources (cc.sources (cmp-config))
-                   :completion {:completeopt cmp-config-complete-options}
-                   :preselect :none
-                   :snippet {:expand #(let [l (require :luasnip)]
-                                        (l.lsp_expand $.body))}
-                   :window {:completion (cc.window.bordered)
-                            :documentation (cc.window.bordered)}
-                   ;; :experimental {:ghost_text true}
-                   :mapping (let [overrides {(or cmp-custom-keymaps.previous-word
-                                                  :<C-p>) (cm.select_prev_item {: behavior})
-                                             (or cmp-custom-keymaps.next-word
-                                                  :<C-n>) (cm.select_next_item {: behavior})
-                                             (or cmp-custom-keymaps.complete
-                                                  :<C-Space>) (cm.complete)
-                                             (or cmp-custom-keymaps.confirm
-                                                  :<C-y>) (cm.confirm {:select true})
-                                             (or cmp-custom-keymaps.abort
-                                                  :<C-e>) (cm.abort)
-                                             :<Tab> vim.NIL
-                                             :<S-Tab> vim.NIL}
-                                  mappings (defaults.cmp_mappings overrides)]
-                              mappings)}))})
+                       ;; :hrsh7th/cmp-nvim-lsp-signature-help ; replaced by next
+                       :ray-x/lsp_signature.nvim]
+        : opts})
 
+;;; UTILITY FUNCTIONS
+(tc param ?name string return "source[]")
+(fn F.cmp-config [?name]
+  (let [n (or ?name 1)]
+    (-> cmp-config-preferred-sources
+        (#(or (. $ n) (. $ 1))))))
+
+(tc type :extract_fts)
+(fn F.extract-fts [fts]
+  (if (-> fts (type) (= :table))
+      (if (not= nil (. fts :source))
+          (values (. fts 1) (. fts :source))
+          (values fts nil))
+      ;; not a table
+      (values fts fts)))
+
+;;; TYPES
 (tc alias source
     "{name: string, keyword_length?: number, entry_filter?: bool_fun, insert?: boolean}")
 

@@ -1,13 +1,10 @@
-;;; LSP setup (LSP Zero powered)
+;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 ;;; 2024-11-28
 (import-macros {: tc} :hondana-dev.macros)
 
 ;; F = utility functions at the end of this module
 (local F {})
-
-(tc type string)
-(local preset :recommended)
 
 (macro custom-keys [maps]
   (local o [])
@@ -48,12 +45,6 @@
                     :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
                 :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
 
-(fn on_attach [_ buffer]
-  (let [fs (keymap-set-fns)]
-    (for [i 1 (length fs)]
-      (let [f (. fs i)]
-        (f buffer)))))
-
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (tc type string)
 (local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
@@ -61,43 +52,45 @@
 (tc type boolean)
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
-;; WARN: this will be replaced by mason-lspconfig in version 3
+;;; SERVERS FOR MASON-LSPCONFIG
 (tc type "string[]")
-(local servers [:ts_ls
-                :rust_analyzer
-                :clangd
-                :html
-                :lua_ls
-                :jsonls
-                :tailwindcss
-                :dockerls
-                :docker_compose_language_service
-                :astro
-                :marksman
-                :vimls
-                :cssls
-                :ocamllsp
-                :gopls
-                ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
-                ;; fennel_ls is hard to setup but it looks promising
-                ])
+(local ensure_installed ;; don't change the const name (check PLUGINS section)
+       [:ts_ls
+        :rust_analyzer
+        :clangd
+        :html
+        :lua_ls
+        :jsonls
+        :tailwindcss
+        :dockerls
+        :docker_compose_language_service
+        :astro
+        :marksman
+        :vimls
+        :cssls
+        :ocamllsp
+        :gopls
+        ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
+        ;; fennel_ls is hard to setup but it looks promising
+        ])
 
-;;; SETUP
-(tc type "fun(self:LazyPlugin, opts:table)")
+;;; SETUP FOR LSPCONFIG
+(tc type "fun(self:LazyPlugin, opts:table): nil")
 (fn config [_ opts]
-  ;; reduce boilerplate code with LSP Zero
-  (local lsp-zero (require :lsp-zero))
-  (local lsp-zero-setup opts.zero-setup)
-  (lsp-zero.nvim_workspace)
-  (lsp-zero.preset lsp-zero-setup.preset)
-  (lsp-zero.ensure_installed lsp-zero-setup.servers)
-  (lsp-zero.set_preferences lsp-zero-setup.preferences)
-  ;; change the following to lsp-zero-setup.sign-chars
-  (lsp-zero.set_sign_icons lsp-zero-setup.sign-icons)
+  ;; additional settings for diagnostic
   (vim.diagnostic.config opts.diagnostics)
-  (lsp-zero.on_attach on_attach)
   (local {:util {: root_pattern} : clangd : lua_ls : fennel_ls : zls}
          (require :lspconfig))
+  (var {:util {:default_config {: capabilities}}} (require :lspconfig))
+  ;; WARN: set this first
+  (let [{:default_capabilities defaults} (require :cmp_nvim_lsp)]
+    (set capabilities (vim.tbl_deep_extend :force capabilities (defaults))))
+  (let [callback (fn [event]
+                   (let [fs (keymap-set-fns)]
+                     (for [i 1 (length fs)]
+                       (let [f (. fs i)]
+                         (f event.buf)))))]
+    (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback}))
   ;;
   ;; * Clang setup *
   ;; check if there's a clangd in your llvm-local-binary-path
@@ -188,25 +181,25 @@
                                      (vim.fs.find {:upward true
                                                    :type :directory
                                                    :path (vim.fn.getcwd)})
-                                     (. 1))}))
-  (lsp-zero.setup))
+                                     (. 1))})))
 
-;;; PLUGINS
+;;; PLUGINS (incl. MASON-LSPCONFIG SETUP)
 (tc type LazySpec)
 (local P ;;
        {1 :neovim/nvim-lspconfig
         ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
         :event :BufReadPost
         :cmd :LspStart
-        :dependencies [;; LSP Zero
-                       {1 :VonHeikemen/lsp-zero.nvim :branch :v2.x :lazy true}
-                       ;; {1 :simrat39/rust-tools.nvim}
-                       {1 :williamboman/mason.nvim
-                        ;; check hondana-dev.plugins.null-ls for the ensure_installed packages
+        :dependencies [{1 :williamboman/mason.nvim
+                        ;; check hondana-dev.plugins.null-ls about the other Mason packages
                         :opts {}
                         :cmd :Mason
                         :run ":MasonUpdate"}
-                       :williamboman/mason-lspconfig.nvim
+                       {1 :williamboman/mason-lspconfig.nvim
+                        :config #(let [{:setup mason-setup} (require :mason)
+                                       {: setup} (require :mason-lspconfig)]
+                                   (mason-setup)
+                                   (setup {: ensure_installed}))}
                        ;; see Autocompletion
                        :hrsh7th/nvim-cmp
                        ;; optional/highlight same word -> LSP support
@@ -222,16 +215,6 @@
                                :diagnostic {:on_insert false
                                             :on_insert_follow false}
                                :rename {:in_select false}}}]
-        :opts {:diagnostics {:update_in_insert false :virtual_text true}
-               :autoformat true
-               :zero-setup {: preset
-                            : servers
-                            :preferences {:suggest_lsp_servers false}
-                            :sign-icons {:error "✘"
-                                         :warn "▲"
-                                         :hint "⚑"
-                                         :info "»"}
-                            :sign-chars {:error :E :warn :W :hint :H :info :I}}}
         : config})
 
 ;;; UTILITY FUNCTIONS

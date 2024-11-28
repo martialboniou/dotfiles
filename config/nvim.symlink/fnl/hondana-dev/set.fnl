@@ -44,6 +44,17 @@
 (g! netrw_altv 1)
 (g! netrw_liststyle 3)
 
+;; diagnostic
+(vim.diagnostic.config {:update_in_insert false
+                        :float {:focusable true
+                                :border :rounded
+                                :source :always}
+                        ;; `vim.diagnostic.severity.*` are strings so key-able
+                        :signs {:text {vim.diagnostic.severity.ERROR "✘"
+                                       vim.diagnostic.severity.WARN "▲"
+                                       vim.diagnostic.severity.HINT "⚑"
+                                       vim.diagnostic.severity.INFO "»"}}})
+
 ;; you can use lambda in this programming language (see below)
 (vim.cmd.iab ",\\ λ")
 
