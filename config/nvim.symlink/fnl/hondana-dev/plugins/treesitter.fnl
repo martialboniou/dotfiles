@@ -1,5 +1,8 @@
 (import-macros {: tc} :hondana-dev.macros)
 
+;; F = utility or setup functions at the end of this module
+(local F {})
+
 (tc type "string[]")
 
 ;; fnlfmt: skip
@@ -10,38 +13,45 @@
                             :ocaml           :ocaml_interface :scheme     :zig
                             :go])
 
+;;; KEYS
 (tc type "table<string, string>")
-(local selection_modes {})
-;;; unorthodox keys so invert k&v
-(each [v k (pairs {:v "@parameter.outer"
-                   :V "@function.outer"
-                   :<C-v> "@class.outer"})]
-  (set (. selection_modes k) v))
+;; Usage: `vim` => visual selection of the inner method/function
+(local keymaps {;; classes
+                :ac "@class.outer"
+                :ic "@class.inner"
+                ;; INFO: idea from Josean Martinez
+                ;;
+                ;; BEWARE: methods/functions (m, not f)
+                :am "@function.outer"
+                :im "@function.inner"
+                ;; function calls
+                :af "@call.outer"
+                :if "@call.inner"
+                ;; args
+                :aa "@parameter.outer"
+                :ia "@parameter.inner"
+                ;; ifs
+                :ai "@conditional.outer"
+                :ii "@conditional.inner"
+                ;; loops
+                :al "@loop.outer"
+                :il "@loop.inner"
+                ;; =s (technically :=)
+                :a= "@assignment.outer"
+                :i= "@assignment.outer"
+                ;; lhs/rhs of =s
+                :l= "@assignment.lhs"
+                :r= "@assignment.rhs"
+                ;; scopes
+                :as {:query "@scope" :query_group :locals}})
 
-(tc type "fun(self:LazyPlugin, opts:table)|true")
-(local text-object-config ;;
-       #(let [configs (require :nvim-treesitter.configs)]
-          ;; from LazyVim nvim-treesitter-textobjects default setup
-          ;; when in diff mode, use vim text objects c & C instead
-          (tc type "table<string, fun(...)>")
-          (local move (require :nvim-treesitter.textobjects.move))
-          (each [name fun (pairs move)]
-            (when (-> :goto (name:find) (= 1))
-              (set (. move name)
-                   (fn [q ...]
-                     (when vim.wo.diff
-                       (tc type "table<string, string>")
-                       (local config
-                              (. (configs.get_module :textobjects.move) name))
-                       (each [key query (pairs (or config {}))]
-                         (when (= q query)
-                           (when (key:find "[%]%[][cC]")
-                             (->> key (.. "normal! ") (vim.cmd))
-                             (lua :return)))))
-                     ;;
-                     ;; :return (ie propagate the original `fun` from `move` otherwise)
-                     (fun q ...)))))))
+(tc type "table<string, string>")
+;; HACK: written as a string concat to prevent `fnlfmt` to turn them into symbols
+(local selection_modes {(.. "@" :parameter.outer) :v
+                        (.. "@" :function.outer) :V
+                        (.. "@" :class.outer) :<C-v>})
 
+;;; PLUGINS & SETUP
 (tc type LazySpec)
 (local P ;;
        [{1 :nvim-treesitter/nvim-treesitter
@@ -53,7 +63,7 @@
                          :enabled (-> :nvim-0.10.0 (vim.fn.has) (= 1))}
                         {1 :nvim-treesitter/nvim-treesitter-textobjects
                          :enabled true
-                         :config text-object-config}]
+                         :config F.textobjects-config}]
          :build ":TSUpdate"
          :event [:BufReadPost :BufNewFile]
          :cmd [:TSUpdateSync :TSUpdate :TSInstall]
@@ -77,37 +87,7 @@
                          :disable [:c]}
                 :textobjects {:select {:enable true
                                        :lookahead true
-                                       ;; default select keys
-                                       ;; (eg. vif => visual selection of the inner function)
-                                       :keymaps {;; classes
-                                                 :ac "@class.outer"
-                                                 :ic "@class.inner"
-                                                 ;; INFO: idea from Josean Martinez
-                                                 ;;
-                                                 ;; BEWARE: methods/functions (m, not f)
-                                                 :am "@function.outer"
-                                                 :im "@function.inner"
-                                                 ;; function calls
-                                                 :af "@call.outer"
-                                                 :if "@call.inner"
-                                                 ;; args
-                                                 :aa "@parameter.outer"
-                                                 :ia "@parameter.inner"
-                                                 ;; ifs
-                                                 :ai "@conditional.outer"
-                                                 :ii "@conditional.inner"
-                                                 ;; loops
-                                                 :al "@loop.outer"
-                                                 :il "@loop.inner"
-                                                 ;; =s (technically :=)
-                                                 :a= "@assignment.outer"
-                                                 :i= "@assignment.outer"
-                                                 ;; lhs/rhs of =s
-                                                 :l= "@assignment.lhs"
-                                                 :r= "@assignment.rhs"
-                                                 ;; scopes
-                                                 :as {:query "@scope"
-                                                      :query_group :locals}}
+                                       : keymaps
                                        : selection_modes}
                               :move {:enable true
                                      :set_jumps true
@@ -128,5 +108,29 @@
                                      :goto_previous_end {"[M" "@function.outer"
                                                          "[C" "@class.outer"
                                                          "[A" "@parameter.inner"}}}}}])
+
+;;; CONFIG FOR NVIM-TREESITTER-TEXTOBJECTS
+
+(tc type "fun(self:LazyPlugin, opts:table)|true")
+(fn F.textobjects-config []
+  "When in diff mode, use vim text objects c & C instead"
+  (let [configs (require :nvim-treesitter.configs)]
+    (tc type "table<string, fun(...)>")
+    (local move (require :nvim-treesitter.textobjects.move))
+    (each [name fun (pairs move)]
+      (when (-> :goto (name:find) (= 1))
+        (set (. move name) ;;
+             (fn [q ...]
+               (when vim.wo.diff
+                 (tc type "table<string, string>")
+                 (local config (. (configs.get_module :textobjects.move) name))
+                 (each [key query (pairs (or config {}))]
+                   (when (= q query)
+                     (when (key:find "[%]%[][cC]")
+                       (->> key (.. "normal! ") (vim.cmd))
+                       (lua :return)))))
+               ;;
+               ;; :return (ie propagate the original `fun` from `move` otherwise)
+               (fun q ...)))))))
 
 P
