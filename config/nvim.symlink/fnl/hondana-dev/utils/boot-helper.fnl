@@ -6,13 +6,11 @@
   "auto-link fennel.lua from Tangerine to `target`; the optional `src-directory` is
   the root of your package manager local plugins (say, `/lazy` at the `data` stdpath)"
   ;(local tangerine-root (or ?src-directory (-> :lazy (vim.fn.stdpath) (.. :/lazy))))
-  (local package-manager :lazy)
-  (tc cast package_manager "\"cache\"")
-  (local lazy-path (vim.fn.stdpath package-manager))
   (let [env (require :tangerine.utils.env)
         version (or (env.get :compiler :version) :latest)
-        tangerine-root (if ?src-directory ?src-directory (.. lazy-path :/lazy))
-        tangerine-path (.. tangerine-root :/tangerine.nvim/lua/?.lua)
+        root (if ?src-directory ?src-directory
+                 (.. (vim.fn.stdpath :data) :/lazy))
+        tangerine-path (.. root :/tangerine.nvim/lua/?.lua)
         ;; FIX: fennel-ls: unknown-module-field: false
         get-file #(package.searchpath $ tangerine-path)
         make-command #[:ln :-s $ target]]
@@ -57,20 +55,23 @@
           (lua "---@diagnostic disable: redefined-local")
           ;;
           (let [[cmd & args] (make-command file)
-                pipes [(new) (new)] ;; no input in this stdio
-                stdio [nil (unpack pipes)]
+                stdio [nil (new) (new)]
                 on-exit #(do
-                           (each [_ p (ipairs pipes)]
-                             (stop p)
-                             (close p))
+                           (for [i 2 3]
+                             (let [p (. stdio i)]
+                               (when p
+                                 (stop p)
+                                 (close p))))
                            (close handle)
                            (when (not= 0 $)
                              (print (.. :exited... (tostring $)))))
                 options {: args : stdio}]
             (set handle (spawn cmd options on-exit))
-            (each [_ p (ipairs pipes)]
-              ;; $2 = data
-              (start p #(when $2 (print $2)))))))))
+            (for [i 2 3]
+              (let [p (. stdio i)]
+                ;; $2 = data
+                (when p
+                  (start p #(when $2 (print $2)))))))))))
 
 (tc type boolean)
 (var tangerine-wrapper-done false)

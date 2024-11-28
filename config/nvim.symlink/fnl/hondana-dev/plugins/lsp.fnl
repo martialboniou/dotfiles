@@ -3,38 +3,56 @@
 ;;; 2024-11-28
 (import-macros {: tc} :hondana-dev.macros)
 
+;; F = utility functions at the end of this module
+(local F {})
+
 (tc type string)
 (local preset :recommended)
 
-(tc alias keymapOptions "table<string, string>")
-(tc alias keymapFun "fun(): nil")
-(tc alias descFunCons "{[1]: string, [2]: keymapFun}")
-(tc type "table<string, table<string, descFunCons>>")
-(local lsp-custom-keys
-       {:n {:<leader>f ["LSP Format" vim.lsp.buf.format]
-            :gd ["LSP Go to definition" vim.lsp.buf.definition]
-            :K ["LSP Hover" vim.lsp.buf.hover]
-            :<leader>vws ["LSP View workspace symbols"
-                          vim.lsp.buf.workspace_symbol]
-            :<leader>vd ["View diagnostic" vim.diagnostic.open_float]
-            "[d" ["Go to previous diagnostic" vim.diagnostic.goto_prev]
-            "]d" ["Go to next diagnostic" vim.diagnostic.goto_next]
-            :<leader>vca ["LSP Code actions" vim.lsp.buf.code_action]
-            :<leader>vrr ["LSP References" vim.lsp.buf.references]
-            :<leader>vrn ["LSP Rename" vim.lsp.buf.rename]
-            ;;; ! for ergonomics: <leader> + ca = vca, rr = vrr, nn, vrn
-            :<leader>ca ["LSP Code actions" vim.lsp.buf.code_action]
-            :<leader>rr ["LSP References" vim.lsp.buf.references]
-            :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
-        :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}})
+(macro custom-keys [maps]
+  (local o [])
+  (each [mode key-cons (pairs maps)]
+    (each [key pair (pairs key-cons)]
+      ;; only the buffer is not known at comptime
+      (table.insert o `(fn [buf#]
+                         (vim.keymap.set ,mode ,key ,(. pair 2)
+                                         {:remap false
+                                          :desc ,(. pair 1)
+                                          :buffer buf#})))))
+  o)
+
+;;; at comptime:
+;; @alias keymapsOptions "table<string, string>"
+;; @alias keymapFun "fun(): nil
+;; @alias descFunCons "{[1]: string, [2]: keymapFun}"
+;; @alias keymapSetFun "fun(integer?)" accepts a buffer as param
+;; @cast custom-keys "fun(table<string, table<string, descFunCons>>): keymapSetFun[]"
+(tc alias keymapSetFun "fun(integer?)")
+(tc return "table<integer, keymapSetFun>")
+;; NOTE: function instead of a local variable to ensure the last annotation is well-set
+(fn keymap-set-fns []
+  (custom-keys {:n {:<leader>f ["LSP Format" vim.lsp.buf.format]
+                    :gd ["LSP Go to definition" vim.lsp.buf.definition]
+                    :K ["LSP Hover" vim.lsp.buf.hover]
+                    :<leader>vws ["LSP View workspace symbols"
+                                  vim.lsp.buf.workspace_symbol]
+                    :<leader>vd ["View diagnostic" vim.diagnostic.open_float]
+                    "[d" ["Go to previous diagnostic" vim.diagnostic.goto_prev]
+                    "]d" ["Go to next diagnostic" vim.diagnostic.goto_next]
+                    :<leader>vca ["LSP Code actions" vim.lsp.buf.code_action]
+                    :<leader>vrr ["LSP References" vim.lsp.buf.references]
+                    :<leader>vrn ["LSP Rename" vim.lsp.buf.rename]
+                    ;;; ! for ergonomics: <leader> + ca = vca, rr = vrr, nn, vrn
+                    :<leader>ca ["LSP Code actions" vim.lsp.buf.code_action]
+                    :<leader>rr ["LSP References" vim.lsp.buf.references]
+                    :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
+                :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
 
 (fn on_attach [_ buffer]
-  (local opts {: buffer :remap false})
-  (each [mode maps (pairs lsp-custom-keys)]
-    (each [key fun (pairs maps)]
-      (let [set-key #(vim.keymap.set mode key $1 $2)]
-        (set opts.desc (. fun 1))
-        (set-key (. fun 2) opts)))))
+  (let [fs (keymap-set-fns)]
+    (for [i 1 (length fs)]
+      (let [f (. fs i)]
+        (f buffer)))))
 
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (tc type string)
@@ -64,28 +82,7 @@
                 ;; fennel_ls is hard to setup but it looks promising
                 ])
 
-(tc param names "string[]" return "string[]")
-(λ lazy-get-plugin-paths [names]
-  {:author :uga-rosa-at-zenn-dev}
-  (let [{: plugins} (require :lazy.core.config)
-        paths []]
-    (each [_ name (ipairs names)]
-      (let [plugin (. plugins name)]
-        (if plugin
-            (table.insert paths (.. plugin.dir :/lua))
-            (vim.notify (.. "Invalid plugin name: " name)))))
-    paths))
-
-(tc param plugins "string[]" return "string[]")
-(λ library [plugins]
-  (let [paths (lazy-get-plugin-paths plugins)
-        make-libraries #(icollect [_ l (ipairs [$...])]
-                          (.. "${3rd}/" l :/library))]
-    (each [_ path (ipairs [(.. vim.env.VIMRUNTIME :/lua)
-                           (unpack (make-libraries :luv :busted :luassert))])]
-      (table.insert paths path))
-    paths))
-
+;;; SETUP
 (tc type "fun(self:LazyPlugin, opts:table)")
 (fn config [_ opts]
   ;; reduce boilerplate code with LSP Zero
@@ -149,25 +146,25 @@
                 (lua :return))))
           (let [;; only set the libraries you need for diagnostics
                 ;; to avoid `(vim.api.nvim_list_runtime_paths)`
-                library (library [:lazy.nvim
-                                  :nvim-treesitter
-                                  ;; :ts-comments.nvim
-                                  :plenary.nvim
-                                  :nvim-lspconfig
-                                  ;; :nvim-nio
-                                  ;; :nvim-dap
-                                  ;; :lspsaga.nvim
-                                  ;; :null-ls.nvim
-                                  ;; :mason-null-ls.nvim
-                                  ;; :nvim-cmp
-                                  ;; :refactoring.nvim
-                                  ;; :which-key.nvim
-                                  :harpoon
-                                  :mini.files
-                                  ;; :rainbow-delimiters.nvim
-                                  ;; :todo-comments.nvim
-                                  ;; :zk-vim
-                                  ])
+                library (F.library [:lazy.nvim
+                                    :nvim-treesitter
+                                    ;; :ts-comments.nvim
+                                    :plenary.nvim
+                                    :nvim-lspconfig
+                                    ;; :nvim-nio
+                                    ;; :nvim-dap
+                                    ;; :lspsaga.nvim
+                                    ;; :null-ls.nvim
+                                    ;; :mason-null-ls.nvim
+                                    ;; :nvim-cmp
+                                    ;; :refactoring.nvim
+                                    ;; :which-key.nvim
+                                    :harpoon
+                                    :mini.files
+                                    ;; :rainbow-delimiters.nvim
+                                    ;; :todo-comments.nvim
+                                    ;; :zk-vim
+                                    ])
                 settings ;; additional settings for Lua
                 {:runtime {:version :LuaJIT}
                  :diagnostics {:unusedLocalExclude ["_*"]
@@ -194,6 +191,7 @@
                                      (. 1))}))
   (lsp-zero.setup))
 
+;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
        {1 :neovim/nvim-lspconfig
@@ -235,5 +233,28 @@
                                          :info "»"}
                             :sign-chars {:error :E :warn :W :hint :H :info :I}}}
         : config})
+
+;;; UTILITY FUNCTIONS
+(tc param names "string[]" return "string[]")
+(λ lazy-get-plugin-paths [names]
+  {:author :uga-rosa-at-zenn-dev}
+  (let [{: plugins} (require :lazy.core.config)
+        paths []]
+    (each [_ name (ipairs names)]
+      (let [plugin (. plugins name)]
+        (if plugin
+            (table.insert paths (.. plugin.dir :/lua))
+            (vim.notify (.. "Invalid plugin name: " name)))))
+    paths))
+
+(tc param plugins "string[]" return "string[]")
+(λ F.library [plugins]
+  (let [paths (lazy-get-plugin-paths plugins)
+        make-libraries #(icollect [_ l (ipairs [$...])]
+                          (.. "${3rd}/" l :/library))]
+    (each [_ path (ipairs [(.. vim.env.VIMRUNTIME :/lua)
+                           (unpack (make-libraries :luv :busted :luassert))])]
+      (table.insert paths path))
+    paths))
 
 P
