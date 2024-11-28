@@ -46,9 +46,10 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) (a tiny
   plugin to enhance Neovim's native comments; for example, it supports
   different comment strings for different Treesitter node types) 
-- Mason-boosted LSP & CMP ([zero](https://github.com/VonHeikemen/lsp-zero.nvim)
-  helped!). [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) is
+- Mason-boosted LSP & CMP setup.
+  [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) is
   used for additional formatters, diagnostic tools & for spellchecking.
+  (I would switch to `none-ls` later if there are improvemen are)
   Standard keybindings:
   - for completion:
     - `<C-space>`     : force to start
@@ -82,9 +83,11 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
       quotes/brackets manipulation;
     - [vim-exchange](https://github.com/tommcdo/vim-exchange) easy text
       exchange operator
+    - [paredit](https://github.com/kovisoft/paredit) is enabled for all
+      Lisp code (including the Treesitter Query Editor)
+    - [which-key](https://github.com/folke/which-key.nvim) as a key bindings'
+      sticker
     - **Work in progress**:
-      - [paredit](https://github.com/kovisoft/paredit) is enabled for all
-        Lisp code
       - TODO: try other paredit/parinfer solution for Lisp; a Emacs puni-like
         plugin for NeoVim with Treesitter support and the following current
         [paredit](https://github.com/kovisoft/paredit) tricks would be neat:
@@ -110,7 +113,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 
 NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from
-VimScript to Lua.
+VimScript to Lua/Fennel.
 
 ## Zsh (my shell)
 

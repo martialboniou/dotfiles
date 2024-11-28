@@ -123,6 +123,9 @@ Plugins and new keybindings
 - (**MINOR BUG**): the [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
   plugin (used to highlight the parentheses) stops when you format
   (with `<leader>f`); edit new content will fix this issue
+- [Which Key](https://github.com/folke/which-key.nvim) is installed;
+  it can be deactivated by commenting the related code in the file
+  `./fnl/hondana-dev/plugins/init.fnl`
 
 ### About Netrw
 
@@ -226,11 +229,11 @@ insert
     - `<C-p>` : previous completion
     - `<C-n>` : next completion
     - `<C-Space>` : complete
-    - `<C-f>` : snippet forward selection (default by LSP Zero; navigate thru tmux sessions in normal mode)
-    - `<C-b>` : snippet backward selection (default by LSP Zero; unbind `<C-b>` for `tmux`;
+    - `<C-f>` : snippet forward selection (navigate thru tmux sessions in normal mode)
+    - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
       don't use `<C-a>` either because you lose the cursor navigation (start of line);
       `F5`/`fn a` is my current choice for `tmux`)
-    - other keys (imposed by vim and added by LSP Zero)
+    - other keys (common in any Vim setup)
       - `<C-e>` : cancel the completion
       - `<C-u>`/`<C-d>` : scroll the document up/down
    - in LSP buffer only (normal mode except when said otherwise)
@@ -356,8 +359,8 @@ reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchm
 Use `:LspStart` to force the LSP launch in the current buffer (say, a *scratch* buffer).
 
 This following technical note naively shows the dependencies and setup of the
-lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (without LSP Zero) in
-the current NeoVim setup:
+lazy loading of `nvim-lspconfig`, `nvim-cmp` & `null-ls` (might be replaced by
+`none-ls` at some point) in the current NeoVim setup:
 
 ```markdown
 - LSP
@@ -380,7 +383,6 @@ the current NeoVim setup:
           - `default_capabilities(vim.lsp.protocol.make_client_capabilities())` 
         - mason-lspconfig
           - `setup({ ensure_installed = ... })`
-          - `setup_handlers({ function(server_name) ... end })`
         - lspconfig
 - Autocompletion (CMP)
   - hrsh7th/nvim-cmp
