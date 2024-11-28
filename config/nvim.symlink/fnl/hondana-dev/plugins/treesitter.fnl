@@ -16,40 +16,41 @@
 ;;; KEYS
 (tc type "table<string, string>")
 ;; Usage: `vim` => visual selection of the inner method/function
-(local keymaps {;; classes
-                :ac "@class.outer"
-                :ic "@class.inner"
-                ;; INFO: idea from Josean Martinez
-                ;;
-                ;; BEWARE: methods/functions (m, not f)
-                :am "@function.outer"
-                :im "@function.inner"
-                ;; function calls
-                :af "@call.outer"
-                :if "@call.inner"
-                ;; args
-                :aa "@parameter.outer"
-                :ia "@parameter.inner"
-                ;; ifs
-                :ai "@conditional.outer"
-                :ii "@conditional.inner"
-                ;; loops
-                :al "@loop.outer"
-                :il "@loop.inner"
-                ;; =s (technically :=)
-                :a= "@assignment.outer"
-                :i= "@assignment.outer"
-                ;; lhs/rhs of =s
-                :l= "@assignment.lhs"
-                :r= "@assignment.rhs"
-                ;; scopes
-                :as {:query "@scope" :query_group :locals}})
+(local keymaps ;;
+       {;; classes
+        :ac "@class.outer"
+        :ic "@class.inner"
+        ;; INFO: idea from Josean Martinez
+        ;;
+        ;; BEWARE: methods/functions (m, not f)
+        :am "@function.outer"
+        :im "@function.inner"
+        ;; function calls
+        :af "@call.outer"
+        :if "@call.inner"
+        ;; args
+        :aa "@parameter.outer"
+        :ia "@parameter.inner"
+        ;; ifs
+        :ai "@conditional.outer"
+        :ii "@conditional.inner"
+        ;; loops
+        :al "@loop.outer"
+        :il "@loop.inner"
+        ;; =s (technically :=)
+        :a= "@assignment.outer"
+        :i= "@assignment.outer"
+        ;; lhs/rhs of =s
+        :l= "@assignment.lhs"
+        :r= "@assignment.rhs"
+        ;; scopes
+        :as {:query "@scope" :query_group :locals}})
 
 (tc type "table<string, string>")
-;; HACK: written as a string concat to prevent `fnlfmt` to turn them into symbols
-(local selection_modes {(.. "@" :parameter.outer) :v
-                        (.. "@" :function.outer) :V
-                        (.. "@" :class.outer) :<C-v>})
+;; NOTE: use a recent `fnlfmt`, otherwise `"@<any>"` can be rewritten as an illegal
+;;       form `:@<any>`
+(local selection_modes ;;
+       {"@parameter.outer" :v "@function.outer" :V "@class.outer" :<C-v>})
 
 ;;; PLUGINS & SETUP
 (tc type LazySpec)

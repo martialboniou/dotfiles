@@ -441,9 +441,9 @@ yours.
 If you want to edit some Fennel code, notice that:
 - the Fennel Language Server should work for diagnostics
 - the `<leader>f` keybinding for formatting (ie. `vim.lsp.buf.format()`) will
-  work if you have [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt) in your
-  `$PATH` (the snippet `;skip` prints a special comment if you want to
-  locally skip the formatting)
+  work if you have the **latest version** of
+  [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt) in your `$PATH` (the snippet
+  `;skip` prints a special comment if you want to locally skip the formatting)
 
 Here are some keybindings for the Fennel buffer (mainly to access a REPL):
 - from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin
@@ -461,7 +461,8 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
     `<C-6>` is your friend; also, don't forget to `gC`/`:FnlCompileBuffer`
     before `gO`)
   - `gB` : **B**uffer evaluation (**IMPORTANT:** it was `gE` before but it collides
-    with the Vim core mechanics and/or [paredit](https://github.com/julienvincent/nvim-paredit))
+    with the Vim core mechanics and/or
+    [paredit](https://github.com/julienvincent/nvim-paredit))
   - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
 - from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
   evaluation is stored in a register, try `"cp`):
