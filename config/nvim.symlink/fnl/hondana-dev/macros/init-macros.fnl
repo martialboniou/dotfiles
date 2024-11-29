@@ -40,7 +40,7 @@
                     ;; without touching any `@field` or keys:
                     ;; eg. Fennel: var-name -> var_name
                     ;;     Fennel: tab.field-name -> tab["field-name"]
-                    filter-optional #($:gsub "%?([%w|_|-]+)" "_3f%1?")
+                    filter-optional #($:gsub " %?([%w-][%w-]-)([ $])" " _3f%1?%2")
                     chunk# (-> (icollect [_# token# (ipairs [...])]
                                  (let [str# (tostring token#)]
                                    (if starter#

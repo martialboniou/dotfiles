@@ -81,7 +81,7 @@
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
             :v (.. ":s///cgI" (**! :<Left> 5))}]
   (each [mode cmd (pairs cmds)]
-    (vim.keymap.set mode :<leader>s cmd {:desc "Search/Replace template"})))
+    (vim.keymap.set mode :<leader>ss cmd {:desc "Search/Replace template"})))
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)

@@ -87,10 +87,3 @@
                                  (vim.cmd "silent! normal g`\"zv"))
                     : group
                     : pattern}))
-
-;; additional rtp (temporary: not really needed, see ./plugins/telescope.fnl)
-(tc type string)
-(local fzf-macos :/opt/homebrew/opt/fzf)
-(when (= 1 (vim.fn.isdirectory fzf-macos))
-  (set+ :rtp fzf-macos)
-  (vim.keymap.set :n :<leader>tn ":FZF<CR>"))

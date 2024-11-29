@@ -12,10 +12,10 @@ NeoVim
 Pre-configuration
 -----------------
 
-Ensure `rg` is installed:
+For the best experience, ensure `rg`, `fzf` & `fd` are installed:
 
 ```sh
-brew install ripgrep
+brew install ripgrep fzf fd
 ```
 
 Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
@@ -144,7 +144,6 @@ It's great but:
   - `-` in normal mode : open folder directory in `oil.nvim` (like `vim-vinegar`)
   - `<leader><leader>`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
   - it **BREAKS** Netrw
-- Telescope is good enough and faster than FZF
 - `:Ex` is still available
 
 ### Example of workflow
@@ -166,9 +165,6 @@ It's great but:
 - `<leader>a` : tag the module in Harpoon 2 (second)
 - `<leader>e` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
-- (deprecated) `<leader>tn` : `FZF` (check [Telescope](https://github.com/nvim-telescope/telescope.nvim)
-  for a smoother *fuzzy finder* experience for NeoVim; you will find some key bindings in the
-  [next](#cheat-sheet) section)
 
 ### Cheat sheet
 
@@ -190,19 +186,20 @@ insert
   playground is a part of NeoVim now)
   - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch window to edit
     the Treesitter queries in Scheme (the `:EditQuery` command does it too)
-- **IMPORTANT!**: `<leader>s`` : create a template to replace the *current word*
-  (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation**
-- `<leader>s` (in visual) : create a template to replace a *pattern
+- **IMPORTANT!**: `<leader>ss`` : create a template to replace the *current word*
+  (*memo*: `s` as in `:%s`; `<leader>s` is also the root key for Telescope); type
+  `a` (for `all`) to skip the **confirmation**
+- `<leader>ss` (in visual) : create a template to replace a *pattern
   in the selection*; same confirmation option as above
 - `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*)
-- `<leader>pf` : telescope find files (*memo*: project files)
-- `<leader>ps` : telescope project search (`rg`!)
-- `<leader>vh` : telescope view helptags
-- `<leader>vv` : telescope recent files (*memo*: view viewed/view visited);
+- `<leader>pf` : Telescope find files (*memo*: project files)
+- `<leader>ps` : Telescope project search (`rg`!)
+- `<leader>vh` : Telescope view helptags
+- `<leader>vv` : Telescope recent files (*memo*: view viewed/view visited);
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
-- `<leader>vb`/`<leader>bb` : telescope buffers (*memo*: view buffers); **doesn't show
+- `<leader>vb`/`<leader>bb` : Telescope buffers (*memo*: view buffers); **doesn't show
   the current one**; not in the ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
@@ -214,7 +211,7 @@ insert
 - `<leader>j`/`<leader>k` : quickfix local navigation (ie `lnext`/`lprev`; inverted from ThePrimeagen's)
 - `<C-j>`/`<C-k>` : quickfix navigation (ie `cnext`/`cprev`; inverted from ThePrimeagen's;
   more natural; same order as in quickfix/**Trouble**)
-- **IMPORTANT (normal mode)**: `<C-p>` : telescope git files (*memo*: control project)
+- **IMPORTANT (normal mode)**: `<C-p>` : Telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
 - **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
@@ -282,6 +279,16 @@ insert
     - `]M`       : *next* end *outer* method/function
     - `]A`       : *next* end *inner* argument/parameter
     - for any previous *moves*, replace the first `]` by `[` for the *previous* version
+- Other Telescope keybindings:
+  - `<leader>/`  : Telescope search word (**MOST IMPORTANT**)
+  - `<leader>sr` : Telescope **resume selections from the previous picker**
+  - `<leader>sd` : Telescope **diagnostic**
+  - `<leader>sk` : Telescope search **keymaps**
+  - `<leader>s/` : Telescope **live grep** in open files
+  - `<leader>sn` : Telescope find files amongst **NeoVim configuration files**
+  - `<leader>sb` : Telescope builtin selector
+  - `<leader>sw` : Telescope search word (may be deprecated)
+  - `<leader>sg` : Telescope live grep
 - Primeagen's refactoring plugin (inspired by Martin Fowler):
   - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
     by default):
@@ -294,6 +301,7 @@ insert
     - `<leader>rb` (**only in normal mode**) : extract block
     - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
       to a file
+    - `<leader>rt` : select the *refactor* via Telescope
 - [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
   - `<leader>z`-based
     [keybindings](https://github.com/zk-org/zk-nvim/blob/main/README.md#example-mappings)

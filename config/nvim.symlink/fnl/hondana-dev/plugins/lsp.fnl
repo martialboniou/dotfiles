@@ -41,6 +41,7 @@
                     :<leader>vrn ["LSP Rename" vim.lsp.buf.rename]
                     ;;; ! for ergonomics: <leader> + ca = vca, rr = vrr, nn, vrn
                     :<leader>ca ["LSP Code actions" vim.lsp.buf.code_action]
+                    ;; NOTE: `<leader>r` is the starting key for `hondana-dev.plugins.refactoring`
                     :<leader>rr ["LSP References" vim.lsp.buf.references]
                     :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
                 :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
