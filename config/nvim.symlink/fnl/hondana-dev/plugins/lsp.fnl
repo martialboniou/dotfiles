@@ -73,122 +73,144 @@
 
 ;;; SERVERS FOR MASON-LSPCONFIG
 (tc type "string[]")
-(local ensure_installed ;; don't change the const name (check PLUGINS section)
-       [:ts_ls
-        :rust_analyzer
-        :clangd
-        :html
-        :lua_ls
-        :jsonls
-        :tailwindcss
-        :dockerls
-        :docker_compose_language_service
-        :astro
-        :marksman
-        :vimls
-        :cssls
-        :ocamllsp
-        :gopls
-        ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
-        ;; fennel_ls is hard to setup but it looks promising
-        ])
+(local servers {;;; LSP SERVERS
+                :ts_ls {}
+                :clangd {:cmd [(let [local-clangd (.. llvm-local-binary-path
+                                                      :/clangd)]
+                                 (if (-> local-clangd (vim.fn.executable) (= 1))
+                                     local-clangd
+                                     :clangd))]
+                         :on_attach #(do
+                                       ;; disable formattings (see hondana-dev.plugins.null-ls)
+                                       (set $.server_capabilities.documentFormattingProvider
+                                            false)
+                                       (set $.server_capabilities.documentRangeFormattingProvider
+                                            false)
+                                       ;; disable semantics if not allowed
+                                       (when (not allow-clangd-semantics)
+                                         (set $.server_capabilities.semanticTokensProvider
+                                              false)))
+                         :capabilities {:offsetEncoding [:utf-16]
+                                        :general.positionEncodings [:utf-16]}}
+                :lua_ls {;; TODO: try folke/lazydev.nvim for a smoother setup
+                         :settings {:Lua {}}
+                         :on_init ;;
+                         (fn [client]
+                                    ;; WARN: don't put a `.luarc.json` in $HOME
+                                    (when client.workspace_folders
+                                      (let [path (. client.workspace_folders 1
+                                                    :name)
+                                            checkfile (fn [...]
+                                                        (vim.uv.fs_stat ...))
+                                            json (.. path :/.luarc.json)]
+                                        (when (or (checkfile json)
+                                                  (checkfile (.. json :c)))
+                                          (lua :return))))
+                                    (let [library (F.library [:lazy.nvim
+                                                              :nvim-treesitter
+                                                              ;; :ts-comments.nvim
+                                                              :plenary.nvim
+                                                              :nvim-lspconfig
+                                                              ;; :nvim-nio
+                                                              ;; :nvim-dap
+                                                              ;; :lspsaga.nvim
+                                                              ;; :null-ls.nvim
+                                                              ;; :nvim-cmp
+                                                              ;; :refactoring.nvim
+                                                              ;; :which-key.nvim
+                                                              :harpoon
+                                                              :mini.files
+                                                              ;; :rainbow-delimiters.nvim
+                                                              ;; :todo-comments.nvim
+                                                              ;; :zk-vim
+                                                              ])
+                                          ;; only set the libraries you need for diagnostics
+                                          ;; to avoid `(vim.api.nvim_list_runtime_paths)`
+                                          settings ;; additional settings for Lua
+                                          {:runtime {:version :LuaJIT}
+                                           :diagnostics {:unusedLocalExclude ["_*"]
+                                                         :disable [:unused-vararg
+                                                                   :deprecated]
+                                                         :globals [:vim :love]}
+                                           :workspace {:checkThirdParty :false
+                                                       : library}}]
+                                      (set client.config.settings.Lua
+                                           (vim.tbl_deep_extend :force
+                                                                client.config.settings.Lua
+                                                                settings))))}
+                :rust_analyzer {}
+                :html {}
+                :jsonls {}
+                :tailwindcss {}
+                :dockerls {}
+                :docker_compose_language_service {}
+                :astro {}
+                :marksman {}
+                :vimls {}
+                :cssls {}
+                :ocamllsp {}
+                :gopls {}
+                ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
+                ;; fennel_ls is hard to setup but it looks promising
+                })
 
-;;; SETUP FOR LSPCONFIG
+;;; MASON'S FULL INSTALL LIST
+(tc type "string[]")
+(local ensure_installed (or (vim.tbl_keys servers) []))
+(vim.list_extend ensure_installed [:stylua
+                                   :jq
+                                   ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+                                   :taplo
+                                   :ocamlformat
+                                   :clang-format
+                                   :awk-language-server
+                                   :markdownlint-cli2
+                                   :markdown-toc
+                                   :gofumpt
+                                   ;; :goimports_reviser
+                                   :golines])
+
+;;; SETUP FOR LSPCONFIG & MASON
 (tc type "fun(self:LazyPlugin, opts:table): nil")
 (fn config [_ opts]
   ;; additional settings for diagnostic
   (vim.diagnostic.config opts.diagnostics)
-  (local {:util {: root_pattern} : clangd : lua_ls : fennel_ls : zls}
+  (local {:util {: root_pattern} : fennel_ls : zls}
          (require :lspconfig))
-  (var {:util {:default_config {: capabilities}}} (require :lspconfig))
+  (var capabilities (vim.lsp.protocol.make_client_capabilities))
   ;; WARN: set this first
-  (let [{:default_capabilities defaults} (require :cmp_nvim_lsp)]
-    (set capabilities (vim.tbl_deep_extend :force capabilities (defaults))))
+  (local {:default_capabilities defaults} (require :cmp_nvim_lsp))
+  (set capabilities (vim.tbl_deep_extend :force capabilities (defaults)))
+  ;; mason+mason-lspconfig part - begin
+  (let [mason (require :mason)
+        lspconfig (require :lspconfig)
+        {: setup} (require :mason-tool-installer)
+        {:setup lsp-setup} (require :mason-lspconfig)]
+    (mason.setup)
+    (setup {: ensure_installed})
+    (local handlers {1 (fn [server-name]
+                         (let [server (or (. servers server-name) {})]
+                           (set server.capabilities
+                                (vim.tbl_deep_extend :force {} capabilities
+                                                     (or server.capabilities {})))
+                           (-> lspconfig (. server-name) (. :setup)
+                               (#($ server)))))})
+    (lsp-setup {: handlers}))
+  ;; mason+mason-lspconfig part - end
   (let [callback (fn [event]
                    (let [fs (keymap-set-fns)]
                      (for [i 1 (length fs)]
                        (let [f (. fs i)]
                          (f event.buf)))))]
     (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback}))
-  ;;
-  ;; * Clang setup *
-  ;; check if there's a clangd in your llvm-local-binary-path
-  (let [local-clangd (.. llvm-local-binary-path :/clangd) ; unused now
-        capabilities (vim.lsp.protocol.make_client_capabilities)
-        on_attach #(do
-                     ;; disable formattings (see hondana-dev.plugins.null-ls)
-                     ;; FIXME: broken with the newest LSP?
-                     (set $.server_capabilities.documentFormattingProvider
-                          false)
-                     (set $.server_capabilities.documentRangeFormattingProvider
-                          false)
-                     ;; disable semantics if not allowed
-                     (when (not allow-clangd-semantics)
-                       (set $.server_capabilities.semanticTokensProvider false)))]
-    ;; NOTE: null-ls will do the clang-format with extra args
-    (lua "---@diagnostic disable-next-line")
-    (set capabilities.offsetEncoding [:utf-16])
-    (set capabilities.general.positionEncodings [:utf-16])
-    (clangd.setup {:cmd [(if (-> local-clangd
-                                 (vim.fn.executable)
-                                 (= 1))
-                             local-clangd
-                             :clangd)]
-                   : on_attach
-                   : capabilities}))
-  ;;
-  ;; * Zig setup *
+  ;; NON-MASON LANGUAGE SERVERS
+  ;; * Zig *
   ;; NOTE: I need the zls that fits zig's version
   (when (-> :zls (vim.fn.executable) (= 1))
     (zls.setup {:cmd [:zls]
                 :filetypes [:zig]
                 :root_dir (root_pattern :build.zig :.git)}))
-  ;;
-  ;; * Lua setup *
-  ;; TODO: try folke/lazydev.nvim for a smoother setup
-  (let [on_init ;;
-        (fn [client]
-          ;; WARN: don't put a `.luarc.json` in $HOME
-          (when client.workspace_folders
-            (let [path (. client.workspace_folders 1 :name)
-                  checkfile (fn [...]
-                              (vim.uv.fs_stat ...))
-                  json (.. path :/.luarc.json)]
-              (when (or (checkfile json) (checkfile (.. json :c)))
-                (lua :return))))
-          (let [;; only set the libraries you need for diagnostics
-                ;; to avoid `(vim.api.nvim_list_runtime_paths)`
-                library (F.library [:lazy.nvim
-                                    :nvim-treesitter
-                                    ;; :ts-comments.nvim
-                                    :plenary.nvim
-                                    :nvim-lspconfig
-                                    ;; :nvim-nio
-                                    ;; :nvim-dap
-                                    ;; :lspsaga.nvim
-                                    ;; :null-ls.nvim
-                                    ;; :mason-null-ls.nvim
-                                    ;; :nvim-cmp
-                                    ;; :refactoring.nvim
-                                    ;; :which-key.nvim
-                                    :harpoon
-                                    :mini.files
-                                    ;; :rainbow-delimiters.nvim
-                                    ;; :todo-comments.nvim
-                                    ;; :zk-vim
-                                    ])
-                settings ;; additional settings for Lua
-                {:runtime {:version :LuaJIT}
-                 :diagnostics {:unusedLocalExclude ["_*"]
-                               :disable [:unused-vararg :deprecated]
-                               :globals [:vim :love]}
-                 :workspace {:checkThirdParty :false : library}}]
-            (set client.config.settings.Lua
-                 (vim.tbl_deep_extend :force client.config.settings.Lua
-                                      settings))))]
-    (lua_ls.setup {: on_init :settings {:Lua {}}}))
-  ;;
-  ;; * Fennel setup *
+  ;; * Fennel *
   ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
   ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
   (when (-> :fennel-ls (vim.fn.executable) (= 1))
@@ -205,38 +227,33 @@
 ;;; PLUGINS (incl. MASON-LSPCONFIG SETUP)
 (tc type LazySpec)
 (local P ;;
-       {1 :neovim/nvim-lspconfig
-        ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
-        :event :BufReadPost
-        :cmd :LspStart
-        :dependencies [;; telescope.builtin will be used to integrate LSP functions to Telescope
-                       :nvim-telescope/telescope.nvim
-                       {1 :williamboman/mason.nvim
-                        ;; check hondana-dev.plugins.null-ls about the other Mason packages
-                        :opts {}
-                        :cmd :Mason
-                        :run ":MasonUpdate"}
-                       {1 :williamboman/mason-lspconfig.nvim
-                        :config #(let [{:setup mason-setup} (require :mason)
-                                       {: setup} (require :mason-lspconfig)]
-                                   (mason-setup)
-                                   (setup {: ensure_installed}))}
-                       ;; see Autocompletion
-                       :hrsh7th/nvim-cmp
-                       ;; optional/highlight same word -> LSP support
-                       :rrethy/vim-illuminate
-                       {;; optional/fancy navbar with LSP (+ other tools)
-                        1 :glepnir/lspsaga.nvim
-                        :dependencies [:nvim-tree/nvim-web-devicons
-                                       :nvim-treesitter/nvim-treesitter]
-                        :event :LspAttach
-                        :opts {:code_action {:show_server_name true
-                                             :extend_gitsigns false}
-                               :lightbulb {:enable false}
-                               :diagnostic {:on_insert false
-                                            :on_insert_follow false}
-                               :rename {:in_select false}}}]
-        : config})
+       [{1 :williamboman/mason.nvim :config true}
+        ;; the mason/mason-lspconfig setup is also done by the local function
+        ;; `config` above
+        :williamboman/mason-lspconfig.nvim
+        :WhoIsSethDaniel/mason-tool-installer.nvim
+        {1 :neovim/nvim-lspconfig
+         ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
+         :event :BufReadPost
+         :cmd :LspStart
+         :dependencies [;; telescope.builtin will be used to integrate LSP functions to Telescope
+                        :nvim-telescope/telescope.nvim
+                        ;; see `hondana-dev.plugins.completion`
+                        :hrsh7th/nvim-cmp
+                        ;; optional/highlight same word -> LSP support
+                        :rrethy/vim-illuminate
+                        {;; optional/fancy navbar with LSP (+ other tools)
+                         1 :glepnir/lspsaga.nvim
+                         :dependencies [:nvim-tree/nvim-web-devicons
+                                        :nvim-treesitter/nvim-treesitter]
+                         :event :LspAttach
+                         :opts {:code_action {:show_server_name true
+                                              :extend_gitsigns false}
+                                :lightbulb {:enable false}
+                                :diagnostic {:on_insert false
+                                             :on_insert_follow false}
+                                :rename {:in_select false}}}]
+         : config}])
 
 ;;; UTILITY FUNCTIONS
 (tc param names "string[]" return "string[]")

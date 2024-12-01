@@ -5,18 +5,19 @@
 ;; same as mason.setup.ensure_installed
 (tc type "string[]")
 (local mason-null-ls-preferred-install
-       [:stylua
-        :jq
-        ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
-        :taplo
-        :ocamlformat
-        :clang-format
-        :awk-language-server
-        :markdownlint-cli2
-        :markdown-toc
-        :gofumpt
-        :goimports_reviser
-        :golines])
+       [;; :stylua
+        ;; :jq
+        ;; ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+        ;; :taplo
+        ;; :ocamlformat
+        ;; :clang-format
+        ;; :awk-language-server
+        ;; :markdownlint-cli2
+        ;; :markdown-toc
+        ;; :gofumpt
+        ;; :goimports_reviser
+        ;; :golines
+        ])
 
 ;; NOTE: clangd lacks a way to customize its own clang-format (LLVM's indent width is 2; I want tabstop)
 (tc type number)
