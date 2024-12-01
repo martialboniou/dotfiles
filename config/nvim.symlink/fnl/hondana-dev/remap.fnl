@@ -2,15 +2,24 @@
 (import-macros {: g!} :hibiscus.vim)
 (import-macros {: **!} :hondana-dev.macros)
 
+(macro ex-map! [...]
+  (let [t# [...]]
+    (local out# ;;
+           (icollect [_ v# (ipairs t#)]
+             `(vim.keymap.set :n ,(.. :<leader> v#) vim.cmd.Ex
+                              {:desc "Explore files"})))
+    `(do
+       ,(unpack out#))))
+
 ;; keymap for NeoVim by ThePrimeagen
 (tc type string)
 (g! :mapleader " ")
 (tc type string)
 (g! :maplocalleader ",")
 
-;; these two lines will be remapped by plugins/mini-files
-(each [_ key (ipairs [:pv :<leader>])]
-  (vim.keymap.set :n (.. :<leader> key) vim.cmd.Ex))
+;; `<leader>pf`/`<leader>pv` = `:Ex` except when `hondana-dev.plugins.mini-files` is on
+;; (so never used in the current setup)
+(ex-map! :pf :pv)
 
 ;; fast nav
 
@@ -77,7 +86,7 @@
                         :<leader>k :lprev})]
   (vim.keymap.set :n key (.. :<Cmd> navi :<CR>zz)))
 
-;; <leader>s => search-replace (in normal/visual mode) w/ confirmation
+;; <leader>ss => search-replace (in normal/visual mode) w/ confirmation
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
             :v (.. ":s///cgI" (**! :<Left> 5))}]
   (each [mode cmd (pairs cmds)]

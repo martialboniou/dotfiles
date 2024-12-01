@@ -68,6 +68,12 @@
         [:kylechui/nvim-surround
          #(let [{: setup} (require :nvim-surround)]
             (setup $2))]
+        [:echasnovski/mini.ai ;; expect overridden nvim-surround combo keys
+         #(let [{: setup} (require :mini.ai)]
+            (setup {:n_lines 500}))]
+        [:echasnovski/mini.surround
+         #(let [{: setup} (require :mini.ai)]
+            (setup $2))]
         [:opdavies/toggle-checkbox.nvim
          #(vim.keymap.set :n :<leader>tt
                           ":lua require('toggle-checkbox').toggle()<CR>")]
@@ -157,12 +163,30 @@ P
 ;  INFO: I'd like a magic tool that closes all the treesitter brackets
 ;         when we want instead of a stupid pairing tool
 
-;; NVIM-SURROUND
+;; NVIM-SURROUND (my brain is accustomed to these keybindings but this
+;; plugin might be definitively replaced by MINI.SURROUND (see below)
 ;; classic quotes/brackets manipulation; eg: cs'" => change surroundings
 ;; additional text objects; eg: ; REM ((
 ;  cin) => change inners of the parens (cursor out)
 ;  da,  => delete between commas (cursor in)
 ;  d2i) => change inners including outer parens (cursor in)
+;
+
+;; MINI.AI
+;; better around/inside textobjects (a bit like wellle/brackets.vim)
+;  va)   => visually select around parentheses
+;  yinq  => yank inside next quote
+;  ci'   => change inside quotes
+;; TODO: check for conflicts with nvim-surround
+;; NOTE: `noice.nvim` (unused) may introduce weird messages when both
+;;       plugins (nvim-surround & mini.ai) are activated
+;
+
+;; MINI.SURROUND
+;; "better" vim-surround based on the `s` keys from `machakann/vim-sandwich`
+;  saiw) => surround add inner word parentheses
+;  sd',  => surround delete single quotes
+;  sr)'  => surround replace parentheses by single quotes
 ;
 
 ;; TOGGLE-CHECKBOX

@@ -142,7 +142,7 @@ It's great but:
   - Netrw still available: `:Ex` (or open a directory `nvim .`)
 - I CANNOT switch to `oil.nvim`
   - `-` in normal mode : open folder directory in `oil.nvim` (like `vim-vinegar`)
-  - `<leader><leader>`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
+  - `<leader>pf`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
   - it **BREAKS** Netrw
 - `:Ex` is still available
 
@@ -150,12 +150,12 @@ It's great but:
 
 - (locally) `<leader>cd` : change locally the working directory
 - `<leader>a` : tag a file in harpoon 2 (first)
-- `<leader><leader>` or `<leader>pv` : project view at the current directory
+- `<leader>pf` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
   directory (root of the project AKA `:lua print(vim.uv.cwd())`)
   respectively
 - make a file, say, a module
-  - edit the current buffer from `<leader><leader>`
+  - edit the current buffer from `<leader>pf`
   - `=` to synchronize
   - (optional) otherwise: `%` if you used `:Ex`
 - `<C-h>` : back to first file
@@ -191,13 +191,14 @@ insert
   `a` (for `all`) to skip the **confirmation**
 - `<leader>ss` (in visual) : create a template to replace a *pattern
   in the selection*; same confirmation option as above
-- `<leader><leader>` : `mini.files` at current directory; or `:Ex` (faster than `<leader>pv`)
-- **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection so you can paste the same again
-- `<leader>pv` : `mini.files` at root (ie *Cwd*)
-- `<leader>pf` : Telescope find files (*memo*: project files)
+- `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but 
+  it may *proc* to easily; also *same key twice can be harmful*; *memo*: **p**roject **f**iles)
+- **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
+  so you can paste the same again
+- `<leader>pv` : `mini.files` at root (ie *Cwd*; **p**roject **v**iew)
 - `<leader>ps` : Telescope project search (`rg`!)
 - `<leader>vh` : Telescope view helptags
-- `<leader>vv` : Telescope recent files (*memo*: view viewed/view visited);
+- `<leader>vv` : Telescope recent files (*memo*: view viewed/**v**iew **v**isited);
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
 - `<leader>vb`/`<leader>bb` : Telescope buffers (*memo*: view buffers); **doesn't show
   the current one**; not in the ThePrimeagen setup
@@ -282,6 +283,7 @@ insert
 - Other Telescope keybindings:
   - `<leader>/`  : Telescope search word (**MOST IMPORTANT**)
   - `<leader>sr` : Telescope **resume selections from the previous picker**
+  - `<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup)
   - `<leader>sd` : Telescope **diagnostic**
   - `<leader>sk` : Telescope search **keymaps**
   - `<leader>s/` : Telescope **live grep** in open files

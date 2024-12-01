@@ -5,26 +5,32 @@
 (tc type "integer,integer")
 (local (width-focus width-preview) (values 30 30))
 
-(λ minifiles-open-at-location-or-root []
+(tc param ?skip boolean "true to switch to go to `cwd`")
+(λ minifiles-open-at-location-or-root [?skip]
   (let [{: open : close : get_explorer_state} (require :mini.files)]
     (if (not= nil (get_explorer_state))
         (close) ; close if already open
-        (let [buf (vim.api.nvim_buf_get_name 0)
-              (ok _) (pcall open buf true)]
-          (when (not ok) ; not created yet?
-            (print "Mini.files cannot open the current directory; open cwd instead")
-            ;; open at the root of the project instead
-            (open (vim.uv.cwd) true))))))
+        (do
+          (when (not ?skip)
+            (let [buf (vim.api.nvim_buf_get_name 0)
+                      (ok _) (pcall open buf true)]
+              (when ok (lua "return"))))
+          (when (not ?skip)
+            ;; something went wrong!
+            (vim.notify "Mini.files cannot open the current directory; open cwd instead"
+                        vim.log.levels.INFO))
+          ;; open at the root of the project if skipped or buffer has no path
+          (open (vim.uv.cwd) true)))))
 
 (tc type LazySpec)
 (local P {1 :echasnovski/mini.files
-          :keys [{1 :<leader><leader>
+          :keys [{1 :<leader>pf
                   ;; open/close at the current file location if possible
-                  2 #(minifiles-open-at-location-or-root)
+                  2 minifiles-open-at-location-or-root
                   :desc "Open mini.files (directory of the current file)"}
                  {1 :<leader>pv
-                  2 #(let [{: open} (require :mini.files)]
-                       (open (vim.uv.cwd) true))
+                  ;; open/close at the current working directory
+                  2 #(minifiles-open-at-location-or-root true)
                   :desc "Open mini.files (cwd)"}]
           :opts {:mappings {:reveal_cwd "@"}
                  :options {:use_as_default_explorer true}

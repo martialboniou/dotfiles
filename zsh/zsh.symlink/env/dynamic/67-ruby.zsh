@@ -32,3 +32,6 @@ _chruby_post_install () {
 }
 
 unfunction install_ruby_source
+
+# TEMPORARY
+export PATH="/opt/homebrew/opt/ruby@3.2/bin:$PATH"

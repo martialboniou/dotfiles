@@ -1,6 +1,6 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: or=} :hibiscus.core)
-(import-macros {: set! : set+ : setlocal! : g! : concat!} :hibiscus.vim)
+(import-macros {: set! : set+ : setlocal! : g!} :hibiscus.vim)
 (import-macros {: set!!} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
@@ -27,11 +27,15 @@
 ;; specific settings
 (vim.opt.isfname:append "@-@")
 (let [map {:guicursor ""
-           :undodir (concat! "/" (os.getenv :HOME) :.vim :undodir)
+           :undodir (-> [(os.getenv :HOME) :.vim :undodir] (table.concat "/"))
            :scrolloff 8
            :colorcolumn :100
            :signcolumn :yes
-           :updatetime 50}]
+           :updatetime 50
+           :timeoutlen 300
+           :list true
+           :listchars {:tab "» " :trail "·" :nbsp "␣"}
+           :inccommand :split}]
   (each [k v (pairs map)] (set! k v)))
 
 ;; these default keys may be remapped in `hondana-dev.remap`

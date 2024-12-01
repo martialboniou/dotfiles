@@ -22,6 +22,11 @@
                                                  ":Git push -u origin " options))]
                  (vim.api.nvim_create_autocmd :FileType
                                               {: callback : group : pattern}))
-        :keys [{1 :<leader>gs 2 vim.cmd.Git :desc "Open fuGITive status"}]})
+        :keys [{1 :<leader>gs
+                2 #(let [(ok _) (pcall vim.cmd.Git)]
+                     (when (not ok)
+                       (vim.notify "This file does not belong to a Git repository"
+                                   vim.log.levels.WARN)))
+                :desc "Open fuGITive status"}]})
 
 P
