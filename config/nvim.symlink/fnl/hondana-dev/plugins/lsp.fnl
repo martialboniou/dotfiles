@@ -1,7 +1,7 @@
 ;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
 ;;; 2024-11-28
-(import-macros {: tc} :hondana-dev.macros)
+(import-macros {: tc : funcall!} :hondana-dev.macros)
 
 ;; F = utility functions at the end of this module
 (local F {})
@@ -29,20 +29,38 @@
 ;; NOTE: function instead of a local variable to ensure the last annotation is well-set
 (fn keymap-set-fns []
   (custom-keys {:n {:<leader>f ["LSP Format" vim.lsp.buf.format]
-                    :gd ["LSP Go to definition" vim.lsp.buf.definition]
+                    ;; replaces vim.lsp.buf.definition
+                    :gd ["LSP Go to definition (via Telescope)"
+                         #(funcall! :telescope.builtin :lsp_definitions)]
+                    :gD ["LSP Go to declaration" vim.lsp.buf.declaration]
+                    :gI ["LSP Go to implementation (via Telescope)"
+                         #(funcall! :telescope.builtin :lsp_implementations)]
                     :K ["LSP Hover" vim.lsp.buf.hover]
-                    :<leader>vws ["LSP View workspace symbols"
-                                  vim.lsp.buf.workspace_symbol]
+                    ;; replaces vim.lsp.buf.workspace_symbol
+                    :<leader>vws ["LSP View workspace symbols (via Telescope)"
+                                  #(funcall! :telescope.builtin
+                                             :lsp_dynamic_workspace_symbols)]
                     :<leader>vd ["View diagnostic" vim.diagnostic.open_float]
                     "[d" ["Go to previous diagnostic" vim.diagnostic.goto_prev]
                     "]d" ["Go to next diagnostic" vim.diagnostic.goto_next]
                     :<leader>vca ["LSP Code actions" vim.lsp.buf.code_action]
-                    :<leader>vrr ["LSP References" vim.lsp.buf.references]
+                    ;; replaces vim.lsp.buf.references
+                    :<leader>vrr ["LSP References (via Telescope)"
+                                  #(funcall! :telescope.builtin :lsp_references)]
                     :<leader>vrn ["LSP Rename" vim.lsp.buf.rename]
+                    ;; replace via.lsp.buf.type_definition
+                    :<leader>vtd ["LSP View Type Definition (via Telescope)"
+                                  #(funcall! :telescope.builtin
+                                             :lsp_type_definitions)]
+                    ;; replace vim.lsp.buf.document_symbol
+                    :<leader>vds ["LSP View Document Symbol (via Telescope)"
+                                  #(funcall! :telescope.builtin
+                                             :lsp_document_symbols)]
                     ;;; ! for ergonomics: <leader> + ca = vca, rr = vrr, nn, vrn
                     :<leader>ca ["LSP Code actions" vim.lsp.buf.code_action]
                     ;; NOTE: `<leader>r` is the starting key for `hondana-dev.plugins.refactoring`
-                    :<leader>rr ["LSP References" vim.lsp.buf.references]
+                    :<leader>rr ["LSP References (via Telescope)"
+                                 #(funcall! :telescope.builtin :lsp_references)]
                     :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
                 :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
 
@@ -191,7 +209,9 @@
         ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
         :event :BufReadPost
         :cmd :LspStart
-        :dependencies [{1 :williamboman/mason.nvim
+        :dependencies [;; telescope.builtin will be used to integrate LSP functions to Telescope
+                       :nvim-telescope/telescope.nvim
+                       {1 :williamboman/mason.nvim
                         ;; check hondana-dev.plugins.null-ls about the other Mason packages
                         :opts {}
                         :cmd :Mason

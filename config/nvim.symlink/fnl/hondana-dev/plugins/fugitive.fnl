@@ -1,4 +1,7 @@
-(lua "---@type LazySpec")
+(import-macros {: tc} :hondana-dev.macros)
+(import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
+
+(tc type LazySpec)
 (local P ;;
        {1 :tpope/vim-fugitive
         :cmd :Git
@@ -22,11 +25,11 @@
                                                  ":Git push -u origin " options))]
                  (vim.api.nvim_create_autocmd :FileType
                                               {: callback : group : pattern}))
-        :keys [{1 :<leader>gs
-                2 #(let [(ok _) (pcall vim.cmd.Git)]
-                     (when (not ok)
-                       (vim.notify "This file does not belong to a Git repository"
-                                   vim.log.levels.WARN)))
-                :desc "Open fuGITive status"}]})
+        :keys (make-lazykeys! [[:gs
+                                #(let [(ok _) (pcall vim.cmd.Git)]
+                                   (when (not ok)
+                                     (vim.notify "This file does not belong to a Git repository"
+                                                 vim.log.levels.WARN)))
+                                "Open fuGITive status"]])})
 
 P

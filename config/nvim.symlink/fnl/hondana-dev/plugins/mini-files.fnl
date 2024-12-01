@@ -1,4 +1,5 @@
 (import-macros {: tc} :hondana-dev.macros)
+(import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
 (tc type string)
 (local hidden-files-toggle-key :gh)
@@ -13,7 +14,7 @@
         (do
           (when (not ?skip)
             (let [buf (vim.api.nvim_buf_get_name 0)
-                      (ok _) (pcall open buf true)]
+                  (ok _) (pcall open buf true)]
               (when ok (lua "return"))))
           (when (not ?skip)
             ;; something went wrong!
@@ -24,14 +25,12 @@
 
 (tc type LazySpec)
 (local P {1 :echasnovski/mini.files
-          :keys [{1 :<leader>pf
-                  ;; open/close at the current file location if possible
-                  2 minifiles-open-at-location-or-root
-                  :desc "Open mini.files (directory of the current file)"}
-                 {1 :<leader>pv
-                  ;; open/close at the current working directory
-                  2 #(minifiles-open-at-location-or-root true)
-                  :desc "Open mini.files (cwd)"}]
+          :keys (make-lazykeys! [[:pf
+                                  minifiles-open-at-location-or-root
+                                  "Open mini.files (directory of the current file)"]
+                                 [:pv
+                                  #(minifiles-open-at-location-or-root true)
+                                  "Open mini.files (cwd)"]])
           :opts {:mappings {:reveal_cwd "@"}
                  :options {:use_as_default_explorer true}
                  :windows {:preview true

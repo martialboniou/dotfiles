@@ -1,4 +1,5 @@
-(import-macros {: funcall!} :hondana-dev.macros)
+(import-macros {: tc : funcall!} :hondana-dev.macros)
+(import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
 (macro make-gopher-keys! [...]
   (icollect [_ t# (ipairs [...])]
@@ -6,17 +7,17 @@
       2 #(vim.cmd ,(.. "GoTagAdd " t#))
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
-(lua "---@type LazySpec")
+(tc type LazySpec)
 (local P ;; 
        [;;; GO LANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go
-         :keys [{1 :<leader>dgt
-                 2 #(funcall! :dap-go :debug_test)
-                 :desc "Debug go test"}
-                {1 :<leader>dgl
-                 2 #(funcall! :dap-go :debug_last)
-                 :desc "Debug last go test"}]
+         :keys (make-lazykeys! [[:dgt
+                                 #(funcall! :dap-go :debug_test)
+                                 "Debug go test"]
+                                [:dgl
+                                 #(funcall! :dap-go :debug_last)
+                                 "Debug last go test"]])
          :dependencies [:mfussenegger/nvim-dap]}
         {1 :olexsmir/gopher.nvim
          :ft :go

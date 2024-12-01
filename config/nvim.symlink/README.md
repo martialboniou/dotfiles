@@ -196,6 +196,7 @@ insert
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
   so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*; **p**roject **v**iew)
+- `<leader>ff>`/`<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup)
 - `<leader>ps` : Telescope project search (`rg`!)
 - `<leader>vh` : Telescope view helptags
 - `<leader>vv` : Telescope recent files (*memo*: view viewed/**v**iew **v**isited);
@@ -239,14 +240,18 @@ insert
      - `<C-h>` (insert mode) : signature (*BEWARE*: `<C-h>` switches to the
         first harpoon in **normal mode**)
      - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
-     - `gd` : goto definitions (**IMPORTANT**: jump to the file in LSP-injected files; say, like lua vim configurations)
-     - `<leader>vws` : view workspace symbol
+     - `gd` : Telescope *builtin*'s **g**oto **d**efinition (**IMPORTANT**: jump to the file in LSP-injected files; say, like lua vim configurations)
+     - `gD` : goto declaration
+     - `gI` : Telescope *builtin*'s **g**oto **I**mplementation
+     - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol
      - `<leader>vd` : view diagnostic
      - `[d` : next diagnostic
      - `]d` : previous diagnostic
+     - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
+     - `<leader>vds` : Telescope *builtin*'s **v**iew **d**ocument **s**ymbol
      - these following keybindings come with a shorter version for ergonomics:
        - `<leader>vca`/`<leader>ca` : **v**iew **c**ode **a**ction OR simply, **code action**
-       - `<leader>vrr`/`<leader>rr` : **v**iew **r**efe**r**ences OR simply, **RefeRences**
+       - `<leader>vrr`/`<leader>rr` : Telescope *builtin*'s **v**iew **r**efe**r**ences OR simply, **RefeRences**
          (*BEWARE*: `<leader>r` + another key is used by the *refactoring* plugin; see below)
        - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **new name**
 - **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
@@ -283,7 +288,6 @@ insert
 - Other Telescope keybindings:
   - `<leader>/`  : Telescope search word (**MOST IMPORTANT**)
   - `<leader>sr` : Telescope **resume selections from the previous picker**
-  - `<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup)
   - `<leader>sd` : Telescope **diagnostic**
   - `<leader>sk` : Telescope search **keymaps**
   - `<leader>s/` : Telescope **live grep** in open files

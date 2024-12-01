@@ -30,8 +30,7 @@
            :lazy false
            :keys [{1 :gC
                    2 :<cmd>FnlCompileBuffer<CR>
-                   :desc "Compile into a Lua file"}
-                  [:gd :<cmd>FnlCompile<CR>]]
+                   :desc "Compile into a Lua file"}]
            ;; the setup has already been done from `.config/nvim/init.lua`
            : config}
           ;; Fennel Macros

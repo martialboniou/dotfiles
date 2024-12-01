@@ -1,6 +1,7 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
 (import-macros {: concat!} :hibiscus.vim)
 (import-macros {: tc : funcall!} :hondana-dev.macros)
+(import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
 ;; F = dap functions at the end of this module
 (local F {})
@@ -46,22 +47,22 @@
 (local P {1 :mfussenegger/nvim-dap
           :dependencies [{1 :rcarriga/nvim-dap-ui
                           :dependencies :nvim-neotest/nvim-nio
-                          :keys [{1 :<leader>dE
-                                  2 F.eval-input
-                                  :desc "DAP: evaluate input"}
-                                 {1 :<leader>dU
-                                  2 F.toggle
-                                  :desc "DAP: toggle UI"}
-                                 ;; <leader>de is available in visual too
-                                 {1 :<leader>de
-                                  2 F.eval
-                                  :mode [:n :v]
-                                  :desc "DAP: toggle UI"}]}
+                          :keys (make-lazykeys! [[:dE
+                                                  F.eval-input
+                                                  "DAP: evaluate input"]
+                                                 [:dU
+                                                  F.toggle
+                                                  "DAP: toggle UI"]
+                                                 ;; <leader>de is available in visual too
+                                                 [:de
+                                                  F.eval
+                                                  {:mode [:n :v]
+                                                   :desc "DAP: toggle UI"}]])}
                          {1 :ldelossa/nvim-dap-projects
                           ;; <leader>dN loads the local "per-project" adapter
-                          :keys [{1 :<leader>dN
-                                  2 F.search-project-config
-                                  :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}]}
+                          :keys [[:dN
+                                  F.search-project-config
+                                  "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"]]}
                          {1 :theHamsta/nvim-dap-virtual-text
                           :opts {:commented true}}
                          :nvim-telescope/telescope-dap.nvim

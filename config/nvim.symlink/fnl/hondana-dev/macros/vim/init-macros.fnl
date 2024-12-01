@@ -10,6 +10,32 @@
               (table.insert out `(set (. vim.opt ,o) ,x)))
             `(do
                ,(unpack out))))
+ :make-lazykeys! (λ [keymaps]
+                   "build a keymap table as LazyKeys; accepts a sequence of keys (thus a same function
+can share multiple keybindings)"
+                   (let [o []
+                         table? #(-> $ (type) (= :table))]
+                     (each [_ keymap (ipairs keymaps)]
+                       (assert-compile (and (sequence? keymap)
+                                            (= 3 (length keymap)))
+                                       "each element must be a table of 3"
+                                       keymap)
+                       (var keys (. keymap 1))
+                       (when (= :string (type keys)) (set keys [keys]))
+                       (assert-compile (and (table? keys) (<= 1 (length keys)))
+                                       "each key must be in a sequence" keys)
+                       (for [i 1 (length keys)]
+                         (var key (. keys i))
+                         ;; append <leader> when required
+                         (when (not (key:match "^<"))
+                           (set key (.. :<leader> key)))
+                         (let [fun (. keymap 2)
+                               opts (. keymap 3)
+                               lazykey (if (table? opts) opts {:desc opts})]
+                           (set (. lazykey 1) key)
+                           (set (. lazykey 2) fun)
+                           (table.insert o lazykey))))
+                     o))
  :tc-source (λ [directory]
               "make a Lua espace hatch for typechecking with lua-language-server by
   printing a `@source` annotation for a Neovim subdirectory"

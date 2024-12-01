@@ -1,4 +1,5 @@
 (import-macros {: tc} :hondana-dev.macros)
+
 (macro nav-file-mapping! [...]
   (local out [])
   (each [unit key (ipairs [...])]
@@ -53,7 +54,7 @@
         :branch :harpoon2
         :dependencies [:nvim-lua/plenary.nvim]
         :keys [{1 :<leader>a
-                2 #(harpoon-file-explorer)
+                2 harpoon-file-explorer
                 ;;  👍 : error if the cursor in Netrw or mini.files not on a file
                 :desc "Harpoon the current file"}
                {1 :<leader>e
