@@ -244,7 +244,7 @@ insert
      - `gD` : goto declaration
      - `gI` : Telescope *builtin*'s **g**oto **I**mplementation
      - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol
-     - `<leader>vd` : view diagnostic
+     - `<leader>vdd` : **v**iew **d**iagnostic (`<leader>vds` is for document symbols)
      - `[d` : next diagnostic
      - `]d` : previous diagnostic
      - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition

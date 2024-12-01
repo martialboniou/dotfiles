@@ -40,7 +40,7 @@
                     :<leader>vws ["LSP View workspace symbols (via Telescope)"
                                   #(funcall! :telescope.builtin
                                              :lsp_dynamic_workspace_symbols)]
-                    :<leader>vd ["View diagnostic" vim.diagnostic.open_float]
+                    :<leader>vdd ["View diagnostic" vim.diagnostic.open_float]
                     "[d" ["Go to previous diagnostic" vim.diagnostic.goto_prev]
                     "]d" ["Go to next diagnostic" vim.diagnostic.goto_next]
                     :<leader>vca ["LSP Code actions" vim.lsp.buf.code_action]
@@ -72,7 +72,7 @@
 (local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;;; SERVERS FOR MASON-LSPCONFIG
-(tc type "string[]")
+(tc type "table<string,table>")
 (local servers {;;; LSP SERVERS
                 :ts_ls {}
                 :clangd {:cmd [(let [local-clangd (.. llvm-local-binary-path
@@ -167,7 +167,7 @@
                                    :markdownlint-cli2
                                    :markdown-toc
                                    :gofumpt
-                                   ;; :goimports_reviser
+                                   :goimports-reviser
                                    :golines])
 
 ;;; SETUP FOR LSPCONFIG & MASON
@@ -175,8 +175,7 @@
 (fn config [_ opts]
   ;; additional settings for diagnostic
   (vim.diagnostic.config opts.diagnostics)
-  (local {:util {: root_pattern} : fennel_ls : zls}
-         (require :lspconfig))
+  (local {:util {: root_pattern} : fennel_ls : zls} (require :lspconfig))
   (var capabilities (vim.lsp.protocol.make_client_capabilities))
   ;; WARN: set this first
   (local {:default_capabilities defaults} (require :cmp_nvim_lsp))
