@@ -5,6 +5,9 @@
 ;; same as mason.setup.ensure_installed
 (tc type "string[]")
 (local mason-null-ls-preferred-install
+       ;; OBSOLETE
+       ;; install your own non-servers applications via `mason-lspconfig`
+       ;; check `hondana-dev.plugins.lsp`
        [;; :stylua
         ;; :jq
         ;; ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
@@ -20,11 +23,11 @@
         ])
 
 ;; NOTE: clangd lacks a way to customize its own clang-format (LLVM's indent width is 2; I want tabstop)
-(tc type number)
-(local clang-format-indent-width
-       (-> :tabstop
-           (#(. vim.opt $))
-           (: :get :value)))
+;; (tc type number)
+;; (local clang-format-indent-width
+;;        (-> :tabstop
+;;            (#(. vim.opt $))
+;;            (: :get :value)))
 
 ;; RECOMMENDED: copy `~/.config/nvim/.clang-format` at the root of your C projects
 ;; ALTERNATE: you can enable a global clang-format configuration (and thus override
@@ -38,25 +41,26 @@
 (local clang-format-global-file
        (-> :config (vim.fn.stdpath) (.. :/.clang-format) (vim.fn.expand)))
 
-(when (-> clang-format-global-file (vim.fn.filereadable) (= 0))
-  (let [file (io.open clang-format-global-file :w)
-        options ["BasedOnStyle: LLVM"
-                 "AlignArrayOfStructures: Right"
-                 "AlignConsecutiveMacros:"
-                 "  Enabled: true"
-                 "  AcrossComments: false"
-                 "  AcrossEmptyLines: true"
-                 "BreakBeforeBraces: Custom"
-                 "BraceWrapping:"
-                 ;; I prefer BraceWrappingAfterFunction for C/C++; not for Zig
-                 "  AfterFunction: true"
-                 (->> clang-format-indent-width (.. "IndentWidth: "))]]
-    (when file
-      (->> (icollect [_ line (ipairs options)] (.. line "\n"))
-           (unpack)
-           (..)
-           (file:write))
-      (file:close))))
+;; OBSOLETE: already done by `hondana-dev.plugins.formatters` for `conform.format`
+;; (when (-> clang-format-global-file (vim.fn.filereadable) (= 0))
+;;   (let [file (io.open clang-format-global-file :w)
+;;         options ["BasedOnStyle: LLVM"
+;;                  "AlignArrayOfStructures: Right"
+;;                  "AlignConsecutiveMacros:"
+;;                  "  Enabled: true"
+;;                  "  AcrossComments: false"
+;;                  "  AcrossEmptyLines: true"
+;;                  "BreakBeforeBraces: Custom"
+;;                  "BraceWrapping:"
+;;                  ;; I prefer BraceWrappingAfterFunction for C/C++; not for Zig
+;;                  "  AfterFunction: true"
+;;                  (->> clang-format-indent-width (.. "IndentWidth: "))]]
+;;     (when file
+;;       (->> (icollect [_ line (ipairs options)] (.. line "\n"))
+;;            (unpack)
+;;            (..)
+;;            (file:write))
+;;       (file:close))))
 
 ;; NOTE: ocamlformat requires a `.ocamlformat` file at the root of a dune project
 

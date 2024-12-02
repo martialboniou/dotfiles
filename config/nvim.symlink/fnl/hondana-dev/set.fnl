@@ -68,9 +68,9 @@
       {: lisp-ft?} (require :hondana-dev.utils)
       callback #(when (or ;; I'm a Common Lisp & Fennel/Lua user
                           (lisp-ft? vim.bo.ft) ;;
-                          ;; others: markdown, JS & ML family
-                          (or= vim.bo.ft :markdown :jsonc :json :javascript
-                               :typescript :haskell :ocaml))
+                          ;; others: markdown, Lua, JS & ML family
+                          (or= vim.bo.ft :markdown :lua :jsonc :json
+                               :javascript :typescript :haskell :ocaml))
                   (each [_ o (ipairs options)] (setlocal! o 2)))]
   (au :BufWinEnter {: callback : group : pattern}))
 

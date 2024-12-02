@@ -38,6 +38,11 @@
 
 ;;; * Uncategorized plugins *
 
+;; Sleuth.vim: auto-adjust `tabstop`/`shiftwidth` & `expandtab` based on the current file
+;; usage:
+;;   :Sleuth
+(table.insert P {1 :tpope/vim-sleuth :cmd [:Sleuth]})
+
 ;; Marks: marks.nvim to improve the mark navigation
 ;; memo:
 ;;   - m,  : set the next available mark

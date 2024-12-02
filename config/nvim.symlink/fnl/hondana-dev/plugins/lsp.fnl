@@ -1,6 +1,6 @@
 ;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-11-28
+;;; 2024-12-02
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
 ;; F = utility functions at the end of this module
@@ -28,7 +28,8 @@
 (tc return "table<integer, keymapSetFun>")
 ;; NOTE: function instead of a local variable to ensure the last annotation is well-set
 (fn keymap-set-fns []
-  (custom-keys {:n {:<leader>f ["LSP Format" vim.lsp.buf.format]
+  (custom-keys {:n {;; obsolete (used for null-ls; use `<leader>f` for conform instead)
+                    :<leader>o ["LSP Format" vim.lsp.buf.format]
                     ;; replaces vim.lsp.buf.definition
                     :gd ["LSP Go to definition (via Telescope)"
                          #(funcall! :telescope.builtin :lsp_definitions)]
@@ -67,9 +68,6 @@
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (tc type string)
 (local llvm-local-binary-path :/opt/homebrew/opt/llvm/bin_remove-me_)
-;; change to true if you want the clangd's overthought semantics!
-(tc type boolean)
-(local allow-clangd-semantics (-> "shitty colors" (type) (not= :string)))
 
 ;;; SERVERS FOR MASON-LSPCONFIG
 (tc type "table<string,table>")
@@ -80,16 +78,8 @@
                                  (if (-> local-clangd (vim.fn.executable) (= 1))
                                      local-clangd
                                      :clangd))]
-                         :on_attach #(do
-                                       ;; disable formattings (see hondana-dev.plugins.null-ls)
-                                       (set $.server_capabilities.documentFormattingProvider
-                                            false)
-                                       (set $.server_capabilities.documentRangeFormattingProvider
-                                            false)
-                                       ;; disable semantics if not allowed
-                                       (when (not allow-clangd-semantics)
-                                         (set $.server_capabilities.semanticTokensProvider
-                                              false)))
+                         ;; required because `conform` will do the job (was required for `null_ls` too)
+                         ;; otherwise: `warning: multiple different client offset_encodings detected...`
                          :capabilities {:offsetEncoding [:utf-16]
                                         :general.positionEncodings [:utf-16]}}
                 :lua_ls {;; TODO: try folke/lazydev.nvim for a smoother setup
