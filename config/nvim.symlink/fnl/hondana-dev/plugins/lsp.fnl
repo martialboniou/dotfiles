@@ -96,6 +96,7 @@
                                         (when (or (checkfile json)
                                                   (checkfile (.. json :c)))
                                           (lua :return))))
+                                    ;;
                                     (let [library (F.library [:lazy.nvim
                                                               :nvim-treesitter
                                                               ;; :ts-comments.nvim
@@ -131,7 +132,11 @@
                 :rust_analyzer {}
                 :html {}
                 :jsonls {}
-                :tailwindcss {}
+                ;; FIXME: error 6 in markdown (may be in other files)
+                :tailwindcss {;; missing default settings leading to an error
+                              :settings {:tailwindCSS {:hovers true
+                                                       :suggestions true
+                                                       :codeActions true}}}
                 :dockerls {}
                 :docker_compose_language_service {}
                 :astro {}
@@ -165,7 +170,6 @@
 (fn config [_ opts]
   ;; additional settings for diagnostic
   (vim.diagnostic.config opts.diagnostics)
-  (local {:util {: root_pattern} : fennel_ls : zls} (require :lspconfig))
   (var capabilities (vim.lsp.protocol.make_client_capabilities))
   ;; WARN: set this first
   (local {:default_capabilities defaults} (require :cmp_nvim_lsp))
@@ -193,6 +197,7 @@
                          (f event.buf)))))]
     (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback}))
   ;; NON-MASON LANGUAGE SERVERS
+  (local {:util {: root_pattern} : fennel_ls : zls} (require :lspconfig))
   ;; * Zig *
   ;; NOTE: I need the zls that fits zig's version
   (when (-> :zls (vim.fn.executable) (= 1))
