@@ -29,7 +29,7 @@
 ;; NOTE: function instead of a local variable to ensure the last annotation is well-set
 (fn keymap-set-fns []
   (custom-keys {:n {;; REMINDER (don't unquote)
-                    ;; :<leader>f ["Format ormat (Conform)"
+                    ;; :<leader>f ["Format buffer (Conform)"
                     ;;             (. (require :conform) :format
                     ;;                {:async true :lsp_format :fallback})]
                     ;; replaces vim.lsp.buf.definition
@@ -107,7 +107,10 @@
                                                               ;; :nvim-nio
                                                               ;; :nvim-dap
                                                               ;; :lspsaga.nvim
-                                                              ;; :null-ls.nvim
+                                                              :mason
+                                                              :mason-lspconfig
+                                                              :conform
+                                                              :nvim-lint
                                                               ;; :nvim-cmp
                                                               ;; :refactoring.nvim
                                                               ;; :which-key.nvim
@@ -231,7 +234,7 @@
                          (f event.buf)))))]
     (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback})))
 
-;;; PLUGINS (incl. MASON-LSPCONFIG SETUP)
+;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
        [{1 :williamboman/mason.nvim :config true}
@@ -280,8 +283,15 @@
   (let [paths (lazy-get-plugin-paths plugins)
         make-libraries #(icollect [_ l (ipairs [$...])]
                           (.. "${3rd}/" l :/library))]
-    (each [_ path (ipairs [(.. vim.env.VIMRUNTIME :/lua)
-                           (unpack (make-libraries :luv :busted :luassert))])]
+    ;; no need `(.. vim.env.VIMRUNTIME :/lua)` since 0.10
+    (local addons (make-libraries :luv :busted :luassert))
+    ;; HACK: luvit (unsure if good strat)
+    (let [{:options {: root}} (require :lazy.core.config)
+          luvit-path (-> root (#[$ :luvit-meta :library]) (table.concat "/"))]
+      (when (vim.uv.fs_stat luvit-path)
+        (table.insert paths luvit-path)))
+    ;; 3rd addons
+    (each [_ path (ipairs addons)]
       (table.insert paths path))
     paths))
 

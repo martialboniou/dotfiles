@@ -89,4 +89,7 @@
                          :desc "Paredit killing forward splice"}))})
      (table.insert P))
 
+;; Luvit-Meta: collects meta type definitions for Luvit
+(table.insert P {1 :Bilal2453/luvit-meta :lazy true})
+
 P

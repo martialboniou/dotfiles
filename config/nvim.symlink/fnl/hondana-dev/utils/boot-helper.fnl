@@ -9,7 +9,8 @@
   (let [env (require :tangerine.utils.env)
         version (or (env.get :compiler :version) :latest)
         root (if ?src-directory ?src-directory
-                 (.. (vim.fn.stdpath :data) :/lazy))
+                 (let [c (require :lazy.core.config)]
+                   c.options.root))
         tangerine-path (.. root :/tangerine.nvim/lua/?.lua)
         ;; FIX: fennel-ls: unknown-module-field: false
         get-file #(package.searchpath $ tangerine-path)

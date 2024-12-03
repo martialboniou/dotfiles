@@ -1,4 +1,5 @@
--- the new version of this NeoVim configuration requires fennel
+-- this NeoVim configuration is written in Fennel
+-- the plugin `tangerine.nvim` will take care of the compilation
 ---@type string|string[]
 local nvim_dir = vim.fn.stdpath([[config]])
 
@@ -7,6 +8,7 @@ local function bootstrap(url)
     local name = url:gsub(".*/", "")
     local path = vim.fn.stdpath("data") .. "/lazy/" .. name
 
+    ---@diagnostic disable-next-line: undefined-field
     vim.opt.rtp:prepend(path)
 
     if vim.fn.isdirectory(path) == 0 then

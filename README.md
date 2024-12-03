@@ -29,6 +29,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 - Minimal configuration written in [Fennel](https://fennel-lang.org)
   (keybindings are made for dvorak keyboards)
 - `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope)
+- having `fzf` & `fd` is highly recommended
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
   a colorscheme only; everything loads when needed)
 - [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) (enable the
@@ -47,9 +48,9 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   plugin to enhance Neovim's native comments; for example, it supports
   different comment strings for different Treesitter node types) 
 - Mason-boosted LSP & CMP setup.
-  [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) is
-  used for additional formatters, diagnostic tools & for spellchecking.
-  (I would switch to `none-ls` later if there are improvemen are)
+  [conform](https://github.com/stevearc/conform.nvim) &
+  [nvim-lint](https://github.com/mfussenegger/nvim-lint) are used
+  for additional formatters & diagnostic tools respectively.
   Standard keybindings:
   - for completion:
     - `<C-space>`     : force to start
@@ -118,7 +119,8 @@ VimScript to Lua/Fennel.
 
 ## Zsh (my shell)
 
-Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne with every fancy things from `csh` like _aliases_. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.
+Because the best shell make the most beautiful pearls. Zsh (by default on macOS) is a better Bourne
+and as an interactive shell, it has some good tricks compared to Bash.
 
 For example, some functions are useful to navigate in directories:
 
