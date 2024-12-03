@@ -186,7 +186,6 @@ insert
   - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch window to edit
     the Treesitter queries in Scheme (the `:EditQuery` command does it too)
 - **IMPORTANT**: `<leader>f` : **format** using [Conform](https://github.com/stevearc/conform.nvim);
-  `<leader>o` refers to the LSP/`null-ls` format and is considered *obsolete*
 - **IMPORTANT!**: `<leader>ss` : create a template to replace the *current word*
   (*memo*: `s` as in `:%s`; `<leader>s` is also the root key for Telescope); type
   `a` (for `all`) to skip the **confirmation**
@@ -237,8 +236,8 @@ insert
       - `<C-e>` : cancel the completion
       - `<C-u>`/`<C-d>` : scroll the document up/down
    - in LSP buffer only (normal mode except when said otherwise)
-     - (obsolete) `<leader>o`  : format LSP (was `<leader>f`; used by `null-ls` too;
-       use `<leader>f` for `conform.format` instead)
+     - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
+       `vim.lsp.buf.format`
      - `<C-h>` (insert mode) : signature (*BEWARE*: `<C-h>` switches to the
         first harpoon in **normal mode**)
      - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)

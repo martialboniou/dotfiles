@@ -28,8 +28,10 @@
 (tc return "table<integer, keymapSetFun>")
 ;; NOTE: function instead of a local variable to ensure the last annotation is well-set
 (fn keymap-set-fns []
-  (custom-keys {:n {;; obsolete (used for null-ls; use `<leader>f` for conform instead)
-                    :<leader>o ["LSP Format" vim.lsp.buf.format]
+  (custom-keys {:n {;; REMINDER (don't unquote)
+                    ;; :<leader>f ["Format ormat (Conform)"
+                    ;;             (. (require :conform) :format
+                    ;;                {:async true :lsp_format :fallback})]
                     ;; replaces vim.lsp.buf.definition
                     :gd ["LSP Go to definition (via Telescope)"
                          #(funcall! :telescope.builtin :lsp_definitions)]
@@ -174,13 +176,43 @@
   ;; WARN: set this first
   (local {:default_capabilities defaults} (require :cmp_nvim_lsp))
   (set capabilities (vim.tbl_deep_extend :force capabilities (defaults)))
-  ;; mason+mason-lspconfig part - begin
+  ;;
+  ;; 1/4 step: Mason & installs
+  ;;
   (let [mason (require :mason)
         lspconfig (require :lspconfig)
         {: setup} (require :mason-tool-installer)
-        {:setup lsp-setup} (require :mason-lspconfig)]
+        mason-lspconfig (require :mason-lspconfig)]
     (mason.setup)
     (setup {: ensure_installed})
+    ;;
+    ;; 2/4 step: add manually-installed servers (non Mason ones; check `servers`)
+    ;;
+    ;; * Zig *
+    ;; NOTE: I need a zls that fits the zig's version
+    (when (-> :zls (vim.fn.executable) (= 1))
+      (set servers.zig
+           {:cmd [:zls]
+            :filetypes [:zig]
+            :root_dir (lspconfig.util.root_pattern :build.zig :.git)}))
+    ;;
+    ;; * Fennel *
+    ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
+    ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
+    (when (-> :fennel-ls (vim.fn.executable) (= 1))
+      ;; NOTE: change root project with `:lcd` if needed
+      (set servers.fennel_ls
+           {:root_dir ;; search in the vicinity instead of visiting
+            ;; the ancestors with root_pattern from nvim-lspconfig
+            ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
+            #(-> [:fnl]
+                           (vim.fs.find {:upward true
+                                         :type :directory
+                                         :path (vim.fn.getcwd)})
+                           (. 1))}))
+    ;;
+    ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
+    ;;
     (local handlers {1 (fn [server-name]
                          (let [server (or (. servers server-name) {})]
                            (set server.capabilities
@@ -188,35 +220,16 @@
                                                      (or server.capabilities {})))
                            (-> lspconfig (. server-name) (. :setup)
                                (#($ server)))))})
-    (lsp-setup {: handlers}))
-  ;; mason+mason-lspconfig part - end
+    (mason-lspconfig.setup {: handlers}))
+  ;;
+  ;; 4/4 step: LSPAttach's callback to append the keybindings
+  ;;
   (let [callback (fn [event]
                    (let [fs (keymap-set-fns)]
                      (for [i 1 (length fs)]
                        (let [f (. fs i)]
                          (f event.buf)))))]
-    (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback}))
-  ;; NON-MASON LANGUAGE SERVERS
-  (local {:util {: root_pattern} : fennel_ls : zls} (require :lspconfig))
-  ;; * Zig *
-  ;; NOTE: I need the zls that fits zig's version
-  (when (-> :zls (vim.fn.executable) (= 1))
-    (zls.setup {:cmd [:zls]
-                :filetypes [:zig]
-                :root_dir (root_pattern :build.zig :.git)}))
-  ;; * Fennel *
-  ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
-  ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
-  (when (-> :fennel-ls (vim.fn.executable) (= 1))
-    ;; NOTE: change root project with `:lcd` if needed
-    (fennel_ls.setup {:root_dir ;; search in the vicinity instead of visiting
-                      ;; the ancestors with root_pattern from nvim-lspconfig
-                      ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
-                      #(-> [:fnl]
-                                     (vim.fs.find {:upward true
-                                                   :type :directory
-                                                   :path (vim.fn.getcwd)})
-                                     (. 1))})))
+    (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback})))
 
 ;;; PLUGINS (incl. MASON-LSPCONFIG SETUP)
 (tc type LazySpec)
