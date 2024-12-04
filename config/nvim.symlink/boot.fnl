@@ -30,7 +30,8 @@
 (let [{: setup} (require :lazy)
       opts {:checker {:enabled false}
             :defaults {:lazy true}
-            :performance {:rtp {:reset false :disabled_plugins [:tutor]}}
+            :performance {:rtp {:reset false
+                                :disabled_plugins [:tutor :matchit :matchparen]}}
             :spec plugins}]
   (setup opts))
 

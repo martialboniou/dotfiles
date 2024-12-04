@@ -32,6 +32,7 @@
                              :json [:jq :jsonlint]
                              :markdown []
                              :awk [:gawk]
+                             :cmake [:cmakelint]
                              ;;; composer require --dev phpstan/phpstan
                              ;; :php [:phpstan]
                              ;;; composer require --dev friendsoftwig/twigcs

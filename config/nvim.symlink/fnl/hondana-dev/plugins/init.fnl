@@ -71,22 +71,26 @@
 (->> :folke/which-key.nvim
      (#{1 $
         :event :VeryLazy
-        :config #(let [{: add : setup} (require :which-key)]
-                   (setup)
-                   ;; TODO: customize (REMINDER: `:hidden true` to disable)
-                   ;; HACK: shouldn't be here
-                   (add {1 :<leader>I :desc "Paredit raise"})
-                   (add {1 :<leader>J :desc "Paredit join"})
-                   (add {1 :<leader>O :desc "Paredit split"})
-                   (add {1 :<leader>S :desc "Paredit splice"})
-                   (add {1 :<leader>W :desc "Paredit wrap"})
-                   (add {1 "<leader>(" :desc "Paredit toggle"})
-                   (add {1 :<leader>< :desc "Paredit move left"})
-                   (add {1 :<leader>> :desc "Paredit move right"})
-                   (add {1 :<leader><Up>
-                         :desc "Paredit killing backward splice"})
-                   (add {1 :<leader><Down>
-                         :desc "Paredit killing forward splice"}))})
+        :config #(vim.schedule_wrap (let [{: add : setup} (require :which-key)]
+                                      (setup)
+                                      ;; TODO: customize (REMINDER: `:hidden true` to disable)
+                                      ;; HACK: shouldn't be here
+                                      (add {1 :<leader>I :desc "Paredit raise"})
+                                      (add {1 :<leader>J :desc "Paredit join"})
+                                      (add {1 :<leader>O :desc "Paredit split"})
+                                      (add {1 :<leader>S
+                                            :desc "Paredit splice"})
+                                      (add {1 :<leader>W :desc "Paredit wrap"})
+                                      (add {1 "<leader>("
+                                            :desc "Paredit toggle"})
+                                      (add {1 :<leader><
+                                            :desc "Paredit move left"})
+                                      (add {1 :<leader>>
+                                            :desc "Paredit move right"})
+                                      (add {1 :<leader><Up>
+                                            :desc "Paredit killing backward splice"})
+                                      (add {1 :<leader><Down>
+                                            :desc "Paredit killing forward splice"})))})
      (table.insert P))
 
 ;; Luvit-Meta: collects meta type definitions for Luvit

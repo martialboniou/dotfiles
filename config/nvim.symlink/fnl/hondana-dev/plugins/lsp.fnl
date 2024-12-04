@@ -107,9 +107,9 @@
                                                               ;; :nvim-nio
                                                               ;; :nvim-dap
                                                               ;; :lspsaga.nvim
-                                                              :mason
-                                                              :mason-lspconfig
-                                                              :conform
+                                                              :mason.nvim
+                                                              :mason-lspconfig.nvim
+                                                              :conform.nvim
                                                               :nvim-lint
                                                               ;; :nvim-cmp
                                                               ;; :refactoring.nvim
@@ -166,6 +166,7 @@
                                    :awk-language-server
                                    :markdownlint-cli2
                                    :markdown-toc
+                                   :cmakelint
                                    :gofumpt
                                    :goimports-reviser
                                    :golines])

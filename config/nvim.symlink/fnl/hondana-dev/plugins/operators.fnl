@@ -68,7 +68,8 @@
         [:kylechui/nvim-surround
          #(let [{: setup} (require :nvim-surround)]
             (setup $2))]
-        [:echasnovski/mini.ai ;; expect overridden nvim-surround combo keys
+        [:echasnovski/mini.ai
+         ;; expect overridden nvim-surround combo keys
          #(let [{: setup} (require :mini.ai)]
             (setup {:n_lines 500}))]
         [:echasnovski/mini.surround
@@ -88,7 +89,7 @@
                 ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
                 ;; => solution: syntax=lisp to avoid comment/string parens' matching
                 (let [group (augroup :KovisoftParedit_NoSyntaxHack {})
-                      callback #(set! :syntax :lisp)]
+                      callback #(vim.schedule #(set! :syntax :lisp))]
                   (au :FileType
                       {: callback : group :pattern [:fennel :scheme :query]}))
                 ;; tressitter's query filetype needs paredit too
@@ -137,11 +138,26 @@
 (tc type "LazySpec[]")
 (local P (make-lazyspec url-config-specs))
 
-(table.insert P ;;
-              {;; NOTE: check hondana-dev.plugins.treesitter for additional settings
-               1 :andymass/vim-matchup
-               :lazy false
-               :init #(set vim.g.matchup_matchparen_offscreen {:method :popup})})
+;; NOTE: matchup replaces matchit (which was disabled from `boot.fnl`)
+;;       check hondana-dev.plugins.treesitter for additional settings
+(let [VM ;;
+      {1 :andymass/vim-matchup
+       :event :BufReadPost
+       :config #(let [{: setup} (require :match-up)]
+                  (setup $2))
+       ;; check: `:let g:matchup_matchparen_offscreen`
+       :opts {:matchparen {:offscreen {:method :popup}}}}]
+  ;; TODO: experimental!
+  ;; matchup is quite heavy so you can remove the `:event` key 
+  ;; the plugin will load after 7 seconds but you'll have to
+  ;; reload the file or make a new buffer
+  (when (not VM.event)
+    (set VM.init #(let [{: load} (require :lazy.core.loader)
+                        {:plugins {:vim-matchup plugin}} (require :lazy.core.config)]
+                    (when plugin
+                      (vim.defer_fn #(load plugin {:start :start})
+                        7)))))
+  (table.insert P VM))
 
 ;; NOTE: only for the `:EasyAlign` command as previously used in my old $VIMRC for Vim 7.3+
 (table.insert P {1 :junegunn/vim-easy-align :cmd :EasyAlign})
