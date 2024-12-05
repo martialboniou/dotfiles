@@ -11,7 +11,8 @@
                             :vim             :vimdoc          :rust       :markdown
                             :markdown_inline :html            :php        :yaml
                             :ocaml           :ocaml_interface :scheme     :zig
-                            :go])
+                            :go              :elixir          :eex        :heex
+                            :bash])
 
 ;;; KEYS
 (tc type "table<string, string>")
@@ -42,9 +43,13 @@
         :i= "@assignment.outer"
         ;; lhs/rhs of =s
         :l= "@assignment.lhs"
-        :r= "@assignment.rhs"
-        ;; scopes
-        :as {:query "@scope" :query_group :locals}})
+        :r= "@assignment.rhs"})
+
+;; KEYS.scopes
+;; WARN: nvim-treesitter uses LuaCATS, not nvim-treesitter-textobjects
+;;       string|table must replace string
+(tc diagnostic "disable-next-line:assign-type-mismatch")
+(set keymaps.as {:query "@scope" :query_group :locals})
 
 (tc type "table<string, string>")
 ;; NOTE: use a recent `fnlfmt`, otherwise `"@<any>"` can be rewritten as an illegal
@@ -112,7 +117,7 @@
 
 ;;; CONFIG FOR NVIM-TREESITTER-TEXTOBJECTS
 
-(tc type "fun(self:LazyPlugin, opts:table)|true")
+(tc type "fun(self:LazyPlugin, opts:table):nil|true")
 (fn F.textobjects-config []
   "When in diff mode, use vim text objects c & C instead"
   (let [configs (require :nvim-treesitter.configs)]

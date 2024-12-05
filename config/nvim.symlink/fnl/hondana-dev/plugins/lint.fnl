@@ -10,6 +10,8 @@
                       (. vim.diagnostic.severity label)))
 
 ;;; CONFIG
+;; FIXME: lint.Linter.cmd should be string|function, not string (inform mathias)
+(tc diagnostic "disable: assign-type-mismatch")
 (fn config []
   (let [lint (require :lint)
         {:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api
@@ -17,7 +19,8 @@
         callback #(when (vim.opt_local.modifiable:get)
                     (lint.try_lint))]
     (set lint.linters.twigcs
-         {;; check for a local binary first
+         {:name :twigcs
+          ;; check for a local binary first
           :cmd #(let [bin twigcs-bin
                       local-bin (-> :vendor/bin/ (.. bin)
                                     (vim.fn.fnamemodify ":p"))]
@@ -33,6 +36,8 @@
                              :markdown []
                              :awk [:gawk]
                              :cmake [:cmakelint]
+                             ;; add credo to the deps of your mix
+                             :elixir [:credo]
                              ;;; composer require --dev phpstan/phpstan
                              ;; :php [:phpstan]
                              ;;; composer require --dev friendsoftwig/twigcs
@@ -40,6 +45,7 @@
     (au [:BufEnter :BufWritePost :InsertLeave] {: group : callback})))
 
 ;;; PLUGINS
+(tc diagnostic "enable: assign-type-mismatch")
 (tc type LazySpec)
 (local P {1 :mfussenegger/nvim-lint :event [:BufReadPre :BufNewFile] : config})
 

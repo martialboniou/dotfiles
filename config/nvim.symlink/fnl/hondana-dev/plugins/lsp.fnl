@@ -3,6 +3,13 @@
 ;;; 2024-12-02
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
+(macro set-value! [x ...]
+  "returns a sequence of the rest of args as keys and x value"
+  (let [o []]
+    (each [_ e (ipairs [...])]
+      (set (. o (tostring e)) x))
+    o))
+
 ;; F = utility functions at the end of this module
 (local F {})
 
@@ -141,7 +148,11 @@
                 :tailwindcss {;; missing default settings leading to an error
                               :settings {:tailwindCSS {:hovers true
                                                        :suggestions true
-                                                       :codeActions true}}}
+                                                       :codeActions true}}
+                              :init_options {:userLanguages (set-value! :html-eex
+                                                                        elixir
+                                                                        eeelixir
+                                                                        heex)}}
                 :dockerls {}
                 :docker_compose_language_service {}
                 :astro {}
@@ -150,6 +161,7 @@
                 :cssls {}
                 :ocamllsp {}
                 :gopls {}
+                :elixirls {}
                 ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
                 ;; fennel_ls is hard to setup but it looks promising
                 })
@@ -238,7 +250,7 @@
 ;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
-       [{1 :williamboman/mason.nvim :config true}
+       [{1 :williamboman/mason.nvim :cmd [:Mason] :config true}
         ;; the mason/mason-lspconfig setup is also done by the local function
         ;; `config` above
         :williamboman/mason-lspconfig.nvim
@@ -284,8 +296,9 @@
   (let [paths (lazy-get-plugin-paths plugins)
         make-libraries #(icollect [_ l (ipairs [$...])]
                           (.. "${3rd}/" l :/library))]
-    ;; no need `(.. vim.env.VIMRUNTIME :/lua)` since 0.10
     (local addons (make-libraries :luv :busted :luassert))
+    ;; next line optional since 0.10 but vim.lsp.LspConfig unknown for some reason
+    (local addons [(.. vim.env.VIMRUNTIME :/lua) (unpack addons)])
     ;; HACK: luvit (unsure if good strat)
     (let [{:options {: root}} (require :lazy.core.config)
           luvit-path (-> root (#[$ :luvit-meta :library]) (table.concat "/"))]
