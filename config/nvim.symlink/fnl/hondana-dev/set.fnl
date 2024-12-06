@@ -20,7 +20,11 @@
        :cursorline)
 
 (set!! false :wrap :swapfile :backup :hlsearch)
-(set!! 4 :sw :ts :sts)
+;; 2-space indentation is the default
+;; Sleuth or any formatters managed with `conform` will change the next line
+(set!! 2 :sw :ts)
+;; `softtabstop` at -1 mirrors `shiftwidth` (abbrev. `sw`)
+(set!! -1 :sts)
 ;; enable sidescrolloff for tiny monitors & tiling wm/terms
 (set!! 10 :siso)
 
@@ -62,17 +66,13 @@
 ;; you can use lambda in this programming language (see below)
 (vim.cmd.iab ",\\ λ")
 
-;; 2-space indentation for some filetypes
-(let [group (augroup :Hondana_SpecialIndentation {})
-      options [:sw :ts :sts]
-      {: lisp-ft?} (require :hondana-dev.utils)
-      callback #(when (or ;; I'm a Common Lisp & Fennel/Lua user
-                          (lisp-ft? vim.bo.ft) ;;
-                          ;; others: markdown, Lua, JS & ML family
-                          (or= vim.bo.ft :markdown :lua :jsonc :json
-                               :javascript :typescript :haskell :ocaml))
-                  (each [_ o (ipairs options)] (setlocal! o 2)))]
-  (au :BufWinEnter {: callback : group : pattern}))
+;; 4-space indentation for some filetypes
+;; REMINDER: each project should have its own setup
+(let [group (augroup :Hondana_Fantastic4Indentation {})
+      options [:sw :ts]
+      pattern [:c :cpp :zig :rust :go]
+      callback #(each [_ o (ipairs options)] (setlocal! o 4))]
+  (au :FileType {: callback : group : pattern}))
 
 ;; visible yank
 (let [group (augroup :Hondana_Highlight_Yank {:clear true})
