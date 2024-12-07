@@ -5,9 +5,18 @@
 ;; S = additional settings
 (local S {})
 
-;;INFO: comment these two lines to NOT format on save
+;; TODO: add a cache AND a command to add/remove these files
+;; list of filetypes to format-on-save
+(set S.format-on-save-filetypes [:fennel :exs :ex])
+;; TODO: disable in certain path (tests, node_modules...)
+;; (when (not (: (vim.api.nvim_buf_get_name $) :match "/node_modules/")) ?)
+
+;;INFO: comment these two lines to NOT format on save AT ALL
 (tc type "nil|conform.FormatOpts|fun(bufnr:integer): nil|conform.FormatOpts")
-(set S.format_on_save {:timeout_ms 500})
+(set S.format_on_save
+     #(when (->> $ (. vim.bo) (#(. $ :filetype))
+                 (vim.tbl_contains S.format-on-save-filetypes))
+        {:timeout_ms 500 :lsp_format :fallback}))
 
 ;; make a `.clang-format` at the root of this setup
 (tc type string)
@@ -58,7 +67,6 @@
                   :desc "Format buffer (Conform)"}]
           :opts {;; WIP so debug ON
                  :log_level vim.log.levels.DEBUG
-                 :default_format_opts {:lsp_format :fallback}
                  ;; check `hondana-dev.plugins.lsp` for the Mason current installs
                  :formatters_by_ft {:fennel [:fnlfmt]
                                     :lua [:stylua]
