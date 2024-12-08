@@ -53,7 +53,13 @@
 (tc type boolean)
 (local override-clang-format-globally false)
 
-(local ecma-formatters [[:prettierd :prettier] [:eslint_d :eslint]])
+;; WARN: nested syntax is deprecated (2024)
+(local ecma-formatters [:prettierd :prettier :eslint_d :eslint])
+(set ecma-formatters.stop_after_first true)
+
+(local stylua-extend-args [:--indent-type :Spaces])
+
+(var default-stylua-args nil)
 
 ;;; PLUGINS
 (tc type LazySpec)
@@ -91,12 +97,13 @@
           :config (fn [_ opts]
                     (let [{: add_formatter_args} (require :conform.util)
                           {: setup} (require :conform)]
-                      ;; unless `.stylua.toml`
-                      (add_formatter_args (require :conform.formatters.stylua)
-                                          ["--indent-type"
-                                           :Spaces
-                                           :--indent-width
-                                           "2"])
+                      (let [s (require :conform.formatters.stylua)]
+                        ;; unless `.stylua.toml`
+                        (add_formatter_args s stylua-extend-args)
+                        ;; record the settings as `conform.util.extend_args()` will erase it
+                        (set default-stylua-args
+                             {:args s.args :range_args s.range_args})
+                        (add_formatter_args s [:--indent-width :2]))
                       ;; TODO: testing
                       (add_formatter_args (require :conform.formatters.php_cs_fixer)
                                           ["--rules=@PhpCsFixer,@Symfony"])
@@ -116,5 +123,29 @@
 
 (when S.format_on_save
   (set P.opts.format_on_save S.format_on_save))
+
+;;: OPTIONAL
+;; force Stylua settings to reset according to your local option `shiftwidth` (use :Sleuth to autodetect it)
+(let [{:nvim_create_augroup augroup
+       :nvim_create_autocmd au
+       :nvim_buf_create_user_command uc} vim.api
+      pattern :lua
+      group (augroup :Hondana_Conform_StyluaReset {})
+      callback #(uc 0 :StyluaReset
+                    #(let [util (require :conform.util)
+                           stylua (require :conform.formatters.stylua)]
+                       (when (not default-stylua-args)
+                         (vim.notify "cannot change reset the stylua formatter"
+                                     vim.log.levels.ERROR)
+                         (lua "return"))
+                       ;; first restore original setup
+                       (set stylua.args default-stylua-args.args)
+                       (set stylua.range_args default-stylua-args.range_args)
+                       ;; then reapply changes
+                       (util.add_formatter_args stylua
+                                                [:--indent-width
+                                                 (tostring vim.o.sw)]))
+                    {})]
+  (au :FileType {: group : callback : pattern}))
 
 P

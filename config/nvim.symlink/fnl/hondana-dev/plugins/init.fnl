@@ -42,6 +42,10 @@
 ;; usage:
 ;;   :Sleuth
 (table.insert P {1 :tpope/vim-sleuth :cmd [:Sleuth]})
+;; HACK: temporary skip
+;; (when (-> :config (vim.fn.stdpath) (.. :/plugin) (vim.uv.fs_stat) (not))
+;;   ;; only if no ~/.config/nvim/experimental
+;;   (table.insert P {1 :tpope/vim-sleuth :cmd [:Sleuth]}))
 
 ;; Marks: marks.nvim to improve the mark navigation
 ;; memo:
