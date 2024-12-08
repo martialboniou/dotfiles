@@ -57,6 +57,7 @@
 (local ecma-formatters [:prettierd :prettier :eslint_d :eslint])
 (set ecma-formatters.stop_after_first true)
 
+;; don't append `:--indent-width` here
 (local stylua-extend-args [:--indent-type :Spaces])
 
 (var default-stylua-args nil)
@@ -132,19 +133,20 @@
       pattern :lua
       group (augroup :Hondana_Conform_StyluaReset {})
       callback #(uc 0 :StyluaReset
-                    #(let [util (require :conform.util)
-                           stylua (require :conform.formatters.stylua)]
+                    #(do
                        (when (not default-stylua-args)
                          (vim.notify "cannot change reset the stylua formatter"
                                      vim.log.levels.ERROR)
                          (lua "return"))
-                       ;; first restore original setup
-                       (set stylua.args default-stylua-args.args)
-                       (set stylua.range_args default-stylua-args.range_args)
-                       ;; then reapply changes
-                       (util.add_formatter_args stylua
-                                                [:--indent-width
-                                                 (tostring vim.o.sw)]))
+                       (let [{: add_formatter_args} (require :conform.util)
+                             stylua (require :conform.formatters.stylua)]
+                         ;; first restore original setup
+                         (set stylua.args default-stylua-args.args)
+                         (set stylua.range_args default-stylua-args.range_args)
+                         ;; then reapply changes with `shiftwidth` as `--indent-width`
+                         (add_formatter_args stylua
+                                             [:--indent-width
+                                              (tostring vim.o.sw)])))
                     {})]
   (au :FileType {: group : callback : pattern}))
 

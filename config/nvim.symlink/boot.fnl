@@ -43,39 +43,3 @@
   (when (and target (= 0 (vim.fn.filereadable target)))
     (let [{:link-tangerine-fennel-lua link} (require :hondana-dev.utils/boot-helper)]
       (link target lazy-directory))))
-
-;; EXPERIMENTAL
-;; (-> :config (vim.fn.stdpath) (.. :/experimental)
-;;     (#(when (vim.uv.fs_stat $) (vim.opt.rtp:append $))))
-;; (fn _G.onDictChanged []
-;;   (print :foo))
-
-;; force Sleuth to be verbose so a 'sleuth' buffer variable
-;; can be watched using `dictwatcheradd()`
-;; (vim.cmd "cnoreabbrev <expr> Sleuth getcmdtype() == ':' && getcmdline() ==# 'Sleuth' ? 'verbose Sleuth' : 'Sleuth'")
-;; (vim.cmd "let s:sleuth_reset=0
-;; function! OnSleuthChanged(d,k,z)
-;;   let specialft='lua'
-;;   echom \"checked!!\"
-;;   if has_key(a:z,'old')
-;;     if a:z['old']['filetype'] == &specialft
-;;       let s:sleuth_reset=1
-;;     endif
-;;   elseif s:sleuth_reset==1 && has_key(a:z,'new')
-;;     if a:z['new']['filetype'] == &specialft
-;;       echomsg 'change stop to' a:z['new']['options']['shiftwidth'][0]
-;;       let s:sleuth_reset=0
-;;     endif
-;;   endif
-;; endfunction")
-;;
-;; (let [{:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api
-;;       callback #(do
-;;                   (print "testing...")
-;;                   (vim.cmd "silent! cal dictwatcherdel(b:, 'sleuth', 'OnSleuthChanged')")
-;;                   (vim.cmd "cal dictwatcheradd(b:, 'sleuth', 'OnSleuthChanged')"))
-;;       pattern ["*.lua" "*.fnl"]]
-;;   ;; NOPE!
-;;   (au [:BufRead :BufNewFile :BufEnter] {: callback : pattern}))
-
-;; v:lua.onDictChanged()
