@@ -207,7 +207,7 @@
     ;; * Zig *
     ;; NOTE: I need a zls that fits the zig's version
     (when (-> :zls (vim.fn.executable) (= 1))
-      (set servers.zig
+      (set servers.zls
            {:cmd [:zls]
             :filetypes [:zig]
             :root_dir (lspconfig.util.root_pattern :build.zig :.git)}))
