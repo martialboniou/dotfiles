@@ -71,12 +71,8 @@
                          :enabled true
                          :config F.textobjects-config}]
          :build ":TSUpdate"
-         :event [:BufReadPost :BufNewFile]
          :cmd [:TSUpdateSync :TSUpdate :TSInstall]
-         :config (λ [_ opts]
-                   (-> :nvim-treesitter.configs
-                       (require)
-                       (#($.setup opts))))
+         :config F.config
          :opts {:ensure_installed preferred-languages
                 :matchup {;; special vim-matchup (check hondana-dev.plugins.operators)
                           :enable true
@@ -86,6 +82,7 @@
                 :rainbow {:enable true :extended_mode true}
                 :playground {:enable true}
                 :highlight {:enable true
+                            :disable F.disable
                             :additional_vim_regex_highlighting false}
                 :incremental_selection {:enable true}
                 :indent {:enable true
@@ -115,7 +112,7 @@
                                                          "[C" "@class.outer"
                                                          "[A" "@parameter.inner"}}}}}])
 
-;;; CONFIG FOR NVIM-TREESITTER-TEXTOBJECTS
+;;; CONFIG FUNCTIONS FOR NVIM-TREESITTER(-TEXTOBJECTS)
 
 (tc type "fun(self:LazyPlugin, opts:table):nil|true")
 (fn F.textobjects-config []
@@ -138,5 +135,20 @@
                ;;
                ;; :return (ie propagate the original `fun` from `move` otherwise)
                (fun q ...)))))))
+
+(tc param _ "string?" "language")
+(tc param buf integer "buffer number")
+(tc return boolean|nil)
+(fn F.disable [_ buf]
+  (let [;; 200 KB max
+        max_filesize (* 200 1024)
+        (ok stats) (pcall vim.uv.fs_stat (vim.api.nvim_buf_get_name buf))]
+    (and ok stats (> stats.size max_filesize))))
+
+(tc type "fun(self:LazyPlugin, opts:table):nil|true")
+(fn F.config [_ opts]
+  (-> :nvim-treesitter.configs
+      (require)
+      (#($.setup opts))))
 
 P
