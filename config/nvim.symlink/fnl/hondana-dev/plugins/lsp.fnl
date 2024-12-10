@@ -151,7 +151,7 @@
                                                        :codeActions true}}
                               :init_options {:userLanguages (set-value! :html-eex
                                                                         elixir
-                                                                        eeelixir
+                                                                        eelixir
                                                                         heex)}}
                 :dockerls {}
                 :docker_compose_language_service {}

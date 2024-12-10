@@ -70,12 +70,15 @@ Vim keybinding reminders & tips
   - `zs`  : scroll horizontally to position the **cursor at the start** of the
             screen
 - `G`    : go to the end of file (of course!)
-- `J` (in visual) : move down the visual block (added; see `remap.fnl`!)
+- `J` (in *visual*) : move down the visual block (added; see `remap.fnl`!)
 - `<C-j>` : go down in the quickfix list (see below)
 - `:copen` : open the quickfix list (say, after a `:grep foo src/*`)
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)
+- `<C-x><C-l>` (in *insert mode*) : complete the whole line (*ie* find matching lines
+  from every buffers and open a selector; navigate *normally* by using `<C-n>`/`<C-p>`;
+  confirm with `<C-y>`)
 - **Case sensitivity**: the default setting is case insensitive so use `\C`
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a
@@ -95,7 +98,7 @@ Vim keybinding reminders & tips
   - `<>` : move left the bracket at the current position (as `<leader><`)
   - `><` : move right the bracket at the current position (as `<leader>>`)
   - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to *normal
-    mode* without moving the cursor back
+    mode* **without moving the cursor back**
   - NOTE: if `julienvincent/nvim-paredit` is activated, you must use:
     - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
     - `>)` : slurp forward
