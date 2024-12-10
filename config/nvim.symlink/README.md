@@ -248,12 +248,13 @@ insert
      - `gD` : goto declaration
      - `gI` : Telescope *builtin*'s **g**oto **I**mplementation
      - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol
-     - `<leader>vdd` : **v**iew **d**iagnostic (`<leader>vds` is for document symbols)
      - `[d` : next diagnostic
      - `]d` : previous diagnostic
      - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
      - `<leader>vds` : Telescope *builtin*'s **v**iew **d**ocument **s**ymbol
      - these following keybindings come with a shorter version for ergonomics:
+       - `<leader>vdd`/`<leader>dd` : **v**iew **d**iagnostic OR simply, **display diagnostic**
+         (`<leader>vds` is for document symbols)
        - `<leader>vca`/`<leader>ca` : **v**iew **c**ode **a**ction OR simply, **code action**
        - `<leader>vrr`/`<leader>rr` : Telescope *builtin*'s **v**iew **r**efe**r**ences OR simply, **RefeRences**
          (*BEWARE*: `<leader>r` + another key is used by the *refactoring* plugin; see below)

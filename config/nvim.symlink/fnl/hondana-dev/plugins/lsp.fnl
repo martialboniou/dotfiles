@@ -71,6 +71,7 @@
                     ;; NOTE: `<leader>r` is the starting key for `hondana-dev.plugins.refactoring`
                     :<leader>rr ["LSP References (via Telescope)"
                                  #(funcall! :telescope.builtin :lsp_references)]
+                    :<leader>dd ["View diagnostic" vim.diagnostic.open_float]
                     :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
                 :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
 
