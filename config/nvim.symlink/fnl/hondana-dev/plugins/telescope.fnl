@@ -28,7 +28,7 @@
                   :mappings {:i {"<C-y>" (-> :telescope.actions
                                              (require)
                                              (. :select_default))}}}]
-    (setup {: defaults :extensions {:ui-select [(get_dropdown)]}})
+    (setup {: defaults :extensions {:fzf {} :ui-select [(get_dropdown)]}})
     (doto load_extension
       (pcall :fzf)
       (pcall :ui-select))))
@@ -89,17 +89,23 @@
                       #(live_grep {:grep_open_files true
                                    :prompt_title "Live Grep in Open Files"})
                       "Open a live grep picker in open files"]
-                     ;; open Neovim configuration files (memo: search nvim)
-                     [:sn
-                      #(find_files {:cwd (vim.fn.stdpath :config)})
-                      "Open a Neovim conf file picker"]
                      ;; builtin (memo: search builtin)
                      [:sb builtin "Open a Telescope selector"]
                      ;; generic grep_string (memo: search word)
                      ;; TODO: check if mergeable
                      [:sw grep_string "Open a word picker"]
                      ;; live grep (memo: search grep)
-                     [:sg live_grep "Open a live grep picker"]])))
+                     [:sg live_grep "Open a live grep picker"]
+                     ;;; EDIT STDPATH FILES
+                     ;; open Neovim configuration files (memo: edit nvim)
+                     [:en
+                      #(find_files {:cwd (vim.fn.stdpath :config)})
+                      "Open a Neovim conf file picker"]
+                     ;; open Lazy plugin files (memo: edit plugin)
+                     [:ep
+                      #(find_files {:cwd (-> :data (vim.fn.stdpath)
+                                             (vim.fs.joinpath :lazy))})
+                      "Open a Lazy plugin file picker"]])))
 
 (tc type "string[]|string|fun(self:LazyPlugin,ft:string[]):string[]")
 (local keys (make-keys))

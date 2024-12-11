@@ -151,7 +151,7 @@ It's great but:
 ### Example of workflow
 
 - (locally) `<leader>cd` : change locally the working directory
-- `<leader>a` : tag a file in harpoon 2 (first)
+- `<leader>aa` : tag a file in harpoon 2 (first)
 - `<leader>pf` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
   directory (root of the project AKA `:lua print(vim.uv.cwd())`)
@@ -164,8 +164,8 @@ It's great but:
 - (optional) `<C-Space>` : enable completion
 - (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
 - `gd` (on a reference, say, `require`; normal mode) : back to the module
-- `<leader>a` : tag the module in Harpoon 2 (second)
-- `<leader>e` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
+- `<leader>aa` : tag the module in Harpoon 2 (second)
+- `<leader>ae` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet
@@ -208,8 +208,10 @@ insert
   the current one**; not in the ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
-- `<leader>a`  : add file in harpoon (it works with `Netrw` and `mini.files` too)
-- `<leader>e`  : harpoon quick menu (it was `<C-e>`)
+- Harpoon-related keybindings (*memo*: keys derived from `<leader>a`; close to `<C-a>`/`<fn-a>` used
+  as `tmux` prefix):
+  - `<leader>aa` : add file in Harpoon (it works with `Netrw` and `mini.files` too; *memo*: H**a**rpoon **a**ppend)
+  - `<leader>ae` : harpoon quick menu (it was `<C-e>`; *memo*: H**a**rpoon **e**dit)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>x`  : toggle the executability of a file (different from the ThePrimeagen's version)
@@ -296,10 +298,12 @@ insert
   - `<leader>sd` : Telescope **diagnostic**
   - `<leader>sk` : Telescope search **keymaps**
   - `<leader>s/` : Telescope **live grep** in open files
-  - `<leader>sn` : Telescope find files amongst **NeoVim configuration files**
   - `<leader>sb` : Telescope builtin selector
   - `<leader>sw` : Telescope search word (may be deprecated)
   - `<leader>sg` : Telescope live grep
+  - special `stdpath` files:
+    - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
+    - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy *p*lugins in your `data` path
 - Primeagen's refactoring plugin (inspired by Martin Fowler):
   - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
     by default):
