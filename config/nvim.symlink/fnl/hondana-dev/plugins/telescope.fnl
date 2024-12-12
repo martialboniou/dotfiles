@@ -1,23 +1,12 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
-(tc return "table<string,any>")
-(fn builtin-pickers-opts []
-  "used as comptime function to build the pickers pattern"
-  (local pickers {})
-  (local all-pickers (-?> :telescope.builtin (require) (vim.tbl_keys)))
-  (when all-pickers
-    (for [i 1 (length all-pickers)]
-      (set (. pickers (. all-pickers i)) {:theme :dropdown})))
-  pickers)
-
-(local _ builtin-pickers-opts)
-
 ;;; CONFIG
 (tc type "fun(self:LazyPlugin, opts:table):nil")
 (fn config []
   (let [{: load_extension : setup} (require :telescope)
         {: get_dropdown} (require :telescope.themes)
+        {:setup multigrep-init} (require :hondana-dev.utils.multigrep)
         defaults {;; TODO: create dynamic setting like:
                   ;;       - theme ivy if big window
                   ;;       - theme dropdown if small window
@@ -29,6 +18,10 @@
                                              (require)
                                              (. :select_default))}}}]
     (setup {: defaults :extensions {:fzf {} :ui-select [(get_dropdown)]}})
+    ;; additional live multigrep (based on TJ Devries' 2024 advent-of-nvim)
+    ;; usage: <pattern><2-spaces><glob-pattern>
+    ;; keybinding: <leader>sm
+    (multigrep-init)
     (doto load_extension
       (pcall :fzf)
       (pcall :ui-select))))

@@ -293,17 +293,20 @@ insert
     - `]A`       : *next* end *inner* argument/parameter
     - for any previous *moves*, replace the first `]` by `[` for the *previous* version
 - Other Telescope keybindings:
-  - `<leader>/`  : Telescope search word (**MOST IMPORTANT**)
+  - `<leader>/`  : Telescope search word (**MOST IMPORTANT**; *memo*: `/`)
   - `<leader>sr` : Telescope **resume selections from the previous picker**
   - `<leader>sd` : Telescope **diagnostic**
-  - `<leader>sk` : Telescope search **keymaps**
-  - `<leader>s/` : Telescope **live grep** in open files
-  - `<leader>sb` : Telescope builtin selector
-  - `<leader>sw` : Telescope search word (may be deprecated)
-  - `<leader>sg` : Telescope live grep
+  - `<leader>sk` : Telescope **s**earch **k**eymaps
+  - `<leader>s/` : Telescope **s**earch *live grep* AKA `/` in open files
+  - `<leader>sb` : Telescope **s**earch **b**uiltin selector
+  - `<leader>sw` : Telescope **s**earch **w**ord (may be deprecated)
+  - `<leader>sg` : Telescope **s**earch live **g**rep
+  - `<leader>sm` : (only in this setup) Telescope **s**earch live **m**ultigrep (*usage*:
+    `<pattern><2-spaces><glob-pattern>`; examples of `<glob-pattern>`: `*.fnl`/`**/plugins/**`)
   - special `stdpath` files:
     - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
-    - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy *p*lugins in your `data` path
+    - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy **p**lugins in your `data`
+      path
 - Primeagen's refactoring plugin (inspired by Martin Fowler):
   - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
     by default):
