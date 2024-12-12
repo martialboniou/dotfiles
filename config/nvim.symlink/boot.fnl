@@ -1,8 +1,6 @@
 (import-macros {: tc} :hondana-dev.macros)
 
-(require :hondana-dev/remap)
-(require :hondana-dev/set)
-(local (_ _) (pcall require :hondana-dev/private))
+(require :hondana-dev)
 
 (macro imports! [...]
   (icollect [_ e (ipairs [...])]
