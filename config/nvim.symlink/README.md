@@ -73,6 +73,7 @@ Vim keybinding reminders & tips
 - `J` (in *visual*) : move down the visual block (added; see `remap.fnl`!)
 - `<C-j>` : go down in the quickfix list (see below)
 - `:copen` : open the quickfix list (say, after a `:grep foo src/*`)
+  - *alternative*: `<C-q>` in a Telescope search
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)
@@ -83,6 +84,9 @@ Vim keybinding reminders & tips
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a
   *case-sensitive setup* with `:set noic`)
+- `<C-w>` : window navigation prefix key
+  - `!` : kill a **floating window** even if not focused (otherwise, `<C-w><C-w>`
+    will get you there eventually)
 - useful text/brackets tools:
   - `cs` prefix : `nvim-surround`; modify surrounding brackets and tags; eg:
     - `cs([` : replace a outer block of parentheses by curly brackets
