@@ -53,12 +53,11 @@
        {1 :theprimeagen/harpoon
         :branch :harpoon2
         :dependencies [:nvim-lua/plenary.nvim]
-        ;; keys derived from `<leader>a` (like `<fn-a>` for `tmux` prefix)
-        :keys [{1 :<leader>aa
+        :keys [{1 :ga
                 2 harpoon-file-explorer
                 ;;  👍 : error if the cursor in Netrw or mini.files not on a file
                 :desc "Harpoon the current file"}
-               {1 :<leader>ae
+               {1 :gh
                 ;; it was <C-e> but <C-a>/<C-e> = cursor navi in terms
                 2 #(let [h (require :harpoon)]
                      (h.ui:toggle_quick_menu (h:list)))

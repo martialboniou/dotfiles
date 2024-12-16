@@ -1,6 +1,6 @@
 ;;; Conform setup
-;;; 2024-12-02
-(import-macros {: tc : funcall!} :hondana-dev/macros)
+;;; 2024-12-16
+(import-macros {: tc} :hondana-dev/macros)
 
 ;; S = additional settings
 (local S {})
@@ -67,11 +67,11 @@
 (local P {1 :stevearc/conform.nvim
           :event [:BufWritePre]
           :cmd [:ConformInfo]
-          :keys [{1 :<leader>f
-                  2 #(funcall! :conform :format
-                               {:async true :lsp_format :fallback})
-                  :mode ""
-                  :desc "Format buffer (Conform)"}]
+          :keys #(let [{: format} (require :conform)]
+                   [{1 :<leader>f
+                     2 #(format {:async true :lsp_format :fallback})
+                     :mode ""
+                     :desc "Format buffer (Conform)"}])
           :opts {;; WIP so debug ON
                  :log_level vim.log.levels.DEBUG
                  ;; check `hondana-dev.plugins.lsp` for the Mason current installs

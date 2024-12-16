@@ -1,6 +1,6 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
 (import-macros {: concat!} :hibiscus.vim)
-(import-macros {: tc : funcall!} :hondana-dev.macros)
+(import-macros {: tc} :hondana-dev.macros)
 (import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
 ;; F = dap functions at the end of this module
@@ -43,41 +43,20 @@
                        [:dx (terminate)]
                        [:du (step_out)]]))
 
-(tc type LazySpec)
-(local P {1 :mfussenegger/nvim-dap
-          :dependencies [{1 :rcarriga/nvim-dap-ui
-                          :dependencies :nvim-neotest/nvim-nio
-                          :keys (make-lazykeys! [[:dE
-                                                  F.eval-input
-                                                  "DAP: evaluate input"]
-                                                 [:dU
-                                                  F.toggle
-                                                  "DAP: toggle UI"]
-                                                 ;; <leader>de is available in visual too
-                                                 [:de
-                                                  F.eval
-                                                  {:mode [:n :v]
-                                                   :desc "DAP: toggle UI"}]])}
-                         {1 :ldelossa/nvim-dap-projects
-                          ;; <leader>dN loads the local "per-project" adapter
-                          :keys [[:dN
-                                  F.search-project-config
-                                  "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"]]}
-                         {1 :theHamsta/nvim-dap-virtual-text
-                          :opts {:commented true}}
-                         :nvim-telescope/telescope-dap.nvim
-                         :jbyuki/one-small-step-for-vimkind]
-          :cmd [:DapContinue :DapToggleBreakpoint :DapToggleRepl]
-          :keys [;; DAP.UI.WIDGETS
-                 {1 :<leader>dh 2 F.hover :desc "DAP: hover variables"}
-                 {1 :<leader>dS 2 F.open-sidebar :desc "DAP: scopes"}
-                 ;; insert additional keybindings here
-                 ;;
-                 ;; DAP standard <leader> keys
-                 (unpack dap-lazykeys)]
-          :config F.config})
+;;; KEYS
+(local keys ;;
+       #(let [widgets (require :dap.ui.widgets)
+              sidebar (widgets.sidebar widgets.scopes)]
+          [;; DAP.UI.WIDGETS
+           {1 :<leader>dh 2 widgets.hover :desc "DAP: hover variables"}
+           {1 :<leader>dS 2 sidebar.open :desc "DAP: scopes"}
+           ;; insert additional keybindings here
+           ;;
+           ;; DAP standard <leader> keys
+           (unpack dap-lazykeys)]))
 
-(fn F.config []
+;;; CONFIG
+(fn config []
   (let [{&as env} (collect [_ m (pairs [:dap :dapui])]
                     (values m (require m)))]
     (env.dapui.setup)
@@ -118,19 +97,36 @@
                                          (.. (vim.fn.getcwd) "/") :file)}])
           (set cfg.cpp cfg.c)))))
 
-(fn F.eval-input [] (funcall! :dapui :eval (vim.fn.input "[Expression] > ")))
-(fn F.toggle [] (funcall! :dapui :toggle))
-(fn F.eval [] (funcall! :dapui :eval))
-(fn F.search-project-config []
-  (funcall! :nvim-dap-projects :search_project_config))
-
-(fn F.hover []
-  (funcall! :dap.ui.widgets :hover))
-
-(fn F.open-sidebar []
-  (let [widgets (require :dap.ui.widgets)
-        sidebar (widgets.sidebar widgets.scopes)]
-    (sidebar.open)))
+;;; PLUGINS
+(tc type LazySpec)
+(local P {1 :mfussenegger/nvim-dap
+          :dependencies [{1 :rcarriga/nvim-dap-ui
+                          :dependencies :nvim-neotest/nvim-nio
+                          :keys #(let [{: eval : toggle} (require :dapui)]
+                                   (make-lazykeys! [[:dE
+                                                     #(eval (vim.fn.input "[Expression] > "))
+                                                     "DAP: evaluate input"]
+                                                    [:dU
+                                                     toggle
+                                                     "DAP: toggle UI"]
+                                                    ;; <leader>de is available in visual too
+                                                    [:de
+                                                     eval
+                                                     {:mode [:n :v]
+                                                      :desc "DAP: toggle UI"}]]))}
+                         {1 :ldelossa/nvim-dap-projects
+                          ;; <leader>dN loads the local "per-project" adapter
+                          :keys #(let [{:search_project_config search} (require :nvim-dap-projects)]
+                                   [{1 :dN
+                                     2 search
+                                     :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}])}
+                         {1 :theHamsta/nvim-dap-virtual-text
+                          :opts {:commented true}}
+                         :nvim-telescope/telescope-dap.nvim
+                         :jbyuki/one-small-step-for-vimkind]
+          :cmd [:DapContinue :DapToggleBreakpoint :DapToggleRepl]
+          : keys
+          : config})
 
 (tc type "fun(): boolean, string")
 (fn F.brew-prefix []

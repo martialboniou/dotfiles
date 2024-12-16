@@ -66,6 +66,25 @@
        (#{1 $ :cmd :StartupTime : init})
        (table.insert P)))
 
+;; Persistence: simple session management
+(let [event :BufReadPre
+      opts {;; mandatory
+            }
+      keys #(let [{: load : select : stop} (require :persistence)]
+              [{1 :<leader>qs
+                2 load
+                :desc "Load the session for the current directory"}
+               {1 :<leader>qS 2 select :desc "Select a session to load"}
+               {1 :<leader>ql
+                2 #(load {:last true})
+                :desc "Load the last session"}
+               {1 :<leader>qd
+                2 stop
+                :desc "Stop Persistence => session won't be saved on exit"}])]
+  (->> :folke/persistence.nvim
+       (#{1 $ : event : keys : opts})
+       (table.insert P)))
+
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
 (->> :folke/which-key.nvim

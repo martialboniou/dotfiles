@@ -155,7 +155,7 @@ It's great but:
 ### Example of workflow
 
 - (locally) `<leader>cd` : change locally the working directory
-- `<leader>aa` : tag a file in harpoon 2 (first)
+- `ga` : tag a file in harpoon 2 (first)
 - `<leader>pf` or `<leader>pv` : project view at the current directory
   (the cursor is on the current file AKA `:pwd`) or at the current working
   directory (root of the project AKA `:lua print(vim.uv.cwd())`)
@@ -168,8 +168,8 @@ It's great but:
 - (optional) `<C-Space>` : enable completion
 - (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
 - `gd` (on a reference, say, `require`; normal mode) : back to the module
-- `<leader>aa` : tag the module in Harpoon 2 (second)
-- `<leader>ae` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
+- `ga` : tag the module in Harpoon 2 (second)
+- `gh` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet
@@ -212,10 +212,9 @@ insert
   the current one**; not in the ThePrimeagen setup
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
-- Harpoon-related keybindings (*memo*: keys derived from `<leader>a`; close to `<C-a>`/`<fn-a>` used
-  as `tmux` prefix):
-  - `<leader>aa` : add file in Harpoon (it works with `Netrw` and `mini.files` too; *memo*: H**a**rpoon **a**ppend)
-  - `<leader>ae` : harpoon quick menu (it was `<C-e>`; *memo*: H**a**rpoon **e**dit)
+- Harpoon-related keybindings:
+  - `ga` : add file in Harpoon (it works with `Netrw` and `mini.files` too; *memo*: **G**et **a**ttached)
+  - `gh` : harpoon quick menu (*memo*: **G**o to **H**arpoon; it was `<C-e>` originally)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>x`  : toggle the executability of a file (different from the ThePrimeagen's version)
@@ -337,6 +336,11 @@ insert
   - **(untested)** `<leader>zo`: open Telescope on your zk notebook searching
     the current square-bracketed word at the cursor by default (ie the
     *yanked* text surrounded by any `[ ]`)
+- Persistence, a simple session manager (`<leader>q` is the prefix for Persistence):
+  - `<leader>qs` : load the session for the current directory
+  - `<leader>qS` : select a session to load
+  - `<leader>ql` : load the last session
+  - `<leader>>qd` : stop Persistence (session won't be saved on exit)
 - Github Copilot is ready to use. You must `:Copilot auth` the very first time.
   If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
   with `<C-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
