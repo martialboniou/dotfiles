@@ -210,6 +210,7 @@ insert
   `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
 - `<leader>vb`/`<leader>bb` : Telescope buffers (*memo*: view buffers); **doesn't show
   the current one**; not in the ThePrimeagen setup
+  - `d` (in *normal* mode) : **d**elete a buffer (added in this setup)
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
 - Harpoon-related keybindings:

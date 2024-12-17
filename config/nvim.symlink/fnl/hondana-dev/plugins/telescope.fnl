@@ -16,8 +16,14 @@
                   ;; NOTE: `<C-y>` is like `<CR>` by default
                   :mappings {:i {"<C-y>" (-> :telescope.actions
                                              (require)
-                                             (. :select_default))}}}]
-    (setup {: defaults :extensions {:fzf {} :ui-select [(get_dropdown)]}})
+                                             (. :select_default))}}}
+        pickers {:buffers {:mappings {:n {:d (-> :telescope.actions (require)
+                                                 (. :delete_buffer))
+                                          :q (-> :telescope.actions (require)
+                                                 (. :close))}}}}]
+    (setup {: defaults
+            : pickers
+            :extensions {:fzf {} :ui-select [(get_dropdown)]}})
     ;; additional live multigrep (based on TJ Devries' 2024 advent-of-nvim)
     ;; usage: <pattern><2-spaces><glob-pattern>
     ;; keybinding: <leader>sm
