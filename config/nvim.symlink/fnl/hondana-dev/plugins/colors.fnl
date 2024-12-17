@@ -22,8 +22,44 @@
 
 (tc type "fun(self:LazyPlugin, opts:table)")
 (fn config [_ opts]
-  (let [{: setup} (require :mini.hues)]
+  (let [{: setup} (require :mini.hues)
+        max-colors 8
+        ;; set rainbow-delimiters to {} if you want it be auto-generated
+        rainbow-delimiters {:RainbowDelimiterBlue {:foreground 53233}
+                            :RainbowDelimiterCyan {:foreground 55466}
+                            :RainbowDelimiterGreen {:foreground 10537290}
+                            :RainbowDelimiterOrange {:foreground 16748401}
+                            :RainbowDelimiterRed {:foreground 16746950}
+                            :RainbowDelimiterViolet {:foreground 13540095}
+                            :RainbowDelimiterYellow {:foreground 15510028}}]
+    ;; this block should not be executed
+    (when (and (< opts.n_hues max-colors) (not (next rainbow-delimiters)))
+      (local {: plugins :n_hues hues} opts)
+      ;; make 8 hues for rainbow-delimiters
+      (set opts.n_hues max-colors)
+      (when (not opts.plugins)
+        (set opts.plugins {}))
+      (set opts.plugins.default false)
+      (set (. opts.plugins "HiPhish/rainbow-delimiters.nvim") true)
+      (setup opts)
+      (var rainbow-colors (vim.tbl_keys rainbow-delimiters))
+      (when (not (next rainbow-colors))
+        (set rainbow-colors
+             [:RainbowDelimiterBlue
+              :RainbowDelimiterCyan
+              :RainbowDelimiterGreen
+              :RainbowDelimiterOrange
+              :RainbowDelimiterRed
+              :RainbowDelimiterViolet
+              :RainbowDelimiterYellow]))
+      (each [_ k (ipairs rainbow-colors)]
+        (set (. rainbow-delimiters k) (vim.api.nvim_get_hl_by_name k true)))
+      (set opts.n_hues hues)
+      (set opts.plugins plugins))
     (setup opts)
+    ;; a more colorful rainbow-delimiters
+    (each [k v (pairs rainbow-delimiters)]
+      (vim.api.nvim_set_hl 0 k v))
     ;; trigger an event to proc `hondana-dev.linenumbers`'s autocmd
     ;; as mini.hues is NOT a colorscheme
     (vim.cmd "doau ColorScheme")))
@@ -49,14 +85,6 @@
                   (local {: strategy} (require :rainbow-delimiters))
                   (set vim.g.rainbow_delimiters
                        {:blacklist [:c :cpp :h :hpp :m]
-                        ;; shuffle colors
-                        :highlight [:RainbowDelimiterGreen
-                                    :RainbowDelimiterOrange
-                                    :RainbowDelimiterCyan
-                                    :RainbowDelimiterYellow
-                                    :RainbowDelimiterBlue
-                                    :RainbowDelimiterRed
-                                    :RainbowDelimiterViolet]
                         :query {"" :rainbow-delimiters :latex :rainbow-blocks}
                         :strategy {"" (. strategy :global)
                                    :commonlisp (. strategy :local)}}))})
