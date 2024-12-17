@@ -1,10 +1,13 @@
 (local api vim.api)
 (local pattern :*)
 
-;; (local ns (api.nvim_create_namespace :Hondana_Linenumbers))
-
 ;; F = utility functions
-(local F {:set #(api.nvim_set_hl 0 $...)
+(local F {:set #(do
+                  (api.nvim_set_hl 0 $...)
+                  (let [not-reg-exec? (= "" (vim.fn.reg_executing))]
+                    (when (and (not vim.o.lazyredraw) not-reg-exec?)
+                      (vim.cmd "silent redraw"))
+                    nil))
           ;; :set #(api.nvim_set_hl 0 $...)
           :get #(api.nvim_get_hl_by_name $ true)
           :au api.nvim_create_autocmd
@@ -16,7 +19,6 @@
             callback #(F.set :CursorLineNr orig-cursorline-hl)
             ;; suppose colors are set by mini.hues
             (ok insert-color) (pcall F.get :MiniStatuslineModeInsert)]
-        ;; (api.nvim_win_set_hl_ns 0 ns)
         (local insert-cursorline-hl
                (if ok insert-color ;;
                    ;; :else

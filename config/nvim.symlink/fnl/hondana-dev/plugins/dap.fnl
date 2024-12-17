@@ -66,8 +66,8 @@
       (set (. env.dap.listeners.after.event_initialized cfg) open)
       (set (. env.dap.listeners.before.event_terminated cfg) close)
       (set (. env.dap.listeners.before.event_exited cfg) close))
-    ;; lldb adapter TODO: move to lldb-dap
-    (local lldb-adapter-name :lldb-vscode)
+    ;; lldb adapter, formely lldb-vscode
+    (local lldb-adapter-name :lldb-dap)
     (var lldb-adapter (concat! "/" :/usr :local :bin lldb-adapter-name))
     (when (-> (vim.uv.os_uname)
               (. :sysname)
