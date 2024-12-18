@@ -4,20 +4,27 @@ debug = {
 }
 
 -- there should be a copy of a recent fennel script here (via these dotfiles)
-local has_fennel, fennel = pcall(dofile, "/Users/mars/.config/nvim/fnl/fennel.lua", "r")
+local fennel_script = table.concat({
+  os.getenv("HOME"),
+  ".config",
+  "nvim",
+  "fnl",
+  "fennel.lua",
+}, "/")
+local has_fennel, fennel = pcall(dofile, fennel_script, "r")
 local config
 
 if has_fennel then
   -- fennel version: check the `fnl/hondana-dev` subdirectory
   do
     local configdir = wezterm.config_dir
-    wezterm.log_error(configdir)
     local fnldir = configdir .. "/fnl"
     for _, dir in ipairs({ "/?.fnl", "/?/init.fnl" }) do
       fennel.path = fnldir .. dir .. ";" .. fennel.path
-      fennel["macro-path"] = fnldir .. dir .. ";" .. fennel["macro-path"]
+      fennel.macroPath = fnldir .. dir .. ";" .. fennel.macroPath
     end
-    fennel["macro-path"] = fnldir .. "/?/init-macros.fnl" .. ";" .. fennel["macro-path"]
+    fennel.macroPath = fnldir .. "/?/init-macros.fnl" .. ";" .. fennel.macroPath
+    fennel["macro-path"] = fennel.macroPath
   end
   fennel.install()
   config = require("hondana-dev")

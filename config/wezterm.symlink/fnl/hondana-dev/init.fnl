@@ -1,7 +1,19 @@
-(local config (-> :wezterm (require) (#($.config_builder))))
+;; REMINDER: <C-S-l> : log window (use `log_info` to print there)
+;;
+;; Lua 5.4 has the second value (not LuaJIT)
+(local (_ file-name) ...)
+(local {: log_info
+        :config_builder builder
+        :add_to_config_reload_watch_list watch} (require :wezterm))
+
+;; comment the next line when debugging
+(local _ log_info)
+(local config (builder))
 ;;
 ;; SETUP FROM ITERM
 ;;
+(when file-name (watch file-name))
+(set config.warn_about_missing_glyphs false)
 (set config.font_size 11.0)
 ;; KEYS
 ;; both option keys: esc+ (apps can change this)
