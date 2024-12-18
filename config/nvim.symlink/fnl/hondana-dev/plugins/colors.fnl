@@ -60,6 +60,8 @@
     ;; a more colorful rainbow-delimiters
     (each [k v (pairs rainbow-delimiters)]
       (vim.api.nvim_set_hl 0 k v))
+    ;; transparency
+    (vim.cmd "hi Normal guibg=NONE")
     ;; trigger an event to proc `hondana-dev.linenumbers`'s autocmd
     ;; as mini.hues is NOT a colorscheme
     (vim.cmd "doau ColorScheme")))
