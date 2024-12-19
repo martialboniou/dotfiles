@@ -14,22 +14,27 @@
                   :layout_config {:height 0.95}
                   ;; REMINDER `git_branches`'s `<C-y>` is still `git_merge_branch`
                   ;; NOTE: `<C-y>` is like `<CR>` by default
-                  :mappings {:i {"<C-y>" (-> :telescope.actions
-                                             (require)
+                  :mappings {:i {"<C-y>" (-> :telescope.actions (require)
                                              (. :select_default))}}}
         pickers {:buffers {:mappings {:n {:d (-> :telescope.actions (require)
                                                  (. :delete_buffer))
                                           :q (-> :telescope.actions (require)
-                                                 (. :close))}}}}]
-    (setup {: defaults
-            : pickers
-            :extensions {:fzf {} :ui-select [(get_dropdown)]}})
+                                                 (. :close))}}}}
+        extensions {:fzf {}
+                    :frecency {:show_scores false
+                               :db_safe_mode false
+                               :auto_validate true
+                               :db_validate_threshold 10
+                               :show_filter_column false}
+                    :ui-select [(get_dropdown)]}]
+    (setup {: defaults : pickers : extensions})
     ;; additional live multigrep (based on TJ Devries' 2024 advent-of-nvim)
     ;; usage: <pattern><2-spaces><glob-pattern>
     ;; keybinding: <leader>sm
     (multigrep-init)
     (doto load_extension
       (pcall :fzf)
+      (pcall :frecency)
       (pcall :ui-select))))
 
 ;;; KEYS
@@ -68,7 +73,10 @@
                      [[:vh :sh] help_tags "Open a help tag picker"]
                      ;; buffers (memo: view buffers + bb as alias; search other buffers)
                      [[:vb :bb :sb]
-                      #(buffers {:ignore_current_buffer true})
+                      #(buffers {:sort_mru true
+                                 :sort_lastused true
+                                 ;; :initial_mode :normal
+                                 :ignore_current_buffer true})
                       "Open a fuzzy buffer picker"]
                      ;;; ADDITIONAL KEYMAPS (inspired by kickstart.nvim)
                      ;; / = fuzzy search (BEST ONE!)
@@ -81,6 +89,10 @@
                      [:sr resume "Resume a previous picker"]
                      ;; diagnostics (memo: search diagnostics)
                      [:sd diagnostics "Open a diagnostic picker"]
+                     ;; most frequently used files (extension: frecency; memo: search Frequently)
+                     [:sF
+                      #(vim.cmd "Telescope frecency workspace=CWD")
+                      "Open a most frequently used file picker (root dir)"]
                      ;; keymaps (memo: search keymaps)
                      [:sk keymaps "Open a keymap picker"]
                      ;; open file live_grep (memo: search /)
@@ -122,6 +134,7 @@
                        {1 :nvim-telescope/telescope-fzf-native.nvim
                         :build :make
                         : cond}
+                       :nvim-telescope/telescope-frecency.nvim
                        :nvim-telescope/telescope-ui-select.nvim]
         : config
         : keys})

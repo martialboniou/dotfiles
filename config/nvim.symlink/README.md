@@ -203,7 +203,8 @@ insert
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
   so you can paste the same again
 - `<leader>pv` : `mini.files` at root (ie *Cwd*; **p**roject **v**iew)
-- `<leader>ff>`/`<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup)
+- `<leader>ff>`/`<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup;
+  notice there's `<leader>sF` for Telescope most frequently used files (see *other Telescope keybindings*))
 - `<leader>ps` : Telescope project search (`rg`!)
 - `<leader>vh` : Telescope view helptags
 - `<leader>vv` : Telescope recent files (*memo*: view viewed/**v**iew **v**isited);
@@ -300,6 +301,9 @@ insert
   - `<leader>/`  : Telescope search word (**MOST IMPORTANT**; *memo*: `/`)
   - `<leader>sr` : Telescope **resume selections from the previous picker**
   - `<leader>sd` : Telescope **diagnostic**
+  - `<leader>sF` : Telescope search the most frequently used files at the root directory
+    (using the `frecency` extension; *memo*: **s**earch **F**requently used)
+    - NOTE: launch the command `Telescope frecency workspace=CWD`
   - `<leader>sk` : Telescope **s**earch **k**eymaps
   - `<leader>s/` : Telescope **s**earch *live grep* AKA `/` in open files
   - `<leader>sb` : Telescope **s**earch **b**uiltin selector
