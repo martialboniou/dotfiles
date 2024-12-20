@@ -1,5 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 
+(local in table.insert)
+
 ;; additional command for the Tangerine's lazy config function:
 ;;   FnlAddG adds globals to the tangerine.fennel's compiler
 ;; usage (example to compile love2d.org's code from tangerine):
@@ -41,7 +43,7 @@
 ;; Sleuth.vim: auto-adjust `tabstop`/`shiftwidth` & `expandtab` based on the current file
 ;; usage:
 ;;   :Sleuth
-(table.insert P {1 :tpope/vim-sleuth :cmd [:Sleuth]})
+(in P {1 :tpope/vim-sleuth :cmd [:Sleuth]})
 
 ;; Marks: marks.nvim to improve the mark navigation
 ;; memo:
@@ -54,7 +56,7 @@
 ;;   - m   : move to next mark
 (->> :chentoast/marks.nvim
      (#{1 $ :event :VeryLazy :opts {}})
-     (table.insert P))
+     (in P))
 
 ;; StartupTime: benchmarks startup event timing using the command `:StartupTime`
 ;; memo:
@@ -64,17 +66,17 @@
 (let [init #(set vim.g.startuptime_tries 10)]
   (->> :dstein64/vim-startuptime
        (#{1 $ :cmd :StartupTime : init})
-       (table.insert P)))
+       (in P)))
 
 ;; Persistence: simple session management
 (let [event :BufReadPre
       opts {;; mandatory
             }
       keys #(let [{: load : select : stop} (require :persistence)]
-              [{1 :<leader>qs
+              [{1 :<leader>qq
                 2 load
                 :desc "Load the session for the current directory"}
-               {1 :<leader>qS 2 select :desc "Select a session to load"}
+               {1 :<leader>qs 2 select :desc "Select a session to load"}
                {1 :<leader>ql
                 2 #(load {:last true})
                 :desc "Load the last session"}
@@ -83,36 +85,36 @@
                 :desc "Stop Persistence => session won't be saved on exit"}])]
   (->> :folke/persistence.nvim
        (#{1 $ : event : keys : opts})
-       (table.insert P)))
+       (in P)))
 
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
-(->> :folke/which-key.nvim
-     (#{1 $
-        :event :VeryLazy
-        :config #(vim.schedule_wrap (let [{: add : setup} (require :which-key)]
-                                      (setup)
-                                      ;; TODO: customize (REMINDER: `:hidden true` to disable)
-                                      ;; HACK: shouldn't be here
-                                      (add {1 :<leader>I :desc "Paredit raise"})
-                                      (add {1 :<leader>J :desc "Paredit join"})
-                                      (add {1 :<leader>O :desc "Paredit split"})
-                                      (add {1 :<leader>S
-                                            :desc "Paredit splice"})
-                                      (add {1 :<leader>W :desc "Paredit wrap"})
-                                      (add {1 "<leader>("
-                                            :desc "Paredit toggle"})
-                                      (add {1 :<leader><
-                                            :desc "Paredit move left"})
-                                      (add {1 :<leader>>
-                                            :desc "Paredit move right"})
-                                      (add {1 :<leader><Up>
-                                            :desc "Paredit killing backward splice"})
-                                      (add {1 :<leader><Down>
-                                            :desc "Paredit killing forward splice"})))})
-     (table.insert P))
+;; (->> :folke/which-key.nvim
+;;      (#{1 $
+;;         :event :VeryLazy
+;;         :config #(vim.schedule_wrap (let [{: add : setup} (require :which-key)]
+;;                                       (setup)
+;;                                       ;; TODO: customize (REMINDER: `:hidden true` to disable)
+;;                                       ;; HACK: shouldn't be here
+;;                                       (add {1 :<leader>I :desc "Paredit raise"})
+;;                                       (add {1 :<leader>J :desc "Paredit join"})
+;;                                       (add {1 :<leader>O :desc "Paredit split"})
+;;                                       (add {1 :<leader>S
+;;                                             :desc "Paredit splice"})
+;;                                       (add {1 :<leader>W :desc "Paredit wrap"})
+;;                                       (add {1 "<leader>("
+;;                                             :desc "Paredit toggle"})
+;;                                       (add {1 :<leader><
+;;                                             :desc "Paredit move left"})
+;;                                       (add {1 :<leader>>
+;;                                             :desc "Paredit move right"})
+;;                                       (add {1 :<leader><Up>
+;;                                             :desc "Paredit killing backward splice"})
+;;                                       (add {1 :<leader><Down>
+;;                                             :desc "Paredit killing forward splice"})))})
+;;      (in P))
 
 ;; Luvit-Meta: collects meta type definitions for Luvit
-(table.insert P {1 :Bilal2453/luvit-meta :lazy true})
+(in P {1 :Bilal2453/luvit-meta :lazy true})
 
 P

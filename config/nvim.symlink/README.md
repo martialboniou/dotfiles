@@ -355,8 +355,8 @@ insert
     the current square-bracketed word at the cursor by default (ie the
     *yanked* text surrounded by any `[ ]`)
 - Persistence, a simple session manager (`<leader>q` is the prefix for Persistence):
-  - `<leader>qs` : load the session for the current directory
-  - `<leader>qS` : select a session to load
+  - `<leader>qq` : load the session for the current directory
+  - `<leader>qs` : select a session to load
   - `<leader>ql` : load the last session
   - `<leader>>qd` : stop Persistence (session won't be saved on exit)
 - Github Copilot is ready to use. You must `:Copilot auth` the very first time.

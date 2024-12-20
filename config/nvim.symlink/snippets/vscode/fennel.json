@@ -1,6 +1,8 @@
 {
-    "Skip formatting the next sexp": {
-        "prefix": ";skip",
-        "body": [";; fnlfmt: skip"]
-    }
+  "Skip formatting the next sexp": {
+    "prefix": ";skip",
+    "body": [
+      ";; fnlfmt: skip"
+    ]
+  }
 }

@@ -36,7 +36,7 @@
            :colorcolumn :100
            :signcolumn :yes
            :updatetime 50
-           :timeoutlen 300
+           :timeoutlen 3000
            :list true
            :listchars {:tab "» " :trail "·" :nbsp "␣"}
            :inccommand :split}]
