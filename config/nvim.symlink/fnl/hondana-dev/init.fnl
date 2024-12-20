@@ -1,6 +1,6 @@
 (local root (or ... :hondana-dev))
 
-(local P [:status :set :remap :linenumbers])
+(local P [:status :set :command :remap :linenumbers])
 (for [i 1 (length P)]
   (-> root
       (.. "." (. P i))

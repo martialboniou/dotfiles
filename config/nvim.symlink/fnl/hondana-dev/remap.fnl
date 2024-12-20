@@ -86,11 +86,11 @@
                         :<leader>k :lprev})]
   (keyset :n key (.. :<Cmd> navi :<CR>zz)))
 
-;; <leader>ss => search-replace (in normal/visual mode) w/ confirmation
+;; gs => search-replace (in normal/visual mode) w/ confirmation
 (let [cmds {:n (.. ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/cgI" (**! :<Left> 4))
             :v (.. ":s///cgI" (**! :<Left> 5))}]
   (each [mode cmd (pairs cmds)]
-    (keyset mode :<leader>ss cmd {:desc "Search/Replace template"})))
+    (keyset mode :gs cmd {:desc "Search/Replace template"})))
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)
@@ -100,43 +100,9 @@
        (#(keyset :n $ ":let @/=expand('<cword>')<CR>cgn"
                  {:desc "Replace the current word using `cgn` (. to propagate)"}))))
 
-;; added by https://gitlab.com/martialhb
-; - change local current directory
+; <leader>cd => change local current directory
 (keyset :n :<leader>cd ":lcd %:h<CR>"
         {:desc "Change local directory according to this file location"})
 
-; - center the buffer vertically according to the cursor's position
+; center the buffer vertically according to the cursor's position
 (keyset :n "z;" ":<C-u>normal! zszH<CR>")
-;; TODO: test the following command; find a better keybinding
-; - print the current filename at the cursor position
-(keyset :n :<leader>. ":put =expand('%:t')<CR>")
-; - print a C #include guard at current the cursor position
-(λ include-guard-scheme []
-  (when (= (vim.fn.expand "%p") "")
-    (error "Empty filename (save file and try again)"))
-  ;; vimscript's toupper() is unicode (might not be a problem here: "a-z\.")
-  (let [t #(-> $ (vim.fn.expand) (vim.fn.toupper))
-        ext (t "%:t:e")
-        guard (.. (t "%:t:r") "_" (if (= "" ext) "" (.. ext "_")))]
-    (each [_ cmd (ipairs [(.. :O "#ifndef " guard)
-                          (.. :o "#define " guard)
-                          :o
-                          (.. :o "#endif // " guard)
-                          :k])]
-      (vim.cmd.normal cmd))))
-
-(keyset :n :<leader>h include-guard-scheme
-        {:desc "Print a C #include guard at the current cursor position"})
-
-;; toggle the executability of the current file
-(λ toggle-exec []
-  (let [{: toggle-executable} (require :hondana-dev.utils)
-        (ok res) (pcall toggle-executable)]
-    (-> ok
-        (not)
-        (#(if $ "Error: toggle-executable in hondana-dev.remap: " "Success: "))
-        (.. res)
-        (print))))
-
-(keyset :n :<leader>x toggle-exec
-        {:silent false :desc "Toggle the current file as executable"})

@@ -6,6 +6,10 @@
 (tc type string|boolean)
 (local paredit-version (not :julienvincent))
 
+;; list of filetypes where `gt` toggles a checkbox (eg. in a list)
+(tc type "string[]")
+(local checkbox-text-fts [:markdown :org :text :asciidoc])
+
 ;; main loading event
 ;; FIX: Event?
 (tc type "string[]")
@@ -76,8 +80,15 @@
          #(let [{: setup} (require :mini.ai)]
             (setup $2))]
         [:opdavies/toggle-checkbox.nvim
-         #(vim.keymap.set :n :<leader>tt
-                          ":lua require('toggle-checkbox').toggle()<CR>")]
+         #(let [{:nvim_create_user_command uc
+                 :nvim_create_autocmd au
+                 :nvim_create_augroup augroup} vim.api
+                group (augroup :Hondana_ToggleCheckbox {:clear true})
+                callback #(vim.keymap.set :n :gt vim.cmd.ToggleCheckbox
+                                          {:desc "Toggle Checkbox in text/md/org files"})
+                pattern checkbox-text-fts]
+            (uc :ToggleCheckbox ":lua require('toggle-checkbox').toggle()" {})
+            (au :FileType {: callback : group : pattern}))]
         ;; TEST: a new treesitter-based paredit (used in fennel)
         ;; NOTE: put this code at the end (usage of `unpack`)
         (if (not= :julienvincent paredit-version)
@@ -88,13 +99,15 @@
                 (set vim.g.paredit_matchlines 300)
                 ;; HACK: fennel & scheme have no Vim syntax but Treesitter only
                 ;; => solution: syntax=lisp to avoid comment/string parens' matching
-                (let [group (augroup :KovisoftParedit_NoSyntaxHack {})
+                (let [group (augroup :KovisoftParedit_NoSyntaxHack
+                                     {:clear true})
                       callback #(vim.schedule #(set! :syntax :lisp))]
                   (au :FileType
                       {: callback : group :pattern [:fennel :scheme :query]}))
                 ;; tressitter's query filetype needs paredit too
                 ;; FIXME: sometimes doesn't work (especially when typing `o` after `:TreeInspect`
-                (let [group (augroup :KovisoftParedit_Enable_Query {})
+                (let [group (augroup :KovisoftParedit_Enable_Query
+                                     {:clear true})
                       callback #(vim.cmd "cal PareditInitBuffer()")]
                   (au :FileType {: callback : group :pattern :query}))
                 ;; fancy keybindings
@@ -208,7 +221,7 @@ P
 ;; TOGGLE-CHECKBOX
 ;; toggle a markdown/org box; [ ] becomes [x]; [x] becomes [ ]; append [ ] 
 ;; if nothing while respecting the list tag (say, `-`)
-;  <leader>tt : toggle checkbox (useful in markdown/org)
+;  gt : toggle checkbox (useful in markdown/org)
 ;
 ;;   - pros: lightweight, no need mkdnflow or any specific tool
 ;;   - cons: no multi-switch, no way to customize the checked_character `x`

@@ -114,6 +114,18 @@ Vim keybinding reminders & tips
       - `E`/`gE` : move to the next/previous tail element (`gE` was the default
       [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval*
       keybinding; it's `gB` in this setup)
+- utility commands
+  - `:ToggleExec` : toggle the executability of a file (different from the ThePrimeagen's version;
+  the previous keybinding `<leader>x` is obsolete)
+  - `:ImprintFilename` : imprint the current filename at the cursor position
+  - `:ToggleCheckbox` : toggle a checkbox (eg. for a list in a buffer; only works in a *non-empty*
+    line; add `- [ ]` at the beginning of the line if no *dash* found there; otherwise,
+    add `[ ]` just after the initial *dash*; if `- [ ]`/`- [x]` already exists, replace it by
+    `- [x]`/`- [ ]` respectively)
+    - use `gt` as a keybinding in a text/markdown file (check the [Cheat sheet](#cheat-sheet)
+      subsection)
+  - `:ImprintCHeader` (in `cpp`/`h` files) : imprint a C `#include` guard at the current cursor
+    position
 
 Plugins and new keybindings
 ---------------------------
@@ -154,6 +166,7 @@ It's great but:
 
 ### Example of workflow
 
+- (if persistence) `<leader>qs` : restore the last session
 - (locally) `<leader>cd` : change locally the working directory
 - `ga` : tag a file in harpoon 2 (first)
 - `<leader>pf` or `<leader>pv` : project view at the current directory
@@ -193,10 +206,10 @@ insert
   - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch window to edit
     the Treesitter queries in Scheme (the `:EditQuery` command does it too)
 - **IMPORTANT**: `<leader>f` : **format** using [Conform](https://github.com/stevearc/conform.nvim);
-- **IMPORTANT!**: `<leader>ss` : create a template to replace the *current word*
-  (*memo*: `s` as in `:%s`; `<leader>s` is also the root key for Telescope); type
-  `a` (for `all`) to skip the **confirmation**
-- `<leader>ss` (in visual) : create a template to replace a *pattern
+- **IMPORTANT!**: `gs` : create a template to replace the *current word*
+  (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation** (`<leader>ss`
+  was previously used in this case; it's the Telescope *spell suggest* keybinding now)
+- `gs` (in visual) : create a template to replace a *pattern
   in the selection*; same confirmation option as above
 - `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but 
   it may *proc* to easily; also *same key twice can be harmful*; *memo*: **p**roject **f**iles)
@@ -219,7 +232,6 @@ insert
   - `gh` : harpoon quick menu (*memo*: **G**o to **H**arpoon; it was `<C-e>` originally)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
-- `<leader>x`  : toggle the executability of a file (different from the ThePrimeagen's version)
 - `<leader>j`/`<leader>k` : quickfix local navigation (ie `lnext`/`lprev`; inverted from ThePrimeagen's)
 - `<C-j>`/`<C-k>` : quickfix navigation (ie `cnext`/`cprev`; inverted from ThePrimeagen's;
   more natural; same order as in quickfix/**Trouble**)
@@ -309,6 +321,7 @@ insert
   - `<leader>sb` : Telescope **s**earch **b**uiltin selector
   - `<leader>sw` : Telescope **s**earch **w**ord (may be deprecated)
   - `<leader>sg` : Telescope **s**earch live **g**rep
+  - `<leader>ss` : Telescope **s**pell **s**uggest
   - `<leader>sm` : (only in this setup) Telescope **s**earch live **m**ultigrep (*usage*:
     `<pattern><2-spaces><glob-pattern>`; examples of `<glob-pattern>`: `*.fnl`/`**/plugins/**`)
   - special `stdpath` files:
@@ -337,7 +350,7 @@ insert
   - `:ZkNotes` (key: `<leader>zo`) : check your global notebook according to
     your `~/.config/zk/config.toml` if there's no `.zk` in the vicinity
     of the current buffer
-  - `<leader>zn`: add a new note from the `[[<title>]]` at the current line
+  - `<leader>zn`: add a new note from the ```[[<title>]]``` at the current line
   - **(untested)** `<leader>zo`: open Telescope on your zk notebook searching
     the current square-bracketed word at the cursor by default (ie the
     *yanked* text surrounded by any `[ ]`)
@@ -360,6 +373,9 @@ insert
     `<M-l>` was reserved in my [yabai](https://github.com/koekeishiya/yabai)
     setup; *memo*: `=` to synchronize as already used in `mini.files`; also,
     `=` is just below `]` on the dvorak layout)
+- `gt` (in a text/markdown file) : toggle a checkbox (only works in a *non-empty* line;
+  also available in Org mode & `asciidoc` files; check the utility command `:ToggleCheckbox`
+  in the [keybindings](#vim-keybinding-reminders-tips) section)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
   (setup in `plugins/procrastinate.lua`)
   - `<leader>zz`  : randomly activate an animation

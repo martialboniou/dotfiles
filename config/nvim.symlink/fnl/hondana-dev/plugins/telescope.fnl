@@ -52,6 +52,7 @@
          : resume
          : oldfiles
          : buffers
+         : spell_suggest
          : current_buffer_fuzzy_find} (require :telescope.builtin)]
     (make-lazykeys! [;;; PROJECT KEYMAPS
                      ;; rg-filtered files (memo: project search)
@@ -107,6 +108,11 @@
                      [:sw grep_string "Open a word picker"]
                      ;; live grep (memo: search grep)
                      [:sg live_grep "Open a live grep picker"]
+                     ;; spell suggest
+                     [:ss
+                      #(let [{: get_cursor} (require :telescope.themes)]
+                         (spell_suggest (get_cursor {})))
+                      "Suggest a spell in a picker"]
                      ;;; EDIT STDPATH FILES
                      ;; open Neovim configuration files (memo: edit nvim)
                      [:en
