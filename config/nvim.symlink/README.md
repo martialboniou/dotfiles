@@ -166,7 +166,7 @@ It's great but:
 
 ### Example of workflow
 
-- (if persistence) `<leader>qs` : restore the last session
+- (if persistence) `<leader>qq` : restore the last session
 - (locally) `<leader>cd` : change locally the working directory
 - `ga` : tag a file in harpoon 2 (first)
 - `<leader>pf` or `<leader>pv` : project view at the current directory

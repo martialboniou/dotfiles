@@ -24,7 +24,8 @@ can share multiple keybindings)"
                        (when (= :string (type keys)) (set keys [keys]))
                        (assert-compile (and (table? keys) (<= 1 (length keys)))
                                        "each key must be in a sequence" keys)
-                       (for [i 1 (length keys)]
+                       (local tally (length keys))
+                       (for [i 1 tally]
                          (var key (. keys i))
                          ;; append <leader> when required
                          (when (not (key:match "^<"))

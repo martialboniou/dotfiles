@@ -12,7 +12,7 @@
                             :markdown_inline :html            :php        :yaml
                             :ocaml           :ocaml_interface :scheme     :zig
                             :go              :elixir          :eex        :heex
-                            :bash])
+                            :bash            :roc])
 
 ;;; KEYS
 (tc type "table<string, string>")

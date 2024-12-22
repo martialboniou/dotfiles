@@ -237,13 +237,15 @@
                                                      (or server.capabilities {})))
                            (-> lspconfig (. server-name) (. :setup)
                                (#($ server)))))})
+    (tc diagnostic "disable-next-line: missing-fields")
     (mason-lspconfig.setup {: handlers}))
   ;;
   ;; 4/4 step: LSPAttach's callback to append the keybindings
   ;;
   (let [callback (fn [event]
-                   (let [fs (keymap-set-fns)]
-                     (for [i 1 (length fs)]
+                   (let [fs (keymap-set-fns)
+                         tally (length fs)]
+                     (for [i 1 tally]
                        (let [f (. fs i)]
                          (f event.buf)))))]
     (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback})))

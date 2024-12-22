@@ -30,7 +30,7 @@
     (-> ok
         (#(if $ (values "Success:" info)
               (values "Error: toggle-executable in hondana-dev.remap:" err)))
-        (#(let [(msg level) $]
+        (#(let [(msg level) $...]
             (vim.notify (.. msg " " res) level))))))
 
 ;;; COMMANDS

@@ -1,6 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 
 (local in table.insert)
+(local api vim.api)
 
 ;; additional command for the Tangerine's lazy config function:
 ;;   FnlAddG adds globals to the tangerine.fennel's compiler
@@ -70,8 +71,15 @@
 
 ;; Persistence: simple session management
 (let [event :BufReadPre
-      opts {;; mandatory
-            }
+      opts {}
+      config #(let [{: setup} (require :persistence)]
+                (setup $2)
+                (api.nvim_create_autocmd :User
+                                         {:group (api.nvim_create_augroup :Hondana_Persistence_PostLoadInfo
+                                                                          {:clear true})
+                                          :pattern :PersistenceLoadPost
+                                          :callback #(vim.notify "Session restored!"
+                                                                 vim.log.levels.INFO)}))
       keys #(let [{: load : select : stop} (require :persistence)]
               [{1 :<leader>qq
                 2 load
@@ -84,7 +92,7 @@
                 2 stop
                 :desc "Stop Persistence => session won't be saved on exit"}])]
   (->> :folke/persistence.nvim
-       (#{1 $ : event : keys : opts})
+       (#{1 $ : event : keys : opts : config})
        (in P)))
 
 ;; WhichKey: displays available keybindings in a popup as you type
