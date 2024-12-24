@@ -1,6 +1,6 @@
 ;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-12-02
+;;; 2024-12-24
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
 (macro set-value! [x ...]
@@ -205,13 +205,10 @@
     ;;
     ;; 2/4 step: add manually-installed servers (non Mason ones; check `servers`)
     ;;
-    ;; * Zig *
-    ;; NOTE: I need a zls that fits the zig's version
-    (when (-> :zls (vim.fn.executable) (= 1))
-      (lspconfig.zls.setup {: capabilities
-                            :cmd [:zls]
-                            :filetypes [:zig]
-                            :root_dir (lspconfig.util.root_pattern :build.zig)}))
+    ;; * Roc *
+    ;;
+    (when (-> :roc_language_server (vim.fn.executable) (= 1))
+      (lspconfig.roc_ls.setup {: capabilities}))
     ;;
     ;; * Fennel *
     ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
@@ -227,6 +224,14 @@
                                                                :type :directory
                                                                :path (vim.fn.getcwd)})
                                                  (. 1))}))
+    ;;
+    ;; * Zig *
+    ;; NOTE: I need a zls that fits the zig's version
+    (when (-> :zls (vim.fn.executable) (= 1))
+      (lspconfig.zls.setup {: capabilities
+                            :cmd [:zls]
+                            :filetypes [:zig]
+                            :root_dir (lspconfig.util.root_pattern :build.zig)}))
     ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
     ;;
