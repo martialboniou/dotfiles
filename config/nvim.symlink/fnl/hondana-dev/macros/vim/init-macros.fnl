@@ -10,6 +10,16 @@
               (table.insert out `(set (. vim.opt ,o) ,x)))
             `(do
                ,(unpack out))))
+ :setlocal!! (λ [x ...]
+               "set the vim.opt_local options to x"
+               (icollect [_ opt (ipairs [...])]
+                 (assert-compile (= :string (type opt))
+                                 "expected string for every vararg"))
+               (let [out []]
+                 (each [_ o (ipairs [...])]
+                   (table.insert out `(set (. vim.opt_local ,o) ,x)))
+                 `(do
+                    ,(unpack out))))
  :make-lazykeys! (λ [keymaps]
                    "build a keymap table as LazyKeys; accepts a sequence of keys (thus a same function
 can share multiple keybindings)"

@@ -206,15 +206,16 @@
     ;; 2/4 step: add manually-installed servers (non Mason ones; check `servers`)
     ;;
     ;; * Roc *
-    ;;
+    ;; NOTE: I disable the syntax highlight from LSP (use Tree-sitter only)
     (when (-> :roc_language_server (vim.fn.executable) (= 1))
-      (lspconfig.roc_ls.setup {: capabilities}))
+      (let [on_init #(set $.server_capabilities.semanticTokensProvider nil)]
+        (lspconfig.roc_ls.setup {: on_init : capabilities})))
     ;;
     ;; * Fennel *
     ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
     ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
     (when (-> :fennel-ls (vim.fn.executable) (= 1))
-      ;; NOTE: change root project with `:lcd` if needed
+      ;; TIP: change root project with `:lcd` if needed
       (lspconfig.fennel_ls.setup {: capabilities
                                   :root_dir ;; search in the vicinity instead of visiting
                                   ;; the ancestors with root_pattern from nvim-lspconfig

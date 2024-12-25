@@ -1,7 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: or=} :hibiscus.core)
-(import-macros {: set! : set+ : setlocal! : g!} :hibiscus.vim)
-(import-macros {: set!!} :hondana-dev.macros.vim)
+(import-macros {: set! : g!} :hibiscus.vim)
+(import-macros {: set!! : setlocal!!} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
 (local {:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api)
@@ -69,9 +69,8 @@
 ;; 4-space indentation for some filetypes
 ;; REMINDER: each project should have its own setup
 (let [group (augroup :Hondana_Fantastic4Indentation {})
-      options [:sw :ts]
-      pattern [:c :cpp :zig :rust :go]
-      callback #(each [_ o (ipairs options)] (setlocal! o 4))]
+      pattern [:roc :zig :c :cpp :h :rust :go]
+      callback #(setlocal!! 4 :sw :ts)]
   (au :FileType {: callback : group : pattern}))
 
 ;; visible yank
@@ -81,7 +80,7 @@
 
 ;; shen programming language comments
 (let [group (augroup :Hondana_ShenComments {})
-      callback #(setlocal! :commentstring "\\\\ %s")]
+      callback #(setlocal!! "\\\\ %s" :commentstring)]
   (au :FileType {: callback : group :pattern :shen}))
 
 ;; TEST: restore last position (check ShaDa for other session/buffer restoration)
