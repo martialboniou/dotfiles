@@ -229,6 +229,8 @@
     ;; * Zig *
     ;; NOTE: I need a zls that fits the zig's version
     (when (-> :zls (vim.fn.executable) (= 1))
+      ;; no autosave b/c slow
+      (set vim.g.zig_fmt_autosave 0)
       (lspconfig.zls.setup {: capabilities
                             :cmd [:zls]
                             :filetypes [:zig]
