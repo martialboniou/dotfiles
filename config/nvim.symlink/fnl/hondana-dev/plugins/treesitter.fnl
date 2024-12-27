@@ -6,13 +6,14 @@
 (tc type "string[]")
 
 ;; fnlfmt: skip
-(local preferred-languages [:typescript      :tsx             :javascript :json
-                            :c               :awk             :lua        :fennel
-                            :vim             :vimdoc          :rust       :markdown
-                            :markdown_inline :html            :php        :yaml
-                            :ocaml           :ocaml_interface :scheme     :zig
-                            :go              :elixir          :eex        :heex
-                            :bash            :roc])
+(local preferred-languages [:typescript :tsx      :javascript :json
+                            :c          :awk      :lua        :fennel
+                            :rust       :yaml     :markdown   :markdown_inline
+                            :roc        :haskell  :ocaml      :ocaml_interface
+                            :zig        :go       :elixir     :eex
+                            :heex
+                            ;; these next ones may have queries used by hondana-dev.plugins.colors
+                            :commonlisp :latex])
 
 ;;; KEYS
 (tc type "table<string, string>")
@@ -94,7 +95,16 @@
 (fn F.config [_ opts]
   (-> :nvim-treesitter.configs
       (require)
-      (#($.setup opts))))
+      (#($.setup opts)))
+  (when (-> :koka (vim.fn.executable) (= 1))
+    ;; additional parser for koka
+    (let [{:get_parser_configs get} (require :nvim-treesitter.parsers)
+          parser-config (get)]
+      (set parser-config.koka {:install_info {:url "https://github.com/mtoohey31/tree-sitter-koka"
+                                              :branch :main
+                                              :files ["src/parser.c"
+                                                      "src/scanner.c"]}
+                               :filetype :koka}))))
 
 ;;; PLUGINS & SETUP
 (tc type LazySpec)

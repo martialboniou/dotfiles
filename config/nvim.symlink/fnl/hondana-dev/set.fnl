@@ -78,11 +78,14 @@
       callback #(vim.highlight.on_yank)]
   (au :TextYankPost {: callback : group}))
 
-;; shen programming language comments
+;; additional languages' setup
+;; - shen programming language comments (from Shen Technology (c) Mark Tarver; https://shenlanguage.org)
+;; NOTE: the language syntax has been embedded in this setup
 (let [group (augroup :Hondana_ShenComments {})
       callback #(setlocal!! "\\\\ %s" :commentstring)]
   (au :FileType {: callback : group :pattern :shen}))
 
+;; others
 ;; TEST: restore last position (check ShaDa for other session/buffer restoration)
 (let [group (augroup :Hondana_LastPosRestoration {})]
   (au :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)

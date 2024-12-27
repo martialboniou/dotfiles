@@ -236,6 +236,12 @@
                             :filetypes [:zig]
                             :root_dir (lspconfig.util.root_pattern :build.zig)}))
     ;;
+    ;; * Koka * (from Microsoft Research, Daan Leijen; Apache License v2.0)
+    ;; NOTE: append a new filetype for the .kk extension first
+    (when (-> :koka (vim.fn.executable) (= 1))
+      (vim.filetype.add {:extension {:kk :koka}})
+      (lspconfig.koka.setup {: capabilities}))
+    ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
     ;;
     (local handlers {1 (fn [server-name]
