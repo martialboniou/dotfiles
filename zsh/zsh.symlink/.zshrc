@@ -28,6 +28,10 @@
 #       - dirstack is saved between sessions (only if there's directory
 #       changes during the session); use the alias 'd' to get the dirs
 #       listing
+#       - the local fpath is ${HOME}/.zsh/zshrc.d/functions; you will find:
+#         - additional completions, by convention, starting with a `_`
+#         (eg. `_rustup`)
+#         - other functions starting with no `_` (except _guidirs)
 
 # your developer project home
 export DEVELOPER_ROOT="${HOME}/Documents/Code"
