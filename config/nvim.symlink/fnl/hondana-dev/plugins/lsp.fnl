@@ -45,6 +45,8 @@
                     :gD ["LSP Go to declaration" vim.lsp.buf.declaration]
                     :gI ["LSP Go to implementation (via Telescope)"
                          #(funcall! :telescope.builtin :lsp_implementations)]
+                    ;; TODO: mention me in README? (often used so better than `<leader>vdd`)
+                    :g/ ["View diagnostic" vim.diagnostic.open_float]
                     :K ["LSP Hover" vim.lsp.buf.hover]
                     ;; replaces vim.lsp.buf.workspace_symbol
                     :<leader>vws ["LSP View workspace symbols (via Telescope)"

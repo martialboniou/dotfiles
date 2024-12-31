@@ -54,3 +54,5 @@
   diffFilter = delta --color-only
 [delta]
   navigate = true
+[init]
+	defaultBranch = main
