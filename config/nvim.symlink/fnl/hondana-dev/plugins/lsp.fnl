@@ -244,6 +244,11 @@
       (vim.filetype.add {:extension {:kk :koka}})
       (lspconfig.koka.setup {: capabilities}))
     ;;
+    ;; * Elm *
+    ;; NOTE: options for `elm`: `init`, `make`, `reactor`...
+    (when (-> :elm-language-server (vim.fn.executable) (= 1))
+      (lspconfig.elmls.setup {: capabilities}))
+    ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
     ;;
     (local handlers {1 (fn [server-name]
