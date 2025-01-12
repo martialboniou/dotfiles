@@ -10,6 +10,10 @@
       (set (. o (tostring e)) x))
     o))
 
+(tc return boolean)
+(fn executable? [binary-name]
+  (-> binary-name (vim.fn.executable) (= 1)))
+
 ;; F = utility functions at the end of this module
 (local F {})
 
@@ -87,7 +91,7 @@
                 :ts_ls {}
                 :clangd {:cmd [(let [local-clangd (.. llvm-local-binary-path
                                                       :/clangd)]
-                                 (if (-> local-clangd (vim.fn.executable) (= 1))
+                                 (if (executable? local-clangd)
                                      local-clangd
                                      :clangd))]
                          ;; required because `conform` will do the job (was required for `null_ls` too)
@@ -162,6 +166,8 @@
                 :marksman {}
                 :vimls {}
                 :cssls {}
+                ;; NOTE: don't put haskell-language-server (hls) here because of
+                ;;       haskell-tools.nvim set in `hondana-dev.plugins.languages`
                 :ocamllsp {}
                 :gopls {}
                 :elixirls {}
@@ -172,19 +178,27 @@
 ;;; MASON'S FULL INSTALL LIST
 (tc type "string[]")
 (local ensure_installed (or (vim.tbl_keys servers) []))
-(vim.list_extend ensure_installed [:stylua
-                                   :jq
-                                   ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
-                                   :taplo
-                                   :ocamlformat
-                                   :clang-format
-                                   :awk-language-server
-                                   :markdownlint-cli2
-                                   :markdown-toc
-                                   :cmakelint
-                                   :gofumpt
-                                   :goimports-reviser
-                                   :golines])
+(vim.list_extend ensure_installed
+                 [:stylua
+                  :jq
+                  ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+                  :taplo
+                  :clang-format
+                  :awk-language-server
+                  :markdownlint-cli2
+                  :markdown-toc
+                  :cmakelint])
+
+(tc param additional_servers_alist "table<string, string[]>")
+(fn extend-if [additional-servers-alist]
+  (each [binary-name servers (pairs additional-servers-alist)]
+    (when (executable? binary-name)
+      (vim.list_extend ensure_installed servers))))
+
+(extend-if {:stack [:haskell-debug-adapter]
+            ;; TODO: :ghcup [:hls] ;; I prefer to get the fitted version via `ghcup`
+            :opam [:ocamlformat]
+            :go [:gofumpt :goimports-reviser :golines]})
 
 ;;; SETUP FOR LSPCONFIG & MASON
 (tc type "fun(self:LazyPlugin, opts:table): nil")
@@ -209,14 +223,14 @@
     ;;
     ;; * Roc *
     ;; NOTE: I disable the syntax highlight from LSP (use Tree-sitter only)
-    (when (-> :roc_language_server (vim.fn.executable) (= 1))
+    (when (executable? :roc_language_server)
       (let [on_init #(set $.server_capabilities.semanticTokensProvider nil)]
         (lspconfig.roc_ls.setup {: on_init : capabilities})))
     ;;
     ;; * Fennel *
     ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
     ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
-    (when (-> :fennel-ls (vim.fn.executable) (= 1))
+    (when (executable? :fennel-ls)
       ;; TIP: change root project with `:lcd` if needed
       (lspconfig.fennel_ls.setup {: capabilities
                                   :root_dir ;; search in the vicinity instead of visiting
@@ -230,7 +244,7 @@
     ;;
     ;; * Zig *
     ;; NOTE: I need a zls that fits the zig's version
-    (when (-> :zls (vim.fn.executable) (= 1))
+    (when (executable? :zls)
       ;; no autosave b/c slow
       (set vim.g.zig_fmt_autosave 0)
       (lspconfig.zls.setup {: capabilities
@@ -240,13 +254,13 @@
     ;;
     ;; * Koka * (from Microsoft Research, Daan Leijen; Apache License v2.0)
     ;; NOTE: append a new filetype for the .kk extension first
-    (when (-> :koka (vim.fn.executable) (= 1))
+    (when (executable? :koka)
       (vim.filetype.add {:extension {:kk :koka}})
       (lspconfig.koka.setup {: capabilities}))
     ;;
     ;; * Elm *
     ;; NOTE: options for `elm`: `init`, `make`, `reactor`...
-    (when (-> :elm-language-server (vim.fn.executable) (= 1))
+    (when (executable? :elm-language-server)
       (lspconfig.elmls.setup {: capabilities}))
     ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers

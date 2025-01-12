@@ -59,7 +59,7 @@
                     {:name :emoji :insert true}]
         :lisp [{:name :nvim_lsp_signature_help}
                {:name :nvim_lsp}
-               ;; cmp-conjure enabled by plugins.conjure
+               ;; cmp-conjure enabled by hondana-dev.plugins.repl
                {:name :conjure}
                {:name :luasnip}
                {:name :buffer :keyword_length 3}

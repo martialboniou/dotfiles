@@ -9,7 +9,9 @@
 
 (tc type LazySpec)
 (local P ;; 
-       [;;; GO LANG
+       [;;; HASKELL
+        {1 :mrcjkb/haskell-tools.nvim :version "^4" :lazy false}
+        ;;; GOLANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go
          :keys (make-lazykeys! [[:dgt
