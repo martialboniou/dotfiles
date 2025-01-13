@@ -106,3 +106,8 @@
 
 ; center the buffer vertically according to the cursor's position
 (keyset :n "z;" ":<C-u>normal! zszH<CR>")
+
+; helix-kinda bindings beginning/end of line (like `^`/`g_`; not like `0`/`$`)
+; NOTE: caret can be boring to type when you use dead keys
+(keyset :n :gh :^)
+(keyset :n :gl :g_)

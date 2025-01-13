@@ -97,7 +97,7 @@ Vim keybinding reminders & tips
   - `%` : create file
   - `d` : create directory
   - `gn` : change the current directory to the folder under the cursor
-  - `gh` : show/hide hidden files
+  - `gh` : show/hide hidden files (FIXME: possible conflict!)
 - slurping & barfing using the `kovisoft/paredit` plugin for lisp:
   - `<>` : move left the bracket at the current position (as `<leader><`)
   - `><` : move right the bracket at the current position (as `<leader>>`)
@@ -153,7 +153,7 @@ It's great but:
   - `g?` : help
   - `@`  : reveal `cwd`
   - `=`  : synchronize (IMPORTANT: not :wq)
-  - `gh` : show/hide hidden files
+  - `gh` : show/hide hidden files (FIXME: possible conflict!)
   - edition like `vim-vinegar`/`oil`:
     - btw, `-` is important in a buffer, DON'T TOUCH IT
   - BAD IDEA: don't add `-` as alias of `h` in the `mini.files` buffer
@@ -182,7 +182,7 @@ It's great but:
 - (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
 - `gd` (on a reference, say, `require`; normal mode) : back to the module
 - `ga` : tag the module in Harpoon 2 (second)
-- `gh` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
+- `gu` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet

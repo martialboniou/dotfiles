@@ -57,7 +57,7 @@
                 2 harpoon-file-explorer
                 ;;  👍 : error if the cursor in Netrw or mini.files not on a file
                 :desc "Harpoon the current file"}
-               {1 :gh
+               {1 :gu
                 ;; it was <C-e> but <C-a>/<C-e> = cursor navi in terms
                 2 #(let [h (require :harpoon)]
                      (h.ui:toggle_quick_menu (h:list)))
