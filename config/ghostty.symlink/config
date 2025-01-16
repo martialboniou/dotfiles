@@ -1,0 +1,32 @@
+# reload me by pressing `cmd`/`ctrl` + `shift` + `,`
+#
+# on macOS, using yabai:
+# minimize: `cmd` + `m`
+# restore: `cmd` + `tab`
+#             then 'option' while still pressing `cmd`
+#             then release `cmd` while still pressing `option`
+macos-titlebar-style = hidden
+# you need the following line for fzf tools
+macos-option-as-alt = true
+quit-after-last-window-closed = true
+window-inherit-font-size = false
+font-size = 11
+theme = 0x96f
+# or: theme = iTerm2 default
+# or: theme = MaterialDarker
+foreground = cccccc
+background = black
+background-opacity = 0.8
+cursor-color = lightblue
+cursor-style-blink = false
+confirm-close-surface = false
+# TODO: check (shift+)ctrl+return non-ANSI term keybindings for `emacs -nw`
+#       used in org-mode
+keybind = shift+enter=esc:[13;2u
+keybind = control+enter=esc:[13;5u
+# NOTE: wezterm is great, even better out of the box
+#       especially for non-tmux session users but the
+#       slow management of dead keys annoyed me a lot;
+#       sometimes it even misses; I also like to support
+#       my zig/roc community which is used for its
+#       shared core: libghostty
