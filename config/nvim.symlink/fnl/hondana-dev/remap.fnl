@@ -111,3 +111,9 @@
 ; NOTE: caret can be boring to type when you use dead keys
 (keyset :n :gh :^)
 (keyset :n :gl :g_)
+
+; experimental: double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
+; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
+;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
+; TIP: int'l or simplified dvorak layouts have `-`/`_` on `,`/`"`; it's a good crutch
+(keyset :i ",," "_")

@@ -10,7 +10,7 @@
 (local pattern "*")
 
 ;; if activated, no background for cursorline
-(let [group (augroup :Hondana_HiCursorLine {})
+(let [group (augroup :Hondana_HiCursorLine {:clear true})
       callback #(vim.api.nvim_set_hl 0 :Cursorline {:bg :NONE})]
   ;; ensure no conflicts with any colorschemes in `hondana-dev.plugins.colors` 
   (au [:ColorScheme :VimEnter] {: callback : group : pattern}))
@@ -41,6 +41,16 @@
            :listchars {:tab "» " :trail "·" :nbsp "␣"}
            :inccommand :split}]
   (each [k v (pairs map)] (set! k v)))
+
+;; very specific case of timeoutlen (far shorter in insert mode; check `hondana-dev.remap` for a use case)
+(let [group (augroup :Hondana_TimeoutLen {:clear true})
+      pattern :*
+      shortest-timeoutlen 200 ; ms
+      default-timeoutlen (or vim.opt.timeoutlen 3000)]
+  (au :InsertLeave
+      {: group : pattern :callback #(set! :timeoutlen default-timeoutlen)})
+  (au :InsertEnter
+      {: group : pattern :callback #(set! :timeoutlen shortest-timeoutlen)}))
 
 ;; these default keys may be remapped in `hondana-dev.remap`
 (tc type string)

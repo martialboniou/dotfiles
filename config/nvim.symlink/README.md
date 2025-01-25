@@ -126,6 +126,11 @@ Vim keybinding reminders & tips
       subsection)
   - `:ImprintCHeader` (in `cpp`/`h` files) : imprint a C `#include` guard at the current cursor
     position
+- *insert* abbrev's:
+  - `,\ ` : print a `λ` (can be useful in Fennel code; check `fnl/hondana-dev/set.fnl`)
+  - `,,` : print a `_` (there's a 200ms timeout here; it won't collide with `<localleader>`
+    keybindings as they are meant for normal mode; can be useful to type `_` without
+    the `Shift` key; check `fnl/hondana-dev/remap.fnl`)
 
 Plugins and new keybindings
 ---------------------------
