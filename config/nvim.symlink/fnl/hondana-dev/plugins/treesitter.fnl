@@ -95,7 +95,25 @@
 (fn F.config [_ opts]
   (-> :nvim-treesitter.configs
       (require)
-      (#($.setup opts)))
+      (#($.setup opts))
+      ;; HACK: temporary hack utils when nvim is 0.11
+      (when (-> "nvim-0.11" (vim.fn.has) (= 1))
+        (let [new-setup-commands #(each [command-name def (pairs $2)]
+                                    (let [f-args (or def.f_args "<f-args>")
+                                          {: flatten} (require :nvim-treesitter.compat)
+                                          call-fn (-> "lua require'nvim-treesitter.%s'.commands.%s['run<bang>'](%s)"
+                                                      (string.format $1
+                                                                     command-name
+                                                                     f-args))
+                                          parts (flatten ["command!"
+                                                          "-bar"
+                                                          (or def.args [])
+                                                          command-name
+                                                          call-fn])]
+                                      (-> parts (table.concat " ")
+                                          (vim.api.nvim_command))))
+              utils (require :nvim-treesitter.utils)]
+          (set utils.setup_commands new-setup-commands))))
   (when (-> :koka (vim.fn.executable) (= 1))
     ;; additional parser for koka
     (let [{:get_parser_configs get} (require :nvim-treesitter.parsers)
@@ -108,57 +126,62 @@
 
 ;;; PLUGINS & SETUP
 (tc type LazySpec)
+(local TS ;;
+       {1 :nvim-treesitter/nvim-treesitter
+        :version false
+        :dependencies [{1 :folke/ts-comments.nvim
+                        ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
+                        :opts {:lang {:fennel ";; %s"}}
+                        :event :VeryLazy
+                        :enabled true}]
+        :build ":TSUpdate"
+        :cmd [:TSUpdateSync :TSUpdate :TSInstall]
+        :config F.config
+        :opts {:ensure_installed preferred-languages
+               :matchup {;; special vim-matchup (check hondana-dev.plugins.operators)
+                         :enable true
+                         :disable []}
+               :sync_install false
+               :auto_install true
+               :rainbow {:enable true :extended_mode true}
+               :playground {:enable true}
+               :highlight {:enable true
+                           :disable F.disable
+                           :additional_vim_regex_highlighting false}
+               :incremental_selection {:enable true}
+               :indent {:enable true
+                        ;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
+                        :disable [:c]}
+               :textobjects {:select {:enable true
+                                      :lookahead true
+                                      : keymaps
+                                      : selection_modes}
+                             :move {:enable true
+                                    :set_jumps true
+                                    ;; NOTE: neither [t nor ]t b/c todo-comments
+                                    ;;       check hondana-dev.plugins.quickfix
+                                    ;;
+                                    ;; 2024-11-25: new settings
+                                    ;; TODO: add more?
+                                    :goto_next_start {"]m" "@function.outer"
+                                                      "]c" "@class.outer"
+                                                      "]a" "@parameter.inner"}
+                                    :goto_next_end {"]M" "@function.outer"
+                                                    "]C" "@class.outer"
+                                                    "]A" "@parameter.inner"}
+                                    :goto_previous_start {"[m" "@function.outer"
+                                                          "[c" "@class.outer"
+                                                          "[a" "@parameter.inner"}
+                                    :goto_previous_end {"[M" "@function.outer"
+                                                        "[C" "@class.outer"
+                                                        "[A" "@parameter.inner"}}}}})
+
+(tc type LazySpec)
 (local P ;;
-       [{1 :nvim-treesitter/nvim-treesitter
-         :version false
-         :dependencies [{1 :folke/ts-comments.nvim
-                         ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
-                         :opts {:lang {:fennel ";; %s"}}
-                         :event :VeryLazy
-                         :enabled (-> :nvim-0.10.0 (vim.fn.has) (= 1))}
-                        {1 :nvim-treesitter/nvim-treesitter-textobjects
-                         :enabled true
-                         :config F.textobjects-config}]
-         :build ":TSUpdate"
-         :cmd [:TSUpdateSync :TSUpdate :TSInstall]
-         :config F.config
-         :opts {:ensure_installed preferred-languages
-                :matchup {;; special vim-matchup (check hondana-dev.plugins.operators)
-                          :enable true
-                          :disable []}
-                :sync_install false
-                :auto_install true
-                :rainbow {:enable true :extended_mode true}
-                :playground {:enable true}
-                :highlight {:enable true
-                            :disable F.disable
-                            :additional_vim_regex_highlighting false}
-                :incremental_selection {:enable true}
-                :indent {:enable true
-                         ;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
-                         :disable [:c]}
-                :textobjects {:select {:enable true
-                                       :lookahead true
-                                       : keymaps
-                                       : selection_modes}
-                              :move {:enable true
-                                     :set_jumps true
-                                     ;; NOTE: neither [t nor ]t b/c todo-comments
-                                     ;;       check hondana-dev.plugins.quickfix
-                                     ;;
-                                     ;; 2024-11-25: new settings
-                                     ;; TODO: add more?
-                                     :goto_next_start {"]m" "@function.outer"
-                                                       "]c" "@class.outer"
-                                                       "]a" "@parameter.inner"}
-                                     :goto_next_end {"]M" "@function.outer"
-                                                     "]C" "@class.outer"
-                                                     "]A" "@parameter.inner"}
-                                     :goto_previous_start {"[m" "@function.outer"
-                                                           "[c" "@class.outer"
-                                                           "[a" "@parameter.inner"}
-                                     :goto_previous_end {"[M" "@function.outer"
-                                                         "[C" "@class.outer"
-                                                         "[A" "@parameter.inner"}}}}}])
+       [{1 :nvim-treesitter/nvim-treesitter-textobjects
+         :enabled true
+         :config F.textobjects-config
+         ;; after nvim-treesitter to ensure nvim-treesitter.utils.setup_commands is ok when 0.11
+         :dependencies TS}])
 
 P
