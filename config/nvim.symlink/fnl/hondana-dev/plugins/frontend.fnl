@@ -13,7 +13,7 @@
           {1 :iamcco/markdown-preview.nvim
            :cmd [:MarkdownPreviewToggle :MarkdownPreview :MarkdownPreviewStop]
            :ft :markdown
-           :build #((. vim.fn :mkdp#util#install))
+           :build "cd app && npx --yes yarn install"
            :init #(set vim.g.mkdp_filetypes [:markdown])}])
 
 P
