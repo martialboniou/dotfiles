@@ -10,7 +10,6 @@ macos-titlebar-style = hidden
 macos-option-as-alt = true
 quit-after-last-window-closed = true
 window-inherit-font-size = false
-font-size = 11
 theme = 0x96f
 # or: theme = iTerm2 default
 # or: theme = MaterialDarker
@@ -30,3 +29,9 @@ keybind = control+enter=esc:[13;5u
 #       sometimes it even misses; I also like to support
 #       my zig/roc community which is used for its
 #       shared core: libghostty
+#
+# Personal Preferences
+font-family = "ZedMono Nerd Font Mono"
+font-size = 12
+# here, I use a 2-hand int'l dvorak layout with qwerty on Command
+keybind = super+k=paste_from_clipboard
