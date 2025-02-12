@@ -51,8 +51,7 @@
 (tc return "string")
 (fn stamp []
   "yields next status"
-  (let [n (table.remove stamps 1)]
-    (if n n "")))
+  (or (table.remove stamps 1) ""))
 
 (tc type string)
 (set! statusline (-> [" "
