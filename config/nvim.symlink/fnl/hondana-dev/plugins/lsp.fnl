@@ -165,6 +165,8 @@
                 :astro {}
                 :marksman {}
                 :vimls {}
+                ;; python3 is better with pyright
+                :pyright {}
                 :cssls {}
                 ;; NOTE: don't put haskell-language-server (hls) here because of
                 ;;       haskell-tools.nvim set in `hondana-dev.plugins.languages`

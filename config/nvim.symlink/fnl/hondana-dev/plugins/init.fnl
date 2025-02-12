@@ -95,6 +95,40 @@
        (#{1 $ : event : keys : opts : config})
        (in P)))
 
+;; Flash: navigate your code with search labels, enhanced character motions and Treesitter integration
+;; usage: `/` or `?` to jump
+;;        you can also use `<localleader>s` for a Treesitter motion
+;;        (NOTE: `s` is available in visual and operator-pending modes only)
+;; TODO: test & setup flash.nvim
+(in P {1 :folke/flash.nvim
+       :event :VeryLazy
+       :opts {;; dvorak friendly keybindings
+              :labels "aoeui;qjkxhtnsgcrldixbmwvzpy"
+              ;; `/`/`?` is set to flash jump by default
+              :modes {:search {:enabled true}}}
+       :keys [;; this function is bound to `S` in the recommended install
+              {1 :s
+               2 #(let [{: treesitter} (require :flash)] (treesitter))
+               :mode [:x :o]
+               :desc "Flash Treesitter"}
+              {;; in Fennel, normal `s`/`S` = `:cal PareditEraseFwd()`/`:cal PareditEraseFwd(visualmode(), 1)`
+               1 :<localleader>s
+               2 #(let [{: treesitter} (require :flash)] (treesitter))
+               :mode [:n :x :o]
+               :desc "Flash Treesitter"}
+              {1 :r
+               2 #(let [{: remote} (require :flash)] (remote))
+               :mode [:o]
+               :desc "Remote Flash"}
+              {1 :R
+               2 #(let [{:treesitter_flash tf} (require :flash)] (tf))
+               :mode [:o :x]
+               :desc "Treesitter Flash"}
+              {1 :<C-s>
+               2 #(let [{: toggle} (require :flash)] (toggle))
+               :mode [:c]
+               :desc "Toggle Flash Search"}]})
+
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
 ;; (->> :folke/which-key.nvim

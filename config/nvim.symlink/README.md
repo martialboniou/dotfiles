@@ -19,7 +19,7 @@ brew install ripgrep fzf fd
 ```
 
 Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
-monospaced font for your terminal (I'm happy with Inconsolata), otherwise
+monospaced font for your terminal (I'm happy with ZedMono), otherwise
 some emoticons won't be displayed at all.
 
 Showcase
@@ -208,7 +208,7 @@ insert
 - `:Lazy` : check package (I prefer this one to Packer)
 - `:InspectTree` : display the *Syntax Tree* from Treesitter (neat! it was `:TSPlaygroundToggle` before but
   playground is a part of NeoVim now)
-  - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch window to edit
+  - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch* window to edit
     the Treesitter queries in Scheme (the `:EditQuery` command does it too)
 - **IMPORTANT**: `<leader>f` : **format** using [Conform](https://github.com/stevearc/conform.nvim);
 - **IMPORTANT!**: `gs` : create a template to replace the *current word*
