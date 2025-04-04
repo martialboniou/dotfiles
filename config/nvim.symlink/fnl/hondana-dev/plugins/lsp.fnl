@@ -3,6 +3,8 @@
 ;;; 2024-12-24
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
+(local {:nvim_create_autocmd au & api} vim.api)
+
 (macro set-value! [x ...]
   "returns a sequence of the rest of args as keys and x value"
   (let [o []]
@@ -134,6 +136,11 @@
                                                               ;; :todo-comments.nvim
                                                               ;; :zk-vim
                                                               ])
+                                          ;; 2025-04-01 - testing
+                                          ;; (vim.tbl_extend :keep
+                                          ;;                 {:vim.env.VIMRUNTIME "${3rd}/luv/library"}
+                                          ;;                 (api.nvim_get_runtime_file ""
+                                          ;;                                            true))
                                           ;; only set the libraries you need for diagnostics
                                           ;; to avoid `(vim.api.nvim_list_runtime_paths)`
                                           settings ;; additional settings for Lua
@@ -285,7 +292,7 @@
                      (for [i 1 tally]
                        (let [f (. fs i)]
                          (f event.buf)))))]
-    (vim.api.nvim_create_autocmd :LspAttach {:desc "LSP actions" : callback})))
+    (au :LspAttach {:desc "LSP actions" : callback})))
 
 ;;; PLUGINS
 (tc type LazySpec)

@@ -1,8 +1,8 @@
 NeoVim
 ======
 
-- aimed for version 0.10
-- tested on version 0.10.3-dev
+- aimed for version 0.11 or 0.10
+- tested on version 0.11 & 0.10.3-dev
 - developer guidance:
   - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
     (or at least, after the 09/21/2024 master branch)

@@ -72,12 +72,14 @@
         [:kylechui/nvim-surround
          #(let [{: setup} (require :nvim-surround)]
             (setup $2))]
-        [:echasnovski/mini.ai
-         ;; expect overridden nvim-surround combo keys
-         #(let [{: setup} (require :mini.ai)]
-            (setup {:n_lines 500}))]
+        ;;; FIXME: removed because collides with nvim-treesitter-textobjects
+        ;;; TODO: test which one
+        ;; [:echasnovski/mini.ai
+        ;;  ;; expect overridden nvim-surround combo keys
+        ;;  #(let [{: setup} (require :mini.ai)]
+        ;;     (setup {:n_lines 500}))]
         [:echasnovski/mini.surround
-         #(let [{: setup} (require :mini.ai)]
+         #(let [{: setup} (require :mini.surround)]
             (setup $2))]
         [:opdavies/toggle-checkbox.nvim
          #(let [{:nvim_create_user_command uc

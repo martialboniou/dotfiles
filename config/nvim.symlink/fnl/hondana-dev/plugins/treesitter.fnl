@@ -63,7 +63,7 @@
 (tc type "fun(self:LazyPlugin, opts:table):nil|true")
 (fn F.textobjects-config []
   "When in diff mode, use vim text objects c & C instead"
-  (let [configs (require :nvim-treesitter.configs)]
+  (let [{: get_module : setup} (require :nvim-treesitter.configs)]
     (tc type "table<string, fun(...)>")
     (local move (require :nvim-treesitter.textobjects.move))
     (each [name fun (pairs move)]
@@ -72,7 +72,7 @@
              (fn [q ...]
                (when vim.wo.diff
                  (tc type "table<string, string>")
-                 (local config (. (configs.get_module :textobjects.move) name))
+                 (local config (. (get_module :textobjects.move) name))
                  (each [key query (pairs (or config {}))]
                    (when (= q query)
                      (when (key:find "[%]%[][cC]")
@@ -126,14 +126,16 @@
 
 ;;; PLUGINS & SETUP
 (tc type LazySpec)
-(local TS ;;
+(local P ;;
        {1 :nvim-treesitter/nvim-treesitter
         :version false
         :dependencies [{1 :folke/ts-comments.nvim
                         ;; fnlfmt works better with `;;` than `;` as Fennel Lisp comment
                         :opts {:lang {:fennel ";; %s"}}
                         :event :VeryLazy
-                        :enabled true}]
+                        :enabled true}
+                       {1 :nvim-treesitter/nvim-treesitter-textobjects
+                        :config F.textobjects-config}]
         :build ":TSUpdate"
         :cmd [:TSUpdateSync :TSUpdate :TSInstall]
         :config F.config
@@ -175,13 +177,5 @@
                                     :goto_previous_end {"[M" "@function.outer"
                                                         "[C" "@class.outer"
                                                         "[A" "@parameter.inner"}}}}})
-
-(tc type LazySpec)
-(local P ;;
-       [{1 :nvim-treesitter/nvim-treesitter-textobjects
-         :enabled true
-         :config F.textobjects-config
-         ;; after nvim-treesitter to ensure nvim-treesitter.utils.setup_commands is ok when 0.11
-         :dependencies TS}])
 
 P
