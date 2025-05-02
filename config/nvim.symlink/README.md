@@ -2,7 +2,7 @@ NeoVim
 ======
 
 - aimed for version 0.11 or 0.10
-- tested on version 0.11 & 0.10.3-dev
+- tested on version 0.11.1 & 0.10.3-dev
 - developer guidance:
   - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
     (or at least, after the 09/21/2024 master branch)
@@ -93,6 +93,19 @@ Vim keybinding reminders & tips
   - `cx` prefix : `vim-exchange`; **swap two words** (very useful!); eg:
     - `cxiw` (on a word) : tag the word for swapping
     - `cxiw` (on a second one) : swap the tagged word and the current one
+- **LSP mappings** since 0.11:
+  - `grn` : `vim.lsp.buf.rename()`
+  - `grr` : `vim.lsp.buf.references()`
+  - `gri` : `vim.lsp.buf.implementation()`
+  - `gra` : `vim.lsp.buf.code_action()`
+  - `<C-S>` (in *insert* and *visual* mode **only**) : `vim.lsp.buf.signature_help()`
+    (NOTE: `<C-S>` is mapped to the Harpoon navigation in *normal* mode)
+  - `gO` : `vim.lsp.buf.document_symbol()` (NOTE: **check if it doesn't collide
+    with the Markdown Outline keybinding**; it was also the default Tangerine's
+    `:FnlGotoOutput` before `gG` to show the Lua output file from the current
+    Fennel buffer)
+  - `[d`/`]d` : move between diagnostics in the current buffer
+  - `[D`/`]D` : move to the first/last jump)
 - **Netrw** specific:
   - `%` : create file
   - `d` : create directory
@@ -265,8 +278,9 @@ insert
    - in LSP buffer only (normal mode except when said otherwise)
      - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
        `vim.lsp.buf.format`
-     - `<C-h>` (insert mode) : signature (*BEWARE*: `<C-h>` switches to the
-        first harpoon in **normal mode**)
+     - `<C-s>` (insert mode) : signature (*BEWARE*: `<C-s>` switches to the
+       first harpoon in **normal mode**; it was `<C-h>` before; it's the default
+       mapping for `vim.lsp.buf.signature_help()` since NeoVim 0.11)
      - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
      - `gd` : Telescope *builtin*'s **g**oto **d**efinition (**IMPORTANT**: jump to the file in LSP-injected files; say, like lua vim configurations)
      - `gD` : goto declaration
@@ -505,14 +519,17 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
     file (this keybinding is not available in the default configuration; don't
     forget to save the file as the compiler doesn't use the current buffer
     itself)
-  - `gO` : **O**utput the Lua file (**IMPORTANT**: your Fennel files must be in
-    a `fnl/` directory so your compiled Lua files will be pushed into a
-    `lua/`-rooted directory tree; to move back to the Fennel buffer, remember
-    `<C-6>` is your friend; also, don't forget to `gC`/`:FnlCompileBuffer`
-    before `gO`)
-  - `gB` : **B**uffer evaluation (**IMPORTANT:** it was `gE` before but it collides
-    with the Vim core mechanics and/or
-    [paredit](https://github.com/julienvincent/nvim-paredit))
+  - (*recent change*) `gG` : **G**o to the Lua file (`:FnlGotoOutput`)
+    (**IMPORTANT**: your Fennel files must be in a `fnl/` directory so your
+    compiled Lua files will be pushed into a `lua/`-rooted directory tree; to
+    move back to the Fennel buffer, remember `<C-6>` is your friend; also, don't
+    forget to `gC`/`:FnlCompileBuffer` before `gG`; NOTE: `gO` was the previous
+    keybinding but NeoVim 0.11 adds `gO` as the default keybinding for
+    `vim.lsp.buf.document_symbol()`)
+  - `gB` : **B**uffer evaluation (**IMPORTANT:** it was `gE` before but it
+    collides with the Vim core mechanics (*ie* jump backwards to the end of a
+    word w/ or w/o punctuation) and/or the *unused for now*
+    [paredit](https://github.com/julienvincent/nvim-paredit) by Julien Vincent)
   - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
 - from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
   evaluation is stored in a register, try `"cp`):

@@ -1,6 +1,6 @@
 ;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2024-12-24
+;;; 2025-05-02
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
 (local {:nvim_create_autocmd au & api} vim.api)
@@ -40,6 +40,7 @@
 (tc alias keymapSetFun "fun(integer?)")
 (tc return "table<integer, keymapSetFun>")
 ;; NOTE: function instead of a local variable to ensure the last annotation is well-set
+;; WARN: SOME KEYS MAY CHANGE IN THE NEAR FUTURE TO FIT THE 0.11 DEFAULT MAPPINGS FOR LSP
 (fn keymap-set-fns []
   (custom-keys {:n {;; REMINDER (don't unquote)
                     ;; :<leader>f ["Format buffer (Conform)"
@@ -49,6 +50,7 @@
                     :gd ["LSP Go to definition (via Telescope)"
                          #(funcall! :telescope.builtin :lsp_definitions)]
                     :gD ["LSP Go to declaration" vim.lsp.buf.declaration]
+                    ;; replaces vim.lsp.buf.implementation (gri since 0.11)
                     :gI ["LSP Go to implementation (via Telescope)"
                          #(funcall! :telescope.builtin :lsp_implementations)]
                     ;; TODO: mention me in README? (often used so better than `<leader>vdd`)
@@ -59,29 +61,35 @@
                                   #(funcall! :telescope.builtin
                                              :lsp_dynamic_workspace_symbols)]
                     :<leader>vdd ["View diagnostic" vim.diagnostic.open_float]
+                    ;; [d & ]d works as the default 0.11 mappings
                     "[d" ["Go to previous diagnostic" vim.diagnostic.goto_prev]
                     "]d" ["Go to next diagnostic" vim.diagnostic.goto_next]
+                    ;; gra is available since 0.11
                     :<leader>vca ["LSP Code actions" vim.lsp.buf.code_action]
-                    ;; replaces vim.lsp.buf.references
+                    ;; replaces vim.lsp.buf.references (grr since 0.11)
                     :<leader>vrr ["LSP References (via Telescope)"
                                   #(funcall! :telescope.builtin :lsp_references)]
+                    ;; grn is available since 0.11
                     :<leader>vrn ["LSP Rename" vim.lsp.buf.rename]
                     ;; replace via.lsp.buf.type_definition
                     :<leader>vtd ["LSP View Type Definition (via Telescope)"
                                   #(funcall! :telescope.builtin
                                              :lsp_type_definitions)]
-                    ;; replace vim.lsp.buf.document_symbol
+                    ;; replace vim.lsp.buf.document_symbol (gO since 0.11)
                     :<leader>vds ["LSP View Document Symbol (via Telescope)"
                                   #(funcall! :telescope.builtin
                                              :lsp_document_symbols)]
                     ;;; ! for ergonomics: <leader> + ca = vca, rr = vrr, nn, vrn
+                    ;; REMINDER: gra is available since 0.11
                     :<leader>ca ["LSP Code actions" vim.lsp.buf.code_action]
                     ;; NOTE: `<leader>r` is the starting key for `hondana-dev.plugins.refactoring`
                     :<leader>rr ["LSP References (via Telescope)"
                                  #(funcall! :telescope.builtin :lsp_references)]
                     :<leader>dd ["View diagnostic" vim.diagnostic.open_float]
+                    ;; REMINDER: grn is available since 0.11
                     :<leader>nn ["LSP Rename" vim.lsp.buf.rename]}
-                :i {:<C-h> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
+                :i {;; <C-s> is the default mapping since 0.11 (it was <C-h> before)
+                    :<C-s> ["LSP Signature help" vim.lsp.buf.signature_help]}}))
 
 ;; I use the Mason clangd but you can use another one; remove _remove-me_
 (tc type string)

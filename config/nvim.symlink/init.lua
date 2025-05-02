@@ -69,7 +69,8 @@ setup({
         end,
     },
     keymaps = {
-        eval_buffer = "gB",
+        eval_buffer = "gB", -- the default `gE` jumps backwards to the end of a word (w/ or w/o punctuation)
+        goto_output = "gG", -- the default `gO` is `vim.lsp.buf.document_symbol()` since 0.11
         -- NOTE: float.kill = <Esc> AND <C-c> (see below)
     },
     eval = {
