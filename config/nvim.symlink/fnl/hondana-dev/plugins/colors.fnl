@@ -73,7 +73,8 @@
                   :opts {:saturation :high
                          :background "#181818"
                          ;; :accent :bg ; is not multi-pane friendly (IMO, too neutral!)
-                         :accent :blue
+                         ;; check `hondana-dev.status`
+                         :accent :bg
                          :foreground (. chosen-theme :foreground)
                          :n_hues (. chosen-theme :n_hues)}
                   : config})
