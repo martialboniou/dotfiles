@@ -41,11 +41,13 @@
                     :StatusLocation ["#458588" "#1d2021"]
                     :StatusPercent ["#1d2021" "#ebdbb2"]})
 
-(F.au :ColorScheme
-      {:group (F.augrp :Hondana_RestoreStatusLine)
-       :callback #(vim.cmd "hi StatusLine guibg=#458588 guifg=#1d2021")})
-
-;; F = utility functions
+;; TODO: check for the proper api.nvim_set_hl
+(F.au :ColorScheme {:group (F.augrp :Hondana_RestoreStatusLine)
+                    :callback #(vim.cmd "hi StatusLine guibg=#458588 guifg=#1d2021\nhi winbar guibg=NONE")
+                    ;; #(do
+                    ;;              (api.nvim_set_hl :StatusLine {:bg "#458588" :fg "#1d2021"})
+                    ;;              (api.nvim_set_hl :winbar {:bg :NONE}))
+                    })
 
 (tc return string)
 (fn bump []
@@ -64,8 +66,14 @@
   "yields next status"
   (or (table.remove stamps 1) ""))
 
-;; TODO: Luaify this
-(vim.cmd "function! StatuslineGitBranch()\nlet b:gitbranch=\"\"\nif &modifiable\ntry\nlcd %:p:h\ncatch\nreturn\nendtry\nlet l:gitrevparse=system(\"git rev-parse --abbrev-ref HEAD\")\nlcd -\nif l:gitrevparse!~\"fatal: not a git repository\"\nlet b:gitbranch=\"(\".substitute(l:gitrevparse, '\\n', '', 'g').\") \"\nendif\nendif\nendfunction")
+;; TODO: make it async + (set vim.b.gitbranch "")
+(fn statusline-git-branch []
+  "replace the buffer variable `b:gitbranch`"
+  (set vim.b.gitbranch "")
+  (when vim.o.modifiable
+    (local git-rev-parse (vim.fn.system [:git :rev-parse :--abbrev-ref :HEAD]))
+    (when (= 0 vim.v.shell_error)
+      (set vim.b.gitbranch (.. " (" (git-rev-parse:gsub "\n" "") ")")))))
 
 (tc type string)
 (set! statusline (-> [" "
@@ -73,7 +81,7 @@
                       (.. " " (stamp) (bump))
                       "%Y  "
                       (.. (bump) (stamp) (bump))
-                      "%F %{b:gitbranch}"
+                      "%F%{b:gitbranch}"
                       (.. (bump) (stamp))
                       "%h%m%r"
                       (.. (stamp) "%=" (stamp) (bump))
@@ -87,7 +95,6 @@
                       (.. (bump) " ")]
                      (table.concat " ")))
 
-(vim.cmd "augroup Hondana_GetGitBranch\nautocmd!\nautocmd VimEnter,WinEnter,BufEnter * cal StatuslineGitBranch()\naugroup END")
-
-;; TEST: remove me
-(vim.cmd "function StatusLineMode()\nlet l:mode=mode()\nif l:mode==#\"n\"\nreturn \"NOR\"\nelseif l:mode==?\"v\"\nreturn \"VIS\"\nelseif l:mode==#\"i\"\nreturn \"INS\"\nelseif l:mode==#\"R\"\nreturn \"REP\"\nelse\nreturn \" \"\nendif\nendfunction")
+;; MANDATORY to set `b:gitbranch` as used in statusline (remove the MANDATORY clause when async)
+(F.au [:VimEnter :WinEnter :BufEnter]
+      {:group (F.augrp :Hondana_GetGitBranch) :callback statusline-git-branch})
