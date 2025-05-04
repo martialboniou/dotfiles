@@ -92,11 +92,11 @@
                 (let [p (. stdio i)]
                   (when p (stop p) (close p))))
               (close handle)
-              ;; default 
+              ;; default initial message in the statusline when error
               (when (not= 0 $) (set vim.b.gitbranch ""))))
     (set handle (spawn cmd options on-exit))
-    ;; default initial message in the statusline
-    (set vim.b.gitbranch "")
+    ;; initialize with default initial message in the statusline when nil
+    (when (not vim.b.gitbranch) (set vim.b.gitbranch ""))
     (for [i 2 3]
       (let [p (. stdio i)]
         (when p
