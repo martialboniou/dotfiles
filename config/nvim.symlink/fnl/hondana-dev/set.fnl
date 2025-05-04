@@ -4,7 +4,8 @@
 (import-macros {: set!! : setlocal!!} :hondana-dev.macros.vim)
 
 ;; main functions & pattern
-(local {:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api)
+(local {:api {:nvim_create_autocmd au :nvim_create_augroup augroup} : keymap}
+       vim)
 
 (tc type string)
 (local pattern "*")
@@ -74,11 +75,11 @@
                                        vim.diagnostic.severity.INFO "»"}}})
 
 ;; you can use lambda in this programming language (see below)
-(vim.cmd.iab ",\\ λ")
+(keymap.set :ia ",\\" "λ")
 
 ;; 4-space indentation for some filetypes
 ;; REMINDER: each project should have its own setup
-(let [group (augroup :Hondana_Fantastic4Indentation {})
+(let [group (augroup :Hondana_Fantastic4Indentation {:clear true})
       pattern [:roc :zig :c :cpp :h :rust :go]
       callback #(setlocal!! 4 :sw :ts)]
   (au :FileType {: callback : group : pattern}))
@@ -91,13 +92,13 @@
 ;; additional languages' setup
 ;; - shen programming language comments (from Shen Technology (c) Mark Tarver; https://shenlanguage.org)
 ;; NOTE: the language syntax has been embedded in this setup
-(let [group (augroup :Hondana_ShenComments {})
+(let [group (augroup :Hondana_ShenComments {:clear true})
       callback #(setlocal!! "\\\\ %s" :commentstring)]
   (au :FileType {: callback : group :pattern :shen}))
 
 ;; others
 ;; TEST: restore last position (check ShaDa for other session/buffer restoration)
-(let [group (augroup :Hondana_LastPosRestoration {})]
+(let [group (augroup :Hondana_LastPosRestoration {:clear true})]
   (au :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
                                          (not= :.git/COMMIT_EDITMSG))
                                  (vim.cmd "silent! normal g`\"zv"))

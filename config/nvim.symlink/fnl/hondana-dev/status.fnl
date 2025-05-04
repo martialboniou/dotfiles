@@ -17,7 +17,8 @@
   as values as value. The first color code is background, the second one as foreground is optional"
   (let [out []]
     (each [type colors (pairs tbl)]
-      (assert (-> colors (length) (< 3)))
+      (assert-compile (sequence? colors) "expected a sequence for colors"
+                      colors)
       (local args (collect [k v (pairs {:bg (. colors 1) :fg (. colors 2)})]
                     (when v
                       (values k (tostring v)))))

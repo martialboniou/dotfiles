@@ -61,10 +61,10 @@
     (each [k v (pairs rainbow-delimiters)]
       (vim.api.nvim_set_hl 0 k v))
     ;; transparency
-    (vim.cmd "hi Normal guibg=NONE")
+    (vim.api.nvim_set_hl 0 :Normal {:bg :NONE})
     ;; trigger an event to proc `hondana-dev.linenumbers`'s autocmd
-    ;; as mini.hues is NOT a colorscheme
-    (vim.cmd "doau ColorScheme")))
+    ;; as mini.hues is NOT a colorscheme (eqv to `:doau ColorScheme`)
+    (vim.api.nvim_exec_autocmds :ColorScheme {})))
 
 (tc type LazySpec)
 (local mini-hues {1 :echasnovski/mini.hues
