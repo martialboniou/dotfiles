@@ -38,7 +38,7 @@
         ;; capitalize an ascii word
         (-> (s:sub 1 1) (: :upper) (.. (s:sub 2))) "#")))
 
-(local api vim.api)
+(local {: api : uv} vim)
 
 ;; F = utility functions
 (local F {:au api.nvim_create_autocmd
@@ -77,14 +77,34 @@
   "yields next status"
   (or (table.remove stamps 1) ""))
 
-;; TODO: make it async + (set vim.b.gitbranch "")
 (fn statusline-git-branch []
-  "replace the buffer variable `b:gitbranch`"
-  (set vim.b.gitbranch "")
+  "Async'ly replace the buffer variable `b:gitbranch`"
   (when vim.o.modifiable
-    (local git-rev-parse (vim.fn.system [:git :rev-parse :--abbrev-ref :HEAD]))
-    (when (= 0 vim.v.shell_error)
-      (set vim.b.gitbranch (.. " (" (git-rev-parse:gsub "\n" "") ")")))))
+    (tc type :uv.uv_handle_t)
+    (var handle nil)
+    (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
+    (local [cmd & args] [:git :rev-parse :--abbrev-ref :HEAD])
+    (local stdio [nil (new) (new)])
+    (local options {: args : stdio})
+    (local on-exit
+           #(do
+              (for [i 2 3]
+                (let [p (. stdio i)]
+                  (when p (stop p) (close p))))
+              (close handle)
+              ;; default 
+              (when (not= 0 $) (set vim.b.gitbranch ""))))
+    (set handle (spawn cmd options on-exit))
+    ;; default initial message in the statusline
+    (set vim.b.gitbranch "")
+    (for [i 2 3]
+      (let [p (. stdio i)]
+        (when p
+          (start p
+                 (fn [_ data]
+                   (when data
+                     ;; format the detected branch like " ($)"
+                     (set vim.b.gitbranch (.. " (" (data:gsub "\n" "") ")"))))))))))
 
 (tc type string)
 (set! statusline (-> [" "
@@ -106,6 +126,6 @@
                       (.. (bump) " ")]
                      (table.concat " ")))
 
-;; MANDATORY to set `b:gitbranch` as used in statusline (remove the MANDATORY clause when async)
+;; MANDATORY: set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:VimEnter :WinEnter :BufEnter]
       {:group (F.augrp :Hondana_GetGitBranch) :callback statusline-git-branch})
