@@ -1,7 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: set!} :hibiscus.vim)
 
-(macro highlight-status! [tbl]
+(macro highlight-status0! [tbl]
   (let [out []]
     (each [type [bg fg] (pairs tbl)]
       (table.insert out `(vim.cmd ,(table.concat ["hi"
@@ -9,6 +9,20 @@
                                                   (.. "guibg=" bg)
                                                   (.. "guifg=" fg)]
                                                  " "))))
+    `(do
+       ,(unpack out))))
+
+(macro highlight-status! [tbl]
+  "generate the highlights with a dict of tag as keys and a sequence of 1 or 2 Vim color codes
+  as values as value. The first color code is background, the second one as foreground is optional"
+  (let [out []]
+    (each [type colors (pairs tbl)]
+      (assert (-> colors (length) (< 3)))
+      (local args (collect [k v (pairs {:bg (. colors 1) :fg (. colors 2)})]
+                    (when v
+                      (values k (tostring v)))))
+      ;; the order is irrelevant
+      (table.insert out `(api.nvim_set_hl 0 ,(tostring type) ,args)))
     `(do
        ,(unpack out))))
 
@@ -33,21 +47,18 @@
 (tc type boolean)
 (var flip true)
 
-;; highlight status by side-effect (background first)
-(highlight-status! {:StatusType ["#b16286" "#1d2021"]
-                    :StatusFile ["#fabd2f" "#1d2021"]
-                    :StatusModified ["#1d2021" "#d3869b"]
-                    :StatusBuffer ["#98971a" "#1d2021"]
-                    :StatusLocation ["#458588" "#1d2021"]
-                    :StatusPercent ["#1d2021" "#ebdbb2"]})
+;; highlight status by side-effect (background first, foreground is optional)
+(highlight-status! {StatusType ["#b16286" "#1d2021"]
+                    StatusFile ["#fabd2f" "#1d2021"]
+                    StatusModified ["#1d2021" "#d3869b"]
+                    StatusBuffer ["#98971a" "#1d2021"]
+                    StatusLocation ["#458588" "#1d2021"]
+                    StatusPercent ["#1d2021" "#ebdbb2"]})
 
-;; TODO: check for the proper api.nvim_set_hl
-(F.au :ColorScheme {:group (F.augrp :Hondana_RestoreStatusLine)
-                    :callback #(vim.cmd "hi StatusLine guibg=#458588 guifg=#1d2021\nhi winbar guibg=NONE")
-                    ;; #(do
-                    ;;              (api.nvim_set_hl :StatusLine {:bg "#458588" :fg "#1d2021"})
-                    ;;              (api.nvim_set_hl :winbar {:bg :NONE}))
-                    })
+(F.au :ColorScheme
+      {:group (F.augrp :Hondana_RestoreStatusLine)
+       :callback #(highlight-status! {StatusLine ["#458588" "#1d2021"]
+                                      winbar [NONE]})})
 
 (tc return string)
 (fn bump []
