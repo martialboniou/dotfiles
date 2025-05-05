@@ -3,7 +3,7 @@
 ;;; 2025-05-02
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
-(local {:nvim_create_autocmd au & api} vim.api)
+(local {:nvim_create_autocmd au} vim.api)
 
 (macro set-value! [x ...]
   "returns a sequence of the rest of args as keys and x value"

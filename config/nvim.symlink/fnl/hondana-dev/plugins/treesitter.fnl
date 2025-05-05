@@ -63,7 +63,7 @@
 (tc type "fun(self:LazyPlugin, opts:table):nil|true")
 (fn F.textobjects-config []
   "When in diff mode, use vim text objects c & C instead"
-  (let [{: get_module : setup} (require :nvim-treesitter.configs)]
+  (let [{: get_module} (require :nvim-treesitter.configs)]
     (tc type "table<string, fun(...)>")
     (local move (require :nvim-treesitter.textobjects.move))
     (each [name fun (pairs move)]
@@ -116,8 +116,9 @@
           (set utils.setup_commands new-setup-commands))))
   (when (-> :koka (vim.fn.executable) (= 1))
     ;; additional parser for koka
-    (let [{:get_parser_configs get} (require :nvim-treesitter.parsers)
-          parser-config (get)]
+    (let [{:get_parser_configs get} (require :nvim-treesitter.parsers)]
+      (tc type table)
+      (local parser-config (get))
       (set parser-config.koka {:install_info {:url "https://github.com/mtoohey31/tree-sitter-koka"
                                               :branch :main
                                               :files ["src/parser.c"

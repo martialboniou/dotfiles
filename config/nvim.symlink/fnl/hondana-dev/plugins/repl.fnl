@@ -12,7 +12,7 @@
   (let [{: setup} (require :iron.core)
         ;; NOTE: ensure a table exists at the `config` node too
         opts (if opts.config opts (vim.tbl_extend :force opts {:config {}}))]
-    (-> opts (. :config) (type) (= :table) (not)
+    (-> opts (. :config) (type) (not= :table)
         (and (vim.notify "iron repl: the config node of the setup must have a table"
                          vim.log.levels.ERROR)))
     (setup opts)))

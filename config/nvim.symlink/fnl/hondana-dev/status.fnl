@@ -1,17 +1,6 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: set!} :hibiscus.vim)
 
-(macro highlight-status0! [tbl]
-  (let [out []]
-    (each [type [bg fg] (pairs tbl)]
-      (table.insert out `(vim.cmd ,(table.concat ["hi"
-                                                  (tostring type)
-                                                  (.. "guibg=" bg)
-                                                  (.. "guifg=" fg)]
-                                                 " "))))
-    `(do
-       ,(unpack out))))
-
 (macro highlight-status! [tbl]
   "generate the highlights with a dict of tag as keys and a sequence of 1 or 2 Vim color codes
   as values as value. The first color code is background, the second one as foreground is optional"
@@ -78,10 +67,13 @@
   "yields next status"
   (or (table.remove stamps 1) ""))
 
+(tc type string)
+(local no-git-default-tag "")
+
 (fn statusline-git-branch []
   "Async'ly replace the buffer variable `b:gitbranch`"
   (when vim.o.modifiable
-    (tc type :uv.uv_handle_t)
+    (tc type :vim.uv.uv_handle_t)
     (var handle nil)
     (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
     (local [cmd & args] [:git :rev-parse :--abbrev-ref :HEAD])
@@ -94,10 +86,8 @@
                   (when p (stop p) (close p))))
               (close handle)
               ;; default initial message in the statusline when error
-              (when (not= 0 $) (set vim.b.gitbranch ""))))
+              (when (not= 0 $) (set vim.b.gitbranch no-git-default-tag))))
     (set handle (spawn cmd options on-exit))
-    ;; initialize with default initial message in the statusline when nil
-    (when (not vim.b.gitbranch) (set vim.b.gitbranch ""))
     (for [i 2 3]
       (let [p (. stdio i)]
         (when p
@@ -113,7 +103,7 @@
                       (.. " " (stamp) (bump))
                       "%Y  "
                       (.. (bump) (stamp) (bump))
-                      "%F%{b:gitbranch}"
+                      "%F%{get(b:,'gitbranch','')}"
                       (.. (bump) (stamp))
                       "%h%m%r"
                       (.. (stamp) "%=" (stamp) (bump))
@@ -127,6 +117,6 @@
                       (.. (bump) " ")]
                      (table.concat " ")))
 
-;; MANDATORY: set `b:gitbranch` as used in statusline each time we enter a buffer, window...
-(F.au [:VimEnter :WinEnter :BufEnter]
+;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
+(F.au [:BufAdd :BufWinEnter]
       {:group (F.augrp :Hondana_GetGitBranch) :callback statusline-git-branch})

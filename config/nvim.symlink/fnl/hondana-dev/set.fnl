@@ -7,6 +7,9 @@
 (local {:api {:nvim_create_autocmd au :nvim_create_augroup augroup} : keymap}
        vim)
 
+;; shortcut for the group created here
+(local augrp #(augroup $ {:clear true}))
+
 (tc type string)
 (local pattern "*")
 
@@ -44,7 +47,7 @@
   (each [k v (pairs map)] (set! k v)))
 
 ;; very specific case of timeoutlen (far shorter in insert mode; check `hondana-dev.remap` for a use case)
-(let [group (augroup :Hondana_TimeoutLen {:clear true})
+(let [group (augrp :Hondana_TimeoutLen)
       pattern :*
       shortest-timeoutlen 200 ; ms
       default-timeoutlen (or vim.opt.timeoutlen 3000)]
@@ -79,26 +82,26 @@
 
 ;; 4-space indentation for some filetypes
 ;; REMINDER: each project should have its own setup
-(let [group (augroup :Hondana_Fantastic4Indentation {:clear true})
+(let [group (augrp :Hondana_Fantastic4Indentation)
       pattern [:roc :zig :c :cpp :h :rust :go]
       callback #(setlocal!! 4 :sw :ts)]
   (au :FileType {: callback : group : pattern}))
 
 ;; visible yank
-(let [group (augroup :Hondana_Highlight_Yank {:clear true})
+(let [group (augrp :Hondana_Highlight_Yank)
       callback #(vim.highlight.on_yank)]
   (au :TextYankPost {: callback : group}))
 
 ;; additional languages' setup
 ;; - shen programming language comments (from Shen Technology (c) Mark Tarver; https://shenlanguage.org)
 ;; NOTE: the language syntax has been embedded in this setup
-(let [group (augroup :Hondana_ShenComments {:clear true})
+(let [group (augrp :Hondana_ShenComments)
       callback #(setlocal!! "\\\\ %s" :commentstring)]
   (au :FileType {: callback : group :pattern :shen}))
 
 ;; others
 ;; TEST: restore last position (check ShaDa for other session/buffer restoration)
-(let [group (augroup :Hondana_LastPosRestoration {:clear true})]
+(let [group (augrp :Hondana_LastPosRestoration)]
   (au :BufReadPost {:callback #(when (-> "%" (vim.fn.bufname)
                                          (not= :.git/COMMIT_EDITMSG))
                                  (vim.cmd "silent! normal g`\"zv"))
