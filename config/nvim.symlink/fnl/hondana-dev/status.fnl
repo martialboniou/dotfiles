@@ -22,8 +22,9 @@
                           :modified
                           :norm
                           :buffer
-                          :location
-                          :percent])]
+                          :percent
+                          :diagnostic
+                          :location])]
     (.. "%#Status" ;;
         ;; capitalize an ascii word
         (-> (s:sub 1 1) (: :upper) (.. (s:sub 2))) "#")))
@@ -43,21 +44,23 @@
                     StatusModified ["#1d2021" "#d3869b"]
                     StatusBuffer ["#98971a" "#1d2021"]
                     StatusLocation ["#458588" "#1d2021"]
-                    StatusPercent ["#1d2021" "#ebdbb2"]})
+                    StatusPercent ["#1d2021" "#ebdbb2"]
+                    StatusDiagnostic ["#b16286" "#1d2021"]})
 
 (F.au :ColorScheme
       {:group (F.augrp :Hondana_RestoreStatusLine)
        :callback #(highlight-status! {StatusLine ["#458588" "#1d2021"]
                                       winbar [NONE]})})
 
+;; INFO: simplify the statusline => no more chevron
 (tc return string)
-(fn bump []
-  "alternate the chevron's orientation"
-  (set flip (not flip))
-  (if flip
-      ">>"
-      ;; start at false w/ `"<<"`
-      "<<"))
+(local bump #"")
+;; (fn bump []
+;;   "alternate the chevron's orientation"
+;;   (set flip (not flip))
+;;   (if flip
+;;       "‹"
+;;       "›"))
 
 (tc type "string[]")
 (local stamps (make-stamps!))
@@ -103,29 +106,62 @@
         (start p
                (fn [_ data]
                  (when data
-                   ;; format the detected branch like " ($)"
-                   (set vim.b.gitbranch (.. " (" (data:gsub "\n" "") ")")))))))))
+                   ;; format the detected branch"
+                   (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
+
+;; TODO: get the items
+(local icons ;; ""
+       {:diagnostics {:error "✘" :warning "▲" :hint "⚑" :info "»"}
+        :buffers {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
+
+(local diagnostics-attrs
+       [[vim.diagnostic.severity.ERROR icons.diagnostics.error]
+        [vim.diagnostic.severity.WARN icons.diagnostics.warning]
+        [vim.diagnostic.severity.HINT icons.diagnostics.hint]
+        [vim.diagnostic.severity.INFO icons.diagnostics.info]])
+
+(var diagnostics "")
+
+;; HACK: trying to make a diagnostic summary somewhere
+(fn _G.show_diagnostics [] diagnostics)
+
+(fn statusline-diagnostics []
+  (let [results []]
+    (for [i 1 4]
+      (local [severity icon] (. diagnostics-attrs i))
+      (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
+      (when (> n 0)
+        (table.insert results (string.format "%s %d" icon n))))
+    (set diagnostics (table.concat results " "))))
 
 (tc type string)
-(set! statusline (-> [" "
-                      "%l"
-                      (.. " " (stamp) (bump))
+(set! statusline (-> [(.. "%{%v:lua.show_diagnostics()%}" (stamp) (bump))
                       "%Y  "
                       (.. (bump) (stamp) (bump))
-                      "%F%{get(b:,'gitbranch','')}"
+                      (.. "%F" ;; "%{get(b:,'gitbranch','')}"
+                          )
                       (.. (bump) (stamp))
                       "%h%m%r"
                       (.. (stamp) "%=" (stamp) (bump))
-                      (.. "﬘ " "%n")
+                      ;; "﬘ %n"
+                      "⌂ %n"
                       (.. (bump) (stamp) (bump))
-                      "燐"
+                      ;; "燐"
                       ;; no need %l AKA line (always known)
-                      "%c"
+                      " %c"
                       (.. (bump) (stamp) (bump))
-                      "%p%%  "
-                      (.. (bump) " ")]
+                      ;; "%p%% "
+                      ;; "%p%%"
+                      " %p%%"
+                      (.. (bump) (stamp) "%{get(b:,'gitbranch','')}")]
                      (table.concat " ")))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
-(F.au [:BufEnter :BufNew]
-      {:group (F.augrp :Hondana_GetGitBranch) :callback statusline-git-branch})
+(F.au [:BufWinEnter :BufNew]
+      {:group (F.augrp :Hondana_StatusLine_GetGitBranch)
+       :callback statusline-git-branch})
+
+;; refresh diagnostics in statusline
+(F.au [:DiagnosticChanged :BufWinEnter]
+      {:group (F.augrp :Hondana_StatusLine_Diagnostics)
+       :callback statusline-diagnostics})
