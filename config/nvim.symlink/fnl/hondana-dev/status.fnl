@@ -70,18 +70,22 @@
 (tc type string)
 (local no-git-default-tag "")
 
+;; TODO: improve with cache
 (fn statusline-git-branch []
   "Async'ly replace the buffer variable `b:gitbranch`"
-  (var handle nil)
-  (tc cast handle uv_handle_t)
-  (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
   ;; ensure the path is related to the file, not the working directory
-  (vim.cmd "lcd %:p:h")
+  ;; (IMO no need to manage mini.files' or even term's cases)
+  (local (ok _) (pcall vim.cmd "lcd %:p:h"))
+  (when (not ok) (lua :return))
   (tc diagnostic disable)
   (local [cmd & args] [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
   (tc diagnostic enable)
-  ;; restore the current working directory
+  ;; restore the current working directory after `vim.uv.cwd()`
   (vim.cmd "lcd -")
+  ;; spawn a process
+  (var handle nil)
+  (tc cast handle uv_handle_t)
+  (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
   (local stdio [nil (new) (new)])
   (local options {: args : stdio})
   (local on-exit
@@ -90,7 +94,7 @@
               (let [p (. stdio i)]
                 (when p (stop p) (close p))))
             (close handle)
-            ;; default initial message in the statusline when error
+            ;; default tag on error
             (when (not= 0 $) (set vim.b.gitbranch no-git-default-tag))))
   (set handle (spawn cmd options on-exit))
   (for [i 2 3]

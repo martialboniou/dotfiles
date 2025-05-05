@@ -68,9 +68,7 @@
 
 ;; diagnostic
 (vim.diagnostic.config {:update_in_insert false
-                        :float {:focusable true
-                                :border :rounded
-                                :source :always}
+                        :float {:focusable true :border :rounded :source true}
                         ;; `vim.diagnostic.severity.*` are strings so key-able
                         :signs {:text {vim.diagnostic.severity.ERROR "✘"
                                        vim.diagnostic.severity.WARN "▲"
