@@ -72,30 +72,35 @@
 
 (fn statusline-git-branch []
   "Async'ly replace the buffer variable `b:gitbranch`"
-  (when vim.o.modifiable
-    (tc type :vim.uv.uv_handle_t)
-    (var handle nil)
-    (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
-    (local [cmd & args] [:git :rev-parse :--abbrev-ref :HEAD])
-    (local stdio [nil (new) (new)])
-    (local options {: args : stdio})
-    (local on-exit
-           #(do
-              (for [i 2 3]
-                (let [p (. stdio i)]
-                  (when p (stop p) (close p))))
-              (close handle)
-              ;; default initial message in the statusline when error
-              (when (not= 0 $) (set vim.b.gitbranch no-git-default-tag))))
-    (set handle (spawn cmd options on-exit))
-    (for [i 2 3]
-      (let [p (. stdio i)]
-        (when p
-          (start p
-                 (fn [_ data]
-                   (when data
-                     ;; format the detected branch like " ($)"
-                     (set vim.b.gitbranch (.. " (" (data:gsub "\n" "") ")"))))))))))
+  (var handle nil)
+  (tc cast handle uv_handle_t)
+  (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
+  ;; ensure the path is related to the file, not the working directory
+  (vim.cmd "lcd %:p:h")
+  (tc diagnostic disable)
+  (local [cmd & args] [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
+  (tc diagnostic enable)
+  ;; restore the current working directory
+  (vim.cmd "lcd -")
+  (local stdio [nil (new) (new)])
+  (local options {: args : stdio})
+  (local on-exit
+         #(do
+            (for [i 2 3]
+              (let [p (. stdio i)]
+                (when p (stop p) (close p))))
+            (close handle)
+            ;; default initial message in the statusline when error
+            (when (not= 0 $) (set vim.b.gitbranch no-git-default-tag))))
+  (set handle (spawn cmd options on-exit))
+  (for [i 2 3]
+    (let [p (. stdio i)]
+      (when p
+        (start p
+               (fn [_ data]
+                 (when data
+                   ;; format the detected branch like " ($)"
+                   (set vim.b.gitbranch (.. " (" (data:gsub "\n" "") ")")))))))))
 
 (tc type string)
 (set! statusline (-> [" "
@@ -118,5 +123,5 @@
                      (table.concat " ")))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
-(F.au [:BufAdd :BufWinEnter]
+(F.au [:BufEnter :BufNew]
       {:group (F.augrp :Hondana_GetGitBranch) :callback statusline-git-branch})

@@ -44,7 +44,7 @@
               (ok res) (pcall get_explorer_state)]
           (when (and ok (not= res nil))
             (local fs-entry (get_fs_entry))
-            (when (= :file fs-entry.fs_type)
+            (when (and fs-entry (= :file fs-entry.fs_type))
               (hlist:add (harpoon-path-list fs-entry.path)))))
         (hlist:add))))
 

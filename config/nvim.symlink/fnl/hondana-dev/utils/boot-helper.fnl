@@ -1,7 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 (local M {})
 
-(tc param target string param ?src_directory string)
+(tc param target string param _3fsrc_directory? string)
 (fn M.link-tangerine-fennel-lua [target ?src-directory]
   "auto-link fennel.lua from Tangerine to `target`; the optional `src-directory` is
   the root of your package manager local plugins (say, `/lazy` at the `data` stdpath)"
@@ -21,8 +21,8 @@
     ;; prohibit false warnings from `with-open`
     ;; - `xpcall` invalidates the need of nil checking
     ;; - `or` variable can be nil (no big deal here)
-    (lua "---@diagnostic disable: need-check-nil")
-    (lua "---@diagnostic disable: cast-local-type")
+    (tc diagnostic "disable: need-check-nil")
+    (tc diagnostic "disable: cast-local-type")
     ;;
     (if (or (not file) (with-open [fin (io.open file)]
                          (set first-line ((fin:lines)))
@@ -44,8 +44,8 @@
           (lua "---@diagnostic enable: need-check-nil")
           (lua "---@diagnostic enable: cast-local-type")
           ;; async
-          (tc type :uv.uv_handle_t)
           (var handle nil)
+          (tc cast handle uv_handle_t)
           (local {:new_pipe new
                   : spawn
                   :read_start start
@@ -55,8 +55,10 @@
           ;; prohibit false warnings from `&` destructuring
           (lua "---@diagnostic disable: redefined-local")
           ;;
-          (let [[cmd & args] (make-command file)
-                stdio [nil (new) (new)]
+          (tc diagnostic disable)
+          (local [cmd & args] (make-command file))
+          (tc diagnostic enable)
+          (let [stdio [nil (new) (new)]
                 on-exit #(do
                            (for [i 2 3]
                              (let [p (. stdio i)]
