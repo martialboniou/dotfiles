@@ -75,9 +75,9 @@
   "Async'ly replace the buffer variable `b:gitbranch`"
   ;; ensure the path is related to the file, not the working directory
   ;; (IMO no need to manage mini.files' or even term's cases)
+  (tc diagnostic disable)
   (local (ok _) (pcall vim.cmd "lcd %:p:h"))
   (when (not ok) (lua :return))
-  (tc diagnostic disable)
   (local [cmd & args] [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
   (tc diagnostic enable)
   ;; restore the current working directory after `vim.uv.cwd()`
