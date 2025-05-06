@@ -17,14 +17,14 @@
        ,(unpack out))))
 
 (macro make-stamps! []
-  (icollect [_ s (ipairs [:type
+  (icollect [_ s (ipairs [:diagnostic
                           :file
                           :modified
                           :norm
                           :buffer
+                          :column
                           :percent
-                          :diagnostic
-                          :location])]
+                          :norm])]
     (.. "%#Status" ;;
         ;; capitalize an ascii word
         (-> (s:sub 1 1) (: :upper) (.. (s:sub 2))) "#")))
@@ -35,32 +35,21 @@
 (local F {:au api.nvim_create_autocmd
           :augrp #(api.nvim_create_augroup $ {:clear true})})
 
-(tc type boolean)
-(var flip true)
-
 ;; highlight status by side-effect (background first, foreground is optional)
-(highlight-status! {StatusType ["#b16286" "#1d2021"]
+(highlight-status! {StatusDiagnostic ["#b16286" "#1d2021"]
+                    StatusPercent ["#b16286" "#1d2021"]
                     StatusFile ["#fabd2f" "#1d2021"]
-                    StatusModified ["#1d2021" "#d3869b"]
                     StatusBuffer ["#98971a" "#1d2021"]
-                    StatusLocation ["#458588" "#1d2021"]
-                    StatusPercent ["#1d2021" "#ebdbb2"]
-                    StatusDiagnostic ["#b16286" "#1d2021"]})
+                    StatusBranch ["#458588" "#1d2021"]
+                    StatusColumn ["#1d2021" "#ebdbb2"]})
+
+;; bold text for modified zone
+(api.nvim_set_hl 0 :StatusModified {:bg "#1d2021" :fg "#d3869b" :bold true})
 
 (F.au :ColorScheme
       {:group (F.augrp :Hondana_RestoreStatusLine)
        :callback #(highlight-status! {StatusLine ["#458588" "#1d2021"]
                                       winbar [NONE]})})
-
-;; INFO: simplify the statusline => no more chevron
-(tc return string)
-(local bump #"")
-;; (fn bump []
-;;   "alternate the chevron's orientation"
-;;   (set flip (not flip))
-;;   (if flip
-;;       "‹"
-;;       "›"))
 
 (tc type "string[]")
 (local stamps (make-stamps!))
@@ -109,7 +98,7 @@
                    ;; format the detected branch"
                    (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
 
-;; TODO: get the items
+;; TODO: get the icons from the api (as defined in vim.diagnostic.config in `hondana-dev.set`
 (local icons ;; ""
        {:diagnostics {:error "✘" :warning "▲" :hint "⚑" :info "»"}
         :buffers {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
@@ -132,29 +121,28 @@
       (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
       (when (> n 0)
         (table.insert results (string.format "%s %d" icon n))))
-    (set diagnostics (table.concat results " "))))
+    (set diagnostics
+         (-> results (table.concat) (#(if (= "" $) $ (.. " " $ " ")))))))
 
 (tc type string)
-(set! statusline (-> [(.. "%{%v:lua.show_diagnostics()%}" (stamp) (bump))
-                      "%Y  "
-                      (.. (bump) (stamp) (bump))
-                      (.. "%F" ;; "%{get(b:,'gitbranch','')}"
-                          )
-                      (.. (bump) (stamp))
+(set! statusline (-> [" %Y  "
+                      (stamp)
+                      "%{%v:lua.show_diagnostics()%}"
+                      (stamp)
+                      " %F "
+                      (stamp)
                       "%h%m%r"
-                      (.. (stamp) "%=" (stamp) (bump))
-                      ;; "﬘ %n"
-                      "⌂ %n"
-                      (.. (bump) (stamp) (bump))
-                      ;; "燐"
-                      ;; no need %l AKA line (always known)
-                      " %c"
-                      (.. (bump) (stamp) (bump))
-                      ;; "%p%% "
-                      ;; "%p%%"
-                      " %p%%"
-                      (.. (bump) (stamp) "%{get(b:,'gitbranch','')}")]
-                     (table.concat " ")))
+                      (stamp)
+                      "%="
+                      (stamp)
+                      " ⌂ %n "
+                      (stamp)
+                      ;; 燐 : no need %l AKA line (b/c always known)
+                      "  %c "
+                      (stamp)
+                      "  %p%% "
+                      (.. (stamp) "%{get(b:,'gitbranch','')}")]
+                     (table.concat)))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
