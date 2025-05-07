@@ -1,5 +1,5 @@
 (import-macros {: tc} :hondana-dev.macros)
-(import-macros {: set!} :hibiscus.vim)
+(import-macros {: setlocal!} :hibiscus.vim)
 
 (macro highlight-status! [tbl]
   "generate the highlights with a dict of tag as keys and a sequence of 1 or 2 Vim color codes
@@ -16,18 +16,35 @@
     `(do
        ,(unpack out))))
 
-(macro make-stamps! []
-  (icollect [_ s (ipairs [:diagnostic
-                          :file
-                          :modified
-                          :norm
-                          :buffer
-                          :column
-                          :percent
-                          :norm])]
-    (.. "%#Status" ;;
-        ;; capitalize an ascii word
-        (-> (s:sub 1 1) (: :upper) (.. (s:sub 2))) "#")))
+(local hondana-focus-stamp [:diagnostic
+                            :icon
+                            :file
+                            :icon
+                            :file
+                            :arrow
+                            :norm
+                            :buffer
+                            :column
+                            :percent
+                            :norm])
+
+(local hondana-defocus-stamp [:diagnostic
+                              :icon
+                              :file
+                              :icon
+                              :file
+                              :defocusArrow
+                              :norm
+                              :buffer
+                              :column
+                              :percent
+                              :norm])
+
+(macro make-stamps! [list]
+  `(icollect [_# s# (ipairs ,list)]
+     (.. "%#Status" ;;
+         ;; capitalize an ascii word
+         (-> (s#:sub 1 1) (: :upper) (.. (s#:sub 2))) "#")))
 
 (local {: api : uv} vim)
 
@@ -38,26 +55,31 @@
 ;; highlight status by side-effect (background first, foreground is optional)
 (highlight-status! {StatusDiagnostic ["#b16286" "#1d2021"]
                     StatusPercent ["#b16286" "#1d2021"]
+                    StatusModified ["#1d2021" "#d3869b"]
+                    StatusIcon ["#fabd2f" "#f12222"]
+                    ;; StatusIcon2 ["#fabd2f" "#b16286"]
+                    ;; StatusIcon2 ["#fabd2f" "#f15386"]
+                    ;; StatusIcon2 ["#fabd2f" "#d15344"]
                     StatusFile ["#fabd2f" "#1d2021"]
+                    StatusArrow ["#458588" "#fabd2f"]
+                    StatusDefocusArrow ["#1d2021" "#fabd2f"]
                     StatusBuffer ["#98971a" "#1d2021"]
                     StatusBranch ["#458588" "#1d2021"]
                     StatusColumn ["#1d2021" "#ebdbb2"]})
 
-;; bold text for modified zone
-(api.nvim_set_hl 0 :StatusModified {:bg "#1d2021" :fg "#d3869b" :bold true})
-
 (F.au :ColorScheme
       {:group (F.augrp :Hondana_RestoreStatusLine)
-       :callback #(highlight-status! {StatusLine ["#458588" "#1d2021"]
-                                      winbar [NONE]})})
+       :callback #(do
+                    (highlight-status! {StatusLine ["#458588" "#1d2021"]}))})
 
 (tc type "string[]")
-(local stamps (make-stamps!))
+(local stamps (make-stamps! hondana-focus-stamp))
+
+(tc type "string[]")
+(local defocus-stamps (make-stamps! hondana-defocus-stamp))
 
 (tc return "string")
-(fn stamp []
-  "yields next status"
-  (or (table.remove stamps 1) ""))
+(fn yield [t] (or (table.remove t 1) ""))
 
 (tc type string)
 (local no-git-default-tag "")
@@ -124,25 +146,61 @@
     (set diagnostics
          (-> results (table.concat) (#(if (= "" $) $ (.. " " $ " ")))))))
 
+;; append the stamp fn to F
+(set F.stamp #(yield stamps))
+
 (tc type string)
-(set! statusline (-> [" %Y  "
-                      (stamp)
-                      "%{%v:lua.show_diagnostics()%}"
-                      (stamp)
-                      " %F "
-                      (stamp)
-                      "%h%m%r"
-                      (stamp)
-                      "%="
-                      (stamp)
-                      " ⌂ %n "
-                      (stamp)
-                      ;; 燐 : no need %l AKA line (b/c always known)
-                      "  %c "
-                      (stamp)
-                      "  %p%% "
-                      (.. (stamp) "%{get(b:,'gitbranch','')}")]
-                     (table.concat)))
+(local hondana-statusline (-> [" %Y  "
+                               (F.stamp)
+                               "%{%v:lua.show_diagnostics()%}"
+                               (F.stamp)
+                               "%{&readonly?'   ':' '}"
+                               (F.stamp)
+                               "%F"
+                               (F.stamp)
+                               "%{&modified?' ':''}"
+                               (F.stamp)
+                               (F.stamp)
+                               ""
+                               ""
+                               (F.stamp)
+                               "%="
+                               (F.stamp)
+                               " ⌂ %n "
+                               (F.stamp)
+                               ;; 燐 : no need %l AKA line (b/c always known)
+                               "  %c "
+                               (F.stamp)
+                               "  %p%% "
+                               (.. (F.stamp) "%{get(b:,'gitbranch','')}")]
+                              (table.concat)))
+
+;; change stamp to the defocus list
+(set F.stamp #(yield defocus-stamps))
+
+(local hondana-defocus-statusline
+       (-> [" %Y  "
+            (F.stamp)
+            "%{%v:lua.show_diagnostics()%}"
+            (F.stamp)
+            "%{&readonly?'   ':' '}"
+            (F.stamp)
+            "%F"
+            (F.stamp)
+            "%{&modified?' ':''}"
+            (F.stamp)
+            (F.stamp)
+            ""
+            (F.stamp)
+            "%="
+            (F.stamp)
+            " ⌂ %n "
+            (F.stamp)
+            "  %c "
+            (F.stamp)
+            "  %p%% "
+            (.. (F.stamp) "%{get(b:,'gitbranch','')}")]
+           (table.concat)))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
@@ -153,3 +211,10 @@
 (F.au [:DiagnosticChanged :BufWinEnter]
       {:group (F.augrp :Hondana_StatusLine_Diagnostics)
        :callback statusline-diagnostics})
+
+;; arrow active/unactive background
+(let [group (F.augrp :Hondana_StatusLine)]
+  (F.au [:BufEnter :WinEnter]
+        {: group :callback #(setlocal! statusline hondana-statusline)})
+  (F.au [:BufLeave :WinLeave]
+        {: group :callback #(setlocal! statusline hondana-defocus-statusline)}))
