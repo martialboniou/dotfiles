@@ -67,13 +67,13 @@
 (g! netrw_liststyle 3)
 
 ;; diagnostic
-(vim.diagnostic.config {:update_in_insert false
-                        :float {:focusable true :border :rounded :source true}
-                        ;; `vim.diagnostic.severity.*` are strings so key-able
-                        :signs {:text {vim.diagnostic.severity.ERROR "✘"
-                                       vim.diagnostic.severity.WARN "▲"
-                                       vim.diagnostic.severity.HINT "⚑"
-                                       vim.diagnostic.severity.INFO "»"}}})
+(let [text (-> :hondana-dev.utils.globals (require) (. :diagnostic-icons))]
+  (vim.diagnostic.config {:update_in_insert false
+                          :float {:focusable true
+                                  :border :rounded
+                                  :source true}
+                          ;; `vim.diagnostic.severity.*` are strings so key-able
+                          :signs {: text}}))
 
 ;; you can use lambda in this programming language (see below)
 (keymap.set :ia ",\\" "λ")
