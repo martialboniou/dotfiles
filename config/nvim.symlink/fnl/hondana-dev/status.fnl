@@ -122,15 +122,9 @@
                    (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
 
 ;; TODO: get the icons from the api (as defined in vim.diagnostic.config in `hondana-dev.set`
-(local icons ;; ""
-       {:diagnostics {:error "✘" :warning "▲" :hint "⚑" :info "»"}
-        :buffers {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
-
-(local diagnostics-attrs
-       [[vim.diagnostic.severity.ERROR icons.diagnostics.error]
-        [vim.diagnostic.severity.WARN icons.diagnostics.warning]
-        [vim.diagnostic.severity.HINT icons.diagnostics.hint]
-        [vim.diagnostic.severity.INFO icons.diagnostics.info]])
+;; WARN: unused
+(local _icons ;; ""
+       {:buffers {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
 
 (var diagnostics "")
 
@@ -139,13 +133,24 @@
 
 (fn statusline-diagnostics []
   (let [results []]
-    (for [i 1 4]
-      (local [severity icon] (. diagnostics-attrs i))
+    (var right-spacing " ")
+    (for [severity 1 4]
       (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
       (when (> n 0)
-        (table.insert results (string.format "%s %d" icon n))))
+        (var result-format "%s %d")
+        (var icon (-> :hondana-dev.utils.globals (require)
+                      (. :diagnostic-icons) (?. severity)))
+        (set right-spacing " ")
+        (when (not icon)
+          (set icon (-> vim.diagnostic.severity
+                        (. severity)
+                        (: :sub 1 1)
+                        (.. ":")))
+          (set result-format "%s%d ")
+          (set right-spacing ""))
+        (->> n (string.format result-format icon) (table.insert results))))
     (set diagnostics
-         (-> results (table.concat) (#(if (= "" $) $ (.. " " $ " ")))))))
+         (-> results (table.concat) (#(if (= "" $) $ (.. " " $ right-spacing)))))))
 
 ;; append the stamp fn to F
 (set F.stamp #(yield stamps))
