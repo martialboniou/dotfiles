@@ -219,6 +219,9 @@
 
 (local stamps (unzip-stamps! [:focus :defocus] hondana-stamps))
 
+;; append the stamp fn to F
+;; (set F.stamp #(yield stamps))
+
 (tc type string)
 (local hondana-statusline (let [stamp #(yield stamps.focus)]
                             (.. filetype-info (stamp) info.diagnostic (stamp)
