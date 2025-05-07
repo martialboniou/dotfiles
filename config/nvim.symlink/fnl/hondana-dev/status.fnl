@@ -57,7 +57,7 @@
                     StatusPercent ["#b16286" "#1d2021"]
                     StatusModified ["#1d2021" "#d3869b"]
                     StatusIcon ["#fabd2f" "#f12222"]
-                    ;; StatusIcon2 ["#fabd2f" "#b16286"]
+                    StatusIcon2 ["#fabd2f" "#b16286"]
                     ;; StatusIcon2 ["#fabd2f" "#f15386"]
                     ;; StatusIcon2 ["#fabd2f" "#d15344"]
                     StatusFile ["#fabd2f" "#1d2021"]
@@ -70,7 +70,8 @@
 (F.au :ColorScheme
       {:group (F.augrp :Hondana_RestoreStatusLine)
        :callback #(do
-                    (highlight-status! {StatusLine ["#458588" "#1d2021"]}))})
+                    (highlight-status! {StatusLine ["#458588" "#1d2021"]})
+                    (highlight-status! {winbar [:NONE]}))})
 
 (tc type "string[]")
 (local stamps (make-stamps! hondana-focus-stamp))
