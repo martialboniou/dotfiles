@@ -131,6 +131,13 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
+;; WARN: WIP
+(set _G.to_section (let [{: to-section} (require :hondana-dev.utils.bufferline)]
+                     to-section))
+
+(set _G.get_buffers (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
+                      get-buffers))
+
 (fn statusline-diagnostics []
   (let [results []]
     (var right-spacing " ")
