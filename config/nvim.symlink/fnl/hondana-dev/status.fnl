@@ -121,11 +121,6 @@
                    ;; format the detected branch"
                    (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
 
-;; TODO: get the icons from the api (as defined in vim.diagnostic.config in `hondana-dev.set`
-;; WARN: unused
-(local _icons ;; ""
-       {:buffers {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
-
 (var diagnostics "")
 
 ;; HACK: trying to make a diagnostic summary somewhere
@@ -139,7 +134,7 @@
       (when (> n 0)
         (var result-format "%s %d")
         (var icon (-> :hondana-dev.utils.globals (require)
-                      (. :diagnostic-icons) (?. severity)))
+                      (. :icons :diagnostic) (?. severity)))
         (set right-spacing " ")
         (when (not icon)
           (set icon (-> vim.diagnostic.severity
@@ -162,24 +157,41 @@
         ;; empty line or inserting at the end of the current line
         (.. " " max))))
 
+;; INFO: uncomment this if you want to display modes instead of filetype when not in normal mode/unknown mode
+;; (fn _G.get_mode_or_filetype []
+;;   "display the mode or the filetype when normal/unknown"
+;;   (local padding {:prefix "  " :postfix " "})
+;;   (local format #(.. padding.prefix $ padding.postfix))
+;;   (local modes (-> :hondana-dev.utils.globals (require) (. :modes)))
+;;   (or (-?> (?. modes (vim.fn.mode) :text) (format))
+;;       (if (= "" vim.bo.filetype) ""
+;;           (format (.. (vim.bo.filetype:upper) " ")))))
+;; (local filetype-info "%{%v:lua.get_mode_or_filetype()%}")
+
+;; I prefer a simpler filetype-info (comment this when you uncomment the previous code)
+(local filetype-info "%{&ft==''?'':'  '..toupper(&ft)..'  '}")
+
+(local diagnostic-info "%{%v:lua.show_diagnostics()%}")
+(local readonly-tag "%{&readonly?'   ':' '}")
+(local modified-tag "%{&modified?' ':''}")
+;; NOTE: 燐 : %c can be enough here; no need %l AKA line (b/c always known when sync'd)
+(local column-info " %{%v:lua.show_column()%} ")
+
 (tc type string)
+;; TODO: when focused, replace the filetype by the mode except for normal
 (local hondana-statusline
        (let [stamp #(yield stamps)]
-         (.. " %Y  " (stamp) "%{%v:lua.show_diagnostics()%}" (stamp)
-             "%{&readonly?'   ':' '}" (stamp) "%F" (stamp)
-             "%{&modified?' ':''}" (stamp) (stamp) "" "" (stamp) "%="
-             (stamp) " ⌂ %n " (stamp)
-             ;; 燐 : %c can be enough here; no need %l AKA line (b/c always known when sync'd)
-             " %{%v:lua.show_column()%} " (stamp) "  %p%% " (stamp)
+         (.. filetype-info (stamp) diagnostic-info (stamp) readonly-tag (stamp)
+             "%F" (stamp) modified-tag (stamp) (stamp) "" "" (stamp) "%="
+             (stamp) " ⌂ %n " (stamp) column-info (stamp) "  %p%% " (stamp)
              "%{get(b:,'gitbranch','')}")))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list
        (let [stamp #(yield defocus-stamps)]
-         (.. " %Y  " (stamp) "%{%v:lua.show_diagnostics()%}" (stamp)
-             "%{&readonly?'   ':' '}" (stamp) "%F" (stamp)
-             "%{&modified?' ':''}" (stamp) (stamp) "" (stamp) "%=" (stamp)
-             " ⌂ %n " (stamp) "  %c " (stamp) "  %p%% " (stamp)
+         (.. filetype-info (stamp) diagnostic-info (stamp) readonly-tag (stamp)
+             "%F" (stamp) modified-tag (stamp) (stamp) "" (stamp) "%="
+             (stamp) " ⌂ %n " (stamp) column-info (stamp) "  %p%% " (stamp)
              "%{get(b:,'gitbranch','')}")))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...

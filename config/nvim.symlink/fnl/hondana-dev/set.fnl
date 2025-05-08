@@ -67,7 +67,7 @@
 (g! netrw_liststyle 3)
 
 ;; diagnostic
-(let [text (-> :hondana-dev.utils.globals (require) (. :diagnostic-icons))]
+(let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
   (vim.diagnostic.config {:update_in_insert false
                           :float {:focusable true
                                   :border :rounded
