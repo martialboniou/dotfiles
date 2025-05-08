@@ -6,7 +6,8 @@
 (local fmt string.format)
 (local F {})
 
-(fn to-section [buffer index & show-index]
+;; unused
+(fn _to-section [buffer index ?show-index]
   (local flags [])
   (local name (. buffer :name))
   (var item (if (= "" name) "[No Name]" name))
@@ -18,22 +19,24 @@
     (table.insert flags "[RO]"))
   (let [info (table.concat flags)]
     (set item (if (= "" info) item (fmt "%s %s" item info))))
-  (set item (if show-index (fmt " %d:%s " index item) (fmt " %s " item)))
+  (set item (if ?show-index (fmt " %d:%s " index item) (fmt " %s " item)))
   (let [{: current :flags {: modified}} buffer]
-    {:class :bufferline : item : modified : current}))
+    {: item : modified : current}))
 
 (tc return "Buffer[]")
-(fn get-buffers []
+(fn get-buffers [?modifiable-only]
   (local buffers [])
+  (var flags {:modified "&modified"})
+  (when (not ?modifiable-only)
+    (set flags.modifiable "&modifiable")
+    (set flags.readonly "&readonly"))
   (for [nr 1 (vim.fn.bufnr "$")]
     (when (F.is-primary-buffer nr)
       (table.insert buffers
                     {:bufnr nr
                      :name (-> nr (vim.fn.bufname) (vim.fn.fnamemodify ":t"))
                      :current (-> "%" (vim.fn.bufnr) (= nr))
-                     :flags (collect [k v (pairs {:modified "&modified"
-                                                  :modifiable "&modifiable"
-                                                  :readonly "&readonly"})]
+                     :flags (collect [k v (pairs flags)]
                               (values k (-> nr (vim.fn.getbufvar v) (= 1))))})))
   (F.unique-tail buffers)
   buffers)
@@ -84,4 +87,4 @@
 (tc field flags "{ modified: boolean, modifiable: boolean, readonly: boolean }")
 
 ;; export
-{: get-buffers : to-section}
+{: get-buffers}
