@@ -132,11 +132,14 @@
        (require :hondana-dev.utils.globals))
 
 ;; WARN: WIP
-(set _G.to_section (let [{: to-section} (require :hondana-dev.utils.bufferline)]
-                     to-section))
-
-(set _G.get_buffers (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
-                      get-buffers))
+(fn _G.unsaved_other_buffers []
+  (let [{: to-section : get-buffers} (require :hondana-dev.utils.bufferline)
+        modifiable-only true]
+    (accumulate [count 0 _ buffer (ipairs (get-buffers modifiable-only))]
+      (let [{: current :flags {: modified}} buffer]
+        (if (and (not current) modified)
+            (+ 1 count)
+            count)))))
 
 (fn statusline-diagnostics []
   (let [results []]
