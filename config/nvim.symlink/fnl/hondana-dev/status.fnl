@@ -16,30 +16,6 @@
     `(do
        ,(unpack out))))
 
-(local hondana-focus-stamp [:diagnostic
-                            :icon
-                            :file
-                            :icon
-                            :file
-                            :arrow
-                            :norm
-                            :buffer
-                            :column
-                            :percent
-                            :norm])
-
-(local hondana-defocus-stamp [:diagnostic
-                              :icon
-                              :file
-                              :icon
-                              :file
-                              :defocusArrow
-                              :norm
-                              :buffer
-                              :column
-                              :percent
-                              :norm])
-
 (macro make-stamps! [list]
   `(icollect [_# s# (ipairs ,list)]
      (.. "%#Status" ;;
@@ -51,6 +27,30 @@
 ;; F = utility functions
 (local F {:au api.nvim_create_autocmd
           :augrp #(api.nvim_create_augroup $ {:clear true})})
+
+(tc type "{ focus: string[], defocus: string[] }")
+(local hondana-stamp {:focus [:diagnostic
+                              :icon
+                              :file
+                              :icon
+                              :file
+                              :arrow
+                              :norm
+                              :buffer
+                              :column
+                              :percent
+                              :norm]
+                      :defocus [:diagnostic
+                                :icon
+                                :file
+                                :icon
+                                :file
+                                :defocusArrow
+                                :norm
+                                :buffer
+                                :column
+                                :percent
+                                :norm]})
 
 ;; highlight status by side-effect (background first, foreground is optional)
 (highlight-status! {StatusDiagnostic ["#b16286" "#1d2021"]
@@ -73,11 +73,9 @@
                     (highlight-status! {StatusLine ["#458588" "#1d2021"]})
                     (highlight-status! {winbar [:NONE]}))})
 
-(tc type "string[]")
-(local stamps (make-stamps! hondana-focus-stamp))
-
-(tc type "string[]")
-(local defocus-stamps (make-stamps! hondana-defocus-stamp))
+(tc type "{ focus: string[], defocus: string[] }")
+(local stamps (collect [k v (pairs hondana-stamp)]
+                (values k (make-stamps! v))))
 
 (tc return "string")
 (fn yield [t] (or (table.remove t 1) ""))
@@ -126,6 +124,13 @@
 ;; HACK: trying to make a diagnostic summary somewhere
 (fn _G.show_diagnostics [] diagnostics)
 
+;; WARN: WIP
+(set _G.to_section (let [{: to-section} (require :hondana-dev.utils.bufferline)]
+                     to-section))
+
+(set _G.get_buffers (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
+                      get-buffers))
+
 (fn statusline-diagnostics []
   (let [results []]
     (var right-spacing " ")
@@ -171,28 +176,32 @@
 ;; I prefer a simpler filetype-info (comment this when you uncomment the previous code)
 (local filetype-info "%{&ft==''?'':'  '..toupper(&ft)..'  '}")
 
-(local diagnostic-info "%{%v:lua.show_diagnostics()%}")
-(local readonly-tag "%{&readonly?'   ':' '}")
-(local modified-tag "%{&modified?' ':''}")
-;; NOTE: 燐 : %c can be enough here; no need %l AKA line (b/c always known when sync'd)
-(local column-info " %{%v:lua.show_column()%} ")
+(local (info tag)
+       (values {:diagnostic "%{%v:lua.show_diagnostics()%}"
+                ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
+                :column " %{%v:lua.show_column()%} "
+                ;; ⌂
+                :buffer-number "  %n "
+                :git-branch "%{get(b:,'gitbranch','')}"}
+               {:readonly "%{&readonly?'   ':' '}"
+                :modified "%{&modified?' ':''}"}))
 
 (tc type string)
 ;; TODO: when focused, replace the filetype by the mode except for normal
 (local hondana-statusline
-       (let [stamp #(yield stamps)]
-         (.. filetype-info (stamp) diagnostic-info (stamp) readonly-tag (stamp)
-             "%F" (stamp) modified-tag (stamp) (stamp) "" "" (stamp) "%="
-             (stamp) " ⌂ %n " (stamp) column-info (stamp) "  %p%% " (stamp)
-             "%{get(b:,'gitbranch','')}")))
+       (let [stamp #(yield stamps.focus)]
+         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
+             "%F" (stamp) tag.modified (stamp) (stamp) "" "" (stamp) "%="
+             (stamp) info.buffer-number (stamp) info.column (stamp) "  %p%% "
+             (stamp) info.git-branch)))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list
-       (let [stamp #(yield defocus-stamps)]
-         (.. filetype-info (stamp) diagnostic-info (stamp) readonly-tag (stamp)
-             "%F" (stamp) modified-tag (stamp) (stamp) "" (stamp) "%="
-             (stamp) " ⌂ %n " (stamp) column-info (stamp) "  %p%% " (stamp)
-             "%{get(b:,'gitbranch','')}")))
+       (let [stamp #(yield stamps.defocus)]
+         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
+             "%F" (stamp) tag.modified (stamp) (stamp) "" (stamp) "%="
+             (stamp) info.buffer-number (stamp) info.column (stamp) "  %p%% "
+             (stamp) info.git-branch)))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
