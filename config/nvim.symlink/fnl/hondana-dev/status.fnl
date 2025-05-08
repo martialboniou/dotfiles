@@ -152,61 +152,35 @@
     (set diagnostics
          (-> results (table.concat) (#(if (= "" $) $ (.. " " $ right-spacing)))))))
 
-;; append the stamp fn to F
-(set F.stamp #(yield stamps))
+(fn _G.show_column []
+  (let [col vim.fn.col
+        max (col :$)
+        curr (col :.)]
+    (if (< curr max)
+        ;; col('$') - 1 is the last colunm in normal mode
+        (.. curr "/" (- max 1))
+        ;; empty line or inserting at the end of the current line
+        (.. " " max))))
 
 (tc type string)
-(local hondana-statusline (-> [" %Y  "
-                               (F.stamp)
-                               "%{%v:lua.show_diagnostics()%}"
-                               (F.stamp)
-                               "%{&readonly?'   ':' '}"
-                               (F.stamp)
-                               "%F"
-                               (F.stamp)
-                               "%{&modified?' ':''}"
-                               (F.stamp)
-                               (F.stamp)
-                               ""
-                               ""
-                               (F.stamp)
-                               "%="
-                               (F.stamp)
-                               " ⌂ %n "
-                               (F.stamp)
-                               ;; 燐 : no need %l AKA line (b/c always known)
-                               "  %c "
-                               (F.stamp)
-                               "  %p%% "
-                               (.. (F.stamp) "%{get(b:,'gitbranch','')}")]
-                              (table.concat)))
+(local hondana-statusline
+       (let [stamp #(yield stamps)]
+         (.. " %Y  " (stamp) "%{%v:lua.show_diagnostics()%}" (stamp)
+             "%{&readonly?'   ':' '}" (stamp) "%F" (stamp)
+             "%{&modified?' ':''}" (stamp) (stamp) "" "" (stamp) "%="
+             (stamp) " ⌂ %n " (stamp)
+             ;; 燐 : %c can be enough here; no need %l AKA line (b/c always known when sync'd)
+             " %{%v:lua.show_column()%} " (stamp) "  %p%% " (stamp)
+             "%{get(b:,'gitbranch','')}")))
 
-;; change stamp to the defocus list
-(set F.stamp #(yield defocus-stamps))
-
-(local hondana-defocus-statusline
-       (-> [" %Y  "
-            (F.stamp)
-            "%{%v:lua.show_diagnostics()%}"
-            (F.stamp)
-            "%{&readonly?'   ':' '}"
-            (F.stamp)
-            "%F"
-            (F.stamp)
-            "%{&modified?' ':''}"
-            (F.stamp)
-            (F.stamp)
-            ""
-            (F.stamp)
-            "%="
-            (F.stamp)
-            " ⌂ %n "
-            (F.stamp)
-            "  %c "
-            (F.stamp)
-            "  %p%% "
-            (.. (F.stamp) "%{get(b:,'gitbranch','')}")]
-           (table.concat)))
+(tc type string)
+(local hondana-defocus-statusline ;; change stamp to the defocus list
+       (let [stamp #(yield defocus-stamps)]
+         (.. " %Y  " (stamp) "%{%v:lua.show_diagnostics()%}" (stamp)
+             "%{&readonly?'   ':' '}" (stamp) "%F" (stamp)
+             "%{&modified?' ':''}" (stamp) (stamp) "" (stamp) "%=" (stamp)
+             " ⌂ %n " (stamp) "  %c " (stamp) "  %p%% " (stamp)
+             "%{get(b:,'gitbranch','')}")))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
@@ -218,7 +192,7 @@
       {:group (F.augrp :Hondana_StatusLine_Diagnostics)
        :callback statusline-diagnostics})
 
-;; arrow active/unactive background
+;; active/unactive statusline on focusing events
 (let [group (F.augrp :Hondana_StatusLine)]
   (F.au [:BufEnter :WinEnter]
         {: group :callback #(setlocal! statusline hondana-statusline)})
