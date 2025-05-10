@@ -116,7 +116,7 @@
         (start p
                (fn [_ data]
                  (when data
-                   ;; format the detected branch"
+                   ;; format the detected branch
                    (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
 
 (var diagnostics "")
@@ -176,23 +176,14 @@
 (local buffers {})
 (var counter 0)
 
-;; WARN: temporary
-(fn _index-of [array value]
-  (each [_ v (ipairs array)]
-    (when (= value v) (lua "return i"))))
-
 ;; IDEA: brainstorming/trying not to use bufferline at all
 (fn _G.modified [flag bufnr]
   (local state (?. buffers bufnr))
   (local modified (= 1 flag))
-  (var changed false)
-  (when (and (not state) modified)
-    (set changed true))
-  (when (and state (not modified))
-    (set changed true))
+  (local changed (= (not state) modified))
   (when changed
     (set (. buffers bufnr) modified)
-    (set counter (if modified (+ counter 1) (+ counter -1)))
+    (set counter (+ counter (if modified 1 -1)))
     (set vim.g.modified_buffers
          (if (= counter 0)
              ""
