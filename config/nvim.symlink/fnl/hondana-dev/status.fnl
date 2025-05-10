@@ -214,7 +214,7 @@
          (if (= counter 0)
              ""
              (.. " " unsaved-others-emote " " (tostring counter)))))
-  (if modified " " ""))
+  (if modified "  " ""))
 
 ;; (set vim.o.fillchars "stl:o")
 
@@ -244,7 +244,7 @@
                 ;; to a shorten version according to the window width
                 :filename "%{%v:lua.build_filename(50)%}"}
                {:readonly "%{&readonly?'   ':' '}"
-                ;; :modified "%{&modified?' ':''}"
+                ;; :modified "%{&modified?'  ':''}"
                 :modified "%{%v:lua.modified(&modified, bufnr('%'))%}"}))
 
 (tc type string)
