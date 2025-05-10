@@ -38,7 +38,8 @@
                           (vim.iter)
                           (: :flatten)
                           (: :totable)
-                          (table.concat "/"))
+                          (unpack)
+                          (vim.fs.joinpath))
                :iterate-parents #(let [it (fn [_ v]
                                             (when (and v
                                                        (not ((root-comparator) v)))

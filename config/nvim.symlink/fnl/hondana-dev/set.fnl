@@ -35,7 +35,9 @@
 ;; specific settings
 (vim.opt.isfname:append "@-@")
 (let [map {:guicursor ""
-           :undodir (-> [(os.getenv :HOME) :.vim :undodir] (table.concat "/"))
+           ;; shared with Vim
+           :undodir (-> [(os.getenv :HOME) :.vim :undodir] (unpack)
+                        (vim.fs.joinpath))
            :scrolloff 8
            :colorcolumn :100
            :signcolumn :yes

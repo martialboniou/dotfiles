@@ -356,7 +356,8 @@
     (local addons [(.. vim.env.VIMRUNTIME :/lua) (unpack addons)])
     ;; HACK: luvit (unsure if good strat)
     (let [{:options {: root}} (require :lazy.core.config)
-          luvit-path (-> root (#[$ :luvit-meta :library]) (table.concat "/"))]
+          luvit-path (-> root (#[$ :luvit-meta :library]) (unpack)
+                         (vim.fs.joinpath))]
       (when (vim.uv.fs_stat luvit-path)
         (table.insert paths luvit-path)))
     ;; 3rd addons

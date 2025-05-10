@@ -1,5 +1,4 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
-(import-macros {: concat!} :hibiscus.vim)
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
@@ -102,7 +101,7 @@
       (set (. env.dap.listeners.before.event_exited cfg) close))
     ;; lldb adapter, formely lldb-vscode
     (local lldb-adapter-name :lldb-dap)
-    (var lldb-adapter (concat! "/" :/usr :local :bin lldb-adapter-name))
+    (var lldb-adapter (vim.fs.joinpath "" :usr :local :bin lldb-adapter-name))
     (when (-> (vim.uv.os_uname)
               (. :sysname)
               (= :Darwin))
@@ -110,7 +109,7 @@
       (let [(ok brew-path) (brew-prefix)]
         (when ok
           (set lldb-adapter
-               (concat! "/" brew-path :opt :llvm :bin lldb-adapter-name)))))
+               (vim.fs.joinpath brew-path :opt :llvm :bin lldb-adapter-name)))))
     (if (-> lldb-adapter (vim.fn.executable) (not= 1))
         (print "error: dap: unable to set your default adapter for LLVM")
         (let [cfg env.dap.configurations
