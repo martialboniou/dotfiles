@@ -131,13 +131,15 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
-;; WARN: WIP
-(fn _G.unsaved_other_buffers []
-  (let [{: to-section : get-buffers} (require :hondana-dev.utils.bufferline)
-        modifiable-only true]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers modifiable-only))]
+(fn unsaved-other-buffers []
+  "returns the number "
+  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
+    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
       (let [{: current :flags {: modified}} buffer]
-        (if (and (not current) modified)
+        ;; (if (and (not current) modified)
+        ;;     (+ 1 count)
+        ;;     count)
+        (if modified
             (+ 1 count)
             count)))))
 
@@ -233,13 +235,12 @@
 ;; (set F.stamp #(yield stamps))
 
 (tc type string)
-(local hondana-statusline (let [stamp #(yield stamps.focus)]
-                            (.. filetype-info (stamp) info.diagnostic (stamp)
-                                tag.readonly (stamp) info.filename (stamp)
-                                tag.modified (stamp) (stamp) "" "" (stamp)
-                                "%=" (stamp) info.buffer-number (stamp)
-                                info.column (stamp) "  %p%% " (stamp)
-                                info.git-branch)))
+(local hondana-statusline
+       (let [stamp #(yield stamps.focus)]
+         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
+             info.filename (stamp) tag.modified (stamp) (stamp) "" ""
+             (stamp) "%=" (stamp) info.buffer-number (stamp) info.column (stamp)
+             "  %p%% " (stamp))))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list
