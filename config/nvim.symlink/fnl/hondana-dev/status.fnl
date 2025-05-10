@@ -123,17 +123,10 @@
 
 (fn _G.show_diagnostics [] diagnostics)
 
-(fn unsaved-other-buffers []
-  "returns the number "
-  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
-      (let [{: current :flags {: modified}} buffer]
-        ;; (if (and (not current) modified)
-        ;;     (+ 1 count)
-        ;;     count)
-        (if modified
-            (+ 1 count)
-            count)))))
+(local {: posix
+        :icons {:diagnostic diagnostic-icons
+                :buffer {:unsaved_others unsaved-icon}}}
+       (require :hondana-dev.utils.globals))
 
 (fn statusline-diagnostics []
   (let [results []]
@@ -142,8 +135,7 @@
       (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
       (when (> n 0)
         (var result-format "%s %d")
-        (var icon (-> :hondana-dev.utils.globals (require)
-                      (. :icons :diagnostic) (?. severity)))
+        (var icon (-> diagnostic-icons (?. severity)))
         (set right-spacing " ")
         (when (not icon)
           (set icon (-> vim.diagnostic.severity
@@ -180,26 +172,17 @@
 ;; I prefer a simpler filetype-info (comment this when you uncomment the previous code)
 (local filetype-info "%{&ft==''?'':'  '..toupper(&ft)..'  '}")
 
-(local unsaved-others-emote
-       (-> :hondana-dev.utils.globals (require)
-           (. :icons :buffer :unsaved_others)))
-
-;; WARN: temporary
-(local keys [])
-(for [i 1 1000] (table.insert keys i))
-
 ;; better build a btree
-(var buffers {})
+(local buffers {})
 (var counter 0)
 
-(fn index-of [array value]
-  (each [i v (ipairs array)]
+;; WARN: temporary
+(fn _index-of [array value]
+  (each [_ v (ipairs array)]
     (when (= value v) (lua "return i"))))
 
 ;; IDEA: brainstorming/trying not to use bufferline at all
 (fn _G.modified [flag bufnr]
-  ;; proc the side effect for the unsaved_other_buffers' counter to be shown in other buffers
-  ;; (local (tag key) (values (unsaved-other-buffers) (table.remove keys)))
   (local state (?. buffers bufnr))
   (local modified (= 1 flag))
   (var changed false)
@@ -213,14 +196,14 @@
     (set vim.g.modified_buffers
          (if (= counter 0)
              ""
-             (.. " " unsaved-others-emote " " (tostring counter)))))
+             (.. " " unsaved-icon " " (tostring counter)))))
   (if modified "  " ""))
 
 ;; (set vim.o.fillchars "stl:o")
 
 (fn _G.build_filename [spacing]
-  (local ({: expand : strchars : pathshorten} {:nvim_win_get_width width})
-         (values vim.fn api))
+  (local ({:fn {: expand : strchars : pathshorten} :fs {: joinpath : parents}} {:nvim_win_get_width width})
+         (values vim api))
   (local filename (expand "%:p:~"))
   (local win-size (width 0))
   (local text-fit? #(-> $ (strchars) (+ spacing) (< win-size)))
@@ -229,8 +212,27 @@
       filename
       (do
         (local subdirs (expand "%:p:~:h"))
-        (local shrink-subdirs (if (= :/ subdirs) "" (pathshorten subdirs)))
-        (local short-filename (.. shrink-subdirs :/ (expand "%:t")))
+        (var short-filename "")
+        (if posix
+            (do
+              (local shrink-subdirs
+                     (if (= :/ subdirs) subdirs
+                         (joinpath (pathshorten subdirs) "")))
+              (set short-filename (joinpath shrink-subdirs (expand "%:t"))))
+            (do
+              ;; Windows version: untested
+              (local last #(do
+                             (var dump nil)
+                             (each [next $...] (set dump next))
+                             dump))
+              ;; (local root-dir (each [dir (parents filename)]))
+              (local shrink-subdirs
+                     (if (-> filename (vim.fs.parents) (last) (= subdirs))
+                         ;; (subdirs:sub 1 -2)
+                         subdirs
+                         (joinpath (pathshorten subdirs) "")))
+              ;; as shrink-subdirs ends with the correct separator
+              (set short-filename (.. shrink-subdirs (expand "%:t")))))
         ;; shrink to the max but the parent directory if enough space
         (if (text-fit? short-filename) short-filename (pathshorten filename)))))
 
