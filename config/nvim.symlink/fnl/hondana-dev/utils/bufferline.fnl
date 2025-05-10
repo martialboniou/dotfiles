@@ -24,22 +24,40 @@
     {: item : modified : current}))
 
 (tc return "Buffer[]")
-(fn get-buffers [?modifiable-only]
+(fn get-buffers [?patterns]
   (local buffers [])
-  (var flags {:modified "&modified"})
-  (when (not ?modifiable-only)
-    (set flags.modifiable "&modifiable")
-    (set flags.readonly "&readonly"))
-  (for [nr 1 (vim.fn.bufnr "$")]
+  (local {: fnamemodify : bufname : getbufvar : bufnr} vim.fn)
+  (local patterns (if ?patterns ?patterns
+                      {:modified "&modified"
+                       :readonly "&readonly"
+                       :modifiable "&modifiable"}))
+  (var bad-pattern false)
+  (for [nr 1 (bufnr "$")]
     (when (F.is-primary-buffer nr)
+      ;; WARN: MUST break when v is not an elligible pattern (eg. "&modified"/"&readonly"/"&modifiable")
+      (local flags (collect [k v (pairs patterns)
+                             &until (and (-> nr (getbufvar v) (type)
+                                             (= :string))
+                                         (do
+                                           (set bad-pattern true)
+                                           (vim.notify (.. "bufferline: `get-buffers()` has received an unknown pattern `"
+                                                           v
+                                                           "` as second argument of `vim.fn.getbufvar()`")
+                                                       vim.log.levels.ERROR)
+                                           true))]
+                     (values k (-> nr (getbufvar v) (= 1)))))
+      ;; ensure the imperfect flags and the rest of the buffers are not recorded
+      (when bad-pattern (lua :break))
       (table.insert buffers
-                    {:bufnr nr
-                     :name (-> nr (vim.fn.bufname) (vim.fn.fnamemodify ":t"))
-                     :current (-> "%" (vim.fn.bufnr) (= nr))
-                     :flags (collect [k v (pairs flags)]
-                              (values k (-> nr (vim.fn.getbufvar v) (= 1))))})))
-  (F.unique-tail buffers)
-  buffers)
+                    {: flags
+                     :bufnr nr
+                     :current (-> "%" (bufnr) (= nr))
+                     :name (-> nr (bufname) (fnamemodify ":t"))})))
+  ;; return an empty record on error
+  ;; otherwise process normally by checking the unicity of the `:name` field
+  (if bad-pattern [] (do
+                       (F.unique-tail buffers)
+                       buffers)))
 
 (tc param bufnr integer "number of buffer")
 (tc return boolean)
