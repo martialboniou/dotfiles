@@ -131,13 +131,15 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
-;; WARN: WIP
-(fn _G.unsaved_other_buffers []
-  (let [{: to-section : get-buffers} (require :hondana-dev.utils.bufferline)
-        modifiable-only true]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers modifiable-only))]
+(fn unsaved-other-buffers []
+  "returns the number "
+  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
+    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
       (let [{: current :flags {: modified}} buffer]
-        (if (and (not current) modified)
+        ;; (if (and (not current) modified)
+        ;;     (+ 1 count)
+        ;;     count)
+        (if modified
             (+ 1 count)
             count)))))
 
