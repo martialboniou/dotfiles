@@ -202,37 +202,30 @@
 ;; (set vim.o.fillchars "stl:o")
 
 (fn _G.build_filename [spacing]
-  (local ({:fn {: expand : strchars : pathshorten} :fs {: joinpath : parents}} {:nvim_win_get_width width})
+  (local ({:fn {: expand : strchars : pathshorten} :fs {: joinpath}} {:nvim_win_get_width width})
          (values vim api))
   (local filename (expand "%:p:~"))
   (local win-size (width 0))
-  (local text-fit? #(-> $ (strchars) (+ spacing) (< win-size)))
   ;; `strchars` knows UNICODE, not Lua's `#`
+  (local text-fit? #(-> $ (strchars) (+ spacing) (< win-size)))
   (if (text-fit? filename)
       filename
-      (do
-        (local subdirs (expand "%:p:~:h"))
-        (var short-filename "")
-        (if posix
-            (do
-              (local shrink-subdirs
-                     (if (= :/ subdirs) subdirs
-                         (joinpath (pathshorten subdirs) "")))
-              (set short-filename (joinpath shrink-subdirs (expand "%:t"))))
-            (do
-              ;; Windows version: untested
-              (local last #(do
-                             (var dump nil)
-                             (each [next $...] (set dump next))
-                             dump))
-              ;; (local root-dir (each [dir (parents filename)]))
-              (local shrink-subdirs
-                     (if (-> filename (vim.fs.parents) (last) (= subdirs))
-                         ;; (subdirs:sub 1 -2)
-                         subdirs
-                         (joinpath (pathshorten subdirs) "")))
-              ;; as shrink-subdirs ends with the correct separator
-              (set short-filename (.. shrink-subdirs (expand "%:t")))))
+      (let [subdirs (case (values posix (expand "%:p:~:h"))
+                      (true :/)
+                      :/
+                      ;; Windows case (ie posix = false): untested
+                      (where (false text)
+                             (let [last #(do
+                                           (var dump nil)
+                                           (each [next $...] (set dump next))
+                                           dump)]
+                               ;; last = utility fn to get the last iterator
+                               (-> filename (vim.fs.parents) (last) (= text))))
+                      text
+                      ;; otherwise append the correct separator (most common except editing at root level)
+                      (_ text)
+                      (joinpath (pathshorten text) ""))
+            short-filename (.. subdirs (expand "%:t"))]
         ;; shrink to the max but the parent directory if enough space
         (if (text-fit? short-filename) short-filename (pathshorten filename)))))
 
