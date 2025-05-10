@@ -131,17 +131,10 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
-(fn unsaved-other-buffers []
-  "returns the number "
-  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
-      (let [{: current :flags {: modified}} buffer]
-        ;; (if (and (not current) modified)
-        ;;     (+ 1 count)
-        ;;     count)
-        (if modified
-            (+ 1 count)
-            count)))))
+(local {: posix
+        :icons {:diagnostic diagnostic-icons
+                :buffer {:unsaved_others unsaved-icon}}}
+       (require :hondana-dev.utils.globals))
 
 (fn statusline-diagnostics []
   (let [results []]
