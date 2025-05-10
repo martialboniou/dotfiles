@@ -121,16 +121,17 @@
 
 (var diagnostics "")
 
-;; HACK: trying to make a diagnostic summary somewhere
 (fn _G.show_diagnostics [] diagnostics)
 
-;; WARN: WIP
-(fn _G.unsaved_other_buffers []
-  (let [{: to-section : get-buffers} (require :hondana-dev.utils.bufferline)
-        modifiable-only true]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers modifiable-only))]
+(fn unsaved-other-buffers []
+  "returns the number "
+  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
+    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
       (let [{: current :flags {: modified}} buffer]
-        (if (and (not current) modified)
+        ;; (if (and (not current) modified)
+        ;;     (+ 1 count)
+        ;;     count)
+        (if modified
             (+ 1 count)
             count)))))
 
@@ -179,32 +180,90 @@
 ;; I prefer a simpler filetype-info (comment this when you uncomment the previous code)
 (local filetype-info "%{&ft==''?'':'  '..toupper(&ft)..'  '}")
 
+(local unsaved-others-emote
+       (-> :hondana-dev.utils.globals (require)
+           (. :icons :buffer :unsaved_others)))
+
+;; WARN: temporary
+(local keys [])
+(for [i 1 1000] (table.insert keys i))
+
+;; better build a btree
+(var buffers {})
+(var counter 0)
+
+(fn index-of [array value]
+  (each [i v (ipairs array)]
+    (when (= value v) (lua "return i"))))
+
+;; IDEA: brainstorming/trying not to use bufferline at all
+(fn _G.modified [flag bufnr]
+  ;; proc the side effect for the unsaved_other_buffers' counter to be shown in other buffers
+  ;; (local (tag key) (values (unsaved-other-buffers) (table.remove keys)))
+  (local state (?. buffers bufnr))
+  (local modified (= 1 flag))
+  (var changed false)
+  (when (and (not state) modified)
+    (set changed true))
+  (when (and state (not modified))
+    (set changed true))
+  (when changed
+    (set (. buffers bufnr) modified)
+    (set counter (if modified (+ counter 1) (+ counter -1)))
+    (set vim.g.modified_buffers
+         (if (= counter 0)
+             ""
+             (.. " " unsaved-others-emote " " (tostring counter)))))
+  (if modified " " ""))
+
+;; (set vim.o.fillchars "stl:o")
+
+(fn _G.build_filename [spacing]
+  (local ({: expand : strchars : pathshorten} {:nvim_win_get_width width})
+         (values vim.fn api))
+  (local filename (expand "%:p:~"))
+  (local win-size (width 0))
+  (local text-fit? #(-> $ (strchars) (+ spacing) (< win-size)))
+  ;; `strchars` knows UNICODE, not Lua's `#`
+  (if (text-fit? filename)
+      filename
+      (do
+        (local subdirs (expand "%:p:~:h"))
+        (local shrink-subdirs (if (= :/ subdirs) "" (pathshorten subdirs)))
+        (local short-filename (.. shrink-subdirs :/ (expand "%:t")))
+        ;; shrink to the max but the parent directory if enough space
+        (if (text-fit? short-filename) short-filename (pathshorten filename)))))
+
 (local (info tag)
        (values {:diagnostic "%{%v:lua.show_diagnostics()%}"
                 ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
                 :column " %{%v:lua.show_column()%} "
-                ;; ⌂
-                :buffer-number "  %n "
-                :git-branch "%{get(b:,'gitbranch','')}"}
+                :buffer-number "  %n%{get(g:,'modified_buffers', '')} "
+                :git-branch "%{get(b:,'gitbranch','')}"
+                ;; 50 = average number of additional characters for the filename to shrink
+                ;; to a shorten version according to the window width
+                :filename "%{%v:lua.build_filename(50)%}"}
                {:readonly "%{&readonly?'   ':' '}"
-                :modified "%{&modified?' ':''}"}))
+                ;; :modified "%{&modified?' ':''}"
+                :modified "%{%v:lua.modified(&modified, bufnr('%'))%}"}))
 
 (tc type string)
 ;; TODO: when focused, replace the filetype by the mode except for normal
-(local hondana-statusline
-       (let [stamp #(yield stamps.focus)]
-         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
-             "%F" (stamp) tag.modified (stamp) (stamp) "" "" (stamp) "%="
-             (stamp) info.buffer-number (stamp) info.column (stamp) "  %p%% "
-             (stamp) info.git-branch)))
+(local hondana-statusline (let [stamp #(yield stamps.focus)]
+                            (.. filetype-info (stamp) info.diagnostic (stamp)
+                                tag.readonly (stamp) info.filename (stamp)
+                                tag.modified (stamp) (stamp) "" "" (stamp)
+                                "%=" (stamp) info.buffer-number (stamp)
+                                info.column (stamp) "  %p%% " (stamp)
+                                info.git-branch)))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list
        (let [stamp #(yield stamps.defocus)]
          (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
-             "%F" (stamp) tag.modified (stamp) (stamp) "" (stamp) "%="
-             (stamp) info.buffer-number (stamp) info.column (stamp) "  %p%% "
-             (stamp) info.git-branch)))
+             info.filename (stamp) tag.modified (stamp) (stamp) "" (stamp)
+             "%=" (stamp) info.buffer-number (stamp) info.column (stamp)
+             "  %p%% " (stamp) info.git-branch)))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
