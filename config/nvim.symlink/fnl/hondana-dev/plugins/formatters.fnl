@@ -1,6 +1,6 @@
 ;;; Conform setup
 ;;; 2024-12-16
-(import-macros {: tc} :hondana-dev/macros)
+(import-macros {: tc} :hondana-dev.macros)
 
 ;; S = additional settings
 (local S {})

@@ -1,4 +1,14 @@
+(import-macros {: tc} :hondana-dev.macros)
+
 (local M {})
+
+;; NOTE: cannot be cross-compiled
+(macro fs-posix []
+  "set a global POSIX/BSD/Unix checker"
+  (-?> :Windows (= _G.jit.os) (not)))
+
+(tc type boolean)
+(set M.posix (fs-posix))
 
 (set M.icons
      {:diagnostic {vim.diagnostic.severity.ERROR "✘"

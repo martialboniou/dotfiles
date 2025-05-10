@@ -1,4 +1,4 @@
-(import-macros {: tc} :hondana-dev/macros)
+(import-macros {: tc} :hondana-dev.macros)
 ;;; 2024-11-28
 
 ;; F = utility functions at the end of this module

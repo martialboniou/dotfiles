@@ -1,4 +1,4 @@
-(import-macros {: tc} :hondana-dev/macros)
+(import-macros {: tc} :hondana-dev.macros)
 
 (tc alias bool_fun "fun(): boolean")
 (tc alias string_iterator ;;

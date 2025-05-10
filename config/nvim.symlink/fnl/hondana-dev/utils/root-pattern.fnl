@@ -1,4 +1,4 @@
-(import-macros {: tc} :hondana-dev/macros)
+(import-macros {: tc} :hondana-dev.macros)
 ;; inspired by https://github.com/zk-org/zk-nvim/blob/main/lua/zk/root_pattern_util.lua
 (local M {})
 
