@@ -280,6 +280,11 @@
     (when (executable? :elm-language-server)
       (lspconfig.elmls.setup {: capabilities}))
     ;;
+    ;; * Unison *
+    ;; NOTE: UCM listener (check `unisonweb/unison`)
+    (when (and (executable? :ucm) lspconfig.unison)
+      (lspconfig.unison.setup {: capabilities}))
+    ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
     ;;
     (local handlers {1 (fn [server-name]

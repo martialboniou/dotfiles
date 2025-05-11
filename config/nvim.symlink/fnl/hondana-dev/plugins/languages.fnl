@@ -7,25 +7,48 @@
       2 #(vim.cmd ,(.. "GoTagAdd " t#))
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
-(tc type LazySpec)
+(local complete-unison-vim-path #(vim.fs.joinpath $ :editor-support :vim))
+
+(tc param plugin LazyPlugin param fun string)
+(fn unison-core [plugin fun]
+  (let [{fun as-is} (require :lazy.core.loader)]
+    (as-is (vim.fs.joinpath plugin.dir ""))
+    (-> plugin (. :dir) (complete-unison-vim-path) (as-is))))
+
+;; default config/init = unison
+(local (config init) (values #(do
+                                (vim.opt.rtp:append (complete-unison-vim-path $.dir))
+                                (unison-core $ :packadd))
+                             #(unison-core $ :ftdetect)))
+
+;; default keys/build = gopher (for golang)
+(local (keys build)
+       (values (make-gopher-keys! :json :yaml)
+               #(vim.cmd " silent! GoInstallDeps ")))
+
+(fn nvim-dap-go-keys []
+  (make-lazykeys! [[:dgt #(funcall! :dap-go :debug_test) "Debug go test"]
+                   [:dgl #(funcall! :dap-go :debug_last) "Debug last go test"]]))
+
+(tc type "LazySpec[]")
 (local P ;; 
        [;;; HASKELL
         {1 :mrcjkb/haskell-tools.nvim :version "^4" :lazy false}
         ;;; GOLANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go
-         :keys (make-lazykeys! [[:dgt
-                                 #(funcall! :dap-go :debug_test)
-                                 "Debug go test"]
-                                [:dgl
-                                 #(funcall! :dap-go :debug_last)
-                                 "Debug last go test"]])
+         :keys nvim-dap-go-keys
          :dependencies [:mfussenegger/nvim-dap]}
         {1 :olexsmir/gopher.nvim
          :ft :go
          :dependencies [:nvim-lua/plenary.nvim
                         :nvim-treesitter/nvim-treesitter]
-         :keys (make-gopher-keys! :json :yaml)
-         :build #(vim.cmd " silent! GoInstallDeps ")}])
+         : keys
+         : build}])
+
+;;; (optional) UNISON
+(-> :ucm (vim.fn.executable) (= 1)
+    (#(when $
+        (table.insert P {1 :unisonweb/unison :branch :trunk : config : init}))))
 
 P
