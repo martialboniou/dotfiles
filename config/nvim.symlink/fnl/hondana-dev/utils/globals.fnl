@@ -10,6 +10,10 @@
 (tc type boolean)
 (set M.posix (fs-posix))
 
+;; ucm = unison-ready environment
+(tc type boolean)
+(set M.ucm (-> :ucm (vim.fn.executable) (= 1)))
+
 (set M.icons
      {:diagnostic {vim.diagnostic.severity.ERROR "✘"
                    vim.diagnostic.severity.WARN "▲"
