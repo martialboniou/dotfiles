@@ -282,7 +282,8 @@
     ;;
     ;; * Unison *
     ;; NOTE: UCM listener (check `unisonweb/unison`)
-    (when (and (executable? :ucm) lspconfig.unison)
+    (when (and (-> :hondana-dev.utils.globals (require) (. :ucm))
+               lspconfig.unison)
       (lspconfig.unison.setup {: capabilities}))
     ;;
     ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers

@@ -7,20 +7,6 @@
       2 #(vim.cmd ,(.. "GoTagAdd " t#))
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
-(local complete-unison-vim-path #(vim.fs.joinpath $ :editor-support :vim))
-
-(tc param plugin LazyPlugin param fun string)
-(fn unison-core [plugin fun]
-  (let [{fun as-is} (require :lazy.core.loader)]
-    (as-is (vim.fs.joinpath plugin.dir ""))
-    (-> plugin (. :dir) (complete-unison-vim-path) (as-is))))
-
-;; default config/init = unison
-(local (config init) (values #(do
-                                (vim.opt.rtp:append (complete-unison-vim-path $.dir))
-                                (unison-core $ :packadd))
-                             #(unison-core $ :ftdetect)))
-
 ;; default keys/build = gopher (for golang)
 (local (keys build)
        (values (make-gopher-keys! :json :yaml)
@@ -47,8 +33,23 @@
          : build}])
 
 ;;; (optional) UNISON
-(-> :ucm (vim.fn.executable) (= 1)
+(-> :hondana-dev.utils.globals (require) (. :ucm)
     (#(when $
+        (local {: joinpath} vim.fs)
+        (local complete-unison-vim-path #(joinpath $ :editor-support :vim))
+        ;;
+        (tc param plugin LazyPlugin param fun string)
+
+        (fn unison-core [plugin fun]
+          (let [{fun as-is} (require :lazy.core.loader)]
+            (as-is (joinpath plugin.dir ""))
+            (-> plugin (. :dir) (complete-unison-vim-path) (as-is))))
+
+        (local (config init)
+               (values #(do
+                          (vim.opt.rtp:append (complete-unison-vim-path $.dir))
+                          (unison-core $ :packadd))
+                       #(unison-core $ :ftdetect)))
         (table.insert P {1 :unisonweb/unison :branch :trunk : config : init}))))
 
 P
