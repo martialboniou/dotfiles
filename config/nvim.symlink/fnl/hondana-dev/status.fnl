@@ -77,6 +77,10 @@
 (tc type string)
 (local no-git-default-tag "")
 
+(fn refresh-gitbranch [bufnr data]
+  ;; VimL MUST NOT be used within a loop's callback: call `vim.schedule` to delay this
+  (vim.schedule #(vim.fn.setbufvar bufnr "gitbranch" data)))
+
 ;; TODO: improve with cache
 (fn statusline-git-branch []
   "Async'ly replace the buffer variable `b:gitbranch`"
@@ -86,6 +90,11 @@
   (local (ok _) (pcall vim.cmd "lcd %:p:h"))
   (when (not ok) (lua :return))
   (local [cmd & args] [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
+  ;; keep the `bufnr` (`vim.b.gitbranch` is a variable of the current buffer,
+  ;; not a specific variable of the buffer where this async fn has been
+  ;; proc'd)
+  ;; NOTE: don't use `vim.b.gitbranch` in an async fn
+  (local bufnr (vim.fn.bufnr :%))
   (tc diagnostic enable)
   ;; restore the current working directory after `vim.uv.cwd()`
   (vim.cmd "lcd -")
@@ -102,7 +111,8 @@
                 (when p (stop p) (close p))))
             (close handle)
             ;; default tag on error
-            (when (not= 0 $) (set vim.b.gitbranch no-git-default-tag))))
+            (when (not= 0 $)
+              (refresh-gitbranch bufnr no-git-default-tag))))
   (set handle (spawn cmd options on-exit))
   (for [i 2 3]
     (let [p (. stdio i)]
@@ -111,7 +121,8 @@
                (fn [_ data]
                  (when data
                    ;; format the detected branch
-                   (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
+                   (refresh-gitbranch bufnr
+                                      (.. "  " (data:gsub "\n" "") " ")))))))))
 
 (local {: posix
         :icons {:diagnostic diagnostic-icons
