@@ -131,11 +131,6 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
-(local {: posix
-        :icons {:diagnostic diagnostic-icons
-                :buffer {:unsaved_others unsaved-icon}}}
-       (require :hondana-dev.utils.globals))
-
 (fn statusline-diagnostics []
   (let [results []]
     (var right-spacing " ")
