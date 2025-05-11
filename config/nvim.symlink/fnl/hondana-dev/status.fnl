@@ -16,11 +16,19 @@
     `(do
        ,(unpack out))))
 
-(macro make-stamps! [list]
-  `(icollect [_# s# (ipairs ,list)]
-     (.. "%#Status" ;;
-         ;; capitalize an ascii word
-         (-> (s#:sub 1 1) (: :upper) (.. (s#:sub 2))) "#")))
+(macro unzip-stamps! [keys list]
+  "`keys` MUST be literal at comptime"
+  (let [tbl {}]
+    (each [i k (ipairs keys)]
+      (local seq
+             `(icollect [_# s# (ipairs ,list)]
+                (let [t# (if (-> s# (type) (= :string)) [s#] s#)
+                      v# (if ,(and (> i 1) `(. t# ,i)) (. t# ,i) (. t# 1))]
+                  (.. "%#Status" ;;
+                      ;; capitalize an ascii word
+                      (-> (v#:sub 1 1) (: :upper) (.. (v#:sub 2) "#"))))))
+      (set (. tbl k) seq))
+    tbl))
 
 (local {: api : uv} vim)
 
@@ -28,29 +36,20 @@
 (local F {:au api.nvim_create_autocmd
           :augrp #(api.nvim_create_augroup $ {:clear true})})
 
-(tc type "{ focus: string[], defocus: string[] }")
-(local hondana-stamp {:focus [:diagnostic
-                              :icon
-                              :file
-                              :icon
-                              :file
-                              :arrow
-                              :norm
-                              :buffer
-                              :column
-                              :percent
-                              :norm]
-                      :defocus [:diagnostic
-                                :icon
-                                :file
-                                :icon
-                                :file
-                                :defocusArrow
-                                :norm
-                                :buffer
-                                :column
-                                :percent
-                                :norm]})
+(tc alias StatusElement "string|{[1]: string, [2]: string}")
+
+(tc type "StatusElement[]")
+(local hondana-stamps [:diagnostic
+                       :icon
+                       :file
+                       :icon
+                       :file
+                       [:arrow :defocusArrow]
+                       :norm
+                       :buffer
+                       :column
+                       :percent
+                       :norm])
 
 ;; highlight status by side-effect (background first, foreground is optional)
 (highlight-status! {StatusDiagnostic ["#b16286" "#1d2021"]
@@ -64,7 +63,6 @@
                     StatusArrow ["#458588" "#fabd2f"]
                     StatusDefocusArrow ["#1d2021" "#fabd2f"]
                     StatusBuffer ["#98971a" "#1d2021"]
-                    StatusBranch ["#458588" "#1d2021"]
                     StatusColumn ["#1d2021" "#ebdbb2"]})
 
 (F.au :ColorScheme
@@ -72,10 +70,6 @@
        :callback #(do
                     (highlight-status! {StatusLine ["#458588" "#1d2021"]})
                     (highlight-status! {winbar [:NONE]}))})
-
-(tc type "{ focus: string[], defocus: string[] }")
-(local stamps (collect [k v (pairs hondana-stamp)]
-                (values k (make-stamps! v))))
 
 (tc return "string")
 (fn yield [t] (or (table.remove t 1) ""))
@@ -119,10 +113,6 @@
                    ;; format the detected branch
                    (set vim.b.gitbranch (.. "  " (data:gsub "\n" "") " ")))))))))
 
-(var diagnostics "")
-
-(fn _G.show_diagnostics [] diagnostics)
-
 (local {: posix
         :icons {:diagnostic diagnostic-icons
                 :buffer {:unsaved_others unsaved-icon}}}
@@ -145,7 +135,7 @@
           (set result-format "%s%d ")
           (set right-spacing ""))
         (->> n (string.format result-format icon) (table.insert results))))
-    (set diagnostics
+    (set vim.b.diagnostics
          (-> results (table.concat) (#(if (= "" $) $ (.. " " $ right-spacing)))))))
 
 (fn _G.show_column []
@@ -176,9 +166,12 @@
 (local buffers {})
 (var counter 0)
 
-;; IDEA: brainstorming/trying not to use bufferline at all
-(fn _G.modified [flag bufnr]
+;; TODO: unused/WIP (should we get rid of this?! `:echo` the unsaved buffers' ids?)
+(fn ;;_G.
+  _modified
+  [flag bufnr]
   (local state (?. buffers bufnr))
+  (local _ bufnr)
   (local modified (= 1 flag))
   (local changed (= (not state) modified))
   (when changed
@@ -220,21 +213,22 @@
         ;; shrink to the max but the parent directory if enough space
         (if (text-fit? short-filename) short-filename (pathshorten filename)))))
 
-(local (info tag)
-       (values {:diagnostic "%{%v:lua.show_diagnostics()%}"
-                ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
-                :column " %{%v:lua.show_column()%} "
-                :buffer-number "  %n%{get(g:,'modified_buffers', '')} "
-                :git-branch "%{get(b:,'gitbranch','')}"
-                ;; 50 = average number of additional characters for the filename to shrink
-                ;; to a shorten version according to the window width
-                :filename "%{%v:lua.build_filename(50)%}"}
-               {:readonly "%{&readonly?'   ':' '}"
-                ;; :modified "%{&modified?'  ':''}"
-                :modified "%{%v:lua.modified(&modified, bufnr('%'))%}"}))
+(local (info tag) (values {:diagnostic "%{get(b:,'diagnostics','')}"
+                           ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
+                           :column " %{%v:lua.show_column()%} "
+                           :buffer-number "  %n%{get(g:,'modified_buffers', '')} "
+                           :git-branch "%{get(b:,'gitbranch','')}"
+                           ;; 50 = average number of additional characters for the filename to shrink
+                           ;; to a shorten version according to the window width
+                           :filename "%{%v:lua.build_filename(50)%}"}
+                          {:readonly "%{&readonly?'   ':' '}"
+                           :modified "%{&modified?'  ':''}"
+                           ;; :modified "%{%v:lua.modified(&modified, bufnr('%'))%}"
+                           }))
+
+(local stamps (unzip-stamps! [:focus :defocus] hondana-stamps))
 
 (tc type string)
-;; TODO: when focused, replace the filetype by the mode except for normal
 (local hondana-statusline (let [stamp #(yield stamps.focus)]
                             (.. filetype-info (stamp) info.diagnostic (stamp)
                                 tag.readonly (stamp) info.filename (stamp)
@@ -257,7 +251,7 @@
        :callback statusline-git-branch})
 
 ;; refresh diagnostics in statusline
-(F.au [:DiagnosticChanged :BufWinEnter]
+(F.au [:DiagnosticChanged :BufEnter :WinEnter]
       {:group (F.augrp :Hondana_StatusLine_Diagnostics)
        :callback statusline-diagnostics})
 
