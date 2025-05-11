@@ -55,8 +55,10 @@
 (keyset :n :<C-u> :<C-u>zz)
 
 ;; keep the cursor in the middle during (back)search
-(each [_ key (ipairs [:n :N])]
-  (keyset :n key (.. key :zzzv)))
+(let [keys [:n :N]]
+  (for [i 1 (length keys)]
+    (local key (. keys i))
+    (keyset :n key (.. key :zzzv))))
 
 ;; greatest remap ever
 ;;   paste a buffer but doesn't keep the deleted selection
@@ -94,26 +96,32 @@
 
 ;; <leader>cgn => use `cgn` to replace the current word (<dot> to propagate to the next one)
 ;; <leader>cc (alias)
-(each [_ v (ipairs [:cgn :cc])]
-  (->> v
-       (.. :<leader>)
-       (#(keyset :n $ ":let @/=expand('<cword>')<CR>cgn"
-                 {:desc "Replace the current word using `cgn` (. to propagate)"}))))
+(let [keys [:cgn :cc]]
+  (for [i 1 (length keys)]
+    (->> (. keys i)
+         (.. :<leader>)
+         (#(keyset :n $ ":let @/=expand('<cword>')<CR>cgn"
+                   {:desc "Replace the current word using `cgn` (. to propagate)"})))))
 
-; <leader>cd => change local current directory
+;; <leader>cd => change local current directory
 (keyset :n :<leader>cd ":lcd %:h<CR>"
         {:desc "Change local directory according to this file location"})
 
-; center the buffer vertically according to the cursor's position
+;; center the buffer vertically according to the cursor's position
 (keyset :n "z;" ":<C-u>normal! zszH<CR>")
 
-; helix-kinda bindings beginning/end of line (like `^`/`g_`; not like `0`/`$`)
+;; helix-kinda bindings beginning/end of line (like `^`/`g_`; not like `0`/`$`)
 ; NOTE: caret can be boring to type when you use dead keys
 (keyset :n :gh :^)
 (keyset :n :gl :g_)
 
-; experimental: double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
+;; experimental: double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
 ; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
 ;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
 ; TIP: int'l or simplified dvorak layouts have `-`/`_` on `,`/`"`; it's a good crutch
 (keyset :i ",," "_")
+
+;; <F3> => timestamp (oldie)
+(let [cmd "<C-r>=strftime('%Y-%m-%d %a %I:%M %p')<CR>"]
+  (each [m c (pairs {:n (.. :i cmd :<Esc>) :i cmd})]
+    (keyset m :<F3> c)))
