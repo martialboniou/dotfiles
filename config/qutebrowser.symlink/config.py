@@ -132,4 +132,3 @@ c.content.blocking.enabled = True
 #         "https://github.com/uBlockOrigin/uAssets/raw/master/filters/quick-fixes.txt",
 #         "https://github.com/uBlockOrigin/uAssets/raw/master/filters/resource-abuse.txt",
 #         "https://github.com/uBlockOrigin/uAssets/raw/master/filters/unbreak.txt"]
-
