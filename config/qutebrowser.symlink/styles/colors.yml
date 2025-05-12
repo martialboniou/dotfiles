@@ -1,0 +1,82 @@
+colors:
+  webpage:
+    bg: "#000000"
+    darkmode:
+      enabled: True
+      algorithm: 'lightness-cielab'
+      policy:
+        images: 'never'
+  downloads:
+    bar:
+      bg: "#00000000"
+    start:
+      bg: green
+      fg: white
+    stop:
+      bg: gray
+      fg: "#dddddd"
+    error:
+      bg: "#000000"
+      fg: "red"
+  tooltip:
+    bg: "#000000"
+  messages:
+    info:
+      bg: "#000000"
+      fg: "#dddddd"
+    error:
+      bg: "#000000"
+      fg: "red"
+  hints:
+    bg: "#000000"
+    fg: "#dddddd"
+  tabs:
+    indicator:
+      start: green
+      stop: gray
+    even:
+      bg: "#00000000"
+      fg: "#dddddd"
+    odd:
+      bg: "#00000000"
+      fg: "#dddddd"
+    bar:
+      bg: "#00000000"
+    selected:
+      even:
+        bg: blue
+        fg: white
+      odd:
+        bg: blue
+        fg: white
+  completion:
+    fg: "#dddddd"
+    category:
+      bg: "#000000"
+      fg: "#dddddd"
+    odd:
+      bg: "#000000"
+    even:
+      bg: "#000000"
+    match:
+      fg: cyan
+    item:
+      selected:
+        match:
+          fg: cyan
+  statusbar:
+    passthrough:
+      fg: cyan
+    command:
+      bg: blue
+    normal:
+      bg: lime
+      fg: black
+    url:
+      fg: cyan
+      success:
+        https:
+          fg: magenta
+      hover:
+        fg: "#5c5cff"
+

@@ -136,7 +136,7 @@
       (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
       (when (> n 0)
         (var result-format "%s %d")
-        (var icon (-> diagnostic-icons (?. severity)))
+        (var icon (?. diagnostic-icons severity))
         (set right-spacing " ")
         (when (not icon)
           (set icon (-> vim.diagnostic.severity
@@ -227,7 +227,7 @@
 (local (info tag) (values {:diagnostic "%{get(b:,'diagnostics','')}"
                            ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
                            :column " %{%v:lua.show_column()%} "
-                           :buffer-number "  %n%{get(g:,'modified_buffers', '')} "
+                           :buffer-number "  %n "
                            :git-branch "%{get(b:,'gitbranch','')}"
                            ;; 50 = average number of additional characters for the filename to shrink
                            ;; to a shorten version according to the window width
