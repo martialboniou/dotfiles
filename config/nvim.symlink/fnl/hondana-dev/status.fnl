@@ -23,7 +23,11 @@
       (local seq
              `(icollect [_# s# (ipairs ,list)]
                 (let [t# (if (-> s# (type) (= :string)) [s#] s#)
-                      v# (if ,(and (> i 1) `(. t# ,i)) (. t# ,i) (. t# 1))]
+                      v# ,(if (> i 1)
+                              ;; get the n-th element (or the first one when nil)
+                              `(if (. t# ,i) (. t# ,i) (. t# 1))
+                              ;; get the first element
+                              `(. t# 1))]
                   (.. "%#Status" ;;
                       ;; capitalize an ascii word
                       (-> (v#:sub 1 1) (: :upper) (.. (v#:sub 2) "#"))))))
@@ -124,9 +128,7 @@
                    (refresh-gitbranch bufnr
                                       (.. "  " (data:gsub "\n" "") " ")))))))))
 
-(local {: posix
-        :icons {:diagnostic diagnostic-icons
-                :buffer {:unsaved_others unsaved-icon}}}
+(local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
 (fn statusline-diagnostics []
@@ -173,27 +175,6 @@
 ;; I prefer a simpler filetype-info (comment this when you uncomment the previous code)
 (local filetype-info "%{&ft==''?'':'  '..toupper(&ft)..'  '}")
 
-;; better build a btree
-(local buffers {})
-(var counter 0)
-
-;; TODO: unused/WIP (should we get rid of this?! `:echo` the unsaved buffers' ids?)
-(fn ;;_G.
-  _modified
-  [flag bufnr]
-  (local state (?. buffers bufnr))
-  (local _ bufnr)
-  (local modified (= 1 flag))
-  (local changed (= (not state) modified))
-  (when changed
-    (set (. buffers bufnr) modified)
-    (set counter (+ counter (if modified 1 -1)))
-    (set vim.g.modified_buffers
-         (if (= counter 0)
-             ""
-             (.. " " unsaved-icon " " (tostring counter)))))
-  (if modified "  " ""))
-
 ;; (set vim.o.fillchars "stl:o")
 
 (fn _G.build_filename [spacing]
@@ -224,18 +205,17 @@
         ;; shrink to the max but the parent directory if enough space
         (if (text-fit? short-filename) short-filename (pathshorten filename)))))
 
-(local (info tag) (values {:diagnostic "%{get(b:,'diagnostics','')}"
-                           ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
-                           :column " %{%v:lua.show_column()%} "
-                           :buffer-number "  %n "
-                           :git-branch "%{get(b:,'gitbranch','')}"
-                           ;; 50 = average number of additional characters for the filename to shrink
-                           ;; to a shorten version according to the window width
-                           :filename "%{%v:lua.build_filename(50)%}"}
-                          {:readonly "%{&readonly?'   ':' '}"
-                           :modified "%{&modified?'  ':''}"
-                           ;; :modified "%{%v:lua.modified(&modified, bufnr('%'))%}"
-                           }))
+(local (info tag)
+       (values {:diagnostic "%{get(b:,'diagnostics','')}"
+                ;; NOTE: 燐 : %c can be enough here; I don't need %l AKA line
+                :column " %{%v:lua.show_column()%} "
+                :buffer-number "  %n "
+                :git-branch "%{get(b:,'gitbranch','')}"
+                ;; 50 = average number of additional characters for the filename to shrink
+                ;; to a shorten version according to the window width
+                :filename "%{%v:lua.build_filename(50)%}"}
+               {:readonly "%{&readonly?'   ':' '}"
+                :modified "%{&modified?'  ':''}"}))
 
 (local stamps (unzip-stamps! [:focus :defocus] hondana-stamps))
 

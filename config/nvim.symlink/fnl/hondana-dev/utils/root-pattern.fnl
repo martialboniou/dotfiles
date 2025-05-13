@@ -12,7 +12,7 @@
              (: path# :match "^%a:$")))
       `(fn [path#] (= "/" path#))))
 
-(tc class Path)
+(tc class RootPatternPath)
 (tc field escape-wildcards "fun(name: string): string")
 (tc field exists "fun(path: string): boolean")
 (tc field join "fun(...: string?): string")
@@ -49,7 +49,7 @@
                                                   (values v $)))))]
                                    (values it $ $))}))
 
-(tc type Path)
+(tc type RootPatternPath)
 (set M.path Path)
 
 (tc type matcher)
