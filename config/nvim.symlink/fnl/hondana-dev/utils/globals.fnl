@@ -1,3 +1,4 @@
+;; some shared data/functions
 (import-macros {: tc} :hondana-dev.macros)
 
 (local M {})
@@ -9,6 +10,24 @@
 
 (tc type boolean)
 (set M.posix (fs-posix))
+
+(tc class NumberOpts)
+(tc field rnu? boolean)
+(tc field nu? boolean)
+(tc type "NumberOpts[]")
+;; formatted for `vim.o` (eqv. in VimL: ["nornu nonu" :nu "nu rnu"])
+(local wheel [{:rnu false :nu false} {:nu true} {:nu true :rnu true}])
+
+(tc type "integer")
+;; zero-based index of wheel
+;; let start with relativenumber to come ()
+(var wheel-state (-> wheel (length)
+                     (#(if (> $ 1) $
+                           (vim.notify "utils.globals: wheel must have 2 elements!"
+                                       vim.log.levels.ERROR)))
+                     (- 2)))
+
+;;; DATA
 
 ;; ucm = unison-ready environment
 (tc type boolean)
@@ -58,5 +77,15 @@
               :ce {:text :EX :state :command}
               :! {:text :SHELL :state :command}
               :t {:text :TERMINAL :state :command}})
+
+;;: FUNCTIONS
+
+(fn M.set-numbers []
+  (let [last (length wheel)]
+    (set wheel-state (% (+ 1 wheel-state) last))
+    (local opts (. wheel (+ 1 wheel-state)))
+    ;; use `vim.o` instead of `vim.cmd` to avoid VimScript call
+    (each [o v (pairs opts)]
+      (set (. vim.o o) v))))
 
 M

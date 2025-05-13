@@ -20,8 +20,10 @@
   (au [:ColorScheme :VimEnter] {: callback : group : pattern}))
 
 ;; global settings
-(set!! true :termguicolors :nu :rnu :et :ic :sc :si :undofile :incsearch
-       :cursorline)
+(set!! true :termguicolors :et :ic :sc :si :undofile :incsearch :cursorline)
+(let [{: set-numbers} (require :hondana-dev.utils.globals)]
+  ;; should do a `:= set nu rnu` in Lua at startup
+  (set-numbers))
 
 (set!! false :wrap :swapfile :backup :hlsearch)
 ;; 2-space indentation is the default

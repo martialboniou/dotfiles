@@ -125,3 +125,7 @@
 (let [cmd "<C-r>=strftime('%Y-%m-%d %a %I:%M %p')<CR>"]
   (each [m c (pairs {:n (.. :i cmd :<Esc>) :i cmd})]
     (keyset m :<F3> c)))
+
+;; <F2> => switch vim numbers (column-wise)
+(let [{: set-numbers} (require :hondana-dev.utils.globals)]
+  (keyset [:i :n :x] :<F2> set-numbers))
