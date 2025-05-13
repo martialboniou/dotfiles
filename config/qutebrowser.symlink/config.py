@@ -3,10 +3,9 @@ c = c # pyright: ignore [reportUndefinedVariable=false] # noqa: F821 pylint: dis
 config = config # pyright: ignore [reportUndefinedVariable=false] # noqa: F821 pylint: disable=E0602,C0103
 # pylint settings included to disable linting errors
 
-import yaml # pyright: ignore [reportMissingModuleSource]
-
-with (config.configdir / 'styles' / 'colors.yml').open() as f:
-    yaml_data = yaml.safe_load(f)
+# import yaml # pyright: ignore [reportMissingModuleSource]
+# with (config.configdir / 'styles' / 'colors.yml').open() as f:
+#     yaml_data = yaml.safe_load(f)
 
 def dict_attrs(obj, path=''):
     if isinstance(obj, dict):
@@ -15,8 +14,8 @@ def dict_attrs(obj, path=''):
     else:
         yield path, obj
 
-for k, v in dict_attrs(yaml_data):
-    config.set(k, v)
+# for k, v in dict_attrs(yaml_data):
+#     config.set(k, v)
 
 # c.statusbar.show = "always"
 c.tabs.show = "multiple"
@@ -38,22 +37,28 @@ c.url.searchengines = {
 c.completion.open_categories = ['searchengines', 'quickmarks', 'bookmarks', 'history', 'filesystem']
 
 config.load_autoconfig(True) # load settings done via the gui
+# config.source('qutebrowser-themes/themes/onedark.py')
+config.source('styles/onedark.py')
 
 c.auto_save.session = True # save tabs on quit/restart
 
 # keybinding changes
+## ;p as passthrough
+config.bind(';p', 'mode-enter passthrough')
+config.bind(';p', 'mode-leave', mode='passthrough')
 ## <Ctrl-c> as <Esc>
-config.bind('<Ctrl-c>', 'mode-leave', 'insert')
-config.bind('<Ctrl-c>', 'mode-leave', 'caret')
-config.bind('<Ctrl-c>', 'mode-leave', 'command')
-config.bind('<Ctrl-c>', 'mode-leave', 'hint')
-config.bind('<Ctrl-c>', 'mode-leave', 'prompt')
-config.bind('<Ctrl-c>', 'mode-leave', 'register')
-config.bind('<Ctrl-c>', 'mode-leave', 'yesno')
-config.bind('<Ctrl-c>', 'clear-keychain ;; search ;; fullscreen --leave')
+# config.unbind('Ctrl-c', mode='command') # :completion-item-yank
+config.bind('<Ctrl-c>', 'clear-keychain ;; search ;; fullscreen --leave', mode="normal")
+config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
+config.bind('<Ctrl-c>', 'mode-leave', mode='caret')
+config.bind('<Ctrl-c>', 'mode-leave', mode='command')
+config.bind('<Ctrl-c>', 'mode-leave', mode='hint')
+config.bind('<Ctrl-c>', 'mode-leave', mode='prompt')
+config.bind('<Ctrl-c>', 'mode-leave', mode='register')
+config.bind('<Ctrl-c>', 'mode-leave', mode='yesno')
 ## <Ctrl-C> as <Shift-Esc> in passthough mode
-config.bind('<Ctrl-Shift-c>', 'mode-leave', 'passthrough')
-config.bind('<Ctrl-Shift-c>', 'fake-key <Escape>', 'insert')
+config.bind('<Ctrl-Shift-c>', 'mode-leave', mode='passthrough')
+config.bind('<Ctrl-Shift-c>', 'fake-key <Escape>', mode='insert')
 ## others
 config.bind('=', 'cmd-set-text -s :open')
 config.bind('h', 'history')
