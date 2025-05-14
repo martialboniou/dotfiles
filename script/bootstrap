@@ -14,7 +14,7 @@ echo ''
 
 SYSTEM=$(echo "`uname 2>/dev/null`" | head -c 5)
 # MINGW/MSYS case too
-CYGWIN=1 && MINGW=1 && if [[ "$SYSTEM" == "Cygwi" ]]; then CYGWIN=0; elif [[ "$SYSTEM" == "MINGW" ]]; then MINGW=0; fi
+CYGWIN=1 && MINGW=1 && if [[ "$SYSTEM" == "Cygwin" ]]; then CYGWIN=0; elif [[ "$SYSTEM" == "MINGW" ]]; then MINGW=0; fi
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
@@ -79,6 +79,9 @@ install_dotfiles () {
   overwrite_all=false
   backup_all=false
   skip_all=false
+
+  # build subdirectories
+  mkdir -p "$HOME/.config"
 
   for source in `find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -o -name \*.conduit`
   do

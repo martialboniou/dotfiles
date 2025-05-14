@@ -111,7 +111,8 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   - [0 to LSP : Neovim RC From Scratch](https://www.youtube.com/watch?v=w7i4amO_zaE)
   (smooth vanilla NeoVim tutorial based on `packer`; inspiration for settings/keybindings)
   - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
-- tested on macOS (aarch) using NeoVim 0.10, tmux & iTerm2
+- tested on macOS (aarch) and Alpine Linux (via [macpine](https://github.com/beringresearch/macpine))
+  using NeoVim 0.11 or 0.10, tmux & [ghostty](https://ghostty.org/)
 
 NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from
