@@ -2,7 +2,9 @@ NeoVim
 ======
 
 - aimed for version 0.11 or 0.10
-- tested on version 0.11.1 & 0.10.3-dev
+- tested on version 0.11.1 & 0.10.3-dev for macOS 15.4.1 & Alpine Linux 3.20
+  (aarch64 version via [macpine](https://github.com/beringresearch/macpine) & 
+  the `community` repository)
 - developer guidance:
   - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
     (or at least, after the 09/21/2024 master branch)
