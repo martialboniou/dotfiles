@@ -87,6 +87,11 @@
       2 search
       :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}]))
 
+(tc param string)
+(tc return "string?")
+(fn full-exe-path [exe]
+  (-> exe (vim.fn.exepath) (#(if (= "" $) nil $))))
+
 ;;; CONFIG
 (tc type "fun(self:LazyPlugin, opts:table): nil")
 (fn config []
@@ -99,9 +104,10 @@
       (set (. env.dap.listeners.after.event_initialized cfg) open)
       (set (. env.dap.listeners.before.event_terminated cfg) close)
       (set (. env.dap.listeners.before.event_exited cfg) close))
-    ;; lldb adapter, formely lldb-vscode
     (local lldb-adapter-name :lldb-dap)
-    (var lldb-adapter (vim.fs.joinpath "" :usr :local :bin lldb-adapter-name))
+    (var lldb-adapter (or (full-exe-path lldb-adapter-name)
+                          ;; legacy
+                          (full-exe-path "lldb-vscode")))
     (when (-> (vim.uv.os_uname)
               (. :sysname)
               (= :Darwin))
@@ -111,7 +117,8 @@
           (set lldb-adapter
                (vim.fs.joinpath brew-path :opt :llvm :bin lldb-adapter-name)))))
     (if (-> lldb-adapter (vim.fn.executable) (not= 1))
-        (print "error: dap: unable to set your default adapter for LLVM")
+        (vim.notify "dap: unable to set your default adapter for LLVM; upgrade or check path"
+                    vim.log.levels.WARN)
         (let [cfg env.dap.configurations
               ada env.dap.adapters]
           (set ada.lldb {:type :executable

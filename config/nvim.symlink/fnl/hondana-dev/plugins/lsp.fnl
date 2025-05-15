@@ -185,7 +185,7 @@
                 :cssls {}
                 ;; NOTE: don't put haskell-language-server (hls) here because of
                 ;;       haskell-tools.nvim set in `hondana-dev.plugins.languages`
-                :ocamllsp {}
+                ;; :ocamllsp {}
                 :gopls {}
                 :elixirls {}
                 ;; :zls & :fennel_ls: DON'T USE MASON HERE (see below)
@@ -214,7 +214,7 @@
 
 (extend-if {:stack [:haskell-debug-adapter]
             ;; TODO: :ghcup [:hls] ;; I prefer to get the fitted version via `ghcup`
-            :opam [:ocamlformat]
+            ;; :opam [:ocamlformat]
             :go [:gofumpt :goimports-reviser :golines]})
 
 ;;; SETUP FOR LSPCONFIG & MASON
@@ -230,11 +230,11 @@
   ;; 1/4 step: Mason & installs
   ;;
   (let [mason (require :mason)
-        lspconfig (require :lspconfig)
+        lspconfig (require :lspconfig) ;; BUG: deprecate mason-tool-installer?
         {: setup} (require :mason-tool-installer)
         mason-lspconfig (require :mason-lspconfig)]
     (mason.setup)
-    (setup {: ensure_installed})
+    ;; (setup {: ensure_installed})
     ;;
     ;; 2/4 step: add manually-installed servers (non Mason ones; check `servers`)
     ;;
@@ -296,7 +296,12 @@
                            (-> lspconfig (. server-name) (. :setup)
                                (#($ server)))))})
     (tc diagnostic "disable-next-line: missing-fields")
-    (mason-lspconfig.setup {: handlers}))
+    ;; BUG: the lack of `vim.lsp.enable` in v0.10 messed up the current setup. Choices:
+    ;; - [ ] end support 0.10 (can be a problem on OpenBSD/Linux lts?)
+    ;; - [x] add some hacks: set `automatic_enable` to false
+    (mason-lspconfig.setup {:automatic_enable false
+                            : handlers
+                            : ensure_installed}))
   ;;
   ;; 4/4 step: LSPAttach's callback to append the keybindings
   ;;
@@ -311,33 +316,37 @@
 ;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
-       [{1 :williamboman/mason.nvim :cmd [:Mason] :config true}
+       [{1 ;; :williamboman/mason.nvim (registries error w/ v0.10.0 - 2025-05)
+         :mason-org/mason.nvim
+         :cmd [:Mason]
+         :config true}
         ;; the mason/mason-lspconfig setup is also done by the local function
         ;; `config` above
-        :williamboman/mason-lspconfig.nvim
-        :WhoIsSethDaniel/mason-tool-installer.nvim
-        {1 :neovim/nvim-lspconfig
-         ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
-         :event :BufReadPost
-         :cmd :LspStart
-         :dependencies [;; telescope.builtin will be used to integrate LSP functions to Telescope
-                        :nvim-telescope/telescope.nvim
-                        ;; see `hondana-dev.plugins.completion`
-                        :hrsh7th/nvim-cmp
-                        ;; optional/highlight same word -> LSP support
-                        :rrethy/vim-illuminate
-                        {;; optional/fancy navbar with LSP (+ other tools)
-                         1 :glepnir/lspsaga.nvim
-                         :dependencies [:nvim-tree/nvim-web-devicons
-                                        :nvim-treesitter/nvim-treesitter]
-                         :event :LspAttach
-                         :opts {:code_action {:show_server_name true
-                                              :extend_gitsigns false}
-                                :lightbulb {:enable false}
-                                :diagnostic {:on_insert false
-                                             :on_insert_follow false}
-                                :rename {:in_select false}}}]
-         : config}])
+        ;; :williamboman/mason-lspconfig.nvim
+        {1 :mason-org/mason-lspconfig.nvim
+         :dependencies {1 :neovim/nvim-lspconfig
+                        ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
+                        :event :BufReadPost
+                        :cmd :LspStart
+                        :dependencies [;; telescope.builtin will be used to integrate LSP functions to Telescope
+                                       :nvim-telescope/telescope.nvim
+                                       ;; see `hondana-dev.plugins.completion`
+                                       :hrsh7th/nvim-cmp
+                                       ;; optional/highlight same word -> LSP support
+                                       :rrethy/vim-illuminate
+                                       {;; optional/fancy navbar with LSP (+ other tools)
+                                        1 :glepnir/lspsaga.nvim
+                                        :dependencies [:nvim-tree/nvim-web-devicons
+                                                       :nvim-treesitter/nvim-treesitter]
+                                        :event :LspAttach
+                                        :opts {:code_action {:show_server_name true
+                                                             :extend_gitsigns false}
+                                               :lightbulb {:enable false}
+                                               :diagnostic {:on_insert false
+                                                            :on_insert_follow false}
+                                               :rename {:in_select false}}}]
+                        : config}}
+        :WhoIsSethDaniel/mason-tool-installer.nvim])
 
 ;;; UTILITY FUNCTIONS
 (tc param names "string[]" return "string[]")
