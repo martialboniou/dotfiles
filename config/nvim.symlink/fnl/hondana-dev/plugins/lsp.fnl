@@ -1,6 +1,6 @@
 ;;; LSP setup
 ;;; table structure by: https://github.com/MuhametSmaili/nvim/blob/main/lua/smaili/plugins/lsp/init.lua
-;;; 2025-05-02
+;;; 2025-05-15 - mason v2.0.0 (breaking changes; new account: mason-org) - tested on nvim 0.11 & 0.12-dev
 (import-macros {: tc : funcall!} :hondana-dev.macros)
 
 (local {:nvim_create_autocmd au} vim.api)
@@ -182,6 +182,7 @@
                 :vimls {}
                 ;; python3 is better with pyright
                 :pyright {}
+                ;; css-lsp
                 :cssls {}
                 ;; NOTE: don't put haskell-language-server (hls) here because of
                 ;;       haskell-tools.nvim set in `hondana-dev.plugins.languages`
@@ -195,16 +196,16 @@
 ;;; MASON'S FULL INSTALL LIST
 (tc type "string[]")
 (local ensure_installed (or (vim.tbl_keys servers) []))
-(vim.list_extend ensure_installed
-                 [:stylua
-                  :jq
-                  ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
-                  :taplo
-                  :clang-format
-                  :awk-language-server
-                  :markdownlint-cli2
-                  :markdown-toc
-                  :cmakelint])
+;; (vim.list_extend ensure_installed
+;;                  [:stylua ;; on Alpine: `MasonInstall --target=linux_arm64_gnu stylua`
+;;                   :jq
+;;                   ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+;;                   :taplo
+;;                   :clang-format
+;;                   :awk-language-server
+;;                   :markdownlint-cli2
+;;                   :markdown-toc
+;;                   :cmakelint])
 
 (tc param additional_servers_alist "table<string, string[]>")
 (fn extend-if [additional-servers-alist]
@@ -226,84 +227,66 @@
   ;; WARN: set this first
   (local {:default_capabilities defaults} (require :cmp_nvim_lsp))
   (set capabilities (vim.tbl_deep_extend :force capabilities (defaults)))
-  ;;
-  ;; 1/4 step: Mason & installs
-  ;;
   (let [mason (require :mason)
         lspconfig (require :lspconfig) ;; BUG: deprecate mason-tool-installer?
-        {: setup} (require :mason-tool-installer)
+        ;; {: setup} (require :mason-tool-installer)
         mason-lspconfig (require :mason-lspconfig)]
-    (mason.setup)
-    ;; (setup {: ensure_installed})
     ;;
-    ;; 2/4 step: add manually-installed servers (non Mason ones; check `servers`)
+    ;; 1/3 step: add manually-installed servers (non Mason ones; check `servers`)
     ;;
     ;; * Roc *
     ;; NOTE: I disable the syntax highlight from LSP (use Tree-sitter only)
     (when (executable? :roc_language_server)
       (let [on_init #(set $.server_capabilities.semanticTokensProvider nil)]
-        (lspconfig.roc_ls.setup {: on_init : capabilities})))
+        (vim.lsp.config :roc {: on_init})))
     ;;
     ;; * Fennel *
     ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
     ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
     (when (executable? :fennel-ls)
       ;; TIP: change root project with `:lcd` if needed
-      (lspconfig.fennel_ls.setup {: capabilities
-                                  :root_dir ;; search in the vicinity instead of visiting
-                                  ;; the ancestors with root_pattern from nvim-lspconfig
-                                  ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
-                                  #(-> [:fnl]
-                                                 (vim.fs.find {:upward true
-                                                               :type :directory
-                                                               :path (vim.fn.getcwd)})
-                                                 (. 1))}))
+      (vim.lsp.config :fennel_ls
+                      {:root_dir ;; search in the vicinity instead of visiting
+                       ;; the ancestors with root_pattern from nvim-lspconfig
+                       ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
+                       #(-> [:fnl]
+                                      (vim.fs.find {:upward true
+                                                    :type :directory
+                                                    :path (vim.fn.getcwd)})
+                                      (. 1))}))
     ;;
     ;; * Zig *
     ;; NOTE: I need a zls that fits the zig's version
     (when (executable? :zls)
       ;; no autosave b/c slow
       (set vim.g.zig_fmt_autosave 0)
-      (lspconfig.zls.setup {: capabilities
-                            :cmd [:zls]
-                            :filetypes [:zig]
-                            :root_dir (lspconfig.util.root_pattern :build.zig)}))
+      (vim.lsp.config :zls
+                      {:cmd [:zls]
+                       :filetypes [:zig]
+                       :root_dir (lspconfig.util.root_pattern :build.zig)}))
     ;;
     ;; * Koka * (from Microsoft Research, Daan Leijen; Apache License v2.0)
     ;; NOTE: append a new filetype for the .kk extension first
     (when (executable? :koka)
       (vim.filetype.add {:extension {:kk :koka}})
-      (lspconfig.koka.setup {: capabilities}))
+      (vim.lsp.config :koka {}))
     ;;
     ;; * Elm *
     ;; NOTE: options for `elm`: `init`, `make`, `reactor`...
     (when (executable? :elm-language-server)
-      (lspconfig.elmls.setup {: capabilities}))
+      (vim.lsp.config :elmls {}))
     ;;
     ;; * Unison *
     ;; NOTE: UCM listener (check `unisonweb/unison`)
-    (when (and (-> :hondana-dev.utils.globals (require) (. :ucm))
-               lspconfig.unison)
-      (lspconfig.unison.setup {: capabilities}))
+    (when (-> :hondana-dev.utils.globals (require) (. :ucm))
+      (vim.lsp.config :unison {}))
     ;;
-    ;; 3/4 step: lspconfig via Mason; the handlers add capabilities for each servers
+    ;; 2/3 step: CHANGES
     ;;
-    (local handlers {1 (fn [server-name]
-                         (let [server (or (. servers server-name) {})]
-                           (set server.capabilities
-                                (vim.tbl_deep_extend :force {} capabilities
-                                                     (or server.capabilities {})))
-                           (-> lspconfig (. server-name) (. :setup)
-                               (#($ server)))))})
-    (tc diagnostic "disable-next-line: missing-fields")
-    ;; BUG: the lack of `vim.lsp.enable` in v0.10 messed up the current setup. Choices:
-    ;; - [ ] end support 0.10 (can be a problem on OpenBSD/Linux lts?)
-    ;; - [x] add some hacks: set `automatic_enable` to false
-    (mason-lspconfig.setup {:automatic_enable false
-                            : handlers
-                            : ensure_installed}))
+    (mason.setup)
+    (mason-lspconfig.setup ensure_installed))
   ;;
-  ;; 4/4 step: LSPAttach's callback to append the keybindings
+  ;; 3/3 step: LSPAttach's callback to append the keybindings
   ;;
   (let [callback (fn [event]
                    (let [fs (keymap-set-fns)
@@ -316,13 +299,11 @@
 ;;; PLUGINS
 (tc type LazySpec)
 (local P ;;
-       [{1 ;; :williamboman/mason.nvim (registries error w/ v0.10.0 - 2025-05)
-         :mason-org/mason.nvim
-         :cmd [:Mason]
+       [{1 :mason-org/mason.nvim
+         :cmd [:Mason :MasonUpdate :MasonInstall]
          :config true}
         ;; the mason/mason-lspconfig setup is also done by the local function
         ;; `config` above
-        ;; :williamboman/mason-lspconfig.nvim
         {1 :mason-org/mason-lspconfig.nvim
          :dependencies {1 :neovim/nvim-lspconfig
                         ;; doesn't start on the BufNewFile event so load it with the command `:LspStart`
