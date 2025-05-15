@@ -44,6 +44,8 @@ Vim keybinding reminders & tips
   - `` `0 `` : go to the position before exit 
   - same keybindings as before but `'` instead of the first `` ` `` : go to the
     beginning of the line of a specific cursor position
+- `o` (in visual mode) : correct the visual block (avoid to redo a visual block from the start
+  when misclicked)
 - `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
   - `I`  : insert in visual block
   - `A`  : append in visual block (use `$` to reach the EOL of each line of
@@ -80,6 +82,11 @@ Vim keybinding reminders & tips
 - `<C-x><C-l>` (in *insert mode*) : complete the whole line (*ie* find matching lines
   from every buffers and open a selector; navigate *normally* by using `<C-n>`/`<C-p>`;
   confirm with `<C-y>`)
+- calculus (in normal mode or visual mode):
+  - `<C-a>` : increment a number
+  - `<C-x>` : decrement a number
+  - `g` (in visual mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first** number
+  in the visual block for each line
 - **Case sensitivity**: the default setting is case insensitive so use `\C`
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a
