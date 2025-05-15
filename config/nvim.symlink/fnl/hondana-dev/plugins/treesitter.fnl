@@ -13,7 +13,8 @@
                             :zig        :go       :elixir     :eex
                             :heex
                             ;; these next ones may have queries used by hondana-dev.plugins.colors
-                            :commonlisp :latex])
+                            :commonlisp ;; :latex
+                            ])
 
 ;;; KEYS
 (tc type "table<string, string>")

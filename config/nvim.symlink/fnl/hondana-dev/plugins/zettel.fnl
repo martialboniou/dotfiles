@@ -83,6 +83,10 @@
                  (vim.api.nvim_create_autocmd :FileType
                                               {: callback : group : pattern}))})
 
+;; HACK: HEAD version requires Neovim 0.11, use a branch w/o the `vim.validate` update
+(when (-> (vim.version) (. :minor) (< 11))
+  (set (. P :branch) "v0.3.0"))
+
 P
 
 ;;; examples of telescope usage

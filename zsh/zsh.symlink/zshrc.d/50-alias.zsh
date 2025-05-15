@@ -1,6 +1,10 @@
 # ---[ Alias Section ]-------------------------------------------------
-alias awk='gawk' # invoke mawk manually b/c non-posix
-alias grep=ggrep #GNU grep here (best to use rg when possible)
+if which gawk &> /dev/null; then
+  alias awk='gawk' # invoke mawk manually b/c non-posix
+fi
+if which ggrep &> /dev/null; then
+  alias grep=ggrep #GNU grep here (best to use rg when possible)
+fi
 alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
 alias l='ls -CF'
