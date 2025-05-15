@@ -12,7 +12,7 @@ some HTNS keybindings and others optimized for this layout.
 
 # How?
 
-Use the [easy](https://github.com/holman/dotfiles) way:
+Use the [easy](https://github.com/holman/dotfiles) way (`bash` required):
 
     mkdir -p ~/Documents/Code
     git clone git@gitlab.com:hondana-dev/dotfiles
@@ -28,7 +28,21 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
 
 - Minimal configuration written in [Fennel](https://fennel-lang.org)
   (keybindings are made for dvorak keyboards)
-- `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope)
+- `rg` (AKA riggrep) should be installed to use the Grep options (in Telescope); ensure some
+  tools are available on your POSIX operating system (others like `taplo` or `jq` might be
+  auto-installed via [Mason](https://github.com/mason-org/mason.nvim)):
+  - `curl`, `wget`, `gzip` & `unzip` (**MANDATORY** for Mason; they might be missing in some
+    minimal Linux distributions like `macpine` after the default setup; if you miss the
+    `~/.local/share/nvim/mason/bin` folder, try `:checkhealth mason` in NeoVim first)
+  - `bash`
+  - `git`
+  - `clang`
+  - `make`
+  - `nodejs npm`
+  - `npm install -g tree-sitter-cli`
+  - `lldb` (for `dap`)
+  - (optional for `fennel` or this NeoVim setup maintenance)
+  [`fennel-ls`](https://git.sr.ht/~xerool/fennel-ls)/[`fnlfmt`](https://git.sr.ht/~technomancy/fnlfmt)
 - having `fzf` & `fd` is highly recommended
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
   a colorscheme only; everything loads when needed)
