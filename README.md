@@ -24,7 +24,7 @@ Use the [easy](https://github.com/holman/dotfiles) way (`bash` required):
 
 Every files/directories in `config/` will be linked to the `$HOME` directory as a subdirectory of `.config/` instead of having their symlink in the `.<filename>` form.
 
-## NeoVim (up-to-date, my editor)
+## NeoVim 0.11+ (up-to-date, my editor)
 
 - Minimal configuration written in [Fennel](https://fennel-lang.org)
   (keybindings are made for dvorak keyboards)
@@ -39,11 +39,12 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   - `clang`
   - `make`
   - `nodejs npm`
-  - `npm install -g tree-sitter-cli`
+  - `npm install -g tree-sitter-cli node-gyp`
   - `lldb` (for `dap`)
+  - (only for `awk-language-server` on Linux Alpine) `g++`
   - (optional for `fennel` or this NeoVim setup maintenance)
   [`fennel-ls`](https://git.sr.ht/~xerool/fennel-ls)/[`fnlfmt`](https://git.sr.ht/~technomancy/fnlfmt)
-- having `fzf` & `fd` is highly recommended
+- `fzf` & `fd` is highly recommended
 - [Lazy](https://github.com/folke/lazy.nvim) (`nvim .` should load Netrw and
   a colorscheme only; everything loads when needed)
 - [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) (enable the
@@ -126,7 +127,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   (smooth vanilla NeoVim tutorial based on `packer`; inspiration for settings/keybindings)
   - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
 - tested on macOS (aarch) and Alpine Linux (via [macpine](https://github.com/beringresearch/macpine))
-  using NeoVim 0.11 or 0.10, tmux & [ghostty](https://ghostty.org/)
+  using NeoVim 0.11, tmux & [ghostty](https://ghostty.org/)
 
 NOTE: I'm new to NeoVim (June 2023; I use it before but Vim 7+ was good enough).
 I decided to start from *scratch*. Still have some functions to convert from

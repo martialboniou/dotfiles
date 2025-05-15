@@ -1,10 +1,10 @@
 NeoVim
 ======
 
-- aimed for version 0.11 or 0.10
-- tested on version 0.11.1 & 0.10.3-dev for macOS 15.4.1 & Alpine Linux 3.20
-  (aarch64 version via [macpine](https://github.com/beringresearch/macpine) & 
-  the `community` repository)
+- aimed for version 0.11 at least
+- tested on version 0.11.1 for macOS 15.4.1 & Alpine Linux 3.20
+  (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
+  the `community` repository; NeoVim was built using `gettext-dev`)
 - developer guidance:
   - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
     (or at least, after the 09/21/2024 master branch)
@@ -13,6 +13,10 @@ NeoVim
 
 Pre-configuration
 -----------------
+
+Check this archive [README.md](https://github.com/martialboniou/dotfiles/blob/main/README.md) to
+ensure you have the required tools for [Mason](https://github.com/mason-org/mason.nvim) (`curl`,
+`unzip`...).
 
 For the best experience, ensure `rg`, `fzf` & `fd` are installed:
 
