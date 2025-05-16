@@ -72,15 +72,22 @@
 
 ;; diagnostic
 (let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
-  (vim.diagnostic.config {:update_in_insert false
-                          :float {:focusable true
+  (vim.diagnostic.config {:virtual_text {:prefix ""}
+                          :update_in_insert false
+                          :float {:prefix ""
+                                  :header ""
+                                  :focusable true
                                   :border :rounded
-                                  :source true}
+                                  :source true
+                                  :severity_sort true}
                           ;; `vim.diagnostic.severity.*` are strings so key-able
                           :signs {: text}}))
 
 ;; you can use lambda in this programming language (see below)
-(keymap.set :ia ",\\" "λ")
+;; NOTE: /, is a lambda sign in Shen
+(let [shortcuts [",\\" "/,"]]
+  (for [i 1 (length shortcuts)]
+    (keymap.set :ia (. shortcuts i) "λ")))
 
 ;; 4-space indentation for some filetypes
 ;; REMINDER: each project should have its own setup
