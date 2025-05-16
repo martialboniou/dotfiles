@@ -33,12 +33,14 @@
 (tc type boolean)
 (set M.ucm (-> :ucm (vim.fn.executable) (= 1)))
 
-(set M.icons
-     {:diagnostic {vim.diagnostic.severity.ERROR "✘"
-                   vim.diagnostic.severity.WARN "▲"
-                   vim.diagnostic.severity.HINT "⚑"
-                   vim.diagnostic.severity.INFO "»"}
-      :buffer {:readonly "󰌾" :modified "●" :unsaved_others "○"}})
+(set M.icons (let [s vim.diagnostic.severity]
+               {:diagnostic {s.ERROR "✘"
+                             s.WARN "▲"
+                             s.HINT "⚑"
+                             s.INFO "»"}
+                :buffer {:readonly "󰌾"
+                         :modified "●"
+                         :unsaved_others "○"}}))
 
 (set M.modes {:n {:text nil :state :normal}
               :niI {:text nil :state :normal}
