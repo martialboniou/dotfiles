@@ -126,3 +126,4 @@ repath () {
   source $ZDOTDIR/.zprofile
   rehash
 }
+. "$HOME/.cargo/env"

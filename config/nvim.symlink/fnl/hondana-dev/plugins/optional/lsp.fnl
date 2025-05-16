@@ -238,7 +238,8 @@
     ;; NOTE: I disable the syntax highlight from LSP (use Tree-sitter only)
     (when (executable? :roc_language_server)
       (let [on_init #(set $.server_capabilities.semanticTokensProvider nil)]
-        (vim.lsp.config :roc {: on_init})))
+        (vim.lsp.config :roc {: on_init})
+        (vim.lsp.enable :roc)))
     ;;
     ;; * Fennel *
     ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
@@ -253,7 +254,8 @@
                                       (vim.fs.find {:upward true
                                                     :type :directory
                                                     :path (vim.fn.getcwd)})
-                                      (. 1))}))
+                                      (. 1))})
+      (vim.lsp.enable :fennel_ls))
     ;;
     ;; * Zig *
     ;; NOTE: I need a zls that fits the zig's version
@@ -263,27 +265,31 @@
       (vim.lsp.config :zls
                       {:cmd [:zls]
                        :filetypes [:zig]
-                       :root_dir (lspconfig.util.root_pattern :build.zig)}))
+                       :root_dir (lspconfig.util.root_pattern :build.zig)})
+      (vim.lsp.enable :zls))
     ;;
     ;; * Koka * (from Microsoft Research, Daan Leijen; Apache License v2.0)
     ;; NOTE: append a new filetype for the .kk extension first
     (when (executable? :koka)
       (vim.filetype.add {:extension {:kk :koka}})
-      (vim.lsp.config :koka {}))
+      (vim.lsp.config :koka {})
+      (vim.lsp.enable :koka))
     ;;
     ;; * Elm *
     ;; NOTE: options for `elm`: `init`, `make`, `reactor`...
     (when (executable? :elm-language-server)
-      (vim.lsp.config :elmls {}))
+      (vim.lsp.config :elmls {})
+      (vim.lsp.enable :elmls))
     ;;
     ;; * Unison *
     ;; NOTE: UCM listener (check `unisonweb/unison`)
     (when (-> :hondana-dev.utils.globals (require) (. :ucm))
-      (vim.lsp.config :unison {}))
+      (vim.lsp.config :unison {})
+      (vim.lsp.enable :unison))
     ;;
     ;; 2/3 step: CHANGES
     ;;
-    (mason.setup)
+    ;; (mason.setup)
     (mason-lspconfig.setup ensure_installed))
   ;;
   ;; 3/3 step: LSPAttach's callback to append the keybindings
@@ -300,7 +306,8 @@
 (tc type LazySpec)
 (local P ;;
        [{1 :mason-org/mason.nvim
-         :cmd [:Mason :MasonUpdate :MasonInstall]
+         :opts {}
+         :cmd [:Mason :MasonLog :MasonUpdate :MasonInstall :MasonUninstall]
          :config true}
         ;; the mason/mason-lspconfig setup is also done by the local function
         ;; `config` above

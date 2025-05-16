@@ -38,10 +38,12 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   - `git`
   - `clang`
   - `make`
-  - `nodejs npm`
-  - `npm install -g tree-sitter-cli node-gyp`
+  - `nodejs npm` & `npm install -g tree-sitter-cli node-gyp`
+    - `g++` (only for `awk-language-server` on Linux Alpine)
   - `lldb` (for `dap`)
-  - (only for `awk-language-server` on Linux Alpine) `g++`
+  - (optional but recommended for `blink.cmp`) [`rustup`](https://rustup.rs)
+    - `cargo` & a recent `rust` compiler (`rustc@1.79` minimum)
+    - I can recommend the `brew` version on macOS (otherwise install manually or via `nix`)
   - (optional for `fennel` or this NeoVim setup maintenance)
   [`fennel-ls`](https://git.sr.ht/~xerool/fennel-ls)/[`fnlfmt`](https://git.sr.ht/~technomancy/fnlfmt)
 - `fzf` & `fd` is highly recommended
@@ -67,7 +69,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   [nvim-lint](https://github.com/mfussenegger/nvim-lint) are used
   for additional formatters & diagnostic tools respectively.
   Standard keybindings:
-  - for completion:
+  - for completion (TODO: might change!):
     - `<C-space>`     : force to start
     - `<C-y>`/`<C-e>` : confirm/cancel
     - `<C-p>`/`<C-n>` : previous/next option
