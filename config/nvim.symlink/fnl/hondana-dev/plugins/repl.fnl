@@ -1,11 +1,11 @@
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
 
-(fn init []
-  "conjure init"
-  ;; (g! "conjure#filetype#fennel" :conjure.client.fennel.stdio)
-  (g! "conjure#mapping#doc_word" :<localleader>K)
-  (g! "conjure#debug" false))
+;; (fn init []
+;;   "conjure init"
+;;   ;; (g! "conjure#filetype#fennel" :conjure.client.fennel.stdio)
+;;   (g! "conjure#mapping#doc_word" :<localleader>K)
+;;   (g! "conjure#debug" false))
 
 (fn config [_ opts]
   "iron core setup"
@@ -44,10 +44,12 @@
            ;; :IronRepl :IronRestart :IronFocus :IronHide
            :cmd [:IronRepl]}
           ;; for now, conjure is used in cmp (check plugins/completions)
-          {1 :Olical/conjure
-           :ft [:fennel :scheme :rust :clojure]
-           : init
-           :dependencies [{1 :PaterJason/cmp-conjure
-                           :dependencies :hrsh7th/nvim-cmp}]}])
+          ;; {1 :Olical/conjure
+          ;;  :ft [:fennel :scheme :rust :clojure]
+          ;;  : init
+          ;;  :dependencies [{1 :PaterJason/cmp-conjure
+          ;;                  :dependencies :hrsh7th/nvim-cmp}]}
+          ;;
+          ])
 
 P
