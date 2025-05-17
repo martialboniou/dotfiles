@@ -6,14 +6,14 @@
 (fn callback [ev]
   (local opts {:buffer ev.buf :silent true})
   (local keyset (fn [desc ...]
-                  (local o opts)
-                  (set o.desc desc)
-                  (local args [...])
-                  (local tbl [])
-                  (for [i 1 (length args)]
-                    (table.insert tbl (. args i)))
-                  (table.insert tbl 6)
-                  (-> tbl (unpack) (print))))
+                  (let [o opts
+                        args [...]
+                        tbl []]
+                    (set o.desc desc)
+                    (for [i 1 (length args)]
+                      (table.insert tbl (. args i)))
+                    (table.insert tbl o)
+                    (-> tbl (unpack) (vim.keymap.set)))))
   ;; keybindings
   (keyset "Show LSP references" :n :gR "<Cmd>Telescope lsp_references<CR>")
   (keyset "Go to declaration" :n :gD vim.lsp.buf.declaration)
