@@ -3,12 +3,17 @@
 (import-macros {: tc} :hondana-dev.macros)
 
 ;;; SETUP FUNCTIONS
-(λ callback [ev]
+(fn callback [ev]
   (local opts {:buffer ev.buf :silent true})
   (local keyset (fn [desc ...]
                   (local o opts)
                   (set o.desc desc)
-                  (vim.keymap.set ... o)))
+                  (local args [...])
+                  (local tbl [])
+                  (for [i 1 (length args)]
+                    (table.insert tbl (. args i)))
+                  (table.insert tbl 6)
+                  (-> tbl (unpack) (print))))
   ;; keybindings
   (keyset "Show LSP references" :n :gR "<Cmd>Telescope lsp_references<CR>")
   (keyset "Go to declaration" :n :gD vim.lsp.buf.declaration)
@@ -46,7 +51,7 @@
   ;; TODO: restore most of the pre-0.11 settings
   (local c #(vim.lsp.config $1 {:settings $2}))
   ;; no wrap line
-  (c :html {:format {:wrapLineLength 0}})
+  (c :html {:html {:format {:wrapLineLength 0}}})
   ;; validate using schema & pull from schemastore
   (c :jsonls
      {:json {:validate {:enable true}
@@ -55,9 +60,17 @@
   (c :lua_ls {:Lua {:diagnostics {:globals [:vim :mp]}}}))
 
 ;;; PLUGINS
+(tc type LazySpec)
 (local P {1 :neovim/nvim-lspconfig
           :event [:BufReadPre :BufNewFile]
-          :dependencies [:mason-org/mason.nvim :b0o/schemastore.nvim]
+          :dependencies [{1 :mason-org/mason.nvim
+                          :opts {}
+                          :cmd [:Mason
+                                :MasonUpdate
+                                :MasonLog
+                                :MasonInstall
+                                :MasonUninstall]}
+                         :b0o/schemastore.nvim]
           : config})
 
 P
