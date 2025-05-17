@@ -36,6 +36,8 @@
 
 ;; specific settings
 (vim.opt.isfname:append "@-@")
+(set vim.opt.fillchars {:eob " "})
+;; `:lua vim.opt.fillchars:remove("eob")` to restore
 (let [map {:guicursor ""
            ;; shared with Vim
            :undodir (-> [(os.getenv :HOME) :.vim :undodir] (unpack)

@@ -27,13 +27,10 @@
 
 (λ opts []
   {:snippets {:preset :luasnip}
-   :sources {:default [:lsp
-                       :snippets
-                       ;; :lazydev 
-                       :buffer
-                       :path]
-             :providers {;; :lazydev {:name :LazyDev :module :lazydev.integrations.blink}
-                         }}
+   :sources {:default [:lsp :snippets :lazydev :buffer :path]
+             ;; INFO: ensure hondana-dev.plugins.languages has lazydev
+             :providers {:lazydev {:name :LazyDev
+                                   :module :lazydev.integrations.blink}}}
    :signature {:enabled true :window {:show_documentation true}}
    :completion {:list {:selection {;; don't auto-select
                                    :preselect false
@@ -61,7 +58,10 @@
 ;; TODO: cmp-emoji & cmp-conjure eqv.
 
 (λ luasnip-config []
-  (let [{: lazy_load} (require :luasnip.loaders.from_vscode)]
+  (let [{: lazy_load} (require :luasnip.loaders.from_vscode)
+        {: config} (require :luasnip)
+        autosnip #(config.set_config {:enable_autosnippets $})]
+    (autosnip true)
     (lazy_load {:paths (-> :config (vim.fn.stdpath)
                            (vim.fs.joinpath :snippets :vscode))})))
 
@@ -75,8 +75,9 @@
                          :onsails/lspkind.nvim
                          ;; snippets
                          {1 :L3MON4D3/LuaSnip
+                          :version "v2.*"
                           :build "make install_jsregexp"
-                          ;; :dependencies [:rafamadriz/friendly-snippets]
+                          :dependencies [:rafamadriz/friendly-snippets]
                           :config luasnip-config}]})
 
 ;;; UTILITY FUNCTIONS

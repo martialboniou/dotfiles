@@ -53,9 +53,7 @@
 (tc type boolean)
 (local override-clang-format-globally false)
 
-;; WARN: nested syntax is deprecated (2024)
-(local ecma-formatters [:prettierd :prettier :eslint_d :eslint])
-(set ecma-formatters.stop_after_first true)
+(local pretty-fmt {1 :prettierd :stop_after_first true})
 
 ;; don't append `:--indent-width` here
 (local stylua-extend-args [:--indent-type :Spaces])
@@ -77,13 +75,26 @@
                  ;; check `hondana-dev.plugins.lsp` for the Mason current installs
                  :formatters_by_ft {:fennel [:fnlfmt]
                                     :lua [:stylua]
-                                    :javascript ecma-formatters
-                                    :typescript ecma-formatters
+                                    :javascript pretty-fmt
+                                    :typescript pretty-fmt
+                                    :css pretty-fmt
+                                    :markdown pretty-fmt
+                                    :graphql pretty-fmt
+                                    :astro (let [as pretty-fmt]
+                                             (set as.lsp_format :fallback)
+                                             as)
                                     :c [:clang-format]
                                     :cpp [:clang-format]
                                     :go [:gofumpt :goimports-reviser :golines]
                                     ;; ensure you have the good alias (I prefer gawk here)
                                     :awk [:awk]
+                                    :json [:jq]
+                                    :yaml [:yq]
+                                    :sh [:shfmt]
+                                    :rust [:rustfmt]
+                                    :python [:isort :black]
+                                    ;; HTML = lsp format
+                                    :html {:lsp_format :prefer}
                                     :php [:php_cs_fixer]
                                     :twig [:djlint-twig]}
                  :formatters {;; custom formatter for twig

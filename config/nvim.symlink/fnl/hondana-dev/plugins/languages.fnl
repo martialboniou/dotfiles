@@ -18,7 +18,9 @@
 
 (tc type "LazySpec[]")
 (local P ;; 
-       [;;; HASKELL
+       [;;; LUA IN THE NEOVIM CONTEXT (MANDATORY IN THIS SETUP!)
+        {1 :folke/lazydev.nvim :ft :lua :opts {}}
+        ;;; HASKELL
         {1 :mrcjkb/haskell-tools.nvim :version "^4" :lazy false}
         ;;; GOLANG
         {1 :dreamsofcode-io/nvim-dap-go
