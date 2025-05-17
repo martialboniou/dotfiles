@@ -57,7 +57,10 @@
      {:json {:validate {:enable true}
              :schemas (-> :schemastore (require) (#($.json.schemas)))}})
   ;; global vim & others
-  (c :lua_ls {:Lua {:diagnostics {:globals [:vim :mp]}}}))
+  (c :lua_ls {:Lua {:diagnostics {:globals [:vim :mp]}}})
+  ;;
+  ;; enable
+  (vim.lsp.enable [:lua_ls]))
 
 ;;; PLUGINS
 (tc type LazySpec)
