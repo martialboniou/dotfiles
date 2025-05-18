@@ -56,6 +56,21 @@
   ;; <leader>rs = restart LSP
   (keyset "Restart LSP" :n :<leader>rs "<Cmd>LspRestart<CR>"))
 
+;; optional-servers = list of non-mason language servers, the optional second value is a
+;; binary to test (the server name is not always the language server binary name)
+(local optional-servers [;; NOTE: Mason/LuaRocks might have an outdated version of fennel-ls
+                         ;; you will need a `flsproject.fnl` file at the root
+                         ;; use `~/.config/nvim/fnl/build-flsproject.sh`
+                         [:fennel_ls :fennel-ls]
+                         ;; zig & zls must be of the same milestone so avoid the Mason version
+                         ;; if you need an older version or an unstable one
+                         :zls
+                         ;; clangd can be managed by Mason
+                         :clangd
+                         ;; DON'T UNCOMMENT: haskell-tools.nvim v6 replaces [:hls :haskell-language-server-wrapper]
+                         :gopls
+                         :ocamllsp])
+
 (λ config []
   (vim.api.nvim_create_autocmd :LspAttach {: callback})
   ;; enable autocompletion
@@ -64,16 +79,16 @@
          true))
   ;; enable inlay hint
   (vim.lsp.inlay_hint.enable true [0])
+  ;;
   ;; lsp setup in `fnl/after/lsp`
   (vim.lsp.enable [:lua_ls :html :jsonls :pyright])
   ;; TODO: restore most of the pre-0.11 settings
-  (local c #(vim.lsp.config $1 {:settings $2}))
-  ;; additional settings/activation
-  ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
-  ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
-  (when (executable? :fennel-ls)
-    (vim.lsp.enable :fennel_ls))
-  (when (executable? :zls) (vim.lsp.enable :zls)))
+  ;; additional settings/activation (mainly for non-mason/optional servers)
+  (for [i 1 (length optional-servers)]
+    (local os (case (. optional-servers i)
+                [a b] {:server a :binary b}
+                a {:server a :binary a}))
+    (when (executable? os.binary) (vim.lsp.enable os.server))))
 
 ;;; PLUGINS
 (tc type LazySpec)

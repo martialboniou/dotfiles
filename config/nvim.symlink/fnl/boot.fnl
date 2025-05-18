@@ -33,7 +33,7 @@
 (let [{: setup} (require :lazy)
       opts {:checker {:enabled false}
             :defaults {:lazy true}
-            :plugins {:change_detection {:notify false}}
+            :ui {:change_detection {:notify false}}
             :performance {:rtp {:reset false
                                 :disabled_plugins [:tutor :matchit :matchparen]}}
             :spec plugins}]

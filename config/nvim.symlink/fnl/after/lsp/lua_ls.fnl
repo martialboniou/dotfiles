@@ -9,4 +9,6 @@
                 :selene.yml
                 :.git]
  :settings {:Lua {:runtime {:version "LuaJIT"}
-                  :diagnostics {:globals [:vim :love]}}}}
+                  :diagnostics {:unusedLocalExclude ["_*"]
+                                :disable [:unused-vararg :deprecated]
+                                :globals [:vim :love]}}}}
