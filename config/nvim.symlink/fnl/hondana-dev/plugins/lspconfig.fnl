@@ -64,33 +64,16 @@
          true))
   ;; enable inlay hint
   (vim.lsp.inlay_hint.enable true [0])
-  (local c #(vim.lsp.config $1 {:settings $2}))
-  ;; lsp naive setup
-  (vim.lsp.enable [:lua_ls :html :jsonls])
+  ;; lsp setup in `fnl/after/lsp`
+  (vim.lsp.enable [:lua_ls :html :jsonls :pyright])
   ;; TODO: restore most of the pre-0.11 settings
   (local c #(vim.lsp.config $1 {:settings $2}))
-  ;; fennel_ls
+  ;; additional settings/activation
   ;; NOTE: I recommend to install fennel-ls manually (Mason/LuaRocks might have an outdated version)
   ;; you will need a `flsproject.fnl` file at the root: use `~/.config/nvim/fnl/build-flsproject.sh`
   (when (executable? :fennel-ls)
-    ;; TIP: change root project with `:lcd` if needed
-    ;; (vim.lsp.config :fennel_ls ;; search in the vicinity instead of visiting
-    ;;                 ;; the ancestors with root_pattern from nvim-lspconfig
-    ;;                 ;; WARN: the Fennel code must have a `fnl` directory root with a `flsproject.fnl`
-    ;;                 {:root_dir #(-> [:fnl]
-    ;;                                 (vim.fs.find {:upward true
-    ;;                                               :type :directory
-    ;;                                               :path (vim.fn.getcwd)})
-    ;;                                 (. 1))})
     (vim.lsp.enable :fennel_ls))
-  ;; validate using schema & pull from schemastore
-  (c :jsonls
-     {:json {:validate {:enable true}
-             :schemas (-> :schemastore (require) (#($.json.schemas)))}})
-  ;; html: no wrap line
-  (c :html {:html {:format {:wrapLineLength 0}}})
-  ;; WARN: `lazydev` sets some options too
-  (c :lua_ls {:Lua {:diagnostics {:globals [:vim :love]}}}))
+  (when (executable? :zls) (vim.lsp.enable :zls)))
 
 ;;; PLUGINS
 (tc type LazySpec)
