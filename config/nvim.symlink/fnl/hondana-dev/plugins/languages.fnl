@@ -19,7 +19,9 @@
 (tc type "LazySpec[]")
 (local P ;; 
        [;;; LUA IN THE NEOVIM CONTEXT (MANDATORY IN THIS SETUP!)
-        {1 :folke/lazydev.nvim :ft :lua :opts {}}
+        {1 :folke/lazydev.nvim
+         :ft :lua
+         :opts {:library [{:path "${3rd}/luv/library" :words ["vim%.uv"]}]}}
         ;;; HASKELL
         {1 :mrcjkb/haskell-tools.nvim :version "^4" :lazy false}
         ;;; GOLANG

@@ -1,6 +1,5 @@
-(import-macros {: tc} :hondana-dev.macros)
+(import-macros {: tc : **!} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
-(import-macros {: **!} :hondana-dev.macros)
 
 (local keyset vim.keymap.set)
 

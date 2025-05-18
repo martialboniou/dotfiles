@@ -14,3 +14,8 @@
 /fnl/*health.log
 /fnl/hondana-dev/private*
 /fls-tests
+# maintained by Tangerine by compiling
+# - the files in /fnl/lsp
+/lsp
+# - the files in /fnl/after/lsp
+/after/lsp

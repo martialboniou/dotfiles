@@ -118,7 +118,7 @@ Vim keybinding reminders & tips
     `:FnlGotoOutput` before `gG` to show the Lua output file from the current
     Fennel buffer)
   - `[d`/`]d` : move between diagnostics in the current buffer
-  - `[D`/`]D` : move to the first/last jump)
+  - `[D`/`]D` : move to the first/last jump
 - **Netrw** specific:
   - `%` : create file
   - `d` : create directory
@@ -276,7 +276,7 @@ insert
   - `<leader>t` : `git push -u origin` template; complete with the branch name
     to push to
 - LSP case:
-  - *cmp_mappings*:
+  - *cmp_mappings* (using `blink.cmp`):
     - `<C-y>` : confirm completion
     - `<C-p>` : previous completion
     - `<C-n>` : next completion
@@ -291,25 +291,29 @@ insert
    - in LSP buffer only (normal mode except when said otherwise)
      - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
        `vim.lsp.buf.format`
-     - `<C-s>` (insert mode) : signature (*BEWARE*: `<C-s>` switches to the
-       first harpoon in **normal mode**; it was `<C-h>` before; it's the default
-       mapping for `vim.lsp.buf.signature_help()` since NeoVim 0.11)
-     - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
-     - `gd` : Telescope *builtin*'s **g**oto **d**efinition (**IMPORTANT**: jump to the file in LSP-injected files; say, like lua vim configurations)
-     - `gD` : goto declaration
-     - `gI` : Telescope *builtin*'s **g**oto **I**mplementation
-     - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol
-     - `[d` : next diagnostic
-     - `]d` : previous diagnostic
-     - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
-     - `<leader>vds` : Telescope *builtin*'s **v**iew **d**ocument **s**ymbol
-     - these following keybindings come with a shorter version for ergonomics:
-       - `<leader>vdd`/`<leader>dd` : **v**iew **d**iagnostic OR simply, **display diagnostic**
-         (`<leader>vds` is for document symbols)
-       - `<leader>vca`/`<leader>ca` : **v**iew **c**ode **a**ction OR simply, **code action**
-       - `<leader>vrr`/`<leader>rr` : Telescope *builtin*'s **v**iew **r**efe**r**ences OR simply, **RefeRences**
-         (*BEWARE*: `<leader>r` + another key is used by the *refactoring* plugin; see below)
-       - `<leader>vrn`/`<leader>nn` : **v**iew **r**e**n**ame OR simply, **new name**
+     - **REMINDER**: default mappings introduced in NeoVim 0.11:
+       - `<C-s>` (*insert mode*) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
+         switches to the first harpoon in **normal mode**; it was `<C-h>` before)
+       - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
+       - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
+       - `gra` (*normal or visual mode*) : `vim.lsp.buf.code_action()`
+       - `grn` : `vim.lsp.buf.rename()`
+       - `grr` : `vim.lsp.buf.references()`
+       - `gO` : `vim.lsp.buf.document_symbol()`
+       - `[d`/`[D` : jump to previous/first diagnostic
+       - `]d`/`]D` : jump to next/last diagnostic
+     - changes for this setup:
+       - `gd` : Telescope *builtin*'s **g**oto **d**efinition
+       - `gD` : `vim.lsp.buf.declaration()`
+       - `gI` : Telescope *builtin*'s **g**oto **I**mplementation (better than `gri`)
+       - `g/`/`<leader>vdd` : `vim.diagnostic.open_float()`
+       - `<leader>nn` : `vim.lsp.buf.rename()` (alternative to `grn`)
+       - `<leader>ca` (*normal or visual mode*) : `vim.lsp.buf.code_action()` (alternative to `gra`)
+       - `<leader>D` : Telescope *builtin*'s **D**iagnostics for the current buffer
+       - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol (replaces
+         `vim.lsp.buf.workspace_symbol()`)
+       - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
+       - `<leader>rs` : command `:LspRestart`
 - **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
   - `<leader>xX` : toggle trouble for the current buffer
@@ -440,49 +444,16 @@ I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
 
 #### Language Server Protocol
 
-**IMPORTANT**: In this setup, LSP doesn't start on the `BufNewFile` event but on 
+**IMPORTANT**: In this setup, LSP shouldn't start on the `BufNewFile` event but on 
 the loading of an existing resource in a buffer. This is motivated by the aim of
 reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchmark).
 Use `:LspStart` to force the LSP launch in the current buffer (say, a *scratch* buffer).
 
-This following technical note naively shows the dependencies and setup of the
-lazy loading of `nvim-lspconfig` & `nvim-cmp` in the current NeoVim setup:
-
-```markdown
-- LSP
-  - neovim/nvim-lspconfig
-    - event: BufReadPost
-    - cmd: LspStart
-    - dependencies:
-      - williamboman/mason.nvim
-        - run: `:MasonUpdate`
-      - hrsh7th/nvim-cmp (see Autocompletion)
-      - (optional) rrethy/vim-illuminate (highlight same word)
-      - (optional) glepnir/lspaga.nvim (fancy navbar)
-    - opts:
-      - diagnostics
-      - autoformat
-      - servers
-    - config:
-      - requirements
-        - cmp_nvim_lsp
-          - `default_capabilities(vim.lsp.protocol.make_client_capabilities())` 
-        - mason-lspconfig
-          - `setup({ ensure_installed = ... })`
-        - lspconfig
-- Autocompletion (CMP)
-  - hrsh7th/nvim-cmp
-    - dependencies:
-      - hrsh7th/cmp-nvim-lsp
-      - L3MON4D3/LuaSnip
-        - build: `make install_jsregexp`
-      - (optional) rafamadriz/friendly-snippets
-      - saadparwaiz1/cmp_luasnip
-      - (optional) hrsh7th/cmp-buffer (buffer words)
-      - (optional) hrsh7th/cmp-path (filesystem paths)
-      - (optional) ray-x/lsp_signature.nvim (show function signatures)
-      - (replaced by previous) hrsh7th/cmp-nvim-lsp-signature-help
-```
+This setup uses the `vim.lsp.config()` & `vim.lsp.enable()` functions introduced in
+NeoVim 0.11. `nvim-lspconfig` (introducing [`mason`](https://github.com/mason-org/mason.nvim))
+& `blink.cmp` (relying on `LuaSnip`) complete this configuration. Note that
+`mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional 
+language servers, linters, formatters...
 
 #### Debugger Adapter Protocol
 
@@ -714,9 +685,9 @@ pip3 install djlint
 
 ### Note about the *emoji* completion
 
-The plugin `cmp-emoji` has been added. Type `:` to open the completion menu
-anywhere in a **markdown** file or a `git commit` message. This completion is
-disabled for other buffers but in comments or strings (ensure there's a space
-after the opening `"` before typing the `:`). NOTE: The emoji's completion is
-disabled for strings in Fennel code because Treesitter sees symbols (starting
-with colon) as strings.
+The plugin `cmp-emoji` was used before. There's a *work in progress* to add
+this option in `blink.cmp` where typing `:` opens the completion menu anywhere
+in a **markdown** file or a `git commit` message only (the other buffers should
+be able to use this functionality in comments or strings only; except in the
+Fennel symbolic strings; ensure there's a space after the opening `"` before
+typing the `:`).
