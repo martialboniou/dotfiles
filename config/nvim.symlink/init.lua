@@ -41,12 +41,15 @@ setup({
     -- the default `init.fnl` has been renamed to `boot.fnl` as
     -- a newcomer may erase the mandatory file `init.lua` while
     -- using a command like `:FnlCompile`
-    vimrc = nvim_dir .. "/boot.fnl",
+    vimrc = nvim_dir .. "/fnl/boot.fnl",
     -- don't auto-recompile the `fnl/` files but those inside the
     -- `hondana-dev` subdirectory; use the `custom` option to add
     -- your own code
     source = nvim_dir .. "/fnl/hondana-dev",
     target = nvim_dir .. "/lua/hondana-dev",
+    -- lsp custom configuration files since nvim 0.11
+    custom = { { nvim_dir .. "/fnl/lsp" , nvim_dir .. "/lsp" },
+               { nvim_dir .. "/fnl/after/lsp" , nvim_dir .. "/after/lsp" } },
     compiler = {
         verbose = false,
         hooks = { "onsave", "oninit" },

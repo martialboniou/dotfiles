@@ -16,6 +16,7 @@
                                      :tailwindcss
                                      :astro
                                      :lua_ls
+                                     :html
                                      :graphql
                                      :emmet_language_server
                                      :pyright
