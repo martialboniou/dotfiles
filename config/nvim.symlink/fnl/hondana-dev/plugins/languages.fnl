@@ -23,7 +23,10 @@
          :ft :lua
          :opts {:library [{:path "${3rd}/luv/library" :words ["vim%.uv"]}]}}
         ;;; HASKELL
-        {1 :mrcjkb/haskell-tools.nvim :version "^4" :lazy false}
+        ;; NOTE: v6 uses `vim.lsp.config['haskell-tools']` to avoid conflicts with
+        ;; `nvim-lspconfig` I still use for mappings & optional LSP settings (even if
+        ;; `vim.lsp.enable()` can be called anywhere)
+        {1 :mrcjkb/haskell-tools.nvim :version "^6" :lazy false}
         ;;; GOLANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go

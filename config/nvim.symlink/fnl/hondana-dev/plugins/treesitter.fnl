@@ -97,9 +97,8 @@
   (-> :nvim-treesitter.configs
       (require)
       (#($.setup opts))
-      ;; HACK: temporary hack utils when nvim is 0.11
-      (when (-> "nvim-0.11" (vim.fn.has) (= 1))
-        (let [new-setup-commands #(each [command-name def (pairs $2)]
+      ;; TODO: check if this hack is still relevant
+      (#(let [new-setup-commands #(each [command-name def (pairs $2)]
                                     (let [f-args (or def.f_args "<f-args>")
                                           {: flatten} (require :nvim-treesitter.compat)
                                           call-fn (-> "lua require'nvim-treesitter.%s'.commands.%s['run<bang>'](%s)"
