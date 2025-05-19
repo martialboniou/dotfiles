@@ -6,6 +6,13 @@
 (fn executable? [binary-name]
   (-> binary-name (vim.fn.executable) (= 1)))
 
+(tc param content string)
+(tc param ctx Role)
+(tc return "nil|string")
+(fn otherwise [content ctx]
+  (local g (require :hondana-dev.utils.globals))
+  (when (not (g.check-role ctx)) content))
+
 ;;; SETUP FUNCTIONS
 (fn callback [ev]
   (local opts {:buffer ev.buf :silent true})
@@ -77,11 +84,16 @@
   (let [capabilities (-> :blink.cmp (require) (#($.get_lsp_capabilities)))]
     (set capabilities.textDocument.completion.completionItem.snippetSupport
          true))
-  ;; enable inlay hint
-  (vim.lsp.inlay_hint.enable true [0])
+  ;; TODO: enable inlay hint?
+  ;; (vim.lsp.inlay_hint.enable [0])
   ;;
   ;; lsp setup in `fnl/after/lsp`
-  (vim.lsp.enable [:lua_ls :html :jsonls :pyright])
+  (local default-lsp [:lua_ls :html :jsonls :pyright])
+  ;; filter meta-LSPs when unneeded
+  (table.insert default-lsp (otherwise :haskell-cultist :hls))
+  (table.insert default-lsp (otherwise :rustacean :rust))
+  ;;
+  (vim.lsp.enable default-lsp)
   ;; TODO: restore most of the pre-0.11 settings
   ;; additional settings/activation (mainly for non-mason/optional servers)
   (for [i 1 (length optional-servers)]
