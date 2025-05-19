@@ -32,17 +32,21 @@
              :providers {:lazydev {:name :LazyDev
                                    :module :lazydev.integrations.blink}}}
    :signature {:enabled true :window {:show_documentation true}}
-   :completion {:list {:selection {;; don't auto-select
-                                   :preselect false
+   :completion {:list {:selection {:preselect true
                                    ;; don't insert before accept + use `ghost text`
                                    :auto_insert false}}
-                :ghost_text {:enabled true}
-                :documentation {;; show documentation on selecting it
-                                :auto_show true
-                                :auto_show_delay_ms 0}
-                :menu {:draw {:components {:kind_icon {: text : highlight}}}}}
+                ;; WARN: I prefer to disable the auto brackets; it's stupid in Lisp dialects
+                ;; or when aliasing functions with no call, also Haskell...
+                :accept {:auto_brackets {:enabled false}}
+                :ghost_text {:enabled true :show_with_menu false}
+                :documentation {:auto_show true}
+                :menu {:auto_show false
+                       :draw {:components {:kind_icon {: text : highlight}}}}}
    :keymap {;; use the default settings (REMINDER: `<C-Space>` to init)
             :preset :default
+            ;; NOTE: <C-n>/<C-p> = show too (like <C-space>)
+            :<C-n> [:show :select_next :fallback_to_mappings]
+            :<C-p> [:show :select_prev :fallback_to_mappings]
             ;; NOTE: <C-f>/<C-b> = jump forward/backward (<C-b> CANNOT be used in tmux; I chose F5/`fn a` as a tmux prefix)
             :<C-f> [:snippet_forward :fallback]
             :<C-b> [:snippet_backward :fallback]

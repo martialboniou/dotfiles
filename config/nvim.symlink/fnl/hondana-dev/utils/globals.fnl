@@ -11,9 +11,6 @@
 (tc type boolean)
 (set M.posix (fs-posix))
 
-(tc class NumberOpts)
-(tc field rnu? boolean)
-(tc field nu? boolean)
 (tc type "NumberOpts[]")
 ;; formatted for `vim.o` (eqv. in VimL: ["nornu nonu" :nu "nu rnu"])
 (local wheel [{:rnu false :nu false} {:nu true} {:nu true :rnu true}])
@@ -27,6 +24,10 @@
                                        vim.log.levels.ERROR)))
                      (- 2)))
 
+;; roles
+(tc type "Role[]")
+(var roles [])
+
 ;;; DATA
 
 ;; ucm = unison-ready environment
@@ -36,8 +37,8 @@
 (set M.icons (let [s vim.diagnostic.severity]
                {:diagnostic {s.ERROR "✘"
                              s.WARN "▲"
-                             s.HINT "⚑"
-                             s.INFO "»"}
+                             s.HINT " ⚑"
+                             s.INFO "∴"}
                 :buffer {:readonly "󰌾"
                          :modified "●"
                          :unsaved_others "○"}}))
@@ -89,5 +90,13 @@
     ;; use `vim.o` instead of `vim.cmd` to avoid VimScript call
     (each [o v (pairs opts)]
       (set (. vim.o o) v))))
+
+(tc param tbl "string[]")
+(fn M.set-roles [tbl]
+  (set roles tbl))
+
+(tc param role string return boolean)
+(fn M.check-role [role]
+  (vim.list_contains roles role))
 
 M
