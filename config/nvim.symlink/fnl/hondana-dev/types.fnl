@@ -11,3 +11,10 @@
 
 (tc class "LspClientConfig: vim.lsp.ClientConfig")
 (tc field name string additional slot for name)
+
+(tc class NumberOpts)
+(tc field rnu? boolean)
+(tc field nu? boolean)
+
+;; roles
+(tc alias Role "'developer'|'rustacean'|'haskell-cultist'|'shenturion'")

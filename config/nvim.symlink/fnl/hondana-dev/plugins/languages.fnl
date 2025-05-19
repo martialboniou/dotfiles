@@ -7,6 +7,8 @@
       2 #(vim.cmd ,(.. "GoTagAdd " t#))
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
+(local {: check-role} (require :hondana-dev.utils.globals))
+
 ;; default keys/build = gopher (for golang)
 (local (keys build)
        (values (make-gopher-keys! :json :yaml)
@@ -22,11 +24,6 @@
         {1 :folke/lazydev.nvim
          :ft :lua
          :opts {:library [{:path "${3rd}/luv/library" :words ["vim%.uv"]}]}}
-        ;;; HASKELL
-        ;; NOTE: v6 uses `vim.lsp.config['haskell-tools']` to avoid conflicts with
-        ;; `nvim-lspconfig` I still use for mappings & optional LSP settings (even if
-        ;; `vim.lsp.enable()` can be called anywhere)
-        {1 :mrcjkb/haskell-tools.nvim :version "^6" :lazy false}
         ;;; GOLANG
         {1 :dreamsofcode-io/nvim-dap-go
          :ft :go
@@ -38,6 +35,24 @@
                         :nvim-treesitter/nvim-treesitter]
          : keys
          : build}])
+
+;; NOTE: v6 uses `vim.lsp.config['haskell-tools']` to avoid conflicts with
+;; `nvim-lspconfig` I still use for mappings & optional LSP settings (even if
+;; `vim.lsp.enable()` can be called anywhere)
+
+;;; HASKELL
+(when (check-role :haskell-cultist)
+  (table.insert P {1 :mrcjkb/haskell-tools.nvim
+                   :version "^6"
+                   ;; this plugin is already lazy
+                   :lazy false}))
+
+;; RUST
+(when (check-role :rustacean)
+  (table.insert P {1 :mrcjkb/rustaceanvim
+                   :version "^6"
+                   ;; this plugin is already lazy
+                   :lazy false}))
 
 ;;; (optional) UNISON
 (-> :hondana-dev.utils.globals (require) (. :ucm)

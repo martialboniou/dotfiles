@@ -6,8 +6,12 @@
   (icollect [_ e (ipairs [...])]
     {:import e}))
 
-(tc type boolean)
-(local developer-mode true)
+;; define your roles in this setup:
+;; - `rustacean` supercharges your rust experience
+;; - `haskell-cultist` sets `haskell-tools.nvim` instead of `hls`
+;; - `developer` says you want to extend this setup by coding in Fennel
+(local {: set-roles : check-role} (require :hondana-dev.utils.globals))
+(set-roles [:developer :haskell-cultist])
 
 ;; set the list of your plugin specs' directories here
 (local plugins (imports! :hondana-dev.plugins :hondana-dev.plugins.unchecked))
@@ -42,7 +46,7 @@
 ;; OPTIONAL (not required but very handy)
 ;; auto-link fennel.lua from Tangerine to `~/.config/nvim/fnl/fennel.lua`
 (local {: posix} (require :hondana-dev.utils.globals))
-(when (and developer-mode posix)
+(when (and (check-role :developer) posix)
   (tc type string?)
   (local target (-?> :config (stdpath) (joinpath :fnl :fennel.lua)))
   (when (and target (= 0 (filereadable target)))
