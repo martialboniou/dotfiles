@@ -9,7 +9,7 @@
 (tc param content string)
 (tc param ctx Role)
 (tc return "nil|string")
-(fn otherwise [content ctx]
+(fn otherwise [ctx content]
   (local g (require :hondana-dev.utils.globals))
   (when (not (g.check-role ctx)) content))
 
