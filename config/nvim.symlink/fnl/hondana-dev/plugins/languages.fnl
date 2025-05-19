@@ -36,11 +36,10 @@
          : keys
          : build}])
 
+;;; HASKELL
 ;; NOTE: v6 uses `vim.lsp.config['haskell-tools']` to avoid conflicts with
 ;; `nvim-lspconfig` I still use for mappings & optional LSP settings (even if
 ;; `vim.lsp.enable()` can be called anywhere)
-
-;;; HASKELL
 (when (check-role :haskell-cultist)
   (table.insert P {1 :mrcjkb/haskell-tools.nvim
                    :version "^6"
