@@ -1,6 +1,6 @@
 (local root (or ... :hondana-dev))
 
-(local P [:status :set :command :remap :linenumbers])
+(local P [:status :set :command :remap :linenumbers :lsp])
 (let [tally (length P)]
   (for [i 1 tally]
     (-> root

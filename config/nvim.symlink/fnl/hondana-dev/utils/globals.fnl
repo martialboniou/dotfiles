@@ -24,11 +24,12 @@
                                        vim.log.levels.ERROR)))
                      (- 2)))
 
+;;; DATA
+
 ;; roles
 (tc type "Role[]")
-(var roles [])
-
-;;; DATA
+(let [Roles (require :hondana-dev.utils.roles)]
+  (set M.roles (Roles:new)))
 
 ;; ucm = unison-ready environment
 (tc type boolean)
@@ -90,13 +91,5 @@
     ;; use `vim.o` instead of `vim.cmd` to avoid VimScript call
     (each [o v (pairs opts)]
       (set (. vim.o o) v))))
-
-(tc param tbl "string[]")
-(fn M.set-roles [tbl]
-  (set roles tbl))
-
-(tc param role string return boolean)
-(fn M.check-role [role]
-  (vim.list_contains roles role))
 
 M
