@@ -23,7 +23,6 @@ alias po=popd
 alias h=history
 alias top=htop
 alias stop='kill -TSTP' # csh like stop
-alias ll='ls -lah'
 alias la='ls -a'
 # List only directories and symbolic
 # links that point to directories
@@ -87,9 +86,11 @@ alias amzer='$aliases[weather]'
 alias meteo='$aliases[weather]'
 # eza
 if (( $+commands[eza] )); then
-  alias ls='eza --long --header -s=newest --group-directories-first --git --sort=modified'
+  alias ls='eza --long -s=newest --group-directories-first --git --sort=modified'
   alias l='$aliases[ls]' # -C won't work in eza
-  # `ll`/`la` for the hidden files/folders
+  alias ll='$aliases[ls]'
+  # `la` for the hidden files/folders too
 else
   alias l='ls -CF'
+  alias ll='ls -lah'
 fi
