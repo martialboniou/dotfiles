@@ -79,3 +79,15 @@ fi
 # autoload -U zsh-mime-setup
 # zsh-mime-setup
 alias sc="symfony console"
+#
+# weather in my location (change at will)
+alias weather+='curl -s v2.wttr.in/Brest'
+zmodload -F zsh/parameter p:aliases
+alias weather='curl -s wttr.in/Brest'
+alias amzer='$aliases[weather]'
+alias meteo='$aliases[weather]'
+# eza
+if (( $+commands[eza] )); then
+  alias ls='eza --long --header -s=newest --group-directories-first --git --sort=modified'
+  # alias ll='$aliases[ll]' # unnecessary b/c of the previous aliases
+fi
