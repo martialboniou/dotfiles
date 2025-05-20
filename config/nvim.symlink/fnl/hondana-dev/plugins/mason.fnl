@@ -1,5 +1,5 @@
 ;;; Mason ensure installed
-;;; 2025-05-17 - neovim v0.11+ - mason v2.0
+;;; 2025-05-20 - neovim v0.11+ - mason v2.0
 (import-macros {: tc} :hondana-dev.macros)
 
 ;;; NOTE: mason.nvim loaded in `lspconfig.fnl`
@@ -22,7 +22,14 @@
                                      :pyright
                                      :bashls]}}
           {1 :WhoIsSethDaniel/mason-tool-installer.nvim
-           :dependencies [:mason-org/mason.nvim]
+           :dependencies [{1 :mason-org/mason.nvim
+                           :opts {}
+                           :cmd [:Mason
+                                 :MasonUpdate
+                                 :MasonLog
+                                 :MasonInstall
+                                 :MasonUninstall]}
+                          :b0o/schemastore.nvim]
            :opts {:ensure_installed [:stylua
                                      :prettierd
                                      :isort
