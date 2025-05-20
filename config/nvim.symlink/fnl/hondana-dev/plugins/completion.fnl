@@ -1,5 +1,5 @@
 (import-macros {: tc} :hondana-dev.macros)
-;;; 2025-05-16 blink-cmp
+;;; 2025-05-20 blink-cmp
 ;;  inspired by https://github.com/barraIhsan/dotfiles (GNU GPL v3.0)
 
 ;; F = utility functions at the end of this module
@@ -26,6 +26,7 @@
   hl)
 
 (λ opts []
+  ;; WARN: `blink.cmp` knows lsp so no need to enable autocompletion via capabilities
   {:snippets {:preset :luasnip}
    :sources {:default [:lsp :snippets :lazydev :buffer :path]
              ;; INFO: ensure hondana-dev.plugins.languages has lazydev

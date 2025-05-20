@@ -10,8 +10,8 @@
 ;; - `rustacean` supercharges your rust experience
 ;; - `haskell-cultist` sets `haskell-tools.nvim` instead of `hls`
 ;; - `developer` says you want to extend this setup by coding in Fennel
-(local {: set-roles : check-role} (require :hondana-dev.utils.globals))
-(set-roles [:developer :haskell-cultist])
+(local {: roles} (require :hondana-dev.utils.globals))
+(roles:set [:developer :haskell-cultist])
 
 ;; set the list of your plugin specs' directories here
 (local plugins (imports! :hondana-dev.plugins :hondana-dev.plugins.unchecked))
@@ -21,7 +21,8 @@
         :uv {: fs_stat}
         :opt {: runtimepath}} vim)
 
-;; bootstrap lazy
+;;; BOOTSTRAP LAZY
+;;
 (tc type string)
 (local lazy-directory (-> :data (stdpath) (joinpath :lazy)))
 (let [lazy-path (joinpath lazy-directory :lazy.nvim)]
@@ -43,10 +44,10 @@
             :spec plugins}]
   (setup opts))
 
-;; OPTIONAL (not required but very handy)
+;;; OPTIONAL (not required but very handy)
 ;; auto-link fennel.lua from Tangerine to `~/.config/nvim/fnl/fennel.lua`
 (local {: posix} (require :hondana-dev.utils.globals))
-(when (and (check-role :developer) posix)
+(when (and (roles:check :developer) posix)
   (tc type string?)
   (local target (-?> :config (stdpath) (joinpath :fnl :fennel.lua)))
   (when (and target (= 0 (filereadable target)))

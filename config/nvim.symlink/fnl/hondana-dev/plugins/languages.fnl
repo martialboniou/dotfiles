@@ -7,7 +7,7 @@
       2 #(vim.cmd ,(.. "GoTagAdd " t#))
       :desc ,(.. "Add " (string.upper t#) " struct tags")}))
 
-(local {: check-role} (require :hondana-dev.utils.globals))
+(local {: roles} (require :hondana-dev.utils.globals))
 
 ;; default keys/build = gopher (for golang)
 (local (keys build)
@@ -40,14 +40,14 @@
 ;; NOTE: v6 uses `vim.lsp.config['haskell-tools']` to avoid conflicts with
 ;; `nvim-lspconfig` I still use for mappings & optional LSP settings (even if
 ;; `vim.lsp.enable()` can be called anywhere)
-(when (check-role :haskell-cultist)
+(when (roles:check :haskell-cultist)
   (table.insert P {1 :mrcjkb/haskell-tools.nvim
                    :version "^6"
                    ;; this plugin is already lazy
                    :lazy false}))
 
 ;; RUST
-(when (check-role :rustacean)
+(when (roles:check :rustacean)
   (table.insert P {1 :mrcjkb/rustaceanvim
                    :version "^6"
                    ;; this plugin is already lazy
@@ -61,8 +61,9 @@
         ;;
         (tc param plugin LazyPlugin param fun string)
 
-        (fn unison-core [plugin fun]
-          (let [{fun as-is} (require :lazy.core.loader)]
+        (fn unison-core [plugin _fun]
+          ;; INFO: `fun` was seen as unused by fennel-ls; solution: an underscore prefix
+          (let [{_fun as-is} (require :lazy.core.loader)]
             (as-is (joinpath plugin.dir ""))
             (-> plugin (. :dir) (complete-unison-vim-path) (as-is))))
 
