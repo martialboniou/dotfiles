@@ -7,7 +7,6 @@ if which ggrep &> /dev/null; then
 fi
 alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
-alias l='ls -CF'
 alias pa='ps aux'
 #alias vi='vim -c ":cd %:p:h"'
 alias vv='fv'  # ie fzf -> nvim
@@ -89,5 +88,8 @@ alias meteo='$aliases[weather]'
 # eza
 if (( $+commands[eza] )); then
   alias ls='eza --long --header -s=newest --group-directories-first --git --sort=modified'
-  # alias ll='$aliases[ll]' # unnecessary b/c of the previous aliases
+  alias l='$aliases[ls]' # -C won't work in eza
+  # `ll`/`la` for the hidden files/folders
+else
+  alias l='ls -CF'
 fi
