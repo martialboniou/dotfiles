@@ -5,7 +5,6 @@
 (local (ok fennel) (pcall require :tangerine.fennel.latest))
 
 (when (not ok)
-
   (error "ensure nvim `vim.opt.rtp` has the tangerine lazy path set before loading this script"))
 
 (local file :flsproject.fnl)
