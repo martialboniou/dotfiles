@@ -5,7 +5,6 @@
 (local (ok fennel) (pcall require :tangerine.fennel.latest))
 
 (when (not ok)
-
   (error "ensure nvim `vim.opt.rtp` has the tangerine lazy path set before loading this script"))
 
 (local file :flsproject.fnl)
@@ -27,6 +26,7 @@
                                 (make-path package mode)
                                 ""))
                           (table.concat)))
+        ;; TODO: check if the user path is required if `.` is already present in the (macro-)path
         user-path (-> :config
                       (_G.vim.fn.stdpath)
                       (.. :/fnl))

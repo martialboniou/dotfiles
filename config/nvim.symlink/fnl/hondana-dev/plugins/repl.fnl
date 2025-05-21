@@ -1,3 +1,4 @@
+;; TODO: WIP since lsp rework (2025-05-21)
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
 

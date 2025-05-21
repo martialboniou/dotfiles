@@ -1,3 +1,4 @@
+;; checked: 2025-05-21
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: or=} :hibiscus.core)
 (import-macros {: set! : g!} :hibiscus.vim)

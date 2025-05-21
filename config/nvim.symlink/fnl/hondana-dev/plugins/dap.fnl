@@ -1,4 +1,5 @@
 ;; REMINDER: TODO: llvm-vscode --> llvm-dap
+;; TODO: WIP: testing since lsp rework (2025-05-21)
 (import-macros {: tc} :hondana-dev.macros)
 (import-macros {: make-lazykeys!} :hondana-dev.macros.vim)
 
@@ -105,8 +106,7 @@
       (set (. env.dap.listeners.before.event_terminated cfg) close)
       (set (. env.dap.listeners.before.event_exited cfg) close))
     (local lldb-adapter-name :lldb-dap)
-    (var lldb-adapter (or (full-exe-path lldb-adapter-name)
-                          ;; legacy
+    (var lldb-adapter (or (full-exe-path lldb-adapter-name) ;; legacy
                           (full-exe-path "lldb-vscode")))
     (when (-> (vim.uv.os_uname)
               (. :sysname)

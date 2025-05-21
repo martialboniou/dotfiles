@@ -1,5 +1,5 @@
 ;;; Conform setup
-;;; 2024-12-16
+;;; 2025-05-21
 (import-macros {: tc} :hondana-dev.macros)
 
 ;; S = additional settings
