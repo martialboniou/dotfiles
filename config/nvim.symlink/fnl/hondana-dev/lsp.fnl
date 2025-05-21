@@ -46,22 +46,22 @@
   (local os (case (. optional-servers i)
               [a b] {:server a :binary b}
               a {:server a :binary a}))
-  (when (executable? os.binary) (vim.lsp.enable os.server)))
+  (when (executable? os.binary)
+    (vim.lsp.enable os.server)))
 
 ;;; ATTACH KEYBINDINGS/MAPPINGS
 ;;
-(fn callback [ev]
-  (local opts {:buffer ev.buf :silent true})
+(fn on_attach [_client buffer]
   (local builtin (require :telescope.builtin))
   (local keyset (fn [desc ...]
-                  (let [o opts
+                  (let [opts {: buffer :silent true}
                         args [...]
                         tbl []]
                     (when (and desc (not= "" desc))
-                      (set o.desc desc))
+                      (set opts.desc desc))
                     (for [i 1 (length args)]
                       (table.insert tbl (. args i)))
-                    (table.insert tbl o)
+                    (table.insert tbl opts)
                     (-> tbl (unpack) (vim.keymap.set)))))
   ;; keybindings
   (keyset "Show LSP definitions" :n :gd builtin.lsp_definitions)
@@ -97,9 +97,12 @@
   ;; insert mode = <C-s> is the default mapping since 0.11 (it was <C-h> before)
   ;; (keyset "Show LSP signature help" :i :<C-s> vim.lsp.buf.signature_help)
   ;; <leader>rs = restart LSP
-  (keyset "Restart LSP" :n :<leader>rs "<Cmd>LspRestart<CR>"))
+  (keyset "Restart LSP" :n :<leader>rs "<Cmd>LspRestart<CR>")
+  ;; <leader>ih = toggle inlay hint
+  (keyset "Toggle LSP inlay hints" :n :<leader>ih
+          #(vim.lsp.inlay_hint.enable (not vim.lsp.inlay_hint.is_enabled))))
 
-(vim.api.nvim_create_autocmd :LspAttach {: callback})
+(vim.lsp.config "*" {: on_attach})
 
 ;;; COSMETICS
 ;;

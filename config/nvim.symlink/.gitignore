@@ -3,6 +3,7 @@
 /lua/hondana-dev/*
 !/lua/hondana-dev/**/
 /lua/hondana-dev/utils/*
+/lua/hondana-dev/cosmetics/*
 /lua/hondana-dev/plugins/*
 !/lua/hondana-dev/plugins/**/
 /lua/hondana-dev/plugins/optional/**
