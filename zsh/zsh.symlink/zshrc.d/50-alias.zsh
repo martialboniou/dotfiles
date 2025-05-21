@@ -88,7 +88,7 @@ alias meteo='$aliases[weather]'
 if (( $+commands[eza] )); then
   alias ls='eza --long -s=newest --group-directories-first --git --sort=modified'
   alias l='$aliases[ls]' # -C won't work in eza
-  alias ll='$aliases[ls]'
+  alias ll='$aliases[ls] -a'
   # `la` for the hidden files/folders too
 else
   alias l='ls -CF'
