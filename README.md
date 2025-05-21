@@ -64,7 +64,7 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) (a tiny
   plugin to enhance Neovim's native comments; for example, it supports
   different comment strings for different Treesitter node types) 
-- Mason-boosted LSP & CMP setup.
+- Mason & `blink.cmp` setup.
   [conform](https://github.com/stevearc/conform.nvim) &
   [nvim-lint](https://github.com/mfussenegger/nvim-lint) are used
   for additional formatters & diagnostic tools respectively.
@@ -120,7 +120,8 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
           [nvim-paredit](https://github.com/julienvincent/nvim-paredit) is too)
         - [targets](https://github.com/wellle/targets.vim) for additional text
           objects (dangerous; broke the *Vim* macros (recorded & typed));
-- sources:
+- sources (mainly **obsolete** content as since NeoVim 0.11 the LSP setup is easier and
+  [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) is optional):
   - [Tangerine configuration](https://github.com/Massolari/neovim)
   ([Fennel](https://fennel-lang.org/) scripts and Lazy plugin specs)
   - [good lazy configuration](https://github.com/MuhametSmaili/nvim) (inspiration

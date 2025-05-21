@@ -275,45 +275,45 @@ insert
   - `<leader>P` : `git pull` **with rebase** 
   - `<leader>t` : `git push -u origin` template; complete with the branch name
     to push to
-- LSP case:
-  - *cmp_mappings* (using `blink.cmp`):
-    - `<C-y>` : confirm completion
-    - `<C-p>` : previous completion
-    - `<C-n>` : next completion
-    - `<C-Space>` : complete
-    - `<C-f>` : snippet forward selection (navigate thru tmux sessions in normal mode)
-    - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
-      don't use `<C-a>` either because you lose the cursor navigation (start of line);
-      `F5`/`fn a` is my current choice for `tmux`)
-    - other keys (common in any Vim setup)
-      - `<C-e>` : cancel the completion
-      - `<C-u>`/`<C-d>` : scroll the document up/down
-   - in LSP buffer only (normal mode except when said otherwise)
-     - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
-       `vim.lsp.buf.format`
-     - **REMINDER**: default mappings introduced in NeoVim 0.11:
-       - `<C-s>` (*insert mode*) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
-         switches to the first harpoon in **normal mode**; it was `<C-h>` before)
-       - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
-       - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
-       - `gra` (*normal or visual mode*) : `vim.lsp.buf.code_action()`
-       - `grn` : `vim.lsp.buf.rename()`
-       - `grr` : `vim.lsp.buf.references()`
-       - `gO` : `vim.lsp.buf.document_symbol()`
-       - `[d`/`[D` : jump to previous/first diagnostic
-       - `]d`/`]D` : jump to next/last diagnostic
-     - changes for this setup:
-       - `gd` : Telescope *builtin*'s **g**oto **d**efinition
-       - `gD` : `vim.lsp.buf.declaration()`
-       - `gI` : Telescope *builtin*'s **g**oto **I**mplementation (better than `gri`)
-       - `g/`/`<leader>vdd` : `vim.diagnostic.open_float()`
-       - `<leader>nn` : `vim.lsp.buf.rename()` (alternative to `grn`)
-       - `<leader>ca` (*normal or visual mode*) : `vim.lsp.buf.code_action()` (alternative to `gra`)
-       - `<leader>D` : Telescope *builtin*'s **D**iagnostics for the current buffer
-       - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol (replaces
-         `vim.lsp.buf.workspace_symbol()`)
-       - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
-       - `<leader>rs` : command `:LspRestart`
+- *cmp_mappings* (using `blink.cmp`):
+  - `<C-y>` : confirm completion (works with `ghost-text`)
+  - `<C-p>` : previous completion (or `show` like `<C-space>` if inactive)
+  - `<C-n>` : next completion (or `show` like `<C-space>` if inactive)
+  - `<C-Space>` : complete
+  - `<C-f>` : snippet forward selection (navigate thru tmux sessions in normal mode)
+  - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
+    don't use `<C-a>` either because you lose the cursor navigation (start of line);
+    `F5`/`fn a` is my current choice for `tmux`)
+  - other keys (common in any Vim setup)
+    - `<C-e>` : cancel the completion
+    - `<C-u>`/`<C-d>` : scroll the document up/down
+- in LSP buffer only (normal mode except when said otherwise)
+  - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
+    `vim.lsp.buf.format`
+  - **REMINDER**: default mappings introduced in NeoVim 0.11:
+    - `<C-s>` (*insert mode*) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
+      switches to the first harpoon in **normal mode**; it was `<C-h>` before)
+    - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
+    - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
+    - `gra` (*normal or visual mode*) : `vim.lsp.buf.code_action()`
+    - `grn` : `vim.lsp.buf.rename()`
+    - `grr` : `vim.lsp.buf.references()`
+    - `gO` : `vim.lsp.buf.document_symbol()`
+    - `[d`/`[D` : jump to previous/first diagnostic
+    - `]d`/`]D` : jump to next/last diagnostic
+  - changes for this setup:
+    - `gd` : Telescope *builtin*'s **g**oto **d**efinition
+    - `gD` : `vim.lsp.buf.declaration()`
+    - `gI` : Telescope *builtin*'s **g**oto **I**mplementation (better than `gri`)
+    - `g/`/`<leader>vdd` : `vim.diagnostic.open_float()`
+    - `<leader>nn` : `vim.lsp.buf.rename()` (alternative to `grn`)
+    - `<leader>ca` (*normal or visual mode*) : `vim.lsp.buf.code_action()` (alternative to `gra`)
+    - `<leader>D` : Telescope *builtin*'s **D**iagnostics for the current buffer
+    - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol (replaces
+      `vim.lsp.buf.workspace_symbol()`)
+    - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
+    - `<leader>rs` : command `:LspRestart`
+    - `<leader>ih` : toggle LSP inlay hints
 - **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
   - `<leader>xX` : toggle trouble for the current buffer
@@ -447,13 +447,15 @@ I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
 **IMPORTANT**: In this setup, LSP shouldn't start on the `BufNewFile` event but on 
 the loading of an existing resource in a buffer. This is motivated by the aim of
 reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchmark).
-Use `:LspStart` to force the LSP launch in the current buffer (say, a *scratch* buffer).
 
 This setup uses the `vim.lsp.config()` & `vim.lsp.enable()` functions introduced in
-NeoVim 0.11. `nvim-lspconfig` (introducing [`mason`](https://github.com/mason-org/mason.nvim))
-& `blink.cmp` (relying on `LuaSnip`) complete this configuration. Note that
+NeoVim 0.11. The plugin `nvim-lspconfig` has been removed.
+`blink.cmp` (relying on `LuaSnip`) completes this configuration. Note that
 `mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional 
 language servers, linters, formatters...
+
+Type `:= vim.lsp.get_active_clients()` to check the active LSP clients attached
+to your current buffer.
 
 #### Debugger Adapter Protocol
 
