@@ -43,17 +43,19 @@
 
 ;; fake LspInfo when no plugin `neovim/nvim-lspconfig`
 (uc :LspInfo (fn [args]
-               (-> {:bufnr 0} (vim.lsp.get_clients)
-                   (#(if args.bang
-                         (vim.inspect $)
-                         (let [msg (if (> (length $) 1)
-                                       {:pre "First active"
-                                        :post " (check LspInfo! for more details)"}
-                                       {:pre "Active" :post ""})]
-                           (-> (. $ 1 :name)
-                               (#(.. msg.pre
-                                     " language server in this buffer: " $
-                                     msg.post)))))) (print)))
+               (-?> {:bufnr 0} (vim.lsp.get_clients)
+                    (#(if (not= 0 (length $)) $
+                          (vim.notify "No servers" vim.log.levels.INFO)))
+                    (#(if args.bang
+                          (vim.inspect $)
+                          (let [msg (if (> (length $) 1)
+                                        {:pre "First active"
+                                         :post " (check LspInfo! for more details)"}
+                                        {:pre "Active" :post ""})]
+                            (-> (. $ 1 :name)
+                                (#(.. msg.pre
+                                      " language server in this buffer: " $
+                                      msg.post)))))) (print)))
     {:desc "Get the current buffer clients" :bang true})
 
 ;; toggle a checkbox (eg. for a list in a buffer; `gt` key in a markdown/org buffer)
