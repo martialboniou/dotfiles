@@ -2,7 +2,7 @@ NeoVim
 ======
 
 - aimed for version 0.11 at least
-- tested on version 0.11.1 for macOS 15.4.1 & Alpine Linux 3.20
+- tested on version 0.11.1 for macOS 15.5 & Alpine Linux 3.20
   (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
   the `community` repository; NeoVim was built using `gettext-dev`)
 - developer guidance:
@@ -449,13 +449,17 @@ the loading of an existing resource in a buffer. This is motivated by the aim of
 reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchmark).
 
 This setup uses the `vim.lsp.config()` & `vim.lsp.enable()` functions introduced in
-NeoVim 0.11. The plugin `nvim-lspconfig` has been removed.
+NeoVim 0.11.
 `blink.cmp` (relying on `LuaSnip`) completes this configuration. Note that
 `mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional 
 language servers, linters, formatters...
 
 Type `:= vim.lsp.get_active_clients()` to check the active LSP clients attached
-to your current buffer.
+to your current buffer. The plugin
+[`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) has been removed
+but you can put it back if you still need `:LspInfo` (you shouldn't if
+everything has been enabled according to your will). Check
+[this article](https://dx13.co.uk/articles/2023/04/24/neovim-lsp-without-plugins/).
 
 #### Debugger Adapter Protocol
 
