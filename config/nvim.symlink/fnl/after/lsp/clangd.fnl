@@ -1,28 +1,70 @@
 ;; https://clangd.llvm.org/extensions.html#switch-between-sourceheader
 (local name :clangd)
 
-(local {:nvim_buf_create_user_command uc} vim.api)
+(local {: notify : api : cmd :fn {: strchars} :log {: levels} :lsp {: util}}
+       vim)
+
+(local {:nvim_buf_create_user_command uc} api)
+
+(fn get-client [bufnr]
+  (-> {: bufnr : name} (vim.lsp.get_clients) (. 1)))
 
 (fn switch-source-header [bufnr]
   (local method-name :textDocument/switchSourceHeader)
-  (local client (-> {: bufnr : name} vim.lsp.get_clients (. 1)))
+  (local client (get-client bufnr))
   (if client
-      (do
-        (local params (vim.lsp.util.make_text_document_params bufnr))
+      (let [params (util.make_text_document_params bufnr)]
         (client.request method-name params
-                        (fn [err result]
+                        (fn [err res]
                           (when err (error (tostring err)))
-                          (if result (vim.cmd.edit (vim.uri_to_fname result))
-                              (vim.notify "corresponding file cannot be determined")))
+                          (if res (cmd.edit (vim.uri_to_fname res))
+                              (notify "corresponding file cannot be determined")))
                         bufnr))
       ;; no client
       (-> "method %s is not supported by any servers active on the current buffer"
           (: :format method-name)
-          (vim.notify vim.log.levels.ERROR))))
+          (notify levels.ERROR))))
+
+(fn format-node [node name]
+  (-?>> node
+        (: "%s: %s" :format name)))
+
+(fn format-result [result node-name ?name]
+  (format-node (?. result 1 node-name) (or ?name node-name)))
+
+(fn symbol-info []
+  (local bufnr (api.nvim_get_current_buf))
+  (local client (get-client bufnr))
+  (if (and client (client.supports_method :textDocument/symbolInfo))
+      (let [win (api.nvim_get_current_win)
+            params (util.make_position_params win client.offset_encoding)]
+        (client.request :textDocument/symbolInfo params
+                        (fn [err res]
+                          (when (and (not err) (not= 0 (length res)))
+                            (local content [(format-result res :name)])
+                            (local context
+                                   (format-result res :containerName :container))
+                            (when context
+                              (table.insert content context))
+                            (local content-size
+                                   (icollect [_ n (ipairs content)]
+                                     (strchars n)))
+                            (util.open_floating_preview content ""
+                                                        {:height (length content)
+                                                         :width (-> content-size
+                                                                    (unpack)
+                                                                    (math.max))
+                                                         :focusable false
+                                                         :focus false
+                                                         :border :single
+                                                         :title "Symbol Info"})))
+                        bufnr))
+      (notify "Clangd client not found" levels.ERROR)))
 
 (fn on_attach []
   (uc 0 :LspClangdSwitchSourceHeader #(switch-source-header 0)
-      {:desc "Switch between source/header"}))
+      {:desc "Switch between source/header"})
+  (uc 0 :LspClangdShowSymbolInfo symbol-info {:desc "Show symbol info"}))
 
 {:filetypes [:c :cpp :objc :objcpp :cuda :proto]
  :cmd [name :--background-index]
