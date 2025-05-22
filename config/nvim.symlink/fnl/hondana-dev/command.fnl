@@ -41,6 +41,21 @@
 ;; imprint the current filename at the cursor position
 (uc :ImprintFilename ":put =expand('%:t')" opts)
 
+;; fake LspInfo when no plugin `neovim/nvim-lspconfig`
+(uc :LspInfo (fn [args]
+               (-> {:bufnr 0} (vim.lsp.get_clients)
+                   (#(if args.bang
+                         (vim.inspect $)
+                         (let [msg (if (> (length $) 1)
+                                       {:pre "First active"
+                                        :post " (check LspInfo! for more details)"}
+                                       {:pre "Active" :post ""})]
+                           (-> (. $ 1 :name)
+                               (#(.. msg.pre
+                                     " language server in this buffer: " $
+                                     msg.post)))))) (print)))
+    {:desc "Get buffer clients" :bang true})
+
 ;; toggle a checkbox (eg. for a list in a buffer; `gt` key in a markdown/org buffer)
 ;; => check hondana-dev.plugins.operators
 
