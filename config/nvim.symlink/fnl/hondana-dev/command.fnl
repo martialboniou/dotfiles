@@ -54,7 +54,7 @@
                                (#(.. msg.pre
                                      " language server in this buffer: " $
                                      msg.post)))))) (print)))
-    {:desc "Get buffer clients" :bang true})
+    {:desc "Get the current buffer clients" :bang true})
 
 ;; toggle a checkbox (eg. for a list in a buffer; `gt` key in a markdown/org buffer)
 ;; => check hondana-dev.plugins.operators
