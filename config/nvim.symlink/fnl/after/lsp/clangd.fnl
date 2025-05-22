@@ -6,19 +6,19 @@
 (fn switch-source-header [bufnr]
   (local method-name :textDocument/switchSourceHeader)
   (local client (-> {: bufnr : name} vim.lsp.get_clients (. 1)))
-  (when client
-    (local params (vim.lsp.util.make_text_document_params bufnr))
-    (client.request method-name params
-                    (fn [err result]
-                      (when err (error (tostring err)))
-                      (if result (vim.uri_to_fname result)
-                          (vim.notify "corresponding file cannot be determined")))
-                    bufnr)
-    (lua :return))
-  ;; no client
-  (-> "method %s is not supported by any servers active on the current buffer"
-      (: :format method-name)
-      (vim.notify vim.log.levels.ERROR)))
+  (if client
+      (do
+        (local params (vim.lsp.util.make_text_document_params bufnr))
+        (client.request method-name params
+                        (fn [err result]
+                          (when err (error (tostring err)))
+                          (if result (vim.cmd.edit (vim.uri_to_fname result))
+                              (vim.notify "corresponding file cannot be determined")))
+                        bufnr))
+      ;; no client
+      (-> "method %s is not supported by any servers active on the current buffer"
+          (: :format method-name)
+          (vim.notify vim.log.levels.ERROR))))
 
 (fn on_attach []
   (uc 0 :LspClangdSwitchSourceHeader #(switch-source-header 0)
