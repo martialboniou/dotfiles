@@ -19,6 +19,7 @@
                                      :html
                                      :graphql
                                      :emmet_language_server
+                                     :marksman
                                      :pyright
                                      :bashls]}}
           {1 :WhoIsSethDaniel/mason-tool-installer.nvim

@@ -454,12 +454,15 @@ NeoVim 0.11.
 `mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional 
 language servers, linters, formatters...
 
-Type `:= vim.lsp.get_active_clients()` to check the active LSP clients attached
-to your current buffer. The plugin
+Type `:LspInfo!` or `:LspInfo`  to check the active LSP clients attached to
+your current buffer (as `get_active_clients()` is obsolete in NeoVim 0.12;
+added in this setup; they replace a cumbersome command like
+`:= vim.lsp.buf_get_clients()` or `:= vim.lsp.buf_get_clients()[1].name`
+respectively). The plugin
 [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) has been removed
-but you can put it back if you still need `:LspInfo` (you shouldn't if
-everything has been enabled according to your will). Check
-[this article](https://dx13.co.uk/articles/2023/04/24/neovim-lsp-without-plugins/).
+but you can put it back if you still need a fancier `:LspInfo` (you shouldn't
+if everything has been enabled according to your will). Check [this
+article](https://dx13.co.uk/articles/2023/04/24/neovim-lsp-without-plugins/).
 
 #### Debugger Adapter Protocol
 

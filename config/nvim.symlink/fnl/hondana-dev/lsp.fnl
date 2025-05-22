@@ -3,7 +3,7 @@
 ;;; SERVERS
 ;;
 ;; set the list of your LSP language servers here
-(local servers [:lua_ls :html :jsonls :ts_ls :pyright])
+(local servers [:lua_ls :html :jsonls :ts_ls :pyright :marksman])
 
 ;; optional-servers = list of non-mason language servers, the optional second value is a
 ;; binary to test (the server name is not always the language server binary name)
