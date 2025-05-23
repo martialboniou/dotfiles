@@ -21,7 +21,8 @@
                                      :emmet_language_server
                                      :marksman
                                      :pyright
-                                     :bashls]}}
+                                     :bashls
+                                     :awk-language-server]}}
           {1 :WhoIsSethDaniel/mason-tool-installer.nvim
            :dependencies [{1 :mason-org/mason.nvim
                            :opts {}
@@ -32,11 +33,17 @@
                                  :MasonUninstall]}
                           :b0o/schemastore.nvim]
            :opts {:ensure_installed [:stylua
+                                     :jq
+                                     ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
+                                     :taplo
                                      :prettierd
                                      :isort
                                      :black
                                      :pylint
-                                     :shfmt]}}])
+                                     :shfmt
+                                     :markdownlint-cli2
+                                     :markdown-toc
+                                     :cmakelint]}}])
 
 ;; NOTE: Alpine Linux may require a `apk add gcompat` + `:MasonInstall` with a specific target
 ;; (`--target=linux_arm64_gnu`, `--target=linux_x64_gnu`) for some plugins (`lua_ls`, `stylua`...)

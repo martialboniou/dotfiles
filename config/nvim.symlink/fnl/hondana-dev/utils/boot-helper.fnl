@@ -45,7 +45,7 @@
           (lua "---@diagnostic enable: cast-local-type")
           ;; async
           (var handle nil)
-          (tc cast handle uv_handle_t)
+          (tc cast handle uv.uv_handle_t)
           (local {:new_pipe new
                   : spawn
                   :read_start start

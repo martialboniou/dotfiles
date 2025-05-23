@@ -88,7 +88,7 @@
       2 search
       :desc "DAP: loading your \"per-project\" adapter (eg: ./nvim/nvim-dap.lua)"}]))
 
-(tc param string)
+(tc param exe string)
 (tc return "string?")
 (fn full-exe-path [exe]
   (-> exe (vim.fn.exepath) (#(if (= "" $) nil $))))
@@ -116,6 +116,7 @@
         (when ok
           (set lldb-adapter
                (vim.fs.joinpath brew-path :opt :llvm :bin lldb-adapter-name)))))
+    (tc cast lldb_adapter string)
     (if (-> lldb-adapter (vim.fn.executable) (not= 1))
         (vim.notify "dap: unable to set your default adapter for LLVM; upgrade or check path"
                     vim.log.levels.WARN)

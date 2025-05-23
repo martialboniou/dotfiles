@@ -73,6 +73,10 @@
 (g! netrw_altv 1)
 (g! netrw_liststyle 3)
 
+;; koka case: ensure `*.kk` is known as the file extension for the `koka` filetype
+;; check `fnl/after/lsp/koka.fnl`
+(vim.filetype.add {:extension {:kk :koka}})
+
 ;; diagnostic
 (let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
   (vim.diagnostic.config {:virtual_text {:prefix ""}

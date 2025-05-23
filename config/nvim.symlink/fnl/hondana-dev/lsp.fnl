@@ -2,27 +2,50 @@
 
 ;;; SERVERS
 ;;
-;; set the list of your LSP language servers here
-(local servers [:lua_ls :html :jsonls :ts_ls :pyright :marksman])
+;; set the list of your LSP language servers to enable here
+(tc type "string[]")
+(local servers [:lua_ls
+                :awk_ls
+                :html
+                :jsonls
+                :ts_ls
+                :tailwindcss
+                :cssls
+                :pyright
+                :marksman
+                :elixir_ls])
+
+;; unison case: check https://github.com/unisonweb/unison
+;; NOTE: the UCM listener existence is known at comptime, no need to check for an executable
+(when (-> :hondana-dev.utils.globals (require) (. :ucm))
+  (table.insert servers :unison))
 
 ;; optional-servers = list of non-mason language servers, the optional second value is a
 ;; binary to test (the server name is not always the language server binary name)
-(local optional-servers [;; NOTE: Mason/LuaRocks might have an outdated version of fennel-ls
-                         ;; you will need a `flsproject.fnl` file at the root
-                         ;; use `~/.config/nvim/fnl/build-flsproject.sh`
-                         [:fennel_ls :fennel-ls]
-                         ;; zig & zls must be of the same milestone so avoid the Mason version
-                         ;; if you need an older version or an unstable one
-                         :zls
-                         ;; clangd can be managed by Mason
-                         :clangd
-                         ;; DON'T UNCOMMENT: haskell-tools.nvim v6 replaces [:hls :haskell-language-server-wrapper]
-                         :gopls
-                         :ocamllsp])
+(tc alias ServerBinary "string|[string, string]")
+(tc type "ServerBinary[]")
+(local optional-servers
+       [;; NOTE: Mason/LuaRocks might have an outdated version of fennel-ls
+        ;; you will need a `flsproject.fnl` file at the root
+        ;; use `~/.config/nvim/fnl/build-flsproject.sh`
+        [:fennel_ls :fennel-ls]
+        ;; zig & zls must be of the same milestone so avoid the Mason version
+        ;; if you need an older version or an unstable one
+        :zls
+        :koka
+        [:roc_ls :roc_language_server]
+        ;; clangd can be managed by Mason
+        :clangd
+        ;; DON'T UNCOMMENT: haskell-tools.nvim v6 replaces [:hls :haskell-language-server-wrapper]
+        :gopls
+        :ocamllsp
+        ;; options for `elm`: `init`, `make`, `reactor`...
+        [:elm_ls :elm-language-server]])
 
 ;;; ENABLE LSP (check setup in `fnl/after/lsp`)
 ;;
 ;; NOTE: the following code could have been put at the end of `config()` in `hondana-dev.plugins.lspconfig`
+(tc binary_name "string")
 (tc return boolean)
 (fn executable? [binary-name]
   (-> binary-name (vim.fn.executable) (= 1)))
@@ -40,12 +63,15 @@
 (unless-role-insert :rustacean :rust servers)
 ;;
 (vim.lsp.enable servers)
+;;
 ;; TODO: restore most of the pre-0.11 settings
 ;; additional settings/activation of non-mason/optional servers
 (for [i 1 (length optional-servers)]
   (local os (case (. optional-servers i)
               [a b] {:server a :binary b}
-              a {:server a :binary a}))
+              a {:server a :binary a}
+              _ (error :unreachable)))
+  (tc cast os "{binary: string, server: string}")
   (when (executable? os.binary)
     (vim.lsp.enable os.server)))
 
