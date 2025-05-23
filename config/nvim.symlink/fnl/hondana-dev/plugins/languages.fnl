@@ -59,7 +59,7 @@
         (local {: joinpath} vim.fs)
         (local complete-unison-vim-path #(joinpath $ :editor-support :vim))
         ;;
-        (tc param plugin LazyPlugin param fun string)
+        (tc param plugin LazyPlugin param _fun string)
 
         (fn unison-core [plugin _fun]
           ;; INFO: `fun` was seen as unused by fennel-ls; solution: an underscore prefix

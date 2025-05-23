@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 nvim_dir="${HOME}/.config/nvim"
-luacheck "${nvim_dir}/lua"
+# lua "${nvim_dir}/lua"
+# lsp "${nvim_dir}/lsp"
+# after_lsp="${nvim_dir}/after/lsp"
 # fetch every Lua files with any type annotations
 files=$(rg -uu -tlua --json "\-\-\-\@" "${nvim_dir}" |\
     jq -r 'select(.type == "begin") | .data.path.text' | xargs)

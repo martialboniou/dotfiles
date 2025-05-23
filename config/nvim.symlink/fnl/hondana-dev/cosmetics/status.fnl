@@ -104,7 +104,7 @@
   (vim.cmd "lcd -")
   ;; spawn a process
   (var handle nil)
-  (tc cast handle uv_handle_t)
+  (tc cast handle uv.uv_handle_t)
   (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
   (local stdio [nil (new) (new)])
   (local options {: args : stdio})
@@ -131,18 +131,6 @@
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
 
-(fn unsaved-other-buffers []
-  "returns the number "
-  (let [{: get-buffers} (require :hondana-dev.utils.bufferline)]
-    (accumulate [count 0 _ buffer (ipairs (get-buffers {:modified "&modified"}))]
-      (let [{: current :flags {: modified}} buffer]
-        ;; (if (and (not current) modified)
-        ;;     (+ 1 count)
-        ;;     count)
-        (if modified
-            (+ 1 count)
-            count)))))
-
 (fn statusline-diagnostics []
   (let [results []]
     (var right-spacing " ")
@@ -150,7 +138,7 @@
       (local n (->> {: severity} (vim.diagnostic.get 0) (length)))
       (when (> n 0)
         (var result-format "%s %d")
-        (var icon (?. diagnostic-icons severity))
+        (var icon (. diagnostic-icons severity))
         (set right-spacing " ")
         (when (not icon)
           (set icon (-> vim.diagnostic.severity

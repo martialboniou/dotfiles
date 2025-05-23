@@ -1,4 +1,7 @@
 ;; https://clangd.llvm.org/extensions.html#switch-between-sourceheader
+(import-macros {: tc} :hondana-dev.macros)
+
+(tc type string)
 (local name :clangd)
 
 (local {: notify : api : cmd :fn {: strchars} :log {: levels} :lsp {: util}}
@@ -6,15 +9,18 @@
 
 (local {:nvim_buf_create_user_command uc} api)
 
+(tc param bufnr integer)
+(tc return vim.lsp.Client? client rpc object)
 (fn get-client [bufnr]
   (-> {: bufnr : name} (vim.lsp.get_clients) (. 1)))
 
+(tc param bufnr integer)
 (fn switch-source-header [bufnr]
   (local method-name :textDocument/switchSourceHeader)
   (local client (get-client bufnr))
   (if client
       (let [params (util.make_text_document_params bufnr)]
-        (client.request method-name params
+        (client:request method-name params
                         (fn [err res]
                           (when err (error (tostring err)))
                           (if res (cmd.edit (vim.uri_to_fname res))
@@ -25,20 +31,25 @@
           (: :format method-name)
           (notify levels.ERROR))))
 
+(tc param node "string?" param name0 string)
+(tc return "string?")
 (fn format-node [node name]
   (-?>> node
         (: "%s: %s" :format name)))
 
+(tc param result string)
+(tc param node_name string)
+(tc param _3fname? string)
 (fn format-result [result node-name ?name]
   (format-node (?. result 1 node-name) (or ?name node-name)))
 
 (fn symbol-info []
   (local bufnr (api.nvim_get_current_buf))
   (local client (get-client bufnr))
-  (if (and client (client.supports_method :textDocument/symbolInfo))
+  (if (and client (client:supports_method :textDocument/symbolInfo))
       (let [win (api.nvim_get_current_win)
             params (util.make_position_params win client.offset_encoding)]
-        (client.request :textDocument/symbolInfo params
+        (client:request :textDocument/symbolInfo params
                         (fn [err res]
                           (when (and (not err) (not= 0 (length res)))
                             (local content [(format-result res :name)])

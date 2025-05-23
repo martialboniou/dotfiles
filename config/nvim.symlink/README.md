@@ -457,7 +457,7 @@ language servers, linters, formatters...
 Type `:LspInfo!` or `:LspInfo`  to check the active LSP clients attached to
 your current buffer (as `get_active_clients()` is obsolete in NeoVim 0.12;
 added in this setup; they replace a cumbersome command like
-`:= vim.lsp.buf_get_clients()` or `:= vim.lsp.buf_get_clients()[1].name`
+`:= vim.lsp.get_clients({bufnr=0})` or `:= vim.lsp.get_clients({bufnr=0})[1].name`
 respectively). The plugin
 [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) has been removed
 but you can put it back if you still need a fancier `:LspInfo` (you shouldn't

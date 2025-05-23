@@ -6,7 +6,7 @@
 (local Roles {})
 (set Roles.__index Roles)
 
-(tc param _3fdata Role param _3fcustom_roles return Roles)
+(tc param _3fdata? Role param _3fcustom_roles? "string[]" return Roles)
 (fn Roles.new [self ?data ?custom-roles]
   "Make a role record. `custom-roles` disables the type checking"
   (tc roles "Role[]")

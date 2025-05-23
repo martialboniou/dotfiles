@@ -31,7 +31,7 @@
 
 (tc return :nil|number)
 (fn Lsp.external-client [self]
-  (let [ac-symbol (if (= 1 (vim.fn.has :nvim-0.10)) ;; 
+  (let [ac-symbol (if (-> vim (. :version :minor) (> 9)) ;;
                       :get_clients :get_active_clients)
         active-clients ((. vim.lsp ac-symbol) {:name self.config.name})]
     (when (not= nil (next active-clients))
