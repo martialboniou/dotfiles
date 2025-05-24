@@ -129,6 +129,35 @@
                :mode [:c]
                :desc "Toggle Flash Search"}]})
 
+;; Lspsaga: improve neovim lsp experience (using `winbar` as decorators; this was
+;; linked to the `nvim-lspconfig` setup in a previous setup)
+(in P {1 :nvimdev/lspsaga.nvim
+       :event :LspAttach
+       :dependencies [:nvim-treesitter/nvim-treesitter
+                      :nvim-tree/nvim-web-devicons]
+       :opts {:code_action {:show_server_name true :extend_gitsigns false}
+              :lightbulb {:enable false}
+              :diagnostic {:on_insert false :on_insert_follow false}
+              :rename {:in_select false}}})
+
+;; illuminate.vim: automatic highlighting other uses of the word under the cursor (using LSP & treesitter)
+;; (in P {1 :RRethy/vim-illuminate
+;;        :event :VeryLazy
+;;        :cmd [:IlluminatePause :IlluminateToggle]
+;;        :opts {:under_cursor true
+;;               :delay 500
+;;               :large_file_cutoff 2000
+;;               :large_file_overrides {:providers [:lsp]}}
+;;        :config (fn [_ opts]
+;;                  (let [i (require :illuminate)] (i.configure opts)))})
+
+;; mini.cursorword: automatic highlighting of word under cursor (replace RRethy/vim-illuminate)
+(in P {1 :echasnovski/mini.cursorword
+       :version false
+       :event :VeryLazy
+       :opts {:delay 400}
+       :config #(let [mc (require :mini.cursorword)] (mc.setup $2))})
+
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
 ;; (->> :folke/which-key.nvim
