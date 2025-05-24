@@ -2,6 +2,8 @@
 ;;; 2025-05-21
 (import-macros {: tc} :hondana-dev.macros)
 
+(local {: fs :fn {: stdpath : filereadable}} vim)
+
 ;; S = additional settings
 (local S {})
 
@@ -21,12 +23,10 @@
 ;; make a `.clang-format` at the root of this setup
 (tc type string)
 (set S.clang-format-global-file
-     (-> :config (vim.fn.stdpath) (.. :/.clang-format)))
+     (-> :config (stdpath) (fs.joinpath :.clang-format)))
 
-(when (-> S.clang-format-global-file (vim.fn.filereadable) (= 0))
+(when (-> S.clang-format-global-file (filereadable) (= 0))
   (let [file (io.open S.clang-format-global-file :w)
-        ;; use the `tabstop` defined in `hondana-dev.set` as indent width (should be 4)
-        indent-width (-> :tabstop (#(. vim.opt $)) (: :get :value))
         options ["BasedOnStyle: LLVM"
                  "AlignArrayOfStructures: Right"
                  "AlignConsecutiveMacros:"
@@ -35,9 +35,12 @@
                  "  AcrossEmptyLines: true"
                  "BreakBeforeBraces: Custom"
                  "BraceWrapping:"
-                 ;; I prefer BraceWrappingAfterFunction for C/C++; not for Zig
-                 "  AfterFunction: true"
-                 (->> indent-width (.. "IndentWidth: "))]]
+                 ;; BraceWrappingAfterFunction for C/C++ can be set to true here
+                 "  AfterFunction: false"
+                 ;; use the `tabstop` defined in `hondana-dev.set` as indent
+                 ;; width (should be 4 for clang)
+                 (->> :tabstop (vim.filetype.get_option :c)
+                      (.. "IndentWidth: "))]]
     (when file
       (->> (icollect [_ line (ipairs options)] (.. line "\n"))
            (unpack)
@@ -124,7 +127,7 @@
                       ;; NOTE: checked
                       (when (and override-clang-format-globally
                                  (-> S.clang-format-global-file
-                                     (vim.fn.filereadable)
+                                     (filereadable)
                                      (= 1)))
                         (-> "Formatting using " (.. S.clang-format-global-file)
                             (vim.notify vim.log.levels.INFO))
