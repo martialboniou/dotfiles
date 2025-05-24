@@ -444,10 +444,6 @@ I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
 
 #### Language Server Protocol
 
-**IMPORTANT**: In this setup, LSP shouldn't start on the `BufNewFile` event but on 
-the loading of an existing resource in a buffer. This is motivated by the aim of
-reducing the startup time of `nvim` alone (try `:StartupTime` as a common benchmark).
-
 This setup uses the `vim.lsp.config()` & `vim.lsp.enable()` functions introduced in
 NeoVim 0.11.
 `blink.cmp` (relying on `LuaSnip`) completes this configuration. Note that
@@ -650,8 +646,9 @@ AlignConsecutiveMacros:
   AcrossEmptyLines: true
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterFunction: true
-IndentWidth: 4 # depends on your tabstop; here, 4
+  AfterFunction: false
+IndentWidth: 4 # depends on your tabstop; here, 4; check with
+               # `= :vim.filetype.get_option('c', 'tabstop')`
 ```
 
 Delete `~/.config/nvim/.clang-format` each time you change your tabstop;
