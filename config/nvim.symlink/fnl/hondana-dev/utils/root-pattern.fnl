@@ -17,7 +17,7 @@
 (tc field exists "fun(path: string): boolean")
 (tc field join "fun(...: string?): string")
 (tc field iterate-parents "fun(path: string): string_iterator, string, string")
-(local Path (let [is-windows (= :Windows _G.jit.os)
+(local Path (let [{: posix} (require :hondana-dev.utils.globals)
                   dirname (fn [path]
                             (let [strip-dir-pat "/([^/]+)$"
                                   strip-sep-pat "/$"]
@@ -25,9 +25,8 @@
                                 (let [result (: (path:gsub strip-sep-pat "")
                                                 :gsub strip-dir-pat "")]
                                   (if (= 0 (length result))
-                                      (if is-windows
-                                          (-> path (: :sub 1 2) (: :upper))
-                                          "/")
+                                      (if posix "/"
+                                          (-> path (: :sub 1 2) (: :upper)))
                                       result)))))]
               {:escape-wildcards #($:gsub "([%[%]%?*])" "\\%1")
                :exists #(let [stat (vim.uv.fs_stat $)]
