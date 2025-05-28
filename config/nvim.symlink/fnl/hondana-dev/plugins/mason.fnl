@@ -97,7 +97,7 @@
           ;; used by `json-lsp` (check `fnl/after/lsp/jsonls.fnl`)
           :b0o/schemastore.nvim])
 
-;; NOTE: Alpine Linux may require a `apk add gcompat` + `:MasonInstall` with a specific target
-;; (`--target=linux_arm64_gnu`, `--target=linux_x64_gnu`) for some plugins (`lua_ls`, `stylua`...)
+;; NOTE: Alpine Linux may require a `apk add gcompat`
+;; TODO: debug `lua_ls`, `marksman`
 
 P

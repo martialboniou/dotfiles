@@ -32,7 +32,7 @@
 
   (fn on-read [_ data]
     (when data
-      (vim.schedule #(on-result $))))
+      (vim.schedule #(on-result data))))
 
   (for [i 2 3]
     (let [p (. stdio i)]

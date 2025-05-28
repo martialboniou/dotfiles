@@ -81,9 +81,7 @@
 (tc type string)
 (local no-git-default-tag "")
 
-(fn refresh-gitbranch [bufnr data]
-  ;; VimL MUST NOT be used within a loop's callback: call `vim.schedule` to delay this
-  (vim.schedule #(vim.fn.setbufvar bufnr "gitbranch" data)))
+(local set-gitbranch #(vim.fn.setbufvar $1 "gitbranch" $2))
 
 ;; TODO: improve with cache
 (fn statusline-git-branch []
@@ -93,7 +91,7 @@
   (tc diagnostic disable)
   (local (ok _) (pcall vim.cmd "lcd %:p:h"))
   (when (not ok) (lua :return))
-  (local [cmd & args] [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
+  (local command [:git :-C (uv.cwd) :rev-parse :--abbrev-ref :HEAD])
   ;; keep the `bufnr` (`vim.b.gitbranch` is a variable of the current buffer,
   ;; not a specific variable of the buffer where this async fn has been
   ;; proc'd)
@@ -103,30 +101,12 @@
   ;; restore the current working directory after `vim.uv.cwd()`
   (vim.cmd "lcd -")
   ;; spawn a process
-  (var handle nil)
-  (tc cast handle uv.uv_handle_t)
-  (local {:new_pipe new : spawn :read_start start :read_stop stop : close} uv)
-  (local stdio [nil (new) (new)])
-  (local options {: args : stdio})
-  (local on-exit
-         #(do
-            (for [i 2 3]
-              (let [p (. stdio i)]
-                (when p (stop p) (close p))))
-            (close handle)
-            ;; default tag on error
-            (when (not= 0 $)
-              (refresh-gitbranch bufnr no-git-default-tag))))
-  (set handle (spawn cmd options on-exit))
-  (for [i 2 3]
-    (let [p (. stdio i)]
-      (when p
-        (start p
-               (fn [_ data]
-                 (when data
-                   ;; format the detected branch
-                   (refresh-gitbranch bufnr
-                                      (.. "  " (data:gsub "\n" "") " ")))))))))
+  (let [U (require :hondana-dev.utils.fns)]
+    ;; INFO: VimL MUST NOT be used within a loop's callback
+    ;; `spawn_pipe` wraps the result/error functions inside `vim.schedule` to delay this
+    (U.spawn-pipe command
+                  #(set-gitbranch bufnr (.. "  " ($:gsub "\n" "") " "))
+                  #(set-gitbranch bufnr no-git-default-tag))))
 
 (local {: posix :icons {:diagnostic diagnostic-icons}}
        (require :hondana-dev.utils.globals))
