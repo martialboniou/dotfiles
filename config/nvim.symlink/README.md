@@ -161,6 +161,14 @@ Vim keybinding reminders & tips
 Plugins and new keybindings
 ---------------------------
 
+### Special commands
+- `:MasonEnsureInstalled` : **install the recommended Mason packages** for
+  LSP, linting or formatting (use this command once after the first boot)
+- `:LspInfo` : **show the name of the first language server**; it replaces the
+  `nvim-lspconfig` command as this plugin is not installed in this setup;
+  use `:LspInfo!` to dump the LSP table showing all the attached language
+  servers
+
 ### Reminders
 
 - **IMPORTANT!**: Lazy is the unique package manager
@@ -171,8 +179,7 @@ Plugins and new keybindings
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
 - [Which Key](https://github.com/folke/which-key.nvim) is installed;
-  it can be deactivated by commenting the related code in the file
-  `./fnl/hondana-dev/plugins/init.fnl`
+  it's deactivated by default; check `./fnl/hondana-dev/plugins/init.fnl`
 - [sleuth.vim](https://github.com/tpope/vim-sleuth) has been installed but
   won't start unless you manually launch the command `:Sleuth`
 

@@ -223,12 +223,13 @@
 ;; (set F.stamp #(yield stamps))
 
 (tc type string)
-(local hondana-statusline
-       (let [stamp #(yield stamps.focus)]
-         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
-             info.filename (stamp) tag.modified (stamp) (stamp) "" ""
-             (stamp) "%=" (stamp) info.buffer-number (stamp) info.column (stamp)
-             "  %p%% " (stamp))))
+(local hondana-statusline (let [stamp #(yield stamps.focus)]
+                            (.. filetype-info (stamp) info.diagnostic (stamp)
+                                tag.readonly (stamp) info.filename (stamp)
+                                tag.modified (stamp) (stamp) "" "" (stamp)
+                                "%=" (stamp) info.buffer-number (stamp)
+                                info.column (stamp) "  %p%% " (stamp)
+                                info.git-branch)))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list

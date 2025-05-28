@@ -30,18 +30,22 @@
           :args [:--reporter :json]
           :ignore_exitcode true
           :parser F.twigcs-parser})
-    (set lint.linters_by_ft {:javascript [:eslint]
-                             :typescript [:eslint]
-                             :json [:jq :jsonlint]
-                             :markdown []
-                             :awk [:gawk]
-                             :cmake [:cmakelint]
-                             ;; add credo to the deps of your mix
-                             :elixir [:credo]
-                             ;;; composer require --dev phpstan/phpstan
-                             ;; :php [:phpstan]
-                             ;;; composer require --dev friendsoftwig/twigcs
-                             :twig [:twigcs]})
+    ;; npm i -g jsonlint
+    (let [json [:jq]]
+      (-> :jsonlint (vim.fn.executable) (= 1)
+          (#(when $ (table.insert json :jsonlint))))
+      (set lint.linters_by_ft {:javascript [:eslint]
+                               :typescript [:eslint]
+                               : json
+                               :markdown []
+                               :awk [:gawk]
+                               :cmake [:cmakelint]
+                               ;; add credo to the deps of your mix
+                               :elixir [:credo]
+                               ;;; composer require --dev phpstan/phpstan
+                               ;; :php [:phpstan]
+                               ;;; composer require --dev friendsoftwig/twigcs
+                               :twig [:twigcs]}))
     (au [:BufEnter :BufWritePost :InsertLeave] {: group : callback})))
 
 ;;; PLUGINS
