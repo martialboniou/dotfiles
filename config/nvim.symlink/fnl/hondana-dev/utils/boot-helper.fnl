@@ -27,7 +27,8 @@
     (if (or (not file) (with-open [fin (io.open file)]
                          (set first-line ((fin:lines)))
                          (= "" first-line)))
-        (print "You should have a fennel.lua file in your ~/.config/nvim/fnl directory")
+        (vim.notify "You should have a fennel.lua file in your ~/.config/nvim/fnl directory"
+                    vim.log.levels.INFO)
         ;; :else
         (do
           ;; get the source code if possible (to avoid a dependency on the Tangerine's path)
@@ -40,41 +41,21 @@
                            (with-open [fin (io.open target)]
                              (not= "" ((fin:lines)))))
                   (set file target)))))
-          ;; NOTE: not required but cleaner
-          (lua "---@diagnostic enable: need-check-nil")
-          (lua "---@diagnostic enable: cast-local-type")
+          ;;
+          ;; NOTE: not required by cleaner
+          (tc diagnostic "enable: need-check-nil")
+          (tc diagnostic "enable: cast-local-type")
+          ;;
           ;; async
-          (var handle nil)
-          (tc cast handle uv.uv_handle_t)
-          (local {:new_pipe new
-                  : spawn
-                  :read_start start
-                  :read_stop stop
-                  : close} vim.uv)
-          ;;
-          ;; prohibit false warnings from `&` destructuring
-          (lua "---@diagnostic disable: redefined-local")
-          ;;
-          (tc diagnostic disable)
-          (local [cmd & args] (make-command file))
-          (tc diagnostic enable)
-          (let [stdio [nil (new) (new)]
-                on-exit #(do
-                           (for [i 2 3]
-                             (let [p (. stdio i)]
-                               (when p
-                                 (stop p)
-                                 (close p))))
-                           (close handle)
-                           (when (not= 0 $)
-                             (print (.. :exited... (tostring $)))))
-                options {: args : stdio}]
-            (set handle (spawn cmd options on-exit))
-            (for [i 2 3]
-              (let [p (. stdio i)]
-                ;; $2 = data
-                (when p
-                  (start p #(when $2 (print $2)))))))))))
+          (let [U (require :hondana-dev.utils.fns)]
+            (fn on-result [data]
+              (vim.notify data vim.log.levels.INFO))
+
+            (fn on-error [code]
+              (vim.notify (.. "exited with code " (tostring code))
+                          vim.log.levels.ERROR))
+
+            (U.spawn-pipe (make-command file) on-result on-error))))))
 
 (tc type boolean)
 (var tangerine-wrapper-done false)

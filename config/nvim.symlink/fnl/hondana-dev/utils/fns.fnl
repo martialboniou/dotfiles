@@ -7,9 +7,10 @@
 ;; utility: spawn-pipe
 (tc param command "string[]"
     "command as array; first is the binary; rest = args")
+
 (tc param on-result "fun(data: string)")
 (tc param on-error "fun(error_code?: number)")
-(fn spawn-pipe [command on-result on-error]
+(fn M.spawn-pipe [command on-result on-error]
   "Spawn a command with `libuv` & process according to the returned data."
   (var handle nil)
   (tc cast handle uv.uv_handle_t)
@@ -27,7 +28,7 @@
                     (close handle)
                     (when (and on-error (not= 0 $))
                       (vim.schedule #(on-error $)))))
-  (set handle (uv.spawn cmd))
+  (set handle (uv.spawn cmd options on-exit))
 
   (fn on-read [_ data]
     (when data
