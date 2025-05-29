@@ -4,6 +4,39 @@
 
 (local M {})
 
+;; utility: spawn-pipe
+(tc param command "string[]"
+    "command as array; first is the binary; rest = args")
+(tc param on-result "fun(data: string)")
+(tc param on-error "fun(error_code?: number)")
+(fn spawn-pipe [command on-result on-error]
+  "Spawn a command with `libuv` & process according to the returned data."
+  (var handle nil)
+  (tc cast handle uv.uv_handle_t)
+  (local uv vim.uv)
+  (local {:new_pipe new : close} uv)
+  (local stdio [nil (new) (new)])
+  (tc diagnostic disable)
+  (local [cmd & args] command)
+  (tc diagnostic enable)
+  (local options {: args : stdio})
+  (local on-exit #(do
+                    (for [i 2 3]
+                      (let [p (. stdio i)]
+                        (when p (uv.read_stop p) (close p))))
+                    (close handle)
+                    (when (and on-error (not= 0 $))
+                      (vim.schedule #(on-error $)))))
+  (set handle (uv.spawn cmd))
+
+  (fn on-read [_ data]
+    (when data
+      (vim.schedule #(on-result $))))
+
+  (for [i 2 3]
+    (let [p (. stdio i)]
+      (when p (uv.read_start p on-read)))))
+
 ;; utility: tbl-reverse
 (tc generic "U: any")
 (tc generic "V: any")
