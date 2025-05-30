@@ -1,4 +1,5 @@
-if [[ -d $HOME/.zsh ]] then
+if [[ -d $HOME/.zsh ]]
+then
  zdotdir=${ZDOTDIR:-$HOME/.zsh}
  export ZDOTDIR="$zdotdir"
 fi
