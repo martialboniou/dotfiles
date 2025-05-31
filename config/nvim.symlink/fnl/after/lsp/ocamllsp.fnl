@@ -6,7 +6,7 @@
 
 (fn get_language_id [_ ftype]
   ;; if no key found, return ftype
-  (?. language-id-of ftype (#(if $ $ ftype))))
+  (->> ftype (. language-id-of) (#(if $ $ ftype))))
 
 (fn root_dir [bufnr on-dir]
   (let [U (require :hondana-dev.utils.root-pattern)
