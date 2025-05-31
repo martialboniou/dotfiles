@@ -24,6 +24,7 @@
                 :pyright
                 :bash-language-server
                 :awk-language-server
+                :vim-language-server
                 ;;
                 ;; OTHERS (linters, formatters...)
                 :stylua
@@ -98,6 +99,24 @@
           :b0o/schemastore.nvim])
 
 ;; NOTE: Alpine Linux may require a `apk add gcompat`
-;; TODO: debug `lua_ls`, `marksman`
+;; TIP FOR ALPINE:
+;; - `apk add g++ libstdc++ cmake unzip gzip wget curl gettext-dev readline-dev`
+;; - `apk add clangd clang-extra-tools clang dotnet8-sdk`
+;; - `apk add luarocks luajit lua5.1-dev tree-sitter`
+;; - `npm i -g node-gyp tree-sitter-cli jsonlint`
+;; - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+;; - `luamake`
+;;   - requirements: `apk add samurai linux-headers libunwind-dev binutils-dev`
+;;   - build: `compile/build.sh`
+;;   - install: `compile/install.sh` (switch the shebang to `bash`)
+;;   - NOTE: remove the `luamake` alias added in rc file when no need
+;; - `lua-language-server`
+;;   - requirements: `luamake`
+;;   - build: `./make.sh`
+;;   - install: `LS="$HOME/.local/bin/lua-language-server" echo "#!/bin/bash\nexec \"${LUA_LS_PATH}\" \"$@\"" > "${B}" && chmod 750 "${B}"`
+;; - `marksman`
+;;   - requirements: `dotnet workload update`
+;;   - install: `make install`
+;;   - NOTE: the binary available for linux works too (tested on Alpine 3.20 for Aarch64)
 
 P

@@ -8,8 +8,8 @@
 (tc param command "string[]"
     "command as array; first is the binary; rest = args")
 
-(tc param on-result "fun(data: string)")
-(tc param on-error "fun(error_code?: number)")
+(tc param on_result "fun(data: string)")
+(tc param on_error "fun(error_code?: number)")
 (fn M.spawn-pipe [command on-result on-error]
   "Spawn a command with `libuv` & process according to the returned data."
   (var handle nil)
