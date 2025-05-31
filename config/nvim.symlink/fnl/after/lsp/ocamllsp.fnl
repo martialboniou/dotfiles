@@ -1,13 +1,12 @@
 (local {: api} vim)
 
 (local language-id-of {:menhir :ocaml.menhir
-                       :ocaml :ocaml
                        :ocamlinterface :ocaml.interface
-                       :ocamllex :ocaml.ocamllex
-                       :dune :dune})
+                       :ocamllex :ocaml.ocamllex})
 
 (fn get_language_id [_ ftype]
-  (. language-id-of ftype))
+  ;; if no key found, return ftype
+  (?. language-id-of ftype (#(if $ $ ftype))))
 
 (fn root_dir [bufnr on-dir]
   (let [U (require :hondana-dev.utils.root-pattern)
