@@ -7,38 +7,40 @@
 ;;
 (import-macros {: tc} :hondana-dev.macros)
 
-(local servers [;; LSP
-                :html-lsp
-                :css-lsp
-                :typescript-language-server
-                :eslint-lsp
-                :json-lsp
-                :yaml-language-server
-                :tailwindcss-language-server
-                :astro-language-server
-                :lua-language-server
-                :html-lsp
-                :graphql-language-service-cli
-                :emmet-language-server
-                :marksman
-                :pyright
-                :bash-language-server
-                :awk-language-server
-                :vim-language-server
-                ;;
-                ;; OTHERS (linters, formatters...)
-                :stylua
-                :jq
-                ;; taplo = toml toolkit used by some zk functions (see hondana-dev.utils)
-                :taplo
-                :prettierd
-                :isort
-                :black
-                :pylint
-                :shfmt
-                :markdownlint-cli2
-                :markdown-toc
-                :cmakelint])
+(local apps [;; LSP
+             :html-lsp
+             :css-lsp
+             :typescript-language-server
+             :eslint-lsp
+             :json-lsp
+             :yaml-language-server
+             :tailwindcss-language-server
+             :astro-language-server
+             :lua-language-server
+             :html-lsp
+             :graphql-language-service-cli
+             :emmet-language-server
+             :marksman
+             :pyright
+             :bash-language-server
+             :awk-language-server
+             :vim-language-server
+             ;;
+             ;; OTHERS (linters, formatters...)
+             :stylua
+             :jq
+             ;; taplo = toml toolkit used by some zk functions (see `hondana-dev.utils.zk`)
+             :taplo
+             :prettierd
+             :isort
+             :black
+             :pylint
+             :shfmt
+             :markdownlint-cli2
+             :markdown-toc
+             ;; if you use go, `golines`, `gofumpt` & `goimports-reviser` must
+             ;; be installed (see `hondana-dev.plugins.lint`)
+             :cmakelint])
 
 (local {:api {:nvim_create_user_command uc} : uv} vim)
 
@@ -47,7 +49,7 @@
   (local registry (require :mason-registry))
   (registry.refresh)
   (local filtered-servers
-         (icollect [_ server (ipairs servers)]
+         (icollect [_ server (ipairs apps)]
            (let [(ok pkg) (pcall registry.get_package server)]
              (if ok
                  (when (and (not (pkg:is_installed)) (not (pkg:is_installing)))
@@ -101,22 +103,32 @@
 ;; NOTE: Alpine Linux may require a `apk add gcompat`
 ;; TIP FOR ALPINE:
 ;; - `apk add g++ libstdc++ cmake unzip gzip wget curl gettext-dev readline-dev`
-;; - `apk add clangd clang-extra-tools clang dotnet8-sdk`
+;; - `apk add clangd clang-extra-tools clang llvm-dev dotnet8-sdk`
 ;; - `apk add luarocks luajit lua5.1-dev tree-sitter`
 ;; - `npm i -g node-gyp tree-sitter-cli jsonlint`
 ;; - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-;; - `luamake`
-;;   - requirements: `apk add samurai linux-headers libunwind-dev binutils-dev`
-;;   - build: `compile/build.sh`
-;;   - install: `compile/install.sh` (switch the shebang to `bash`)
-;;   - NOTE: remove the `luamake` alias added in rc file when no need
-;; - `lua-language-server`
-;;   - requirements: `luamake`
-;;   - build: `./make.sh`
-;;   - install: `LS="$HOME/.local/bin/lua-language-server" echo "#!/bin/bash\nexec \"${LUA_LS_PATH}\" \"$@\"" > "${B}" && chmod 750 "${B}"`
-;; - `marksman`
-;;   - requirements: `dotnet workload update`
-;;   - install: `make install`
-;;   - NOTE: the binary available for linux works too (tested on Alpine 3.20 for Aarch64)
+;; - install some recommended apps by hand if Mason doesn't work for them:
+;;   - `lua-language-server`
+;;     - type: LSP
+;;     - requirements: `luamake`
+;;       - `luamake`
+;;         - requirements: `apk add samurai linux-headers libunwind-dev binutils-dev`
+;;         - build: `compile/build.sh`
+;;         - install: `compile/install.sh` (switch the shebang to `bash`)
+;;         - NOTE: remove the `luamake` alias added in rc file when no need
+;;     - build: `./make.sh`
+;;     - install: `LS="$HOME/.local/bin/lua-language-server" echo "#!/bin/bash\nexec \"${LUA_LS_PATH}\" \"$@\"" > "${B}" && chmod 750 "${B}"`
+;;   - `marksman`
+;;     - type: LSP
+;;     - requirements: `dotnet workload update`
+;;     - install: `make install`
+;;     - NOTE: the binary available for linux works too (tested on Alpine 3.20 & 3.21 for Aarch64)
+;;   - `goimports-reviser`
+;;     - type: formatter/import sorter
+;;     - requirements: `go >= 1.23` (upgrade to Alpine Linux 3.21)
+;;     - install: `go install -v github.com/incu6us/goimports-reviser/v3@v3.8.2`
+;;       - NOTE: `3.9.0` requires `go >= 1.24`
+;;     - INFO: `golines` can be installed from Mason even on Alpine Linux 3.20
+;;     - INFO: `gofumpt` can be installed from Mason on Alpine Linux 3.21
 
 P

@@ -2,7 +2,7 @@ NeoVim
 ======
 
 - aimed for version 0.11 at least
-- tested on version 0.11.1 for macOS 15.5 & Alpine Linux 3.20
+- tested on version 0.11.1 for macOS 15.5 & Alpine Linux 3.20/3.21
   (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
   the `community` repository; NeoVim was built using `gettext-dev`)
 - developer guidance:
