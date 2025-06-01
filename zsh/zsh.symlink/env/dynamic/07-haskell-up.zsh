@@ -1,6 +1,7 @@
 () {
   if [[ -x "/usr/local/bin/ghcup"
      || -x "/opt/homebrew/bin/ghcup"
+     || -x "${HOME}/.ghcup/bin/ghcup"
      ]]; then
     local GHCUP_PATH="${HOME}/.ghcup"
     local GHCUP_BIN="${GHCUP_PATH}/bin"
