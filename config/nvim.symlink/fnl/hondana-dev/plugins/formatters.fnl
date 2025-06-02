@@ -81,6 +81,8 @@
                                     :javascript pretty-fmt
                                     :typescript pretty-fmt
                                     :css pretty-fmt
+                                    ;; REMINDER: check the `fnl.hondana-dev.set` module
+                                    ;; as `vim.g.markdown_recommended_style` is set to 0
                                     :markdown pretty-fmt
                                     :graphql pretty-fmt
                                     :astro (let [as pretty-fmt]

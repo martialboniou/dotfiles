@@ -77,6 +77,11 @@
 ;; check `fnl/after/lsp/koka.fnl`
 (vim.filetype.add {:extension {:kk :koka}})
 
+;; markdown case: disable the recommended style
+;; WARN: MARKDOWN must use this setup's default 2-space style; otherwise
+;; comment the next line (check `:help ft-markdown-plugin`)
+(set vim.g.markdown_recommended_style 0)
+
 ;; diagnostic
 (let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
   (vim.diagnostic.config {:virtual_text {:prefix ""}
@@ -99,7 +104,8 @@
 ;; 4-space indentation for some filetypes
 ;; REMINDER: each project should have its own setup
 (let [group (augrp :Hondana_Fantastic4Indentation)
-      pattern [:roc :zig :c :cpp :h :rust :go]
+      ;; NOTE: ft-zig-plugin, ft-go-plugin & ft_rust already reset their local indentation
+      pattern [:roc :c :cpp]
       callback #(setlocal!! 4 :sw :ts)]
   (au :FileType {: callback : group : pattern}))
 

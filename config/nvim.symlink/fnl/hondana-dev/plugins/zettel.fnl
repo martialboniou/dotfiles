@@ -44,8 +44,7 @@
         ;;  alternate solution using LSP
         ;;  (map :n  :<leader>zb "<Cmd>lua vim.lsp.buf.references()<CR>" opts)
         (map :n :<leader>zl :<Cmd>ZkLinks<CR> opts)
-        ;;  preview a linked note
-        (map :n :K "<Cmd>lua vim.lsp.buf.hover()<CR>" opts)
+        ;;  K: preview a linked note (ie `vim.lsp.buf.hover()`)
         ;;  special code action for visual (<leader>ca is used for LSP's marksman)
         (map :v :<leader>za ":'<,'>lua vim.lsp.buf.range_code_action()<CR>"
              opts)))))
@@ -83,10 +82,6 @@
                  ;; specific keys for after/plugin/markdown
                  (vim.api.nvim_create_autocmd :FileType
                                               {: callback : group : pattern}))})
-
-;; HACK: HEAD version requires Neovim 0.11, use a branch w/o the `vim.validate` update
-(when (-> (vim.version) (. :minor) (< 11))
-  (set (. P :branch) "v0.3.0"))
 
 P
 

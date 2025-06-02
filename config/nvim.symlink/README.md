@@ -140,6 +140,10 @@ Vim keybinding reminders & tips
       - `E`/`gE` : move to the next/previous tail element (`gE` was the default
       [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval*
       keybinding; it's `gB` in this setup)
+- **function keys** (check `fnl.hondana-dev.remap`)
+  - `<F2>` : cycle how the numbers are displayed in the left margin (no numbers,
+  absolute, relative)
+  - `<F3>` (in *insert mode* too) : print a date 
 - utility commands
   - `:ToggleExec` : toggle the executability of a file (different from the ThePrimeagen's version;
   the previous keybinding `<leader>x` is obsolete)
