@@ -3,7 +3,7 @@
 # idea (c) 2001 by Robert Manea <rob dot manea at gmail dot com>
 #
 # Copyright (c) 2005-2013 <hondana@gmx.com>
-# Copyright (c) 2021,2024 <martial@gmx.com>
+# Copyright (c) 2021,2025 <martial@gmx.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
