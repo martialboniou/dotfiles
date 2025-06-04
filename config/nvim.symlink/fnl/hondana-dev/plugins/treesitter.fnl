@@ -153,8 +153,8 @@
                            :additional_vim_regex_highlighting false}
                :incremental_selection {:enable true}
                :indent {:enable true
-                        ;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
-                        :disable [:c]}
+                        :disable [;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
+                                  :c]}
                :textobjects {:select {:enable true
                                       :lookahead true
                                       : keymaps

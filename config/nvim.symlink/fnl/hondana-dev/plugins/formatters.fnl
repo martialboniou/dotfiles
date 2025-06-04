@@ -78,6 +78,7 @@
                  ;; check `hondana-dev.plugins.lsp` for the Mason current installs
                  :formatters_by_ft {:fennel [:fnlfmt]
                                     :lua [:stylua]
+                                    :nix [:nixfmt]
                                     :javascript pretty-fmt
                                     :typescript pretty-fmt
                                     :css pretty-fmt
