@@ -39,6 +39,7 @@
         ;; DON'T UNCOMMENT: haskell-tools.nvim v6 replaces [:hls :haskell-language-server-wrapper]
         :gopls
         :ocamllsp
+        :nixd
         ;; options for `elm`: `init`, `make`, `reactor`...
         [:elm_ls :elm-language-server]])
 
