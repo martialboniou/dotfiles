@@ -43,6 +43,11 @@ ZDOT_FUNCTIONS=${ZDOT_SRC_ZSH}/functions
 # additional functions
 if [[ -d $ZDOT_FUNCTIONS ]]; then
  fpath=($ZDOT_FUNCTIONS $fpath)
+ if [[ -d "${ZDOT_FUNCTIONS}/custom" ]]; then
+   # this directory is required by `./update_completions.zsh` to dump additional completions
+   # DON'T UNIGNORE `$ZDOT_FUNCTIONS/custom`
+   fpath=("${ZDOT_FUNCTIONS}/custom" $fpath)
+ fi
 fi
 export fpath
 typeset -U fpath

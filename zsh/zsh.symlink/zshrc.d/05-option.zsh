@@ -23,6 +23,7 @@ unsetopt BG_NICE HUP autoparamslash
 # Prompts
 emacs_acquaint # minimal prompt for emacsen vt
 [[ $? -eq 0 ]] && source $ZDOTDIR/prompts/minimal || source $ZDOTDIR/prompts/advanced
+(( $+commands["nix-shell"] )) && prompt_nix_shell_setup "$@"
 setprompt
 
 # Don't expand files matching:

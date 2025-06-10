@@ -10,7 +10,7 @@ function precmd {
     # Truncate the path if it's too long.
     PR_FILLBAR=""
     PR_PWDLEN=""
-    
+
     GITBRANCH="$(git_prompt)"
     if [ -n "$GITBRANCH" ]; then
         GITBRANCH=" ($GITBRANCH)"
