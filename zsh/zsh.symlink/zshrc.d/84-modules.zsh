@@ -10,4 +10,3 @@ autoload -U canonical_readlink # $(readlink -f) everywhere
 autoload -U clearhis imv mkcdir
 autoload -U fcode fv
 autoload -U vimgrep
-autoload -U prompt_nix

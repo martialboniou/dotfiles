@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+function nix_prompt {
+  if [[ -n ${IN_NIX_SHELL} && ${IN_NIX_SHELL} != "0" || ${IN_NIX_RUN} && ${IN_NIX_RUN} != "0" ]]; then
+    if [[ -n ${IN_WHICH_NIX_SHELL} ]] then
+      NIX_SHELL_NAME=": ${IN_WHICH_NIX_SHELL}"
+    fi
+    if [[ -n ${IN_NIX_SHELL} && ${IN_NIX_SHELL} != "0" ]]; then
+      NAME="nix-shell"
+    else
+      NAME="nix-run"
+    fi
+    printf "${NAME}${NIX_SHELL_NAME}"
+  else
+    printf ""
+  fi
+}
+
+# legacy from https://github.com/nix-community/nix-zsh-completions/blob/master/nix-zsh-completions.plugin.zsh
+function nix_shell_prompt_precmd {
+  NIX_PROMPT = $(nix_prompt)
+  if [[ -n "${NIX_PROMPT}" && $PROMPT != *"$NIX_PROMPT"* ]]; then
+    PROMPT="%F{8}[%F{3}$NIX_PROMPT%F{8}]%f $PROMPT"
+  fi
+}
+
+# legacy from https://github.com/nix-community/nix-zsh-completions/blob/master/nix-zsh-completions.plugin.zsh
+function nix_shell_prompt_setup {
+  # usage: nix_shell_prompt_setup "$@"
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd nix_shell_prompt_precmd
+}

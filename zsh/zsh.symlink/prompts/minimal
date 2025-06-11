@@ -3,6 +3,7 @@
 # http://pthree.org/2008/11/23/727/
 
 autoload -U git_prompt
+autoload -U nix_prompt
 
 precmd () {
    GITBRANCH="$(git_prompt)"
@@ -10,6 +11,12 @@ precmd () {
         GITBRANCH=" ($GITBRANCH)"
     fi
     GITBRANCH=$GITBRANCH
+
+    NIX_SHELL_PROMPT="$(nix_prompt)"
+    if [ -n "$NIX_SHELL_PROMPT" ]; then
+        NIX_SHELL_PROMPT=" [$NIX_SHELL_PROMPT]"
+    fi
+    NIX_SHELL_PROMPT=$NIX_SHELL_PROMPT
 }
 
 setprompt () {
@@ -19,8 +26,8 @@ setprompt () {
 
   emacs_acquaint
   if [[ $? -eq 0 ]]; then
-      PROMPT='%n@%m:%~$GITBRANCH> ' # neither color nor extended char in emacs for instance
+      PROMPT='%n@%m:%~$GITBRANCH$NIX_SHELL_PROMPT> ' # neither color nor extended char in emacs for instance
   else
-      PROMPT='$PR_CYAN%n@%m:$PR_NO_COLOUR%~$PR_GREEN$GITBRANCH$PR_NO_COLOUR> '
+      PROMPT='$PR_CYAN%n@%m:$PR_NO_COLOUR%~$PR_GREEN$GITBRANCH$NIX_SHELL_PROMPT$PR_NO_COLOUR> '
   fi
 }
