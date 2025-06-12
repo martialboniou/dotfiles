@@ -73,15 +73,19 @@ _complete_path () {
 
 # get the full path
 _fetch_path () {
-  if [[ -o login ]]; then
-    echo "PATH UNCHANGED!"
-    # skip this function in order to keep the PATH when invoking `zsh -l` in an interactive session
-    # - manpath/luapath/path is set here in zshenv for interactive instances only
-    #   - we use zshenv because we can calculate the static/dynamic path for once
-    #   - the cache file named $ZDOTDIR/cache/zshenv MUST be removed if you add some tools
-    #   (eg: `golang`)
-    # - path is set in zshrc too (opam, rust, nix...); this operation is slower but required for
-    # additional functions to run OR additional variables to be available
+  if [[ -o login || -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]]; then
+    # - skip this function in order to keep the PATH when invoking `zsh -l` in an interactive
+    # session AND when `__ETC_PROFILE_NIX_SOURCED` is set
+    #   - manpath/luapath/path is LOCALLY set here in zshenv for interactive instances only
+    #     - we use zshenv because we can calculate the static/dynamic path for once
+    #     - the cache file named $ZDOTDIR/cache/zshenv MUST be removed if you add some tools
+    #     (eg: `golang`)
+    #   - path is set in zshrc too (opam, rust, nix...); this operation is slower but required for
+    #   additional functions to run OR additional variables to be available
+    #   - `nix-daemon.sh` is loaded once so DON'T change the PATHs in this case otherwise a
+    #   subshell (started with `zsh`) wouldn't have neither `/nix/var/nix/profiles/default/bin`
+    #   nor `${HOME}/.nix-profile/bin`
+    # also 
     return
   fi
   # TODO: write a script to purge this file
