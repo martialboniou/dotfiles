@@ -3,6 +3,10 @@
 ### Requirements:
 ###     - yabai (don't forget the sudo install for notifications...)
 ###     - jq
+### Reminder:
+###     - eval `skhd --restart-service` each time you change this file
+###     - fn + ctrl - q : stop yabai
+###     - fn + ctrl - s : start yabai
 
 # .blacklist [
 #  "Emacs"
@@ -14,6 +18,8 @@
 #              on a pc)           
 
 fn - a : skhd -k "f5" # prefix tmux; DON'T COMMENT THIS LINE
+fn - q : skhd -k "ctrl - f2" # focus on the menu; useful with yabai; `x` key on QWERTY
+fn - z : skhd -k "ctrl - f2" # same as above; `/` key on QWERTY
 
 ## Changing focus
 
