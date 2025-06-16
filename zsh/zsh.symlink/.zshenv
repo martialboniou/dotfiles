@@ -23,6 +23,8 @@
 # NOTE: IMPORTANT: you MUST delete ~/.zsh/cache/zshenv if you want to regenerate
 # your PATH and the other variables created dynamically the first time
 
+# echo ${${(%):-%x}:P:h}
+
 add_path () {
   [[ -d "$1" ]] && path=("$1" $path)
 }
