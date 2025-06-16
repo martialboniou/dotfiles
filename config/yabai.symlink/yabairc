@@ -39,3 +39,5 @@ yabai -m rule --add app="^SIGMA Photo Pro$" manage=off
 yabai -m rule --add app="^ColorChecker Camera Calibration$" manage=off
 yabai -m rule --add app="^NX Studio$" manage=off
 yabai -m rule --add app='^GIMP$' title='(^GNU|GIMP$)' manage=off
+# playing this game on ARM macOS with some tricks
+yabai -m rule --add app="^Talos - OSX - 64bit$" manage=off
