@@ -123,18 +123,16 @@
   ;; (keyset "Show LSP document symbol" :n :gO builtin.lsp_document_symbols)
   ;; insert mode = <C-s> is the default mapping since 0.11 (it was <C-h> before)
   ;; (keyset "Show LSP signature help" :i :<C-s> vim.lsp.buf.signature_help)
-  ;; <leader>rs = restart LSP
-  (keyset "Restart LSP" :n :<leader>rs "<Cmd>LspRestart<CR>")
   ;; <leader>ih = toggle inlay hint
   (keyset "Toggle LSP inlay hints" :n :<leader>ih
-          #(vim.lsp.inlay_hint.enable (not vim.lsp.inlay_hint.is_enabled))))
+          #(vim.lsp.inlay_hint.enable (not (vim.lsp.inlay_hint.is_enabled)))))
 
 (vim.lsp.config "*" {: on_attach})
 
 ;;; COSMETICS
 ;;
 ;; WARN: enable inlay hint
-;; (vim.lsp.inlay_hint.enable [0])
+(vim.lsp.inlay_hint.enable)
 ;;
 ;; INFO: show deprecation with a strikethrough text
 (let [{:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api
