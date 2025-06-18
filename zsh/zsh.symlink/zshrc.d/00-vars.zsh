@@ -1,7 +1,7 @@
 # ---[ Macros ]--------------------------------------------------------
 HISTSIZE=1000
 SAVEHIST=1000
-HISTFILE=~/.zsh/cache/history
-DIRSTACK=~/.zsh/cache/dirstack # obsolete
+HISTFILE=${ZDOTDIR}/cache/history
+DIRSTACK=${ZDOTDIR}/cache/dirstack # obsolete
 DIRSTACKSIZE=30
 

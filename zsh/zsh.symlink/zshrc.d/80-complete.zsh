@@ -125,4 +125,3 @@ else
   [[ -v activate_simple_matcher ]] && bindkey '^X^T' _warn_missing_matcher
   bindkey '^X^N' _warn_missing_matcher
 fi
-

@@ -34,14 +34,6 @@ function precmd {
     fi
 }
 
-setopt extended_glob
-# preexec () {
-#     if [[ "$TERM" == "screen" ]]; then
-#       local CMD=${1[(wr)^(*=*|sudo|-*)]}
-#       echo -ne "\ek$CMD\e\\"
-#     fi
-# }
-
 setprompt () {
     setopt prompt_subst
     # autoload pr_colors extended_chars

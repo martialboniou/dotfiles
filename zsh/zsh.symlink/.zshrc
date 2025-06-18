@@ -42,21 +42,21 @@ ZDOT_FUNCTIONS=${ZDOT_SRC_ZSH}/functions
 
 # additional functions
 if [[ -d $ZDOT_FUNCTIONS ]]; then
- fpath=($ZDOT_FUNCTIONS $fpath)
- if [[ -d "${ZDOT_FUNCTIONS}/custom" ]]; then
-   # this directory is required by `./update_completions.zsh` to dump additional completions
-   # DON'T UNIGNORE `$ZDOT_FUNCTIONS/custom`
-   fpath=("${ZDOT_FUNCTIONS}/custom" $fpath)
- fi
+  fpath=($ZDOT_FUNCTIONS $fpath)
+  if [[ -d "${ZDOT_FUNCTIONS}/custom" ]]; then
+    # this directory is required by `./update_completions.zsh` to dump additional completions
+    # DON'T UNIGNORE `$ZDOT_FUNCTIONS/custom`
+    fpath=("${ZDOT_FUNCTIONS}/custom" $fpath)
+  fi
 fi
 export fpath
 typeset -U fpath
 
 # zshrc.d = debian-like zshrc sourcing
 if [[ -d "${ZDOT_SRC_ZSH}" ]]; then
- foreach file in $(command ls -d ${ZDOT_SRC_ZSH}/* | grep -v $ZDOT_FUNCTIONS)
- source $file
- end
+  foreach file in $(find $ZDOT_SRC_ZSH -name "[0-9]*.zsh" -type f | sort -n 2>/dev/null)
+    source $file
+  end
 fi
 
 # FZF configuration 

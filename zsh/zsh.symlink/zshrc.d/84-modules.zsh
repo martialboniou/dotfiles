@@ -1,6 +1,6 @@
 # ---[ Modules ]-------------------------------------------------------
 autoload -Uz compinit && compinit # check `zshrc.d/80-complete.zsh`
-#zmodload zsh/complist
+
 zmodload -a zsh/stat stat
 zmodload -a zsh/zpty zpty
 zmodload -ap zsh/mapfile mapfile

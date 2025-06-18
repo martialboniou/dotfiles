@@ -11,7 +11,7 @@ chpwd
 
 # keep the zdirdump file from growing too long (250 entries seems ok)
 tmp_timestamp=$(date | awk '{print $4}')
-#[[ ! -d ~/.zsh ]] && mkdir -p ~/.zsh
+
 command touch $ZDOTDIR/cache/zdirdump
 command cp $ZDOTDIR/cache/zdirdump /tmp/$tmp_timestamp.zdirdump
 command tail -n 250 /tmp/$tmp_timestamp.zdirdump >| $ZDOTDIR/cache/zdirdump
@@ -28,16 +28,16 @@ alias cd\?='dirdump; typeset -U dirs_shared; dirstack'
 alias cdL="dirdump; typeset -U dirs_shared; dirstack" # as L is near ?
 alias cdl="dirdump; typeset -U dirs_shared; dirstack" # easier to type than cd?
 if [[ $(uname) == Darwin ]];then
- autoload -U _guidirs
- #_guidirs 2> /dev/null
- alias gdirs="dirdump; typeset -U dirs_shared; dirstack > /dev/null ; _guidirs"
- alias gd="dirdump; typeset -U dirs_shared; dirstack > /dev/null ; _guidirs"
+  autoload -U _guidirs
+  #_guidirs 2> /dev/null
+  alias gdirs="dirdump; typeset -U dirs_shared; dirstack > /dev/null ; _guidirs"
+  alias gd="dirdump; typeset -U dirs_shared; dirstack > /dev/null ; _guidirs"
 fi
 
 # ---[ Dump ]----------------------------------------------------------
 ##if [[ -f $ZDOTDIR/dirstack ]] && [[ ${#dirstack[*]} -eq 0 ]]; then
-## dirstack=( ${(uf)"$(< $ZDOTDIR/dirstack)"} )
-## echo "Loaded the dirstack from disk..."
+##  dirstack=( ${(uf)"$(< $ZDOTDIR/dirstack)"} )
+##  echo "Loaded the dirstack from disk..."
 ##fi
 ##chpwd() { dirs -pl >! $ZDOTDIR/dirstack }
 

@@ -23,6 +23,7 @@
 # NOTE: IMPORTANT: you MUST delete ~/.zsh/cache/zshenv if you want to regenerate
 # your PATH and the other variables created dynamically the first time
 
+# TESTING CWD IF NEEDED
 # echo ${${(%):-%x}:P:h}
 
 add_path () {
@@ -40,6 +41,7 @@ _source_path () {
     return 0
   elif [[ -d "$1" && -x "$1" ]]; then
     foreach file in $(find $1 -name "[0-9]*.zsh" -type f | sort -r 2>/dev/null)
+      # source in reverse order
       source $file
     end
     return 0

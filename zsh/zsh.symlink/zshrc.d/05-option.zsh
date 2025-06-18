@@ -1,9 +1,12 @@
 # ---[ ZSH Options ]----------------------------------------------------
 # General
+unsetopt CORRECT_ALL
+
 setopt   ALWAYS_TO_END BASH_AUTO_LIST NO_BEEP CLOBBER
-setopt   AUTO_CD CD_ABLE_VARS MULTIOS CORRECT_ALL
+setopt   AUTO_CD CD_ABLE_VARS MULTIOS CORRECT
 
 # Job Control
+unsetopt BG_NICE
 setopt   CHECK_JOBS NO_HUP
 
 # History
@@ -14,18 +17,21 @@ setopt   HIST_REDUCE_BLANKS HIST_SAVE_NO_DUPS
 # Stay compatible to sh and IFS
 setopt	 SH_WORD_SPLIT
 
-setopt   notify globdots pushdtohome
-setopt   recexact longlistjobs
-setopt   autoresume pushdsilent
-setopt   autopushd pushdminus extendedglob rcquotes mailwarning pushdsilent pushdtohome
-unsetopt BG_NICE HUP autoparamslash
+# unsetopt AUTOPARAMSLASH # FIXME: reenable later
+setopt   NOTIFY GLOBDOTS PUSHDTOHOME
+setopt   RECEXACT LONGLISTJOBS
+setopt   AUTORESUME PUSHDSILENT
+setopt   AUTOPUSHD PUSHDMINUS RCQUOTES MAILWARNING
+
+# `extended_glob` removed for Nix Flakes (if you reenable it, you will need to
+# surround the `#`-expression (say, `.#hello`) with quotes)
+# setopt   EXTENDEDGLOB
 
 # Prompts
 emacs_acquaint # minimal prompt for emacsen vt
 [[ $? -eq 0 ]] && source $ZDOTDIR/prompts/minimal || source $ZDOTDIR/prompts/advanced
-(( $+commands["nix-shell"] )) && prompt_nix_shell_setup "$@"
+
 setprompt
 
 # Don't expand files matching:
 fignore=(.o .c~ .old .pro)
-

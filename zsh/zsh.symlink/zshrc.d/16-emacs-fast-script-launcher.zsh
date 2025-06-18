@@ -2,7 +2,9 @@
 # Emacs fast script launcher
 # - to start emacs with a loading script at startup
 # - to evaluate the script content in your current emacs REPL from the shell
-# - to get some quick shortcuts to launch emacsclient or scripts with '#' ('#' is an emacsclient alias and '#something' launches the something.el script
+# - to get some quick shortcuts to launch emacsclient
+#   - the previously available `#` alias to start a script in the context of
+#   emacsclient has been removed
 #
 
 DEBUG=0
@@ -21,4 +23,3 @@ if [[ -d "${EMACSEN_SPATH:=${HOME}/.emacs.d/scripts}" ]]; then
     end
 fi
 alias emacsclient="$EMACSCLIENT --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs"
-alias \#='emacsclient'
