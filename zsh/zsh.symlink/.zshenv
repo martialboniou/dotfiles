@@ -77,7 +77,7 @@ _complete_path () {
 
 # get the full path
 _fetch_path () {
-  if [[ -o login || -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]]; then
+  # if [[ -o login || -n "${__ETC_PROFILE_NIX_SOURCED:-}" ]]; then
     # - skip this function in order to keep the PATH when invoking `zsh -l` in an interactive
     # session AND when `__ETC_PROFILE_NIX_SOURCED` is set
     #   - manpath/luapath/path is LOCALLY set here in zshenv for interactive instances only
@@ -90,8 +90,8 @@ _fetch_path () {
     #   subshell (started with `zsh`) wouldn't have neither `/nix/var/nix/profiles/default/bin`
     #   nor `${HOME}/.nix-profile/bin`
     # also 
-    return
-  fi
+    # return
+  # fi
   # TODO: write a script to purge this file
   local cache_file="${ZDOTDIR}/cache/zshenv"
   if [[ -r ${cache_file} ]]; then
