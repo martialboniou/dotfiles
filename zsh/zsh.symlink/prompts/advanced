@@ -36,10 +36,6 @@ function precmd {
 
 setprompt () {
     setopt prompt_subst
-    # autoload pr_colors extended_chars
-    #
-    # pr_colors
-    # extended_chars
 
     # see if we can use colors.
     autoload colors zsh/terminfo
@@ -53,18 +49,6 @@ setprompt () {
     done
     PR_NO_COLOUR="%{$terminfo[sgr0]%}"
 
-    # see if we can use extended characters
-    typeset -A altchar
-    set -A altchar ${(s..)terminfo[acsc]}
-    PR_SET_CHARSET="%{$terminfo[enacs]%}"
-    PR_SHIFT_IN="%{$terminfo[smacs]%}"
-    PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
-    PR_HBAR=${altchar[q]:--}
-    PR_ULCORNER=${altchar[l]:--}
-    PR_LLCORNER=${altchar[m]:--}
-    PR_LRCORNER=${altchar[j]:--}
-    PR_URCORNER=${altchar[k]:--}
-
     PR_TITLEBAR=$'%{\e]0;%(!.-=*[ROOT]*=- | .)%n@%m:%~ | ${COLUMNS}x${LINES} | %y\a%}'
 
     # Unicode version
@@ -73,6 +57,8 @@ setprompt () {
     PR_LLCORNER="└"
     PR_URCORNER="┐"
     PR_LRCORNER="┘"
+
+    # put here the alternative code (see below)
 
 # IMPORTANT! it's a string so DON'T change the text formatting!!
     PROMPT='$PR_SET_CHARSET$PR_STITLE${(e)PR_TITLEBAR}\
@@ -97,3 +83,16 @@ $PR_BLUE$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT(\
 $PR_LIGHT_GREEN%_$PR_BLUE)$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT\
 $PR_CYAN$PR_SHIFT_IN$PR_HBAR$PR_SHIFT_OUT$PR_NO_COLOUR '
 }
+
+# alternative if Unicode is not available
+# autoload extended_chars
+# typeset -A altchar
+# set -A altchar ${(s..)terminfo[acsc]}
+# PR_SET_CHARSET="%{$terminfo[enacs]%}"
+# PR_SHIFT_IN="%{$terminfo[smacs]%}"
+# PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
+# PR_HBAR=${altchar[q]:--}
+# PR_ULCORNER=${altchar[l]:--}
+# PR_LLCORNER=${altchar[m]:--}
+# PR_LRCORNER=${altchar[j]:--}
+# PR_URCORNER=${altchar[k]:--}

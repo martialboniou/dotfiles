@@ -33,5 +33,6 @@ keybind = control+enter=esc:[13;5u
 # Personal Preferences
 font-family = "ZedMono Nerd Font Mono"
 font-size = 12
+shell-integration-features = no-cursor
 # here, I use a 2-hand int'l dvorak layout with qwerty on Command
 keybind = super+k=paste_from_clipboard

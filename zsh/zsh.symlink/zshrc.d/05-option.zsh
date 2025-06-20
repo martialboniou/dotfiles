@@ -27,11 +27,5 @@ setopt   AUTOPUSHD PUSHDMINUS RCQUOTES MAILWARNING
 # surround the `#`-expression (say, `.#hello`) with quotes)
 # setopt   EXTENDEDGLOB
 
-# Prompts
-emacs_acquaint # minimal prompt for emacsen vt
-[[ $? -eq 0 ]] && source $ZDOTDIR/prompts/minimal || source $ZDOTDIR/prompts/advanced
-
-setprompt
-
 # Don't expand files matching:
 fignore=(.o .c~ .old .pro)

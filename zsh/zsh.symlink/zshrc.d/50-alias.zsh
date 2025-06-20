@@ -1,10 +1,4 @@
 # ---[ Alias Section ]-------------------------------------------------
-if which gawk &> /dev/null; then
-  alias awk='gawk' # invoke mawk manually b/c non-posix
-fi
-if which ggrep &> /dev/null; then
-  alias grep=ggrep #GNU grep here (best to use rg when possible)
-fi
 alias rgl="rg -g '!*/'" # exclude subdirectories (l = local)
 alias c='clear'
 alias pa='ps aux'
@@ -38,9 +32,6 @@ alias monitor="netstat | grep -v localhost | grep -v stream | grep -v dgram"
 if [ "$MAN_COMMAND" ]; then
   alias man=$MAN_COMMAND
 fi
-if which elinks &> /dev/null; then
-  alias html-w3m='elinks'
-fi
 
 # cd aliases (->hondana@gmx.com)
 alias -- rh='cd'   # Dvorak keyboard: overuse of 'return' key
@@ -68,6 +59,24 @@ alias -s {md,mkdn,markdown}=markdown-w3m
 # Additional aliases
 # pdf generation from markdown
 ## source: eugenkiss.com/blog/2011/fiction-in-markdown-with-pandoc
+declare -A app_aliases
+app_aliases=( vim nvim awk gawk grep ggrep html elinks )
+for k v in ${(kv)app_aliases}; do
+  if (( $+commands[$v] )); then
+    alias $k="${v}"
+  fi
+done
+# eza
+if (( $+commands[eza] )); then
+  alias ls='eza --long -s=newest --group-directories-first --git --sort=modified'
+  alias l='$aliases[ls]' # -C won't work in eza
+  alias ll='$aliases[ls] -a'
+  # `la` for the hidden files/folders too
+else
+  alias l='ls -CF'
+  alias ll='ls -lah'
+fi
+# markdown2pdf
 if (( $+commands[markdown2pdf] )); then # works with `cabal install pandoc`
   _a5_template="$HOME/.pandoc/templates/a5book.tex"
   alias makebookpdf='markdown2pdf --template=$_a5_template'
@@ -84,16 +93,6 @@ zmodload -F zsh/parameter p:aliases
 alias weather='curl -s wttr.in/Brest'
 alias amzer='$aliases[weather]'
 alias meteo='$aliases[weather]'
-# eza
-if (( $+commands[eza] )); then
-  alias ls='eza --long -s=newest --group-directories-first --git --sort=modified'
-  alias l='$aliases[ls]' # -C won't work in eza
-  alias ll='$aliases[ls] -a'
-  # `la` for the hidden files/folders too
-else
-  alias l='ls -CF'
-  alias ll='ls -lah'
-fi
 # dF = df summary on macOS
 if [[ $(uname) == Darwin ]]; then
   # alias dF="df -g | awk '/\/(Data|nix|)$/ {used+=\$3;avail+=\$4} END{print \"Used: \"used\"G\t Available: \"avail\"G\"}'"

@@ -1,2 +1,5 @@
 /.zcompdump*
 /.zsh_sessions
+# /cache/.zsh_history is used but a vestige file may be kept here if zsh was
+# started w/o of this setup
+/.zsh_history
