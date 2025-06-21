@@ -7,6 +7,6 @@ zmodload -ap zsh/mapfile mapfile
 autoload -U fold map filter # functional programming
 autoload -U zmv # mv w/ pattern matching
 autoload -U canonical_readlink # $(readlink -f) everywhere
-autoload -U clearhis imv mkcdir
+autoload -U clearhis imv mkcdir hashcwd
 autoload -U fcode fv
 autoload -U vimgrep

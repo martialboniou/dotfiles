@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+# helper to bookmark a directory
+# use `cd ~name` to access if $1 == "name"
+function hashcwd() { hash -d "$1"="$PWD" }

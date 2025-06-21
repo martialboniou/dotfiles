@@ -39,6 +39,8 @@
 
 # your developer project home
 export DEVELOPER_ROOT="${HOME}/Documents/Code"
+hash -d code="${DEVELOPER_ROOT}"
+hash -d dev="${DEVELOPER_ROOT}"
 
 # files
 zdot_sources_path=${ZDOTDIR}/zshrc.d
