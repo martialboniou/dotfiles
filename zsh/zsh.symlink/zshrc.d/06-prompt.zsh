@@ -5,4 +5,4 @@ emacs_acquaint # minimal prompt for emacsen vt
 
 setprompt
 
-
+unset ZDOT_PROMPT

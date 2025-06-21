@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+function prepath() {
+  for dir in "$@"; do
+    dir=${dir:A}
+    [[ ! -d "$dir" ]] && return
+    path=("$dir" $path[@])
+  done
+}

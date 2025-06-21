@@ -4,6 +4,6 @@
 () {
     if (( $+commands[go] )); then
         export GOPATH="${HOME}/.local/share/go"
-        export PATH="${GOPATH}/bin:${PATH}"
+        prepath "${GOPATH}/bin"
     fi
 }

@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+function postpath() {
+  for dir in "$@"; do
+    dir=${dir:A}
+    [[ ! -d "$dir" ]] && return
+    path=($path[@] "$dir")
+  done
+}

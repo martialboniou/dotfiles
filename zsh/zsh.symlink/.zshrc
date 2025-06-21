@@ -44,18 +44,19 @@ hash -d dev="${DEVELOPER_ROOT}"
 
 # files
 zdot_sources_path=${ZDOTDIR}/zshrc.d
-zdot_functions_path=${zdot_sources_path}/functions
 export ZDOT_PROMPT=${ZDOTDIR}/prompts # see $ZDOTDIR/zshrc.d/06-prompt.zsh
 
 # additional functions
-if [[ -d $zdot_functions_path ]]; then
-  fpath=($zdot_functions_path $fpath)
-  if [[ -d "${zdot_functions_path}/custom" ]]; then
-    # this directory is required by `./update_completions.zsh` to dump additional completions
-    # DON'T UNIGNORE `$zdot_functions_path/custom`
-    fpath=("${zdot_functions_path}/custom" $fpath)
-  fi
-fi
+() {
+  local zdot_fpath=${zdot_sources_path}/functions
+  () {
+    for dir in "$@"; do
+      dir=${dir:A}
+      [[ ! -d "$dir" ]] && return
+      fpath=("$dir" $fpath[@])
+    done
+  } $zdot_fpath $zdot_fpath/custom $zdot_fpath/dev
+}
 export fpath
 typeset -U fpath
 
@@ -76,6 +77,7 @@ if [[ -z "${__ZSHRC_SOURCED:-}" ]]; then
   fi
 
   # local path
+  autoload prepath
   source $ZDOTDIR/.zshrc.local_path
 
   # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
@@ -96,6 +98,7 @@ if [[ -d "${zdot_sources_path}" ]]; then
     source $file
   end
 fi
+unset ZDOT_PROMPT # see $ZDOTDIR/zshrc.d/06-prompt.zsh
 
 # FZF configuration 
 # .fzf.zsh can override any variables set in
@@ -104,4 +107,5 @@ fi
   source $HOME/.fzf.zsh
 
 unset __PATH
+unset zdot_sources_path
 # typeset -U -g PATH
