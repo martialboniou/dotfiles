@@ -66,3 +66,29 @@
       callback #(buc 0 :ImprintCHeader include-guard-scheme opts)
       pattern [:cpp :h :c]]
   (au :FileType {: group : callback : pattern}))
+
+;; delete line comments (first version)
+(let [group (augroup "Hondana_DeleteLineComments" {:clear true})
+      delete-line-comments #(buc 0 :DeleteLineComments
+                                 (.. "g,^\\s*" (or $ :#) ",d") opts)]
+  ;; useful to get rid of the extra documentation inside the build.zig* files
+  ;; built by a `zig init` command
+  (au :FileType {: group
+                 :callback #(delete-line-comments "//")
+                 :pattern [:zig :rust]})
+  ;; NOTE: make a generic Tree-sitter version of this (especially for blocks as
+  ;; in C, OCaml... even if these shortcuts can be useful for larger files
+  ;; where TS might not work)
+  (au :FileType
+      {: group
+       :callback #(delete-line-comments)
+       :pattern [:roc :nix :zsh :bash :sh :python :yaml]})
+  (au :FileType {: group
+                 :callback #(delete-line-comments "--")
+                 :pattern [:unison :haskell :lua :elm]})
+  (au :FileType {: group
+                 :callback #(delete-line-comments ";")
+                 :pattern [:lisp :fennel :scheme :clojure]})
+  (au :FileType {: group
+                 :callback #(delete-line-comments "\\\\\\\\")
+                 :pattern [:shen]}))
