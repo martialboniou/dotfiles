@@ -28,7 +28,7 @@
 ;; ensure P can match a table type
 (tc type "LazySpec[]")
 (local P [;; Fennel Integration
-          {1 :udayvir-singh/tangerine.nvim
+          {1 :martialboniou/tangerine.nvim
            :priority 1500
            :lazy false
            :keys [{1 :gC

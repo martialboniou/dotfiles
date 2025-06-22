@@ -26,8 +26,9 @@ end
 
 ---@type string
 local udayvir_url = "https://github.com/udayvir-singh"
+local hondana_url = "https://github.com/martialboniou"
 bootstrap(udayvir_url .. "/hibiscus.nvim")
-bootstrap(udayvir_url .. "/tangerine.nvim")
+bootstrap(hondana_url .. "/tangerine.nvim")
 
 ---@type TangerineLuaGlobals
 local globals = vim.tbl_keys(_G)

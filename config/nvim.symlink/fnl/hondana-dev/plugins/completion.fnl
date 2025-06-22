@@ -56,9 +56,9 @@
             :<C-u> [:scroll_documentation_up :fallback]
             :<C-d> [:scroll_documentation_down :fallback]}})
 
-(tc return "false|string")
-(λ build []
-  (and (= 1 (vim.fn.executable :cargo)) "cargo build --release"))
+;; (tc return "false|string")
+;; (λ build []
+;;   (and (= 1 (vim.fn.executable :cargo)) "cargo build --release"))
 
 ;; TODO: cmp-emoji & cmp-conjure eqv.
 
@@ -74,7 +74,7 @@
 (tc type LazySpec)
 (local P {1 :saghen/blink.cmp
           :event :InsertEnter
-          : build
+          :build "cargo build --release"
           : opts
           :dependencies [;; pictograms
                          :onsails/lspkind.nvim
