@@ -145,8 +145,7 @@ Vim keybinding reminders & tips
   absolute, relative)
   - `<F3>` (in *insert mode* too) : print a date 
 - utility commands
-  - `:ToggleExec` : toggle the executability of a file (different from the ThePrimeagen's version;
-  the previous keybinding `<leader>x` is obsolete)
+  - `:ToggleExec` : toggle the executability of a file
   - `:ImprintFilename` : imprint the current filename at the cursor position
   - `:ToggleCheckbox` : toggle a checkbox (eg. for a list in a buffer; only works in a *non-empty*
     line; add `- [ ]` at the beginning of the line if no *dash* found there; otherwise,
@@ -178,7 +177,7 @@ Plugins and new keybindings
 - **IMPORTANT!**: Lazy is the unique package manager
 - the `<leader>` key is `<Space>` in this configuration
 - the `<localleader>` key is `,` in this configuration
-- `<C-c>` as `<Esc>` (choice made by ThePrimeagen from IntelliJ IDEA)
+- `<C-c>` as `<Esc>`
 - Harpoon 2 is *Cwd*-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
@@ -263,9 +262,8 @@ insert
 - `<leader>ps` : Telescope project search (`rg`!)
 - `<leader>vh` : Telescope view helptags
 - `<leader>vv` : Telescope recent files (*memo*: view viewed/**v**iew **v**isited);
-  `<leader>vr` is deprecated (poor ergonomics); not in the ThePrimeagen setup
 - `<leader>vb`/`<leader>bb` : Telescope buffers (*memo*: view buffers); **doesn't show
-  the current one**; not in the ThePrimeagen setup
+  the current one**
   - `d` (in *normal* mode) : **d**elete a buffer (added in this setup)
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
@@ -274,9 +272,8 @@ insert
   - `gh` : harpoon quick menu (*memo*: **G**o to **H**arpoon; it was `<C-e>` originally)
 - `<leader>u`  : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
-- `<leader>j`/`<leader>k` : quickfix local navigation (ie `lnext`/`lprev`; inverted from ThePrimeagen's)
-- `<C-j>`/`<C-k>` : quickfix navigation (ie `cnext`/`cprev`; inverted from ThePrimeagen's;
-  more natural; same order as in quickfix/**Trouble**)
+- `<leader>j`/`<leader>k` : quickfix local navigation ie `lnext`/`lprev`
+- `<C-j>`/`<C-k>` : quickfix navigation ie `cnext`/`cprev`
 - **IMPORTANT (normal mode)**: `<C-p>` : Telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
@@ -375,7 +372,7 @@ insert
     - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
     - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy **p**lugins in your `data`
       path
-- Primeagen's refactoring plugin (inspired by Martin Fowler):
+- a refactoring plugin (deprecated; inspired by Martin Fowler):
   - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
     by default):
     - `<leader>re` : extract function
