@@ -1,7 +1,7 @@
 (import-macros {: tc} :hondana-dev.macros)
 
 (local in table.insert)
-(local api vim.api)
+(local {: api : cmd} vim)
 
 ;; additional command for the Tangerine's lazy config function:
 ;;   FnlAddG adds globals to the tangerine.fennel's compiler
@@ -21,7 +21,7 @@
                      "(table.insert $))"
                      :<q-args>
                      ")"]]
-    (-> addG-fennel (table.concat " ") (vim.cmd))))
+    (-> addG-fennel (table.concat " ") (cmd))))
 
 ;;; * Core plugins for this NeoVim *
 
@@ -158,13 +158,74 @@
        :opts {:delay 400}
        :config #(let [mc (require :mini.cursorword)] (mc.setup $2))})
 
+;; multiple-cursors.nvim: a way of making multiple similar edits
+(in P {1 "brenton-leighton/multiple-cursors.nvim"
+       :version "*"
+       :opts (let [try-apply (fn [module func ...]
+                               (let [(ok res) (pcall require module)]
+                                 (when ok ((. res func) ...))))]
+               {;; when in multi-cursors, replace `gc`/`gcc` with `<C-/>`
+                :custom_key_maps [[[:n :i] "<C-/>" #(cmd "normal gcc")]
+                                  [[:v] "<C-/>" #(cmd "normal gc")]
+                                  ;; mini.surround
+                                  [:n
+                                   :<leader>sa
+                                   (fn [_ count motion-cmd char]
+                                     (cmd (.. "normal " count "sa" motion-cmd
+                                              char)))
+                                   :mc]]
+                :pre_hook #(try-apply :nvim-autopairs :disable)
+                :post_hook #(try-apply :nvim-autopairs :enable)})
+       :keys [;; `<C-j>`/`<C-k>` are reserved for C motions
+              {1 :<C-Up>
+               2 "<Cmd>MultipleCursorsAddUp<CR>"
+               :mode [:n :i :x]
+               :desc "Add cursor and move up"}
+              {1 :<C-Down>
+               2 "<Cmd>MultipleCursorsAddDown<CR>"
+               :mode [:n :i :x]
+               :desc "Add cursor and move down"}
+              {1 :<C-LeftMouse>
+               2 "<Cmd>MultipleCursorsMouseAddDelete<CR>"
+               :mode [:n :i]
+               :desc "Add or remove cursor"}
+              ;; NOTE: very useful
+              {1 :<leader>m
+               2 "<Cmd>MultipleCursorsAddVisualArea<CR>"
+               :mode :x
+               :desc "Add cursors to the lines of the visual area"}
+              {1 :<leader>a
+               2 "<Cmd>MultipleCursorsAddMatches<CR>"
+               :mode [:n :x]
+               :desc "Add cursors to cword"}
+              {1 :<leader>A
+               2 "<Cmd>MultipleCursorsAddMatchesV<CR>"
+               :mode [:n :x]
+               :desc "Add cursors to cword in previous area"}
+              ;; `<leader>d` prefixes are reserved to the DAP plugin
+              {1 :<leader>h
+               2 "<Cmd>MultipleCursorsAddJumpNextMatch<CR>"
+               :mode [:n :x]
+               :desc "Add cursor and jump to next cword"}
+              {1 :<leader>H
+               2 "<Cmd>MultipleCursorsJumpNextMatch<CR>"
+               :mode [:n :x]
+               :desc "Jump to next cword"}
+              {1 :<leader>l
+               2 "<Cmd>MultipleCursorsLock<CR>"
+               :mode [:n :x]
+               :desc "Lock virtual cursors"}]})
+
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
 ;; (->> :folke/which-key.nvim
 ;;      (#{1 $
 ;;         :event :VeryLazy
-;;         :config #(vim.schedule_wrap (let [{: add : setup} (require :which-key)]
-;;                                       (setup)
+;;         :config #(vim.schedule_wrap (let [{: add : setup} (require :which-key)
+;;                                           {:operators o} (require :which-key.plugins.presets)]
+;;                                       ;; disable normal `v` command for multiple-cursors.nvim
+;;                                       (set (. o :v) nil)
+;;                                       (setup $2)
 ;;                                       ;; TODO: customize (REMINDER: `:hidden true` to disable)
 ;;                                       ;; HACK: shouldn't be here
 ;;                                       (add {1 :<leader>I :desc "Paredit raise"})

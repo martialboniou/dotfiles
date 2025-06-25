@@ -102,6 +102,12 @@
          (#(keyset :n $ ":let @/=expand('<cword>')<CR>cgn"
                    {:desc "Replace the current word using `cgn` (. to propagate)"})))))
 
+;; g. => . to repeat a regular `c`-prefixed command as if it was performed using `cgn`
+;; https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with
+(let [nmap #(keyset :n $1 $2 {:noremap true})]
+  (nmap :g. "/\\V\\C<C-r>\"<CR>cgn<C-a><Esc>")
+  (nmap :cg* "*Ncgn"))
+
 ;; <leader>cd => change local current directory
 (keyset :n :<leader>cd ":lcd %:h<CR>"
         {:desc "Change local directory according to this file location"})
