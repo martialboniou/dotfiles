@@ -63,6 +63,10 @@ Vim keybinding reminders & tips
     - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
       the next one with the same pattern by using `.` (*alias* of
       `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
+    - from an idea seen on
+    [reddit](https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with):
+      - `g.`  : repeat a regular `c`-prefixed command as if it was performed using `cgn`
+      - `cg*` : alias of `*Ncgn`
 - `gf`   : **f**etch a file using the filename/hyperlink at the cursor position (it `wget`s an URL)
 - `gx`   : `vim.ui.open` a file e**x**plorer/browser using the hyperlink at the cursor position
   (it calls the command `open` on macOS)
@@ -88,6 +92,12 @@ Vim keybinding reminders & tips
 - `<C-x><C-l>` (in *insert mode*) : complete the whole line (*ie* find matching lines
   from every buffers and open a selector; navigate *normally* by using `<C-n>`/`<C-p>`;
   confirm with `<C-y>`)
+- multiple cursors:
+  - `<C-LeftMouse>` : add or remove a cursor
+  - `<C-up>`/`<C-down>` : add a cursor and move up/down
+  - `<leader>m` : add cursors for each line of a visual area
+  - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
+  - `<leader>l` : lock cursors
 - calculus (in normal mode or visual mode):
   - `<C-a>` : increment a number
   - `<C-x>` : decrement a number
@@ -228,16 +238,16 @@ It's great but:
 
 ### Cheat sheet
 
-- `<C-o><cmd>` (in insert): switch to normal to execute `<cmd>` then back to 
+- `<C-o><cmd>` (*insert mode*): switch to normal to execute `<cmd>` then back to 
 insert
-- `J` : append line (in normal) BUT in this remap, it doesn't move the cursor away
+- `J` : append line (*normal mode*) BUT in this remap, it doesn't move the cursor away
 - `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
   *memo*: Down/Up)
 - `:so` : source this file
 - `<C-w><C-w>` : cycle windows
 - `<C-w>o` : one window (AKA 'close' others)
 - `<leader>cd` : change the working directory for the current window
-- in *visual* mode:
+- in *visual mode*:
   - `<shift-J>`: move down the whole selection
   - `<shift-K>`: move up the whole selection
 - *REMINDER*: `:map` to check the key mapping
@@ -278,6 +288,14 @@ insert
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
 - **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
+- multiple cursors (in *normal & visual mode* by default):
+  - `<C-LeftMouse>` (*insert & normal mode* only) : add or remove a cursor
+  - `<C-up>`/`<C-down>` (*insert mode* too) : add a cursor and move up/down
+  - `<leader>m` (*visual mode* only) : add cursors for each line of a visual area
+  - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
+  - `<leader>h` : add cursor and jump to next *cword*
+  - `<leader>H` : jump to next *cword*
+  - `<leader>l` : lock cursors
 - FuGITive (inside the fugitive buffer only):
   - `<leader>p` : `git push`
   - `<leader>P` : `git pull` **with rebase** 
