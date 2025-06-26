@@ -68,10 +68,13 @@ for k v in ${(kv)app_aliases}; do
 done
 # eza
 if (( $+commands[eza] )); then
-  alias ls='eza --long -s=newest --group-directories-first --git --sort=modified'
-  alias l='$aliases[ls]' # -C won't work in eza
-  alias ll='$aliases[ls] -a'
-  # `la` for the hidden files/folders too
+  alias l='eza --long -s=newest --group-directories-first --git --sort=modified' # -C won't work in eza
+  alias ll='$aliases[l] -a'
+  # you don't need [Nushell](https://www.nushell.sh) but if you have it, ls/la will dump
+  # a table instead of the `eza` output (thus reserved for l/ll)
+  alias ls='(){ nu --commands "ls $@ | sort-by type" 2> /dev/null || $aliases[l] $@ }'
+  # $aliases trick won't work with complex => dup
+  alias la='(){ nu --commands "ls -a $@ | sort-by type" 2> /dev/null || $aliases[l] -a $@ }'
 else
   alias l='ls -CF'
   alias ll='ls -lah'
