@@ -127,7 +127,7 @@
 (keyset :i ",," "_")
 
 ;; <F3> => timestamp (oldie)
-(let [cmd "<C-r>=strftime('%Y-%m-%d %a %I:%M %p')<CR>"]
+(let [cmd "<C-r>=strftime('%Y-%m-%d %a %H:%M')<CR>"]
   (each [m c (pairs {:n (.. :i cmd :<Esc>) :i cmd})]
     (keyset m :<F3> c)))
 
