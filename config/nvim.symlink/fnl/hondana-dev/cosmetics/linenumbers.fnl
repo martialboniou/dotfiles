@@ -1,13 +1,6 @@
 (local api vim.api)
 (local pattern :*)
 
-(fn is-insert-mode [mode]
-  (let [insert-modes (vim.iter [:i :ic :ix :R :Rc :Rv :Rx])]
-    (insert-modes:any #(= $ mode))))
-
-;; unused
-(local _ is-insert-mode)
-
 ;; F = utility functions
 (local F {:set #(do
                   (api.nvim_set_hl 0 $...)

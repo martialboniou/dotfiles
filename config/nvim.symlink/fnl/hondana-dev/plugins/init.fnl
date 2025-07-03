@@ -55,8 +55,13 @@
 ;;   - dm- : delete marks on the current line
 ;;   - dm<Space> : delete marks in the current buffer
 ;;   - m   : move to next mark
+(fn init []
+  ;; unlink MarkSignNumHL from CursorLineNr (see
+  ;; `hondana-dev.cosmetics.linenumbers`)
+  (vim.cmd "hi default link MarkSignNumHL Identifier"))
+
 (->> :chentoast/marks.nvim
-     (#{1 $ :event :VeryLazy :opts {}})
+     (#{1 $ :event :VeryLazy : init :opts {}})
      (in P))
 
 ;; StartupTime: benchmarks startup event timing using the command `:StartupTime`
