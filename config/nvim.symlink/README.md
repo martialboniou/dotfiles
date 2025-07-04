@@ -717,9 +717,6 @@ pip3 install djlint
 
 ### Note about the *emoji* completion
 
-The plugin `cmp-emoji` was used before. There's a *work in progress* to add
-this option in `blink.cmp` where typing `:` opens the completion menu anywhere
-in a **markdown** file or a `git commit` message only (the other buffers should
-be able to use this functionality in comments or strings only; except in the
-Fennel symbolic strings; ensure there's a space after the opening `"` before
-typing the `:`).
+`blink-emoji` is enabled for **markdown** file or a `git commit` message only.
+I'd like to enable this for other filetypes too inside comments or strings only
+(except in the Fennel/Clojure symbolic strings): This setup is to come.

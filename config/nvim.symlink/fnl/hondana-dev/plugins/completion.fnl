@@ -25,14 +25,28 @@
       (when dev-icon (set hl dev-hl))))
   hl)
 
+;; blink-emoji for markdown & gitcommit files only (for now)
+;; TODO: as with my previous cmp-emoji setup, enable emoji inside strings &
+;; comments everywhere else
+(fn should_show_items []
+  (->> vim.o.filetype
+       (vim.tbl_contains [:markdown :gitcommit])))
+
 (λ opts []
   ;; WARN: `blink.cmp` knows lsp so no need to enable autocompletion via capabilities
   {:snippets {:preset :luasnip}
-   :sources {:default [:lsp :snippets :lazydev :buffer :path]
+   :sources {:default [:lsp :snippets :lazydev :buffer :path :emoji]
              ;; INFO: ensure hondana-dev.plugins.languages has lazydev
              :providers {:lazydev {:name :LazyDev
-                                   :module :lazydev.integrations.blink}}}
-   :signature {:enabled true :window {:show_documentation true}}
+                                   :module :lazydev.integrations.blink}
+                         :emoji {:name :Emoji
+                                 :module :blink-emoji
+                                 :score_offset 15
+                                 :opts {: should_show_items
+                                        :insert true
+                                        :trigger ":"}}}}
+   ;; documentation removed                             
+   :signature {:enabled true :window {:show_documentation false}}
    :completion {:list {:selection {:preselect true
                                    ;; don't insert before accept + use `ghost text`
                                    :auto_insert false}}
@@ -83,7 +97,8 @@
                           :version "v2.*"
                           :build "make install_jsregexp"
                           :dependencies [:rafamadriz/friendly-snippets]
-                          :config luasnip-config}]})
+                          :config luasnip-config}
+                         :moyiz/blink-emoji.nvim]})
 
 ;;; UTILITY FUNCTIONS
 (fn F.get-web-devicon [label]
