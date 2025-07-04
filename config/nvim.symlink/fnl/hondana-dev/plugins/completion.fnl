@@ -42,9 +42,8 @@
                          :emoji {:name :Emoji
                                  :module :blink-emoji
                                  :score_offset 15
-                                 :opts {: should_show_items
-                                        :insert true
-                                        :trigger ":"}}}}
+                                 : should_show_items
+                                 :opts {:insert true}}}}
    ;; documentation removed                             
    :signature {:enabled true :window {:show_documentation false}}
    :completion {:list {:selection {:preselect true
