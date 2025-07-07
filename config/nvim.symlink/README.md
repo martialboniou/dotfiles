@@ -36,6 +36,8 @@ Showcase
 Vim keybinding reminders & tips
 -------------------------------
 
+- `:help index` : when you're lost or you forgot which key is bound to a
+specific command
 - `"+p`  : paste the system clipboard register
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
