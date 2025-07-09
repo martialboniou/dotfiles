@@ -48,8 +48,10 @@
            :signcolumn :yes
            :updatetime 50
            :timeoutlen 3000
+           ;; try ↵
+           :listchars {:tab "» " :trail "·" :nbsp "␣" :eol "¶"}
+           ;; `list` after `listchars`
            :list true
-           :listchars {:tab "» " :trail "·" :nbsp "␣"}
            :inccommand :split}]
   (each [k v (pairs map)] (set! k v)))
 

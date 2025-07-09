@@ -31,8 +31,14 @@ keybind = control+enter=esc:[13;5u
 #       shared core: libghostty
 #
 # Personal Preferences
+# on macOS: `brew install --cask font-zed-mono-nerd-font`
 font-family = "ZedMono Nerd Font Mono"
 font-size = 12
+# on macOS: `brew install --cask font-jetbrains-mono-nerd-font`
+# font-family = "JetBrainsMono NFM Regular"
+# font-family-bold = "JetBrainsMono NFM SemiBold"
+# font-family-italic = "JetBrainsMono NFM Italic"
+# font-family-bold-italic = "JetBrainsMono NFM SemiBold Italic"
 shell-integration-features = no-cursor
 # here, I use a 2-hand int'l dvorak layout with qwerty on Command
 keybind = super+k=paste_from_clipboard

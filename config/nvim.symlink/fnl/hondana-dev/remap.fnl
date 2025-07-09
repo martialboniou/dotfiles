@@ -120,6 +120,17 @@
 (keyset :n :gh :^)
 (keyset :n :gl :g_)
 
+;; WARN: NEW: g; => semi-colon at eol
+;; TODO: write doc in README
+(let [no {:remap false :silent true :desc "Add semi-colon at the EOL"}
+      add-semi-colon #(let [{:nvim_win_get_cursor cursor} vim.api
+                            orig (cursor 0)]
+                        (vim.cmd "norm A;")
+                        (cursor 0 orig))
+      semi-colon-key #(keyset $1 $2 add-semi-colon no)]
+  ;; (semi-colon-key [:n :i] "<C-;>") ;; not for terms
+  (semi-colon-key :n "g;"))
+
 ;; experimental: double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
 ; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
 ;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
