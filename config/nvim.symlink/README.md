@@ -52,8 +52,8 @@ specific command
   - `` `0 `` : go to the position before exit 
   - same keybindings as before but `'` instead of the first `` ` `` : go to the
     beginning of the line of a specific cursor position
-- `o` (in visual mode) : correct the visual block (avoid to redo a visual block from the start
-  when misclicked)
+- `o` (in *visual* mode) : correct the visual block (avoid to redo a visual
+block from the start when misclicked)
 - `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
   - `I`  : insert in visual block
   - `A`  : append in visual block (use `$` to reach the EOL of each line of
@@ -76,7 +76,7 @@ specific command
 - `:set spell` : enables Vim spellchecking
   - `:set spelllang=FR_fr` (as an example) starts a new dictionary (and download it
     first if not available)
-- `<C-f>` : **command mode** after a `:`; behave like any Vim buffer
+- `<C-f>` (in ***command* mode**) : after a `:`; behave like any Vim buffer
 - navigation with some `z` commands when *wrap* mode is off (default in this setup):
   - `zz`  : center cursor position vertically (**BEWARE**: `ZZ` means save and close buffer; works
             the same when *wrap* mode is on)
@@ -91,7 +91,7 @@ specific command
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)
-- `<C-x><C-l>` (in *insert mode*) : complete the whole line (*ie* find matching lines
+- `<C-x><C-l>` (in *insert* mode) : complete the whole line (*ie* find matching lines
   from every buffers and open a selector; navigate *normally* by using `<C-n>`/`<C-p>`;
   confirm with `<C-y>`)
 - multiple cursors:
@@ -100,10 +100,10 @@ specific command
   - `<leader>m` : add cursors for each line of a visual area
   - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
   - `<leader>l` : lock cursors
-- calculus (in normal mode or visual mode):
+- calculus (in *normal* mode or *visual* mode):
   - `<C-a>` : increment a number
   - `<C-x>` : decrement a number
-  - `g` (in visual mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first** number
+  - `g` (in *visual* mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first** number
   in the visual block for each line
 - **Case sensitivity**: the default setting is case insensitive so use `\C`
   to **force the case sensitivity** in a search (eg: `/something\C` or
@@ -139,8 +139,8 @@ specific command
 - slurping & barfing using the `kovisoft/paredit` plugin for lisp:
   - `<>` : move left the bracket at the current position (as `<leader><`)
   - `><` : move right the bracket at the current position (as `<leader>>`)
-  - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to *normal
-    mode* **without moving the cursor back**
+  - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to *normal*
+    mode **without moving the cursor back**
   - NOTE: if `julienvincent/nvim-paredit` is activated, you must use:
     - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
     - `>)` : slurp forward
@@ -155,7 +155,7 @@ specific command
 - **function keys** (check `fnl.hondana-dev.remap`)
   - `<F2>` : cycle how the numbers are displayed in the left margin (no numbers,
   absolute, relative)
-  - `<F3>` (in *insert mode* too) : print a date 
+  - `<F3>` (in *insert* mode too) : print a date 
 - utility commands
   - `:ToggleExec` : toggle the executability of a file
   - `:ImprintFilename` : imprint the current filename at the cursor position
@@ -170,7 +170,7 @@ specific command
 - *insert* abbrev's:
   - `,\ ` : print a `λ` (can be useful in Fennel code; check `fnl/hondana-dev/set.fnl`)
   - `,,` : print a `_` (there's a 200ms timeout here; it won't collide with `<localleader>`
-    keybindings as they are meant for normal mode; can be useful to type `_` without
+    keybindings as they are meant for *normal* mode; can be useful to type `_` without
     the `Shift` key; check `fnl/hondana-dev/remap.fnl`)
 
 Plugins and new keybindings
@@ -212,7 +212,7 @@ It's great but:
   - BAD IDEA: don't add `-` as alias of `h` in the `mini.files` buffer
   - Netrw still available: `:Ex` (or open a directory `nvim .`)
 - I CANNOT switch to `oil.nvim`
-  - `-` in normal mode : open folder directory in `oil.nvim` (like `vim-vinegar`)
+  - `-` (in *normal* mode) : open folder directory in `oil.nvim` (like `vim-vinegar`)
   - `<leader>pf`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
   - it **BREAKS** Netrw
 - `:Ex` is still available
@@ -233,23 +233,23 @@ It's great but:
 - `<C-h>` : back to first file
 - (optional) `<C-Space>` : enable completion
 - (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
-- `gd` (on a reference, say, `require`; normal mode) : back to the module
+- `gd` (on a reference, say, `require`; in *normal* mode) : back to the module
 - `ga` : tag the module in Harpoon 2 (second)
 - `gu` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet
 
-- `<C-o><cmd>` (*insert mode*): switch to normal to execute `<cmd>` then back to 
+- `<C-o><cmd>` (in *insert* mode): switch to normal to execute `<cmd>` then back to 
 insert
-- `J` : append line (*normal mode*) BUT in this remap, it doesn't move the cursor away
+- `J` : append line (in *normal* mode) BUT in this remap, it doesn't move the cursor away
 - `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
   *memo*: Down/Up)
 - `:so` : source this file
 - `<C-w><C-w>` : cycle windows
 - `<C-w>o` : one window (AKA 'close' others)
 - `<leader>cd` : change the working directory for the current window
-- in *visual mode*:
+- in *visual* mode:
   - `<shift-J>`: move down the whole selection
   - `<shift-K>`: move up the whole selection
 - *REMINDER*: `:map` to check the key mapping
@@ -262,8 +262,9 @@ insert
 - **IMPORTANT!**: `gs` : create a template to replace the *current word*
   (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation** (`<leader>ss`
   was previously used in this case; it's the Telescope *spell suggest* keybinding now)
-- `gs` (in visual) : create a template to replace a *pattern
+- `gs` (in *visual* mode) : create a template to replace a *pattern
   in the selection*; same confirmation option as above
+- `g;` (in *normal* mode) : print a `;` at the end of line **(might be temporary)**
 - `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but 
   it may *proc* to easily; also *same key twice can be harmful*; *memo*: **p**roject **f**iles)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
@@ -286,14 +287,14 @@ insert
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>j`/`<leader>k` : quickfix local navigation ie `lnext`/`lprev`
 - `<C-j>`/`<C-k>` : quickfix navigation ie `cnext`/`cprev`
-- **IMPORTANT (normal mode)**: `<C-p>` : Telescope git files (*memo*: control project)
+- **IMPORTANT (in *normal* mode)**: `<C-p>` : Telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
-- **IMPORTANT**: `Q` is removed (in normal mode; avoid typo)
-- multiple cursors (in *normal & visual mode* by default):
-  - `<C-LeftMouse>` (*insert & normal mode* only) : add or remove a cursor
-  - `<C-up>`/`<C-down>` (*insert mode* too) : add a cursor and move up/down
-  - `<leader>m` (*visual mode* only) : add cursors for each line of a visual area
+- **IMPORTANT**: `Q` is removed (in *normal* mode; avoid typo)
+- multiple cursors (in *normal* & *visual* mode by default):
+  - `<C-LeftMouse>` (in *insert* & *normal* mode only) : add or remove a cursor
+  - `<C-up>`/`<C-down>` (in *insert* mode too) : add a cursor and move up/down
+  - `<leader>m` (in *visual* mode only) : add cursors for each line of a visual area
   - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
   - `<leader>h` : add cursor and jump to next *cword*
   - `<leader>H` : jump to next *cword*
@@ -308,22 +309,22 @@ insert
   - `<C-p>` : previous completion (or `show` like `<C-space>` if inactive)
   - `<C-n>` : next completion (or `show` like `<C-space>` if inactive)
   - `<C-Space>` : complete
-  - `<C-f>` : snippet forward selection (navigate thru tmux sessions in normal mode)
+  - `<C-f>` : snippet forward selection (navigate thru tmux sessions in *normal* mode)
   - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
     don't use `<C-a>` either because you lose the cursor navigation (start of line);
     `F5`/`fn a` is my current choice for `tmux`)
   - other keys (common in any Vim setup)
     - `<C-e>` : cancel the completion
     - `<C-u>`/`<C-d>` : scroll the document up/down
-- in LSP buffer only (normal mode except when said otherwise)
+- in LSP buffer only (in *normal* mode except when said otherwise)
   - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
     `vim.lsp.buf.format`
   - **REMINDER**: default mappings introduced in NeoVim 0.11:
-    - `<C-s>` (*insert mode*) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
-      switches to the first harpoon in **normal mode**; it was `<C-h>` before)
-    - `K` : hover (*BEWARE*: `K` moves the selection up in **visual mode**)
+    - `<C-s>` (in *insert* mode) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
+      switches to the first harpoon in ***normal* mode**; it was `<C-h>` before)
+    - `K` : hover (*BEWARE*: `K` moves the selection up in ***visual* mode**)
     - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
-    - `gra` (*normal or visual mode*) : `vim.lsp.buf.code_action()`
+    - `gra` (in *normal* or *visual* mode) : `vim.lsp.buf.code_action()`
     - `grn` : `vim.lsp.buf.rename()`
     - `grr` : `vim.lsp.buf.references()`
     - `gO` : `vim.lsp.buf.document_symbol()`
@@ -335,13 +336,13 @@ insert
     - `gI` : Telescope *builtin*'s **g**oto **I**mplementation (better than `gri`)
     - `g/`/`<leader>vdd` : `vim.diagnostic.open_float()`
     - `<leader>nn` : `vim.lsp.buf.rename()` (alternative to `grn`)
-    - `<leader>ca` (*normal or visual mode*) : `vim.lsp.buf.code_action()` (alternative to `gra`)
+    - `<leader>ca` (in *normal* or *visual* mode) : `vim.lsp.buf.code_action()` (alternative to `gra`)
     - `<leader>D` : Telescope *builtin*'s **D**iagnostics for the current buffer
     - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol (replaces
       `vim.lsp.buf.workspace_symbol()`)
     - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
     - `<leader>rs` : command `:LspRestart`
-    - `<leader>ih` : toggle LSP inlay hints
+    - `<leader>ih`/`<leader>ii` : toggle LSP inlay hints (the latter for ergonomics)
 - **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
   - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
   - `<leader>xX` : toggle trouble for the current buffer
@@ -393,16 +394,16 @@ insert
     - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy **p**lugins in your `data`
       path
 - a refactoring plugin (deprecated; inspired by Martin Fowler):
-  - use `:Refactor e<Tab>` or one of these keybindings (in **selection mode**
+  - use `:Refactor e<Tab>` or one of these keybindings (in ***selection* mode**
     by default):
     - `<leader>re` : extract function
     - `<leader>rf` : extract function to a file
     - `<leader>rv` : extract variable (extract occurences of a selected expression
     to its own variable, replacing occurences of that expression with the variable)
-    - `<leader>ri` (also in **normal mode**) : inline variable (opposite of
+    - `<leader>ri` (also in ***normal* mode**) : inline variable (opposite of
     extract variable; replace all occurences of a variable with its value)
-    - `<leader>rb` (**only in normal mode**) : extract block
-    - `<leader>rbf` / `<leader>rbb` (**only in normal mode**) : extract block
+    - `<leader>rb` (**only in *normal* mode**) : extract block
+    - `<leader>rbf` / `<leader>rbb` (**only in *normal* mode**) : extract block
       to a file
     - `<leader>rt` : select the *refactor* via Telescope
 - [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
@@ -428,7 +429,7 @@ insert
   with `<C-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
   to do so (NOTE: if the auto-completion menu disturbs you, use `<C-e>` to disable
   the menu and `<C-Space>`, after that, to restore it).  These following
-  keybindings are available in **insert mode**:
+  keybindings are available in ***insert* mode**:
   - `<M-]>` : next suggestion/start the suggestion (*lazy-load* if not loaded)
   - `<M-[>` : previous suggestion
   - `<C-]>` : accept next word from the suggestion
@@ -559,9 +560,9 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
       (created with `m<letter>`)
   - inspect:
     - `<localleader>ew` : inspect by **e**valuating *w*hat it is
-    - `<localleader>E` (in visual mode) : inspect by **E**valuating the selection
-    - `<localleader>Eiw` (in normal mode) : inspect by **E**valuating the inner word
-    - `<localleader>Ea(` (in normal mode) : inspect by **E**valuating the whole parens (`a(`)
+    - `<localleader>E` (in *visual* mode) : inspect by **E**valuating the selection
+    - `<localleader>Eiw` (in *normal* mode) : inspect by **E**valuating the inner word
+    - `<localleader>Ea(` (in *normal* mode) : inspect by **E**valuating the whole parens (`a(`)
   - log buffer:
     - `<localleader>ls` : open the **l**og buffer horizontally **s**plit
     - `<localleader>q`  : close any log buffer (*ie* **q**uit)
@@ -592,9 +593,9 @@ server).
 ##### Random tips
 
 Here's some tips for the LISP typists:
-- (insert mode) `,\<Space>` : print `λ` (only in this configuration; a viable
+- `,\<Space>` (in *insert* mode) : print `λ` (only in this configuration; a viable
   **keyword** in Fennel)
-- (insert mode) <C-k> + `*` + `l`: print `λ` (same as above but this is an 
+- `<C-k>` + `*` + `l` (in *insert* mode) : print `λ` (same as above but this is an 
   universal keybinding for Vim/NeoVim)
 
 **Fennel developers**: if you need to compile some fennel codes using
