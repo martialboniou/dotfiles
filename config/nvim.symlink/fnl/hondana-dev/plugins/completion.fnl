@@ -58,6 +58,8 @@
                        :draw {:components {:kind_icon {: text : highlight}}}}}
    :keymap {;; use the default settings (REMINDER: `<C-Space>` to init)
             :preset :default
+            ;; (experimental) check `hondana-dev.remap`
+            :<Tab> [:fallback]
             ;; NOTE: <C-n>/<C-p> = show too (like <C-space>)
             :<C-n> [:show :select_next :fallback_to_mappings]
             :<C-p> [:show :select_prev :fallback_to_mappings]
@@ -69,11 +71,7 @@
             :<C-u> [:scroll_documentation_up :fallback]
             :<C-d> [:scroll_documentation_down :fallback]}})
 
-;; (tc return "false|string")
-;; (λ build []
-;;   (and (= 1 (vim.fn.executable :cargo)) "cargo build --release"))
-
-;; TODO: cmp-emoji & cmp-conjure eqv.
+;; TODO: cmp-conjure eqv.?
 
 (λ luasnip-config []
   (let [{: lazy_load} (require :luasnip.loaders.from_vscode)

@@ -1,7 +1,7 @@
 (import-macros {: tc : **!} :hondana-dev.macros)
 (import-macros {: g!} :hibiscus.vim)
 
-(local keyset vim.keymap.set)
+(local {:set keyset :del keydel} vim.keymap)
 
 (macro ex-map! [...]
   (let [t# [...]]
@@ -121,21 +121,15 @@
 (keyset :n :gl :g_)
 
 ;; WARN: NEW: g; => semi-colon at eol
+;; FIX: better key, better code (TreeSitter?)
 ;; TODO: write doc in README
 (let [no {:remap false :silent true :desc "Add semi-colon at the EOL"}
-      add-semi-colon #(let [{:nvim_win_get_cursor cursor} vim.api
-                            orig (cursor 0)]
+      add-semi-colon #(let [orig (vim.api.nvim_win_get_cursor 0)]
                         (vim.cmd "norm A;")
-                        (cursor 0 orig))
+                        (vim.api.nvim_win_set_cursor 0 orig))
       semi-colon-key #(keyset $1 $2 add-semi-colon no)]
   ;; (semi-colon-key [:n :i] "<C-;>") ;; not for terms
   (semi-colon-key :n "g;"))
-
-;; experimental: double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
-; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
-;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
-; TIP: int'l or simplified dvorak layouts have `-`/`_` on `,`/`"`; it's a good crutch
-(keyset :i ",," "_")
 
 ;; <F3> => timestamp (oldie)
 (let [cmd "<C-r>=strftime('%Y-%m-%d %a %H:%M')<CR>"]
@@ -145,3 +139,19 @@
 ;; <F2> => switch vim numbers (column-wise)
 (let [{: set-numbers} (require :hondana-dev.utils.globals)]
   (keyset [:i :n :x] :<F2> set-numbers))
+
+;;; ** EXPERIMENTAL SECTION **
+
+;; disable `<Tab>` default to vim.snippet.jump if active I use `<C-f>` for this
+;; (via `blink.cmp` & `<C-b>` for the backwards alternative)
+;; WARN: I don't mind to keep the default settings later but I often don't do
+;; the last `vim.snippet.jump` forward and having the ability to use the
+;; `<Tab>` key UNCONDITIONNALLY makes sense in my workflow
+;; NOTE: check `hondana-dev.plugins.completion`
+(keydel [:i :s] :<Tab>)
+
+;; double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
+; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
+;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
+; TIP: int'l or simplified dvorak layouts have `-`/`_` on `,`/`"`; it's a good crutch
+(keyset :i ",," "_")
