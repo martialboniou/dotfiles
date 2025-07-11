@@ -61,8 +61,9 @@
                       "Open a string-filtered file picker (cwd)"]
                      ;; files (memo: find files/search files)
                      [[:ff :sf] find_files "Open a fuzzy file picker"]
-                     ;; files in git (memo: control project)
-                     [:<C-p>
+                     ;; files in git (memo: project git)
+                     ;; WARN: was <C-p> before
+                     [:pg
                       #(let [(ok _) (pcall git_files)]
                          (when (not ok)
                            (vim.notify "Not in a git project; use `<leader>cd` to reset your working directory"

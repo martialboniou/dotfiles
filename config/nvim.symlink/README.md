@@ -38,6 +38,15 @@ Vim keybinding reminders & tips
 
 - `:help index` : when you're lost or you forgot which key is bound to a
 specific command
+- (*experimental*) notable case in *insert* mode without exiting the *insert*
+mode:
+  - `,,` *ie* `<localleader><localleader>` : jumps and prints `;` at the end of
+  the line
+    - **TIP**: no need to pause after typing a *comma*; this keybinding works
+    on a very short timeout like a *double-click* using a mouse
+    - NOTE: this keybinding was used to print an underscore in *insert* mode
+    (obsolete)
+  - `<C-e>` (alias of `<C-o>$`) : jump at the EOL
 - `"+p`  : paste the system clipboard register
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
@@ -86,6 +95,19 @@ block from the start when misclicked)
 - `G`    : go to the end of file (of course!)
 - `J` (in *visual*) : move down the visual block (added; see `remap.fnl`!)
 - `<C-j>` : go down in the quickfix list (see below)
+- examples of `:normal` command:
+  - `:%norm I1. ` : prints `1. ` for each line of the current file (*ie* `%`)
+  - `:1,3norm I"<C-v><Esc>A"` : prepends & appends double-quotes for each line between
+  the first and the third line included;
+    - NOTES:
+      - use `<C-v>` then `<Esc>` to insert the special `Escape` character
+      displayed as `^[`
+      - this command will work as expected if you don't use `autopairs` (which
+      is the case in this setup; only `paredit` is activated for some Lisp
+      programming languages)
+      - use `nvim-surround` or `mini.surround` to add/replace brackets, quotes
+      or tags instead; or snippets (as they are more portable than the classic
+      `Ex`/`vim` macros)
 - `:copen` : open the quickfix list (say, after a `:grep foo src/*`)
   - *alternative*: `<C-q>` in a Telescope search
 - `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
@@ -232,7 +254,8 @@ It's great but:
   - (optional) otherwise: `%` if you used `:Ex`
 - `<C-h>` : back to first file
 - (optional) `<C-Space>` : enable completion
-- (optional) `<C-y>` : auto-complete a path reference to the newly created module (<C-n>/<C-p> to navigate)
+- (optional) `<C-y>` : auto-complete a path reference to the newly created
+module (`<C-n>`/`<C-p>` to navigate)
 - `gd` (on a reference, say, `require`; in *normal* mode) : back to the module
 - `ga` : tag the module in Harpoon 2 (second)
 - `gu` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
@@ -264,11 +287,14 @@ insert
   was previously used in this case; it's the Telescope *spell suggest* keybinding now)
 - `gs` (in *visual* mode) : create a template to replace a *pattern
   in the selection*; same confirmation option as above
-- `g;` (in *normal* mode) : print a `;` at the end of line **(might be temporary)**
+- `<localleader>o` (in *normal* **AND** *insert* mode) : print a `;` at the end
+of line (**might be a temporary addition**; it was mapped to `g;` & it was a
+bad idea; REMINDER: `<localleader>` is `,`)
 - `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but 
   it may *proc* to easily; also *same key twice can be harmful*; *memo*: **p**roject **f**iles)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
   so you can paste the same again
+- `<leader>pg` : Telescope project git (staged files; it was bound to `<C-p>` before)
 - `<leader>pv` : `mini.files` at root (ie *Cwd*; **p**roject **v**iew)
 - `<leader>ff>`/`<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup;
   notice there's `<leader>sF` for Telescope most frequently used files (see *other Telescope keybindings*))
@@ -287,7 +313,6 @@ insert
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>j`/`<leader>k` : quickfix local navigation ie `lnext`/`lprev`
 - `<C-j>`/`<C-k>` : quickfix navigation ie `cnext`/`cprev`
-- **IMPORTANT (in *normal* mode)**: `<C-p>` : Telescope git files (*memo*: control project)
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
 - `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
 - **IMPORTANT**: `Q` is removed (in *normal* mode; avoid typo)

@@ -120,17 +120,6 @@
 (keyset :n :gh :^)
 (keyset :n :gl :g_)
 
-;; WARN: NEW: g; => semi-colon at eol
-;; FIX: better key, better code (TreeSitter?)
-;; TODO: write doc in README
-(let [no {:remap false :silent true :desc "Add semi-colon at the EOL"}
-      add-semi-colon #(let [orig (vim.api.nvim_win_get_cursor 0)]
-                        (vim.cmd "norm A;")
-                        (vim.api.nvim_win_set_cursor 0 orig))
-      semi-colon-key #(keyset $1 $2 add-semi-colon no)]
-  ;; (semi-colon-key [:n :i] "<C-;>") ;; not for terms
-  (semi-colon-key :n "g;"))
-
 ;; <F3> => timestamp (oldie)
 (let [cmd "<C-r>=strftime('%Y-%m-%d %a %H:%M')<CR>"]
   (each [m c (pairs {:n (.. :i cmd :<Esc>) :i cmd})]
@@ -150,8 +139,15 @@
 ;; NOTE: check `hondana-dev.plugins.completion`
 (keydel [:i :s] :<Tab>)
 
-;; double `,` as `_` (check `hondana-dev.set` for `timeoutlen` in insert mode)
-; NOTE: movitation: I love dash/kebab-case in CL/Shen/Fennel but I use a bunch of C/zig/roc code;
-;                   typing shift dash annoys me, dash/minus should have been shifted like `+`
-; TIP: int'l or simplified dvorak layouts have `-`/`_` on `,`/`"`; it's a good crutch
-(keyset :i ",," "_")
+;; WARN: NEW: <localleader><localleader> or double comma => semi-colon at eol
+;; (works with a very short time duration on insert mode too)
+;; FIX: better code (TreeSitter?)
+;; NOTE: this keybinding printed a underscore on insert mode (obsolete)
+(keyset :i :<localleader><localleader> "<C-o>A;"
+        {:remap false :silent true :desc "Add semi-colon at the EOL"})
+
+;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
+;; (as `<C-o>$`)
+(keyset :i :<C-e> "<C-o>$" {:remap false :silent true})
+
+;
