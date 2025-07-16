@@ -43,7 +43,8 @@
                                :cmake [:cmakelint]
                                ;; add credo to the deps of your mix
                                :elixir [:credo]
-                               :python [:pylint]
+                               ;; :python [:pylint]
+                               ;;; pyright-extended with pyright, ruff & yapf replaces pylint?
                                ;;; composer require --dev phpstan/phpstan
                                ;; :php [:phpstan]
                                ;;; composer require --dev friendsoftwig/twigcs

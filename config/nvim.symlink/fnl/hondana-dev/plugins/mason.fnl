@@ -21,7 +21,11 @@
              :graphql-language-service-cli
              :emmet-language-server
              :marksman
-             :pyright
+             ;; (deprecated) :pyright ;; replaced by pyright-extended
+             ;; pyright-extended requires ruff as linter & yapf as formatter
+             :ruff
+             :yapf
+             :pyright-extended
              :bash-language-server
              :awk-language-server
              :vim-language-server
@@ -32,9 +36,10 @@
              ;; taplo = toml toolkit used by some zk functions (see `hondana-dev.utils.zk`)
              :taplo
              :prettierd
-             :isort
-             :black
-             :pylint
+             ;; isort/black/pylint: replaced by `@replit/pyright-extend`
+             ;; :isort
+             ;; :black
+             ;; :pylint
              :shfmt
              :markdownlint-cli2
              :markdown-toc
@@ -42,7 +47,10 @@
              ;; be installed (see `hondana-dev.plugins.lint`)
              :cmakelint])
 
-(local {:api {:nvim_create_user_command uc} : uv} vim)
+(local {:api {:nvim_create_user_command uc}
+        :fn {: stdpath}
+        :fs {: joinpath}
+        : uv} vim)
 
 (fn mason-ensure-installed []
   "Install the recommended servers. Rebuild a target if Linux Alpine."
@@ -85,10 +93,15 @@
   (setup opts)
   (uc :MasonEnsureInstalled mason-ensure-installed {}))
 
+(local opts {:registries ["github:mason-org/mason-registry"
+                          ;; append my own local registry here
+                          (-> :config (stdpath) (joinpath :mason-registry)
+                              (#(.. "file:" $)))]})
+
 ;;; PLUGINS
 (tc type "LazySpec[]")
 (local P [{1 :mason-org/mason.nvim
-           ;;  :opts {}
+           : opts
            : config
            :cmd [:Mason
                  :MasonEnsureInstalled

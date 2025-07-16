@@ -1,0 +1,29 @@
+---
+name: pyright-extended
+description: Static type checker and linter for Python AKA pyright with yapf and ruff
+homepage: https://github.com/replit/pyright-extended
+licenses:
+  - MIT
+languages:
+  - Python
+categories:
+  - LSP
+
+source:
+  id: pkg:npm/%40replit/pyright-extended@2.0.13
+  # id: pkg:github/replit/pyright-extended
+  # build:
+  #   run : |
+  #     npm install
+  #     npm run compile
+  #     npm install --production
+
+schemas:
+  lsp: vscode:https://raw.githubusercontent.com/replit/pyright-extended/{{version}}/packages/vscode-pyright/package.json
+
+bin:
+  pyright: npm:pyright
+  pyright-langserver: npm:pyright-langserver
+
+neovim:
+  lspconfig: pyright-extended

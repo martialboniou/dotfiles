@@ -1,5 +1,8 @@
 (import-macros {: tc} :hondana-dev.macros)
 
+(local {:nvim_create_autocmd au & api} vim.api)
+(local augrp #(api.nvim_create_augroup $ {:clear true}))
+
 ;;; SERVERS
 ;;
 ;; set the list of your LSP language servers to enable here
@@ -11,7 +14,8 @@
                 :ts_ls
                 :tailwindcss
                 :cssls
-                :pyright
+                ;; :pyright ;; replaced by pyright-extended using ruff & yapf
+                :pyright-extended
                 :marksman
                 :elixir_ls])
 
@@ -133,6 +137,15 @@
     (set-extra-keys [:h :i])))
 
 (vim.lsp.config "*" {: on_attach})
+
+;;;;; SPECIAL SETTINGS
+;;;; ruff + pyright
+;;(let [group (augrp :Hondana_LspAttach_DisableRuffHover)
+;;      callback #(let [client (vim.lsp.get_client_by_id $.data.client_id)]
+;;                  (when (and client (= client.name :ruff))
+;;                    (set client.server_capabilities.hoverProvider false)))]
+;;  (au :LspAttach
+;;      {: group : callback :desc "LSP: Disable hove capability from Ruff"}))
 
 ;;; COSMETICS
 ;;

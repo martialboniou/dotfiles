@@ -98,7 +98,7 @@
                                     :yaml [:yq]
                                     :sh [:shfmt]
                                     :rust [:rustfmt]
-                                    :python [:isort :black]
+                                    ;; :python [:isort :black] ;; pyright-extended uses yapf
                                     ;; HTML = lsp format
                                     :html {:lsp_format :prefer}
                                     :php [:php_cs_fixer]

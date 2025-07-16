@@ -38,6 +38,7 @@ Vim keybinding reminders & tips
 
 - `:help index` : when you're lost or you forgot which key is bound to a
 specific command
+- `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
 - (*experimental*) notable case in *insert* mode without exiting the *insert*
 mode:
   - `,,` *ie* `<localleader><localleader>` : jumps and prints `;` at the end of
