@@ -123,11 +123,20 @@ block from the start when misclicked)
   - `<leader>m` : add cursors for each line of a visual area
   - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
   - `<leader>l` : lock cursors
-- calculus (in *normal* mode or *visual* mode):
+- *number formats* and more (in *normal* mode or *visual* mode):
+  - NOTE: it also works with characters if the `alpha` option is added to
+  `vim.opt.nrformats` (it is set by default; otherwise try `:set nf=alpha`);
+  it's very useful for spawning variable names in a buffer (say, `a = `, `b =
+  `, `c = `...)
   - `<C-a>` : increment a number
   - `<C-x>` : decrement a number
-  - `g` (in *visual* mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first** number
-  in the visual block for each line
+  - `g` (in *visual* mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first**
+  number in the visual block for each line:
+  ```plaintext
+  0                                                    1
+  0   --( <C-v> (to visual all the 0 then) g<C-a> )--> 2 (instead of 0s)
+  0                                                    3
+  ```
 - **Case sensitivity**: the default setting is case insensitive so use `\C`
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a

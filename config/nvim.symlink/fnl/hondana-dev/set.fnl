@@ -39,6 +39,8 @@
 (vim.opt.isfname:append "@-@")
 (set vim.opt.fillchars {:eob " "})
 ;; `:lua vim.opt.fillchars:remove("eob")` to restore
+;; nrformats has alpha so `<C-a>` or `g<C-a>` works with characters
+(vim.opt.nrformats:append "alpha")
 (let [map {:guicursor ""
            ;; shared with Vim
            :undodir (-> [(os.getenv :HOME) :.vim :undodir] (unpack)
@@ -48,7 +50,7 @@
            :signcolumn :yes
            :updatetime 50
            :timeoutlen 3000
-           ;; try ↵
+           ;; try ↵  for eol
            :listchars {:tab "» " :trail "·" :nbsp "␣" :eol "¶"}
            ;; `list` after `listchars`
            :list true
