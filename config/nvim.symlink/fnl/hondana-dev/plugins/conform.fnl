@@ -9,7 +9,7 @@
 
 ;; TODO: add a cache AND a command to add/remove these files
 ;; list of filetypes to format-on-save
-(set S.format-on-save-filetypes [:fennel :exs :ex])
+(set S.format-on-save-filetypes [:fennel :exs :ex :zig])
 ;; TODO: disable in certain path (tests, node_modules...)
 ;; (when (not (: (vim.api.nvim_buf_get_name $) :match "/node_modules/")) ?)
 
