@@ -172,6 +172,19 @@
                {;; when in multi-cursors, replace `gc`/`gcc` with `<C-/>`
                 :custom_key_maps [[[:n :i] "<C-/>" #(cmd "normal gcc")]
                                   [[:v] "<C-/>" #(cmd "normal gc")]
+                                  ;; <C-c> as escape
+                                  [:n
+                                   :<C-c>
+                                   #(let [m (require :multiple-cursors)]
+                                      (m.normal_escape))]
+                                  [:i
+                                   :<C-c>
+                                   #(let [m (require :multiple-cursors.insert_mode.escape)]
+                                      (m.escape))]
+                                  [:x
+                                   :<C-c>
+                                   #(let [m (require :multiple-cursors.visual_mode.escape)]
+                                      (m.escape))]
                                   ;; mini.surround
                                   [:n
                                    :<leader>sa
