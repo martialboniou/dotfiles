@@ -44,8 +44,9 @@
                                  :score_offset 15
                                  : should_show_items
                                  :opts {:insert true}}}}
-   ;; documentation removed                             
-   :signature {:enabled true :window {:show_documentation false}}
+   :signature {:enabled true
+               :trigger {:show_on_insert true}
+               :window {:border :rounded :show_documentation true}}
    :completion {:list {:selection {:preselect true
                                    ;; don't insert before accept + use `ghost text`
                                    :auto_insert false}}
@@ -60,6 +61,9 @@
             :preset :default
             ;; (experimental) check `hondana-dev.remap`
             :<Tab> [:fallback]
+            ;; <C-k> is used for digraphs
+            :<C-k> [:fallback]
+            :<C-s> [:show_signature :hide_signature :fallback]
             ;; NOTE: <C-n>/<C-p> = show too (like <C-space>)
             :<C-n> [:show :select_next :fallback_to_mappings]
             :<C-p> [:show :select_prev :fallback_to_mappings]

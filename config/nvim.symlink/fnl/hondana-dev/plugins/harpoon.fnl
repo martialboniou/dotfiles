@@ -62,8 +62,11 @@
                 2 #(let [h (require :harpoon)]
                      (h.ui:toggle_quick_menu (h:list)))
                 :desc "Toggle the harpoon's quick menu"}
-               ;; h,t,n,s = keys for Dvorak layout
+               ;; CTRL + h,t,n,s = keys for Dvorak layout
                ;; (you can add more to access #5+ harpooned files)
+               ;; WARN: <C-s> is used by blink.cmp to toggle signature in
+               ;; insert mode instead of the default <C-k> used for digraphs
+               ;; (see `hondana-dev.plugins.completion`)
                (unpack (nav-file-mapping! :h :t :n :s))]
         :lazy true
         ;; setup as method is MANDATORY

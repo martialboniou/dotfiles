@@ -48,6 +48,7 @@
            :scrolloff 8
            :colorcolumn :100
            :signcolumn :yes
+           ;; :winborder :rounded
            :updatetime 50
            :timeoutlen 3000
            ;; try ↵  for eol

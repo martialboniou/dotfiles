@@ -52,6 +52,15 @@ mode:
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
   international Dvorak layout (+ Command Qwerty) on macOS)
+- `<C-k>` (in *insert* mode) : prefix to type a *digraph*:
+  - `<C-k>ki` (in *insert* mode) : insert the japanese *hiragana* `き`
+  - `<C-k>=e` (in *insert* mode) : insert the euro symbol (*ie* `€`)
+  - `:digraphs`/`:digr`: show the currently defined *digraph*s
+    - `:digr e: 235` : add `<C-k>e:` to print `ë` (already set by default)
+  - **BEWARE**: some plugins' default keybindings may override this:
+    - example: `blink.cmp` signature toggler has been replaced, from `<C-k>` to
+    `<C-s>` in insert mode;`<C-s>` is `vim.lsp.buf.signature_help()` on a
+    vanilla Vim
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
@@ -155,8 +164,9 @@ block from the start when misclicked)
   - `grr` : `vim.lsp.buf.references()`
   - `gri` : `vim.lsp.buf.implementation()`
   - `gra` : `vim.lsp.buf.code_action()`
-  - `<C-S>` (in *insert* and *visual* mode **only**) : `vim.lsp.buf.signature_help()`
-    (NOTE: `<C-S>` is mapped to the Harpoon navigation in *normal* mode)
+  - `<C-S>` (in *visual* mode **only**) : `vim.lsp.buf.signature_help()`
+    (NOTE: `<C-S>` is mapped to the Harpoon navigation in *normal* mode;
+    and, in *insert* mode, it toggles the signature from `blink.cmp`)
   - `gO` : `vim.lsp.buf.document_symbol()` (NOTE: **check if it doesn't collide
     with the Markdown Outline keybinding**; it was also the default Tangerine's
     `:FnlGotoOutput` before `gG` to show the Lua output file from the current
@@ -348,6 +358,10 @@ bad idea; REMINDER: `<localleader>` is `,`)
   - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
     don't use `<C-a>` either because you lose the cursor navigation (start of line);
     `F5`/`fn a` is my current choice for `tmux`)
+  - `<C-s>` : toggle the signature helper (from `blink.cmp`, not from `vim.lsp`
+  which is the default setting)
+    - it was `<C-k>` by default but it conflicts with the *digraph* prefix key
+    in *insert* mode
   - other keys (common in any Vim setup)
     - `<C-e>` : cancel the completion
     - `<C-u>`/`<C-d>` : scroll the document up/down
@@ -356,7 +370,9 @@ bad idea; REMINDER: `<localleader>` is `,`)
     `vim.lsp.buf.format`
   - **REMINDER**: default mappings introduced in NeoVim 0.11:
     - `<C-s>` (in *insert* mode) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
-      switches to the first harpoon in ***normal* mode**; it was `<C-h>` before)
+    switches to the first harpoon in ***normal* mode**; it was `<C-h>` before)
+      - **IMPORTANT**: in this setup `<C-s>` toggles the signature from
+      `blink.cmp` (check hondana-dev.plugins.completions)
     - `K` : hover (*BEWARE*: `K` moves the selection up in ***visual* mode**)
     - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
     - `gra` (in *normal* or *visual* mode) : `vim.lsp.buf.code_action()`
@@ -631,7 +647,7 @@ Here's some tips for the LISP typists:
 - `,\<Space>` (in *insert* mode) : print `λ` (only in this configuration; a viable
   **keyword** in Fennel)
 - `<C-k>` + `*` + `l` (in *insert* mode) : print `λ` (same as above but this is an 
-  universal keybinding for Vim/NeoVim)
+  universal keybinding in Vim/NeoVim, thanks to the *digraph*s)
 
 **Fennel developers**: if you need to compile some fennel codes using
 **self-contained libraries** from
