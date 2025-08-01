@@ -3,7 +3,7 @@
 
 (local {:nvim_create_autocmd au
         :nvim_create_augroup create-augroup
-        :nvim_get_current_bug current-buf} vim.api)
+        :nvim_get_current_buf current-buf} vim.api)
 
 (local augroup #(create-augroup $ {:clear true}))
 
