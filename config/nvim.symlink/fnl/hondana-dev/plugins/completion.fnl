@@ -44,10 +44,11 @@
                                  :score_offset 15
                                  : should_show_items
                                  :opts {:insert true}}}}
-   :signature {:enabled true
+   ;; signature disabled by default for now
+   ;; <C-s> to enable `vim.lsp.buf.signature_help()`
+   :signature {:enabled false
                :trigger {:show_on_insert true}
-               ;; signature disabled by default; <C-s> to enable it
-               :window {:border :rounded :show_documentation false}}
+               :window {:border :rounded :show_documentation true}}
    :completion {:list {:selection {:preselect true
                                    ;; don't insert before accept + use `ghost text`
                                    :auto_insert false}}

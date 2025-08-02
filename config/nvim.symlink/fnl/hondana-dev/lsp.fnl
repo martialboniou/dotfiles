@@ -151,9 +151,12 @@
 ;;
 ;; WARN: enable inlay hint
 (vim.lsp.inlay_hint.enable)
-;;
+
 ;; INFO: show deprecation with a strikethrough text
 (let [{:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api
       group (augroup :Hondana_HiLspDeprecation {:clear true})
       callback #(vim.cmd "hi @lsp.mod.deprecated gui=strikethrough")]
   (au [:ColorScheme] {: callback : group}))
+
+(let [border :rounded]
+  (vim.keymap.set :i :<C-s> #(vim.lsp.buf.signature_help {: border})))
