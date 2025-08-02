@@ -46,7 +46,8 @@
                                  :opts {:insert true}}}}
    :signature {:enabled true
                :trigger {:show_on_insert true}
-               :window {:border :rounded :show_documentation true}}
+               ;; signature disabled by default; <C-s> to enable it
+               :window {:border :rounded :show_documentation false}}
    :completion {:list {:selection {:preselect true
                                    ;; don't insert before accept + use `ghost text`
                                    :auto_insert false}}
