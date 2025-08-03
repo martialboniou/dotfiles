@@ -114,6 +114,17 @@
       callback #(setlocal!! 4 :sw :ts)]
   (au :FileType {: callback : group : pattern}))
 
+;; disable `o` in `formatoptions` for every filetype so inserting a line with
+;; `o` or `O` won't prepend a comment header if we are inside a line comment
+(let [group (augrp :Hondana_FormatOptionsWithoutO)
+      callback #(vim.opt_local.formatoptions:remove :o)]
+  (au :FileType {: callback : group}))
+
+;; HACK: TEMPORARY: for Fennel, missing `r` formatoptions
+(let [group (augrp :Hondana_FormatOptions_Fennel)
+      callback #(vim.opt_local.formatoptions:append :r)]
+  (au :FileType {: callback : group :pattern :fennel}))
+
 ;; visible yank
 (let [group (augrp :Hondana_Highlight_Yank)
       callback #(vim.highlight.on_yank)]
