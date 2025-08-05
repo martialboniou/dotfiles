@@ -140,14 +140,13 @@
 (keydel [:i :s] :<Tab>)
 
 ;; WARN: NEW: <localleader><localleader> or double comma => semi-colon at eol
-;; (works with a very short time duration on insert mode too)
+;; (works in a very short time duration on insert mode only)
 ;; FIX: better code (TreeSitter?)
-;; NOTE: this keybinding printed a underscore on insert mode (obsolete)
-(keyset :i :<localleader><localleader> "<C-o>A;"
-        {:remap false :silent true :desc "Add semi-colon at the EOL"})
+(keyset :i :<localleader><localleader> "<C-o>g_<C-o>a;"
+        {:remap false
+         :silent true
+         :desc "Add semi-colon at the EOL before any whitespace"})
 
 ;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
 ;; (as `<C-o>$`)
 (keyset :i :<C-e> "<C-o>$" {:remap false :silent true})
-
-;
