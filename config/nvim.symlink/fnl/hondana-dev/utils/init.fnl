@@ -37,9 +37,13 @@
             (error message.file_cannot_be_executable))
           (.. "you can execute " file " now!")))))
 
+;; TODO: build with a macro to generate the redundant string varargs
 (tc param ft string return boolean)
 (λ M.lisp-ft? [ft]
   "true if the filetype `ft` has the Lisp syntax"
   (or= ft :fennel :lisp :clojure :scheme :racket :shen :janet :hy))
+
+(tc type "string[]")
+(set M.lisp-ft [:fennel :lisp :clojure :scheme :racket :shen :janet :hy])
 
 M

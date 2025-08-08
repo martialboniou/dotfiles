@@ -139,13 +139,60 @@
 ;; NOTE: check `hondana-dev.plugins.completion`
 (keydel [:i :s] :<Tab>)
 
-;; WARN: NEW: <localleader><localleader> or double comma => semi-colon at eol
+;; WARN: NEW: `comma period`/`comma comma` => semi-colon at eol
 ;; (works in a very short time duration on insert mode only)
+;; INFO: `,.` sets the cursor after the newly added `;`
+;;       `,,` sets the cursor before the newly added `;`
 ;; FIX: better code (TreeSitter?)
-(keyset :i :<localleader><localleader> "<C-o>g_<C-o>a;"
-        {:remap false
-         :silent true
-         :desc "Add semi-colon at the EOL before any whitespace"})
+(let [pattern "<C-o>g<C-o>a;"
+      inskey #(keyset :i $...)
+      remap false
+      silent true]
+  (inskey ",." pattern
+          {: remap
+           : silent
+           :desc "Add semi-colon at the EOL before any trailing whitespace"})
+  (inskey ",," (.. pattern "<C-o>i")
+          {: remap
+           : silent
+           :desc ;
+           "Add semi-colon at the EOL before any trailing whitespace; the cursor is placed before"}))
+
+;; (local {:api {:nvim_create_autocmd au :nvim_create_augroup augroup}} vim)
+;; FIX: don't do THAT! ie delete common keys!
+; (let [group (augroup :Hondana_RemoveDoubleCommaOnInsertMode {:clear true})
+;       pattern [:markdown
+;                :txt
+;                :asciidoc
+;                :org
+;                :rst
+;                :tex
+;                :typst
+;                :lua
+;                :python
+;                :fortran
+;                :elixir
+;                :gleam
+;                :erlang
+;                :sgml
+;                :html
+;                :xml
+;                :xslt
+;                :json
+;                :yaml
+;                :koka
+;                :ml
+;                :haskell
+;                :coq
+;                :miranda
+;                :idris2
+;                :sql
+;                :plsql
+;                (-> :hondana-dev.utils (require) (. :lisp-ft) (unpack))]
+;       callback #(let [syms [",," ",."]]
+;                   (for [i 1 (length syms)]
+;                     (vim.api.nvim_buf_del_keymap 0 :i (. syms i))))]
+;   (au :FileType {: callback : pattern : group}))
 
 ;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
 ;; (as `<C-o>$`)

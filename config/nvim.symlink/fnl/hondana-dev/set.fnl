@@ -15,7 +15,7 @@
 (local pattern "*")
 
 ;; if activated, no background for cursorline
-(let [group (augroup :Hondana_HiCursorLine {:clear true})
+(let [group (augrp :Hondana_HiCursorLine)
       callback #(vim.api.nvim_set_hl 0 :Cursorline {:bg :NONE})]
   ;; ensure no conflicts with any colorschemes in `hondana-dev.plugins.colors` 
   (au [:ColorScheme :VimEnter] {: callback : group : pattern}))
