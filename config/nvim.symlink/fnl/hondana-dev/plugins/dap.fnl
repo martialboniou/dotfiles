@@ -97,7 +97,19 @@
 (tc type "fun(self:LazyPlugin, opts:table): nil")
 (fn config []
   (let [{&as env} (collect [_ m (pairs [:dap :dapui])]
-                    (values m (require m)))]
+                    (values m (require m)))
+        sign vim.fn.sign_define]
+    (sign :DapBreakpoint {:text "●" :texthl :DapBreakpoint})
+    (sign :DapBreakpointCondition {:text "●" :texthl :DapBreakpointCondition})
+    (sign :DapLogPoint {:text "◆" :texthl :DapLogPoint})
+    (sign :DapStopper {:text ""
+                       :texthl :DapStopped
+                       :linehl :DapStopped
+                       :numhl :DapStopped})
+    (vim.api.nvim_set_hl 0 :DapStopped {:bg "#505050"})
+    ;;
+    ;; UI
+    ;;
     (env.dapui.setup)
     (let [cfg :dapui_config
           open #(env.dapui.open)
@@ -106,11 +118,8 @@
       (set (. env.dap.listeners.before.event_terminated cfg) close)
       (set (. env.dap.listeners.before.event_exited cfg) close))
     (local lldb-adapter-name :lldb-dap)
-    (var lldb-adapter (or (full-exe-path lldb-adapter-name) ;; legacy
-                          (full-exe-path "lldb-vscode")))
-    (when (-> (vim.uv.os_uname)
-              (. :sysname)
-              (= :Darwin))
+    (var lldb-adapter (full-exe-path lldb-adapter-name))
+    (when (-> (vim.uv.os_uname) (. :sysname) (= :Darwin))
       ;; fetch the absolute path of homebrew at comptime
       (let [(ok brew-path) (brew-prefix)]
         (when ok
@@ -122,10 +131,16 @@
                     vim.log.levels.WARN)
         (let [cfg env.dap.configurations
               ada env.dap.adapters]
+          ;;
+          ;; ADAPTERS
+          ;;
           (set ada.lldb {:type :executable
                          :command lldb-adapter
                          :env {:LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY :YES}
                          :name :lldb})
+          ;;
+          ;; SETUP
+          ;;
           (set cfg.c
                [{:name :Launch
                  :type :lldb
@@ -133,9 +148,18 @@
                  :cwd "${workspaceFolder}"
                  :stopOnEntry false
                  :args []
-                 :runInTerminal true
+                 ;; WARN: runInTerminal is dangerous
+                 ;; :runInTerminal true
                  :program #(vim.fn.input "Path to executable: "
                                          (.. (vim.fn.getcwd) "/") :file)}])
+          (set cfg.zig [{:name :Launch
+                         :type :lldb
+                         :request :launch
+                         ;; WARN: naive approach
+                         :program "${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}"
+                         :cwd "${workspaceFolder}"
+                         :stopOnEntry false
+                         :args []}])
           (set cfg.cpp cfg.c)))))
 
 ;;; PLUGINS
