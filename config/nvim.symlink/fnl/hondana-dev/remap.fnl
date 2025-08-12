@@ -132,6 +132,10 @@
 ;;; ** EXPERIMENTAL SECTION **
 (local remap false)
 (local silent true)
+;; `<C-\>` is mandatory here so the cursor doesn't move back twice because of
+;; the `<C-o>` at the EOL (otherwise `<C-o>` doesn't move the cursor if there's
+;; at least one character after the cursor)
+(local move-backwark-seq "<C-\\><C-o>h")
 
 ;; disable `<Tab>` default to vim.snippet.jump if active I use `<C-f>` for this
 ;; (via `blink.cmp` & `<C-b>` for the backwards alternative)
@@ -152,7 +156,7 @@
           {: remap
            : silent
            :desc "Add semi-colon at the EOL before any trailing whitespace"})
-  (inskey ",," (.. pattern "<C-o>h")
+  (inskey ",," (.. pattern move-backwark-seq)
           {: remap
            : silent
            :desc ;
@@ -160,7 +164,7 @@
 
 ;; WARN: NEW: `,p` simulates a auto-pairing of curly brackets (ie `{}`)
 ;; in insert mode by pulling the cursor back in between
-(keyset :i ",p" "{}<C-o>h"
+(keyset :i ",p" (.. "{}" move-backwark-seq)
         {: remap
          : silent
          :desc "Put the cursor back after a fastly typed {} sequence"})
