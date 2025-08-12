@@ -130,6 +130,8 @@
   (keyset [:i :n :x] :<F2> set-numbers))
 
 ;;; ** EXPERIMENTAL SECTION **
+(local remap false)
+(local silent true)
 
 ;; disable `<Tab>` default to vim.snippet.jump if active I use `<C-f>` for this
 ;; (via `blink.cmp` & `<C-b>` for the backwards alternative)
@@ -145,19 +147,25 @@
 ;;       `,,` sets the cursor before the newly added `;`
 ;; FIX: better code (TreeSitter?)
 (let [pattern "<C-o>g_<C-o>a;"
-      inskey #(keyset :i $...)
-      remap false
-      silent true]
+      inskey #(keyset :i $...)]
   (inskey ",." pattern
           {: remap
            : silent
            :desc "Add semi-colon at the EOL before any trailing whitespace"})
-  (inskey ",," (.. pattern "<C-o>i")
+  (inskey ",," (.. pattern "<C-o>h")
           {: remap
            : silent
            :desc ;
            "Add semi-colon at the EOL before any trailing whitespace; the cursor is placed before"}))
 
+;; WARN: NEW: `,p` simulates a auto-pairing of curly brackets (ie `{}`)
+;; in insert mode by pulling the cursor back in between
+(keyset :i ",p" "{}<C-o>h"
+        {: remap
+         : silent
+         :desc "Put the cursor back after a fastly typed {} sequence"})
+
 ;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
 ;; (as `<C-o>$`)
-(keyset :i :<C-e> "<C-o>$" {:remap false :silent true})
+(keyset :i :<C-e> "<C-o>$"
+        {: remap : silent :desc "Jump at the EOL in insert mode"})
