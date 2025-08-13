@@ -171,5 +171,5 @@
 
 ;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
 ;; (as `<C-o>$`)
-(keyset :i :<C-e> "<C-o>$"
-        {: remap : silent :desc "Jump at the EOL in insert mode"})
+;; (keyset :i :<C-e> "<C-o>$"
+;;         {: remap : silent :desc "Jump at the EOL in insert mode"})
