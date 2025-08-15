@@ -1,0 +1,25 @@
+{
+  "import same name": {
+    "prefix": "import-id",
+    "body": [
+
+      "const ${1/([^.-]+)(-*)(?:\\..*)?/$1${2:+_}/g} = @import(\"$1\")$0"
+    ],
+    "description": "import with the name of the variable as the module/package"
+  },
+  "builtin": {
+    "prefix": "builtin",
+    "body": [
+      "const builtin = @import(\"builtin\");$0"
+    ]
+  },
+  "payload capture": {
+    "prefix": ["capture", "|"],
+    "body": [
+      "|$1| {",
+      "    $0",
+      "}"
+    ],
+    "description": "capture then open a block"
+  }
+}

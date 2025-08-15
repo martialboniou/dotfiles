@@ -16,6 +16,12 @@
           "fennel"
         ],
         "path": "./fennel.json"
+      },
+      {
+        "language": [
+          "zig"
+        ],
+        "path": "./zig.json"
       }
     ]
   }
