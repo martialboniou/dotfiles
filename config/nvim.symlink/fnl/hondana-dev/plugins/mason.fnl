@@ -47,10 +47,8 @@
              ;; be installed (see `hondana-dev.plugins.lint`)
              :cmakelint])
 
-(local {:api {:nvim_create_user_command uc}
-        :fn {: stdpath}
-        :fs {: joinpath}
-        : uv} vim)
+(local {:api {:nvim_create_user_command uc} :fn {: stdpath} :fs {: joinpath}}
+       vim)
 
 (fn mason-ensure-installed []
   "Install the recommended servers. Rebuild a target if Linux Alpine."
@@ -117,11 +115,31 @@
 ;; TIP FOR ALPINE:
 ;; - `apk add g++ libstdc++ cmake unzip gzip wget curl gettext-dev readline-dev`
 ;; - `apk add clangd clang-extra-tools clang llvm-dev dotnet8-sdk`
-;; - `apk add luarocks luajit lua5.1-dev tree-sitter`
+;; - `apk add luarocks luajit lua5.1-dev tree-sitter yq`
 ;; - `npm i -g node-gyp tree-sitter-cli jsonlint`
 ;; - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+;; MY EXPERIENCE WITH ALPINE AND MASON:
+;; - Mason packages that can be installed WITHOUT THE TARGET (use
+;; `:MasonInstall`):
+;;   - `jq`
+;;   - `taplo`
+;;   - `shfmt`
+;;   - `marksman`
+;;   - `awk-language-server`
 ;; - install some recommended apps by hand if Mason doesn't work for them:
-;;   - `lua-language-server`
+;;   - `goimports-reviser`
+;;     - type: formatter/import sorter
+;;     - Alpine Linux 3.22
+;;       - version 3.9.0
+;;       - requirements: `go >= 1.24`
+;;       - install: `go install -v github.com/incu6us/goimports-reviser@latest`
+;;     - Alpine Linux 3.21
+;;       - version: 3.8.2
+;;       - requirements: `go >= 1.23`
+;;       - install: `go install -v github.com/incu6us/goimports-reviser/v3@v3.8.2`
+;;     - INFO: `golines` can be installed from Mason even on Alpine Linux 3.20
+;;     - INFO: `gofumpt` can be installed from Mason on Alpine Linux 3.21
+;;   - `lua-language-server` (the Mason version crashes on Alpine Linux 3.22)
 ;;     - type: LSP
 ;;     - requirements: `luamake`
 ;;       - `luamake`
@@ -131,17 +149,12 @@
 ;;         - NOTE: remove the `luamake` alias added in rc file when no need
 ;;     - build: `./make.sh`
 ;;     - install: `LS="$HOME/.local/bin/lua-language-server" echo "#!/bin/bash\nexec \"${LUA_LS_PATH}\" \"$@\"" > "${B}" && chmod 750 "${B}"`
-;;   - `marksman`
-;;     - type: LSP
-;;     - requirements: `dotnet workload update`
-;;     - install: `make install`
-;;     - NOTE: the binary available for linux works too (tested on Alpine 3.20 & 3.21 for Aarch64)
-;;   - `goimports-reviser`
-;;     - type: formatter/import sorter
-;;     - requirements: `go >= 1.23` (upgrade to Alpine Linux 3.21)
-;;     - install: `go install -v github.com/incu6us/goimports-reviser/v3@v3.8.2`
-;;       - NOTE: `3.9.0` requires `go >= 1.24`
-;;     - INFO: `golines` can be installed from Mason even on Alpine Linux 3.20
-;;     - INFO: `gofumpt` can be installed from Mason on Alpine Linux 3.21
+;;   - older apps known to have been fixed:
+;;     - `marksman` (no issue with Mason on Alpine Linux 3.22)
+;;       - type: LSP
+;;       - requirements: `dotnet workload update`
+;;       - install: `make install`
+;;       - NOTE: the binary available for linux works too (tested on Alpine Linux
+;;       3.21 for Aarch64)
 
 P

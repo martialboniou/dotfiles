@@ -2,7 +2,7 @@ NeoVim
 ======
 
 - aimed for version 0.11 at least
-- tested on version 0.11.2 & 0.12 for macOS 15.5 & Alpine Linux 3.20/3.21
+- tested on version 0.11.2 & 0.12 for macOS 15.5 & Alpine Linux 3.22
   (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
   the `community` repository; NeoVim was built using `gettext-dev`)
 - developer guidance:
@@ -18,11 +18,14 @@ Check this archive [README.md](https://github.com/martialboniou/dotfiles/blob/ma
 ensure you have the required tools for [Mason](https://github.com/mason-org/mason.nvim) (`curl`,
 `unzip`...).
 
-For the best experience, ensure `rg`, `fzf` & `fd` are installed:
+For the best experience, ensure `rg`, `fzf`,`fd` & `yq` are installed:
 
 ```sh
-brew install ripgrep fzf fd
+brew install ripgrep fzf fd yq
 ```
+
+`yq` is only required for Mason 2 so you might skip this install if you don't
+need Mason.
 
 Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
 monospaced font for your terminal (I'm happy with ZedMono), otherwise
@@ -40,14 +43,17 @@ Vim keybinding reminders & tips
 specific command
 - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
 - (*experimental*) notable case in *insert* mode without exiting the *insert*
-mode:
-  - `,,` *ie* `<localleader><localleader>` : jumps and prints `;` at the end of
-  the line
-    - **TIP**: no need to pause after typing a *comma*; this keybinding works
-    on a very short timeout like a *double-click* using a mouse
+mode (**TIP**: for these keybindings, no need to pause after typing a *comma*;
+it works on a very short timeout like a *double-click* using a mouse; notice
+that these keys were chosen for the lowest impact on your typing and for the
+Dvorak keyboard in mind):
+  - `,.` *ie* `<localleader>.` : jumps and prints `;` at the end of the line
+  (before the trailing whitespace)
+  - `,p` *ie* `<localleader>p` : prints a `{}` block and puts the cursor inside
+  - `,,` *ie* `<localleader><localleader>` : jumps, prints `;` at the end of
+  the line (before the trailing whitespace) **AND puts the cursor before** `;`
     - NOTE: this keybinding was used to print an underscore in *insert* mode
     (obsolete)
-  - `<C-e>` (alias of `<C-o>$`) : jump at the EOL
 - `"+p`  : paste the system clipboard register
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
