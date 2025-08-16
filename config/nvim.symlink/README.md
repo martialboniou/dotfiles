@@ -67,6 +67,15 @@ Dvorak keyboard in mind):
     - example: `blink.cmp` signature toggler has been replaced, from `<C-k>` to
     `<C-s>` in insert mode;`<C-s>` is `vim.lsp.buf.signature_help()` on a
     vanilla Vim
+- `<C-e>`/`<C-y>` (in *insert* mode) (check `:help i_CTRL-y`)
+  - insert the **word** which is below/above the cursor (the default keys
+  inserts the one character at a time in a vanilla Vim install; this is the
+  *wordwise* version)
+  - **IMPORTANT**: `<C-e>` always work but to use `<C-y>` normally, you'll need
+  to disable the completion in the buffer (by typing `<F4>`) because `<C-y>`
+  in *insert* mode accepts the completion's suggestion when the completion is
+  enabled (typing `<F4>` again to restore the completion; *ie* `:lua
+  vim.b.completion = true`)
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
@@ -204,6 +213,10 @@ block from the start when misclicked)
   - `<F2>` : cycle how the numbers are displayed in the left margin (no numbers,
   absolute, relative)
   - `<F3>` (in *insert* mode too) : print a date 
+  - `<F4>` (in *insert* mode too) : toggle completion in the buffer (useful to
+  get `i_CTRL-y` working to insert character which is above the cursor;
+  otherwise, `<C-y>` accepts the `blink.cmp`'s suggestion in insert mode when
+  the completion is enabled in the buffer)
 - utility commands
   - `:ToggleExec` : toggle the executability of a file
   - `:ImprintFilename` : imprint the current filename at the cursor position

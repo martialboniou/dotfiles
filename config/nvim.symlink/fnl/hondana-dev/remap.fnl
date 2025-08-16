@@ -120,6 +120,19 @@
 (keyset :n :gh :^)
 (keyset :n :gl :g_)
 
+;; <F4> => toggle completion in the buffer
+;; NOTE: useful to get `i_CTRL-y` working to insert character which is above
+;; the cursor; otherwise, `<C-y>` accepts the `blink.cmp`'s suggestion in
+;; insert mode when the completion is enabled in the buffer
+(keyset [:i :n :x] :<F4>
+        (fn []
+          ;; an undefined (nil) buffer completion may exist
+          (if (= vim.b.completion nil) (set vim.b.completion true))
+          (set vim.b.completion (not vim.b.completion))
+          (vim.notify (if vim.b.completion "Completion restored!"
+                          "Completion stopped in this buffer!")
+                      vim.log.levels.INFO)))
+
 ;; <F3> => timestamp (oldie)
 (let [cmd "<C-r>=strftime('%Y-%m-%d %a %H:%M')<CR>"]
   (each [m c (pairs {:n (.. :i cmd :<Esc>) :i cmd})]
@@ -169,7 +182,11 @@
          : silent
          :desc "Put the cursor back after a fastly typed {} sequence"})
 
-;; `<C-e>` in insert mode to jump at the EOL without exiting the insert mode
-;; (as `<C-o>$`)
-;; (keyset :i :<C-e> "<C-o>$"
-;;         {: remap : silent :desc "Jump at the EOL in insert mode"})
+;; wordwise `<C-e>`/`<C-y>` in insert mode (restored from my old Vim 6.3 setup)
+;; INFO: you might not like this one; check `:help i_CTRL-y`
+;; WARN: `<C-e>` always work but to use `<C-y>` normally, you'll need to
+;; disable the completion in the buffer (using `<F4>`) because `<C-y>` in
+;; insert mode accepts the completion's suggestion when the completion is
+;; enabled
+(vim.cmd "inoremap <expr> <c-e> matchstr(getline(line('.')+1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
+(vim.cmd "inoremap <expr> <c-y> matchstr(getline(line('.')-1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
