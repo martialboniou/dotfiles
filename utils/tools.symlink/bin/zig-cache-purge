@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+fd -uuu .zig-cache ~/Documents/Code/zig -x rm -r
