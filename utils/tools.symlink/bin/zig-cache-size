@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-fd -uuu .zig_cache ~/Documents/Code/zig -x du -sm |\
+fd -uuu .zig-cache ~/Documents/Code/zig -x du -sm |\
   awk 'BEGIN{ sum=0 } { sum+=$1 } END{ print ".zig-cache remains: " sum " MB" }'

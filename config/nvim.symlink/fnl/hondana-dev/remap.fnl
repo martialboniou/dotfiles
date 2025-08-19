@@ -190,3 +190,8 @@
 ;; enabled
 (vim.cmd "inoremap <expr> <c-e> matchstr(getline(line('.')+1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
 (vim.cmd "inoremap <expr> <c-y> matchstr(getline(line('.')-1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
+
+;; `jk` in insert mode to exit insert mode
+;; WARN: it won't work with the `multiple cursors` plugin (use `<C-c>` or
+;; `<Esc>`)
+(keyset :i :jk :<Esc> {: remap : silent :desc "Exit the insert mode"})
