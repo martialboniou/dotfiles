@@ -185,6 +185,11 @@
                                    :<C-c>
                                    #(let [m (require :multiple-cursors.visual_mode.escape)]
                                       (m.escape))]
+                                  ;; TEST: EXPERIMENTAL `jk` as exit the insert mode
+                                  [:i
+                                   :jk
+                                   #(let [m (require :multiple-cursors.insert_mode.escape)]
+                                      (m.escape))]
                                   ;; mini.surround
                                   [:n
                                    :<leader>sa

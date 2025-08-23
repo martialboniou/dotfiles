@@ -38,9 +38,15 @@
 ## -- this code can be changed between subshells --
 
 # your developer project home
-export DEVELOPER_ROOT="${HOME}/Documents/Code"
-hash -d code="${DEVELOPER_ROOT}"
+DOCUMENTS="${HOME}/Documents"
+export DEVELOPER_ROOT="${DOCUMENTS}/Code"
 hash -d dev="${DEVELOPER_ROOT}"
+hash -d zig="${DEVELOPER_ROOT}/zig"
+hash -d dot="${DEVELOPER_ROOT}/dotfiles"
+hash -d vim="${HOME}/.config/nvim"
+
+# misc. hashes
+hash -d doc="${DOCUMENTS}/Notebook"
 
 # files
 zdot_sources_path=${ZDOTDIR}/zshrc.d

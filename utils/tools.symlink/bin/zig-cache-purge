@@ -1,2 +1,24 @@
 #!/usr/bin/env bash
-fd -uuu .zig-cache ~/Documents/Code/zig -x rm -r
+ZIG_CACHE=".zig-cache"
+ZIG_CODE="$HOME/Documents/Code/zig"
+
+SIZE=$(fd -uuu $ZIG_CACHE $ZIG_CODE -x du -sm | awk 'BEGIN{ sum=0 } { sum+=$1 } END{ print sum }')
+if [ "$SIZE" != "0" ]; then
+  echo Remaing Zig caches: $SIZE MB
+  read -r -n 1 -p "Do you want to purge the $ZIG_CACHE inside the $ZIG_CODE directories? [y|N] " REPLY;
+  if [ "$REPLY" = "${REPLY#[yY]}" ]; then
+    printf "\n\033[32m%s \n\033[0m" "Caches untouched."
+  else
+    # purge command
+    fd -uuu $ZIG_CACHE $ZIG_CODE -x rm -r
+    SIZE=$(fd -uuu $ZIG_CACHE $ZIG_CODE -x du -sm | awk 'BEGIN{ sum=0 } { sum+=$1 } END{ print sum }')
+    if [ "$SIZE" != "0" ]; then
+      printf "\n\033[31m%s \n\033[0m" "An error has occured! Caches not purged properly."
+      exit 1
+    fi
+    printf "\n\033[31m%s \n\033[0m" "Caches purged."
+  fi
+  exit 0
+fi
+
+printf "\033[33m%s \n\033[0m" "No cache found."
