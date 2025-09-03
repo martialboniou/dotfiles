@@ -1,7 +1,5 @@
 (import-macros {: tc} :hondana-dev.macros)
 
-(require :hondana-dev)
-
 (macro imports! [...]
   (icollect [_ e (ipairs [...])]
     {:import e}))
@@ -10,8 +8,13 @@
 ;; - `rustacean` supercharges your rust experience
 ;; - `haskell-cultist` sets `haskell-tools.nvim` instead of `hls`
 ;; - `developer` says you want to extend this setup by coding in Fennel
+;; - `commentator` says you don't enjoy grayish comments as it's difficult to
+;; read 
 (local {: roles} (require :hondana-dev.utils.globals))
-(roles:set [:developer :haskell-cultist])
+(roles:set [:developer :commentator :haskell-cultist])
+
+;; WARN: this module depends on `roles`
+(require :hondana-dev)
 
 ;; set the list of your plugin specs' directories here
 (local plugins (imports! :hondana-dev.plugins :hondana-dev.plugins.unchecked))

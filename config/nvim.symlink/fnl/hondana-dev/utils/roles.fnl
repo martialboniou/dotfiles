@@ -1,7 +1,11 @@
 (import-macros {: tc} :hondana-dev.macros)
 
 (tc available_roles "Role[]")
-(local available-roles [:developer :rustacean :haskell-cultist :shenturion])
+(local available-roles [:developer
+                        :rustacean
+                        :haskell-cultist
+                        :shenturion
+                        :commentator])
 
 (local Roles {})
 (set Roles.__index Roles)

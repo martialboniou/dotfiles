@@ -17,4 +17,5 @@
 (tc field nu? boolean)
 
 ;; available roles used in `fnl/boot.fnl`
-(tc alias Role "'developer'|'rustacean'|'haskell-cultist'|'shenturion'")
+(tc alias Role
+    "'developer'|'rustacean'|'haskell-cultist'|'shenturion'|'commentator'")

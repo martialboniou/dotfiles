@@ -31,11 +31,6 @@
 (let [Roles (require :hondana-dev.utils.roles)]
   (set M.roles (Roles:new)))
 
-;; roles
-(tc type "Role[]")
-(let [Roles (require :hondana-dev.utils.roles)]
-  (set M.roles (Roles:new)))
-
 ;; ucm = unison-ready environment
 (tc type boolean)
 (set M.ucm (-> :ucm (vim.fn.executable) (= 1)))

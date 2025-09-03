@@ -153,8 +153,7 @@
 (vim.lsp.inlay_hint.enable)
 
 ;; INFO: show deprecation with a strikethrough text
-(let [{:nvim_create_autocmd au :nvim_create_augroup augroup} vim.api
-      group (augroup :Hondana_HiLspDeprecation {:clear true})
+(let [group (augrp :Hondana_HiLspDeprecation)
       callback #(vim.cmd "hi @lsp.mod.deprecated gui=strikethrough")]
   (au [:ColorScheme] {: callback : group}))
 
