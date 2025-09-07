@@ -97,4 +97,16 @@
   ;; :return
   v2)
 
+;; return a root_dir function for lsp
+;; (check `fnl/after/lsp`)
+(fn M.root-dir [...]
+  (let [files [...]]
+    (fn [bufnr on-dir]
+      (let [fname (vim.api.nvim_buf_get_name bufnr)]
+        (-?> :hondana-dev.utils.root-pattern
+             (require)
+             (. :root-pattern)
+             (#(($ (unpack files)) fname))
+             (on-dir))))))
+
 M

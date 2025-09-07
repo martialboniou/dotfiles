@@ -17,6 +17,7 @@
                 ;; :pyright ;; replaced by pyright-extended using ruff & yapf
                 :pyright-extended
                 :marksman
+                ;; FIX: PM me when expert will be post-alpha
                 :elixir_ls])
 
 ;; unison case: check https://github.com/unisonweb/unison
@@ -36,6 +37,7 @@
         ;; zig & zls must be of the same milestone so avoid the Mason version
         ;; if you need an older version or an unstable one
         :zls
+        ;; :ols
         :koka
         [:roc_ls :roc_language_server]
         ;; clangd can be managed by Mason
