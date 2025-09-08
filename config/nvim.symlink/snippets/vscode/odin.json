@@ -1,4 +1,13 @@
 {
+  "proc": {
+    "prefix": "proc",
+    "body": [
+      "$1 :: proc() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "new procedure"
+  },
   "main": {
     "prefix": "main",
     "body": [
