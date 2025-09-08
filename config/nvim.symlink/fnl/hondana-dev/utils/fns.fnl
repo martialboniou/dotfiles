@@ -97,8 +97,9 @@
   ;; :return
   v2)
 
+;; utility: root-dir
 ;; return a root_dir function for lsp
-;; (check `fnl/after/lsp`)
+;; INFO: check `fnl/after/lsp`
 (fn M.root-dir [...]
   (let [files [...]]
     (fn [bufnr on-dir]

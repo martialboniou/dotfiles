@@ -37,7 +37,8 @@
         ;; zig & zls must be of the same milestone so avoid the Mason version
         ;; if you need an older version or an unstable one
         :zls
-        ;; :ols
+        ;; odin
+        :ols
         :koka
         [:roc_ls :roc_language_server]
         ;; clangd can be managed by Mason

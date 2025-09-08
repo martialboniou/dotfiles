@@ -2,7 +2,7 @@
 (local root_dir (let [{: root-dir} (require :hondana-dev.utils.fns)]
                   (root-dir "*.u")))
 
-{:filetype [:unison]
+{:filetypes [:unison]
  :cmd [:nc :localhost (or (os.getenv :UNISON_LSP_PORT) :5757)]
  : root_dir
  :settings {}}
