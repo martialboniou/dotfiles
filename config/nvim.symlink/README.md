@@ -1,15 +1,12 @@
 NeoVim
 ======
 
-- aimed for version 0.11 at least
-- tested on version 0.11.2 & 0.12 for macOS 15.5 & Alpine Linux 3.22
+- aimed for version 0.11.4 and 0.12-dev
+- tested on version 0.11.4 & 0.12-dev (1187) for macOS 15.5 & Alpine Linux 3.22
   (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
   the `community` repository; NeoVim was built using `gettext-dev`)
 - developer guidance:
-  - ensure [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) is the latest
-    (or at least, after the 09/21/2024 master branch)
-    - Fennel 1.5.1 is highly recommended
-    - Fennel 1.5.0 is required (probably no `tset` in this setup)
+  - Fennel 1.5.0 or a more recent version is required (no `tset` in this setup)
 
 Pre-configuration
 -----------------
@@ -207,7 +204,7 @@ block from the start when misclicked)
     - **IMPORTANT**: core changes:
       - `W`/`B`  : move to the next/previous head element
       - `E`/`gE` : move to the next/previous tail element (`gE` was the default
-      [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) *eval*
+      [Tangerine](https://github.com/martialboniou/tangerine.nvim) *eval*
       keybinding; it's `gB` in this setup)
 - **function keys** (check `fnl.hondana-dev.remap`)
   - `<F2>` : cycle how the numbers are displayed in the left margin (no numbers,
@@ -598,7 +595,7 @@ If you want to edit some Fennel code, notice that:
   `;skip` prints a special comment if you want to locally skip the formatting)
 
 Here are some keybindings for the Fennel buffer (mainly to access a REPL):
-- from the [Tangerine](https://github.com/udayvir-singh/tangerine.nvim) plugin
+- from the [Tangerine](https://github.com/martialboniou/tangerine.nvim) plugin
   (NOTE: `<leader>g` is a prefix for git-related actions (as `<leader>gs` and
   other FuGITive commands); here, `g` followed by a **capital letter** is
   the pattern.):
@@ -649,7 +646,7 @@ server for intelligent editing of the Fennel programming language. This script i
 
 To setup this language server for your Fennel code inside `~/.config/nvim/fnl/`,
 you must run NeoVim at least once (in order to install
-[Tangerine](https://github.com/udayvir-singh/tangerine.nvim)), then run the bash
+[Tangerine](https://github.com/martialboniou/tangerine.nvim)), then run the bash
 script `./build-project.sh` from the previous directory; this will dump a
 `flsproject.fnl` file generated with the correct paths (including the
 [Hibiscus](https://github.com/udayvir-singh/hibiscus.nvim) macro path used
@@ -670,7 +667,7 @@ Here's some tips for the LISP typists:
 
 **Fennel developers**: if you need to compile some fennel codes using
 **self-contained libraries** from
-[Tangerine](https://github.com/udayvir-singh/tangerine.nvim)
+[Tangerine](https://github.com/martialboniou/tangerine.nvim)
 (like [fennel-conditions](https://gitlab.com/andreyorst/fennel-conditions)
 or [cljlib](https://gitlab.com/andreyorst/fennel-cljlib)), you must
 compile NeoVim using a recent **LuaJit 2.1 with 5.2 compatibility**
