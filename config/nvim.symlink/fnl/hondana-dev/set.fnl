@@ -112,7 +112,9 @@
       ;; NOTE: ft-zig-plugin, ft-go-plugin & ft_rust already reset their local indentation
       pattern [:roc :c :cpp]
       callback #(setlocal!! 4 :sw :ts)]
-  (au :FileType {: callback : group : pattern}))
+  (au :FileType {: callback : group : pattern})
+  ;; WARN: ft-go-plugin sets the expandtab option but doesn't set the tabstop
+  (au :FileType {: group :pattern :go :callback #(setlocal!! 4 :ts)}))
 
 ;; disable `o` in `formatoptions` for every filetype so inserting a line with
 ;; `o` or `O` won't prepend a comment header if we are inside a line comment
