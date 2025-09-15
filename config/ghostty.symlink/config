@@ -16,7 +16,7 @@ theme = 0x96f
 foreground = cccccc
 background = black
 background-opacity = 0.8
-cursor-color = lightblue
+cursor-color = 1e90ff
 cursor-style-blink = false
 confirm-close-surface = false
 # TODO: check (shift+)ctrl+return non-ANSI term keybindings for `emacs -nw`

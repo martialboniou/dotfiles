@@ -154,7 +154,10 @@
                :incremental_selection {:enable true}
                :indent {:enable true
                         :disable [;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
-                                  :c]}
+                                  :c
+                                  :zig
+                                  :go
+                                  :elixir]}
                :textobjects {:select {:enable true
                                       :lookahead true
                                       : keymaps
