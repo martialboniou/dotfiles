@@ -179,4 +179,13 @@
           : keys
           : config})
 
+;;; SPECIAL DEPS
+;; `go install github.com/go-delve/delve/cmd/dlv@latest`
+(when (-> :dlv (vim.fn.executable) (= 1))
+  (table.insert (. P :dependencies)
+                {1 :leoluz/nvim-dap-go
+                 :opts {:delve {:detached (-> :hondana-dev.utils.globals
+                                              (require)
+                                              (. :posix))}}}))
+
 P
