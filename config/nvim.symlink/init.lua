@@ -64,8 +64,10 @@ setup({
   -- your own code
   source = fnl("hondana-dev"),
   target = root("lua", "hondana-dev"),
-  -- lsp custom configuration files since nvim 0.11
-  custom = { { fnl("lsp"), root("lsp") }, { fnl("after", "lsp"), root("after", "lsp") } },
+  -- custom directories:
+  -- * lsp files since nvim 0.11 (in `lsp/` or `after/lsp/`)
+  -- * `after/` (including `ftplugin/`; BEWARE: if you add `lua` files here)
+  custom = { { fnl("lsp"), root("lsp") }, { fnl("after"), root("after") } },
   compiler = {
     verbose = false,
     hooks = { "onsave", "oninit" },

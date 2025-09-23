@@ -20,3 +20,5 @@
 /lsp
 # - the files in /fnl/after/lsp
 /after/lsp
+!/after/ftplugin/*.vim
+/after/ftplugin

@@ -5,6 +5,21 @@
 
 (local opts {})
 
+;;; LEGACY FUNCTIONS
+
+;; cycle :cnext and others (used by `<C-j>`/`<C-k>`; check `hondana-dev.remap`)
+;; TODO: luaify this!
+(let [commands ["command! Cnext try | cnext | catch | cfirst | catch | endtry"
+                "cabbrev cnext Cnext"
+                "command! Cprev try | cprev | catch | clast | catch | endtry"
+                "cabbrev cprev Cprev"
+                "command! Lnext try | lnext | catch | lfirst | catch | endtry"
+                "cabbrev lnext Lnext"
+                "command! Lprev try | lprev | catch | llast | catch | endtry"
+                "cabbrev lprev Lprev"]]
+  (for [i 1 (length commands)]
+    (-> commands (. i) (vim.cmd))))
+
 ;;; UTILITY FUNCTIONS
 
 ;; print a C #include guard at current the cursor position

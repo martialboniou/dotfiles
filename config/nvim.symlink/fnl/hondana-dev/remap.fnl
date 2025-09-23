@@ -81,10 +81,12 @@
 (keyset :n :<C-q> "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
 ;; quickfix navigation (inverted from ThePrimeagen version; more natural)
-(each [key navi (pairs {:<C-j> :cnext
-                        :<C-k> :cprev
-                        :<leader>j :lnext
-                        :<leader>k :lprev})]
+;; WARN: these functions (ie `cnext`...) have been updated to enable cycling
+;; (check `hondana-dev.command`)
+(each [key navi (pairs {:<C-j> :Cnext
+                        :<C-k> :Cprev
+                        :<leader>j :Lnext
+                        :<leader>k :Lprev})]
   (keyset :n key (.. :<Cmd> navi :<CR>zz)))
 
 ;; gs => search-replace (in normal/visual mode) w/ confirmation
@@ -127,7 +129,7 @@
 (keyset [:i :n :x] :<F4>
         (fn []
           ;; an undefined (nil) buffer completion may exist
-          (if (= vim.b.completion nil) (set vim.b.completion true))
+          (when (= vim.b.completion nil) (set vim.b.completion true))
           (set vim.b.completion (not vim.b.completion))
           (vim.notify (if vim.b.completion "Completion restored!"
                           "Completion stopped in this buffer!")
@@ -141,6 +143,16 @@
 ;; <F2> => switch vim numbers (column-wise)
 (let [{: set-numbers} (require :hondana-dev.utils.globals)]
   (keyset [:i :n :x] :<F2> set-numbers))
+
+;; mapping to move lines (legacy)
+;; https://vim.fandom.com/wiki/Moving_lines_up_or_down
+;; TODO: luaify this
+(vim.cmd "nnoremap <M-j> :m .+1<CR>==")
+(vim.cmd "nnoremap <M-k> :m .-2<CR>==")
+(vim.cmd "inoremap <M-j> <Esc>:m .+1<CR>==gi")
+(vim.cmd "inoremap <M-k> <Esc>:m .-2<CR>==gi")
+(vim.cmd "vnoremap <M-j> :m '>+1<CR>gv=gv")
+(vim.cmd "vnoremap <M-k> :m '<-2<CR>gv=gv")
 
 ;;; ** EXPERIMENTAL SECTION **
 (local remap false)
@@ -188,8 +200,8 @@
 ;; disable the completion in the buffer (using `<F4>`) because `<C-y>` in
 ;; insert mode accepts the completion's suggestion when the completion is
 ;; enabled
-(vim.cmd "inoremap <expr> <c-e> matchstr(getline(line('.')+1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
-(vim.cmd "inoremap <expr> <c-y> matchstr(getline(line('.')-1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
+(vim.cmd "inoremap <expr> <C-e> matchstr(getline(line('.')+1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
+(vim.cmd "inoremap <expr> <C-y> matchstr(getline(line('.')-1), '\\%' . virtcol('.') . 'v\\%(\\k\\+\\\\|.\\)')")
 
 ;; `jk` in insert mode to exit insert mode
 ;; WARN: it won't work with the `multiple cursors` plugin (use `<C-c>` or
