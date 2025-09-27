@@ -154,9 +154,24 @@
 (vim.cmd "vnoremap <M-j> :m '>+1<CR>gv=gv")
 (vim.cmd "vnoremap <M-k> :m '<-2<CR>gv=gv")
 
+;; yank: fill the `cursor_pre_yank` buffer variable used by `hondana-dev.cursor`
+(let [get-buf-cursor #(vim.api.nvim_win_get_cursor 0)
+      expr true
+      make-cb (fn [sym]
+                (fn [] (set vim.b.cursor_pre_yank (get-buf-cursor)) sym))
+      set-yank-keys (fn [key modes cb]
+                      (keyset modes key cb {: expr}))]
+  (set-yank-keys :y [:n :x] (make-cb :y))
+  (set-yank-keys :Y :n (make-cb :y$)))
+
+(local silent true)
+
+;; indent: ensure the selection is restored after `<`
+(keyset :v :> :>gv {:desc "Indent block to the left" : silent})
+(keyset :v :< :<gv {:desc "Indent block to the right" : silent})
+
 ;;; ** EXPERIMENTAL SECTION **
 (local remap false)
-(local silent true)
 ;; `<C-\>` is mandatory here so the cursor doesn't move back twice because of
 ;; the `<C-o>` at the EOL (otherwise `<C-o>` doesn't move the cursor if there's
 ;; at least one character after the cursor)

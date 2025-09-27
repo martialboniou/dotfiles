@@ -1,6 +1,12 @@
 (local root (or ... :hondana-dev))
 
-(local P [:cosmetics.status :set :command :remap :cosmetics.linenumbers :lsp])
+(local P [:cosmetics.status
+          :set
+          :command
+          :remap
+          :cosmetics.linenumbers
+          :lsp
+          :cursor])
 
 (let [{: roles} (-> root (.. :.utils.globals) (require))]
   (when (roles:check :commentator)
