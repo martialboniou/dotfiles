@@ -134,8 +134,8 @@
                :mode [:c]
                :desc "Toggle Flash Search"}]})
 
-;; Lspsaga: improve neovim lsp experience (using `winbar` as decorators; this was
-;; linked to the `nvim-lspconfig` setup in a previous setup)
+;; Lspsaga: improve neovim lsp experience (using `winbar` as decorators; this
+;; was linked to the `nvim-lspconfig` setup in a previous setup)
 (in P {1 :nvimdev/lspsaga.nvim
        :event :LspAttach
        :dependencies [:nvim-treesitter/nvim-treesitter
@@ -145,23 +145,26 @@
               :diagnostic {:on_insert false :on_insert_follow false}
               :rename {:in_select false}}})
 
-;; illuminate.vim: automatic highlighting other uses of the word under the cursor (using LSP & treesitter)
-;; (in P {1 :RRethy/vim-illuminate
-;;        :event :VeryLazy
-;;        :cmd [:IlluminatePause :IlluminateToggle]
-;;        :opts {:under_cursor true
-;;               :delay 500
-;;               :large_file_cutoff 2000
-;;               :large_file_overrides {:providers [:lsp]}}
-;;        :config (fn [_ opts]
-;;                  (let [i (require :illuminate)] (i.configure opts)))})
+;; illuminate.vim: automatic highlighting other uses of the word under the
+;; cursor (using LSP & treesitter)
+(local illuminate-config #(let [{: configure} (require :illuminate)]
+                            (configure $2)))
 
-;; mini.cursorword: automatic highlighting of word under cursor (replace RRethy/vim-illuminate)
-(in P {1 :echasnovski/mini.cursorword
-       :version false
+(in P {1 :RRethy/vim-illuminate
        :event :VeryLazy
-       :opts {:delay 400}
-       :config #(let [mc (require :mini.cursorword)] (mc.setup $2))})
+       :cmd [:IlluminatePause :IlluminateToggle]
+       :opts {:delay 400
+              :min_count_to_highlight 2
+              :large_file_overrides {:providers [:lsp]}}
+       :config illuminate-config})
+
+;; mini.cursorword: automatic highlighting of word under cursor (might replace
+;; RRethy/vim-illuminate)
+;; (in P {1 :echasnovski/mini.cursorword
+;;        :version false
+;;        :event :VeryLazy
+;;        :opts {:delay 400}
+;;        :config #(let [mc (require :mini.cursorword)] (mc.setup $2))})
 
 ;; multiple-cursors.nvim: a way of making multiple similar edits
 (in P {1 "brenton-leighton/multiple-cursors.nvim"
