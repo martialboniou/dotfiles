@@ -41,6 +41,14 @@
 
 ;;; * Uncategorized plugins *
 
+;; Better Escape: use `jk` as an <Esc> key w/o hacking the keymapping
+;; using a short `updatetime` instead of `timeoutlen`
+(local be-setup #(let [{: setup} (require :better_escape)] (setup $2)))
+(in P {1 :max397574/better-escape.nvim
+       :lazy false
+       :opts {:timeout 100}
+       :config be-setup})
+
 ;; Sleuth.vim: auto-adjust `tabstop`/`shiftwidth` & `expandtab` based on the current file
 ;; usage:
 ;;   :Sleuth
@@ -146,7 +154,8 @@
               :rename {:in_select false}}})
 
 ;; illuminate.vim: automatic highlighting other uses of the word under the
-;; cursor (using LSP & treesitter)
+;; cursor (using LSP & treesitter) WHEN there's more than 1 repeated word
+;; AND the word IS NOT a keyword
 (local illuminate-config #(let [{: configure} (require :illuminate)]
                             (configure $2)))
 
@@ -187,11 +196,6 @@
                                   [:x
                                    :<C-c>
                                    #(let [m (require :multiple-cursors.visual_mode.escape)]
-                                      (m.escape))]
-                                  ;; TEST: EXPERIMENTAL `jk` as exit the insert mode
-                                  [:i
-                                   :jk
-                                   #(let [m (require :multiple-cursors.insert_mode.escape)]
                                       (m.escape))]
                                   ;; mini.surround
                                   [:n
