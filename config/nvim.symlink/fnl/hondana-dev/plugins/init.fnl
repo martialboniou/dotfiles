@@ -46,7 +46,7 @@
 (local be-setup #(let [{: setup} (require :better_escape)] (setup $2)))
 (in P {1 :max397574/better-escape.nvim
        :lazy false
-       :opts {:timeout 100}
+       :opts {:timeout 150}
        :config be-setup})
 
 ;; Sleuth.vim: auto-adjust `tabstop`/`shiftwidth` & `expandtab` based on the current file

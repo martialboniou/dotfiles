@@ -184,6 +184,11 @@
 (when (-> :dlv (vim.fn.executable) (= 1))
   (table.insert (. P :dependencies)
                 {1 :leoluz/nvim-dap-go
+                 :ft :go
+                 :config #(let [{: setup} (require :dap-go)
+                                {:set_log_level level} (require :dap)]
+                            (setup $2)
+                            (level :TRACE))
                  :opts {:delve {:detached (-> :hondana-dev.utils.globals
                                               (require)
                                               (. :posix))}}}))
