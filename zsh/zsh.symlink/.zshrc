@@ -120,7 +120,7 @@ unset zdot_sources_path
 # typeset -U -g PATH
 
 if [[ "${__CONDA_ENABLED}" -gt 0 && "`uname`" == "Darwin" ]]; then
-# WARN: conda config --set changeps1 False
+# WARN: check `~/.zsh/zshrc.d/06-prompt.zsh`
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"

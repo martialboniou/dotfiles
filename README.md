@@ -294,7 +294,7 @@ The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZ
 
 ## GNU Emacs
 
-### Emacs 29 (used for Common Lisp projects)
+### Emacs 30 (used for Common Lisp projects)
 
 - starts on a *Sly* session (requires `sbcl`)
 - minimal setup
