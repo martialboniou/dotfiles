@@ -42,11 +42,14 @@
 ;;; * Uncategorized plugins *
 
 ;; Better Escape: use `jk` as an <Esc> key w/o hacking the keymapping
-;; using a short `updatetime` instead of `timeoutlen`
+;; using a shorter `timeoutlen` on `InsertEnter` (see the group
+;; `Hondana_Timeoutlen` in `hondana-dev.set`)
 (local be-setup #(let [{: setup} (require :better_escape)] (setup $2)))
+(local jj-false {:j {:j false}})
 (in P {1 :max397574/better-escape.nvim
        :lazy false
-       :opts {:timeout 150}
+       ;; no `jj` in insert/change mode
+       :opts {:timeout 200 :mappings {:i jj-false :c jj-false}}
        :config be-setup})
 
 ;; Sleuth.vim: auto-adjust `tabstop`/`shiftwidth` & `expandtab` based on the current file
