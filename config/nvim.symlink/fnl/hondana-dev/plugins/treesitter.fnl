@@ -155,6 +155,7 @@
                :indent {:enable true
                         :disable [;; FIXME: indent twice in c (ai + nvim_treesitter#indent())
                                   :c
+                                  :cpp
                                   :zig
                                   :go
                                   :elixir]}
