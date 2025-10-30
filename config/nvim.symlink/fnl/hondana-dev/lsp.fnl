@@ -139,7 +139,11 @@
                    #(vim.lsp.inlay_hint.enable (not (vim.lsp.inlay_hint.is_enabled)))))]
     (set-extra-keys [:h :i])))
 
-(vim.lsp.config "*" {: on_attach})
+;; WARN: avoid `(vim.lsp.config "*" {: on_attach})`; it can be overridden on
+;;       loading (e.g. `clangd`)
+(let [group (augrp :Hondana_LspKeybindings)
+      callback #(on_attach nil $.buf)]
+  (au :LspAttach {: group : callback}))
 
 ;;;;; SPECIAL SETTINGS
 ;;;; ruff + pyright

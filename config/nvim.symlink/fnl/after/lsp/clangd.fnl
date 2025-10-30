@@ -1,4 +1,4 @@
-;; https://clangd.llvm.org/extensions.html#switch-between-sourceheader
+;; https://github.com/neovim/nvim-lspconfig/blob/master/lsp/clangd.lua
 (import-macros {: tc} :hondana-dev.macros)
 
 (tc type string)
@@ -9,16 +9,10 @@
 
 (local {:nvim_buf_create_user_command uc} api)
 
-(tc param bufnr integer)
-(tc return vim.lsp.Client? client rpc object)
-(fn get-client [bufnr]
-  (-> {: bufnr : name} (vim.lsp.get_clients) (. 1)))
-
-(tc param bufnr integer)
-(fn switch-source-header [bufnr]
+(tc param bufnr integer client vim.lsp.Client)
+(fn switch-source-header [bufnr client]
   (local method-name :textDocument/switchSourceHeader)
-  (local client (get-client bufnr))
-  (if client
+  (if (and client (client:supports_method method-name))
       (let [params (util.make_text_document_params bufnr)]
         (client:request method-name params
                         (fn [err res]
@@ -43,20 +37,19 @@
 (fn format-result [result node-name ?name]
   (format-node (?. result 1 node-name) (or ?name node-name)))
 
-(fn symbol-info []
-  (local bufnr (api.nvim_get_current_buf))
-  (local client (get-client bufnr))
+(tc param bufnr integer client vim.lsp.Client)
+(fn symbol-info [bufnr client]
   (if (and client (client:supports_method :textDocument/symbolInfo))
       (let [win (api.nvim_get_current_win)
             params (util.make_position_params win client.offset_encoding)]
         (client:request :textDocument/symbolInfo params
                         (fn [err res]
                           (when (and (not err) (not= 0 (length res)))
-                            (local content [(format-result res :name)])
-                            (local context
-                                   (format-result res :containerName :container))
-                            (when context
-                              (table.insert content context))
+                            (tc content "string[]")
+                            (local content
+                                   [(format-result res :name)
+                                    (format-result res :containerName
+                                                   :container)])
                             (local content-size
                                    (icollect [_ n (ipairs content)]
                                      (strchars n)))
@@ -72,10 +65,20 @@
                         bufnr))
       (notify "Clangd client not found" levels.ERROR)))
 
-(fn on_attach []
-  (uc 0 :LspClangdSwitchSourceHeader #(switch-source-header 0)
+(tc param client vim.lsp.Client init_result ClangdInitializeResult)
+(fn on_init [client init-result]
+  (when init-result.offsetEncoding
+    (set client.offset_encoding init-result.offsetEncoding)))
+
+(tc param bufnr integer client vim.lsp.Client)
+(fn on_attach [client bufnr]
+  (uc bufnr :LspClangdSwitchSourceHeader #(switch-source-header bufnr client)
       {:desc "Switch between source/header"})
-  (uc 0 :LspClangdShowSymbolInfo symbol-info {:desc "Show symbol info"}))
+  (uc 0 :LspClangdShowSymbolInfo #(symbol-info bufnr client)
+      {:desc "Show symbol info"}))
+
+(tc class "ClangInitializeResult:" lsp.InitializeResult)
+(tc field offsetEncoding? string)
 
 {:filetypes [:c :cpp :objc :objcpp :cuda :proto]
  :cmd [name :--background-index]
@@ -88,4 +91,5 @@
                 :.git]
  :capabilities {:textDocument {:completion {:editsNearCursor true}}
                 :offsetEncoding [:utf-8 :utf-16]}
+ : on_init
  : on_attach}
