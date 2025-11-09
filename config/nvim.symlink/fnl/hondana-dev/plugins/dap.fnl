@@ -193,4 +193,11 @@
                                               (require)
                                               (. :posix))}}}))
 
+;; `pip install debugpy` (in `venv`) / implicit via `uv`
+(table.insert (. P :dependencies)
+              {1 :mfussenegger/nvim-dap-python
+               :ft :py
+               :config #(let [{: setup} (require :dap-python)]
+                          (setup "python"))})
+
 P
