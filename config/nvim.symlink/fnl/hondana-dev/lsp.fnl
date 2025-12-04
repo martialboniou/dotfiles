@@ -16,7 +16,7 @@
                 :cssls
                 ;; :pyright ;; replaced by pyright-extended using ruff & yapf
                 :pyright-extended
-                ;; :marksman ;; *TMP DISABLED B/C WIKI LINKS != ZK*
+                :marksman
                 ;; FIX: PM me when expert will be post-alpha
                 :elixir_ls])
 
