@@ -33,11 +33,14 @@
        (vim.tbl_contains [:markdown :gitcommit])))
 
 (λ opts []
-  ;; WARN: `blink.cmp` knows lsp so no need to enable autocompletion via capabilities
   {:snippets {:preset :luasnip}
    :sources {:default [:lsp :snippets :lazydev :buffer :path :emoji]
              ;; INFO: ensure hondana-dev.plugins.languages has lazydev
-             :providers {:lazydev {:name :LazyDev
+             :providers {:snippets {:name :snippets
+                                    :enabled true
+                                    :min_keyword_length 1
+                                    :module "blink.cmp.sources.snippets"}
+                         :lazydev {:name :LazyDev
                                    :module :lazydev.integrations.blink}
                          :emoji {:name :Emoji
                                  :module :blink-emoji
@@ -95,7 +98,6 @@
           : opts
           :dependencies [;; pictograms
                          :onsails/lspkind.nvim
-                         ;; snippets
                          {1 :L3MON4D3/LuaSnip
                           :version "v2.*"
                           :build "make install_jsregexp"
