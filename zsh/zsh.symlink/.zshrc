@@ -136,3 +136,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 fi
+
+# mise shims
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
+fi

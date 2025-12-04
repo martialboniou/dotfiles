@@ -101,3 +101,5 @@ if [[ $(uname) == Darwin ]]; then
   # alias dF="df -g | awk '/\/(Data|nix|)$/ {used+=\$3;avail+=\$4} END{print \"Used: \"used\"G\t Available: \"avail\"G\"}'"
   alias dF='diskutil list'
 fi
+# mise
+alias m="mise x --"

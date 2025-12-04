@@ -22,3 +22,8 @@
 /after/lsp
 !/after/ftplugin/*.vim
 /after/ftplugin
+# current dev-only files
+/init_dev.lua
+/queries/zig_indents.scm
+/after/queries/nix/highlights.scm
+dump.rdb
