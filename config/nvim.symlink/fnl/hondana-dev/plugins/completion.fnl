@@ -36,10 +36,7 @@
   {:snippets {:preset :luasnip}
    :sources {:default [:lsp :snippets :lazydev :buffer :path :emoji]
              ;; INFO: ensure hondana-dev.plugins.languages has lazydev
-             :providers {:snippets {:name :snippets
-                                    :enabled true
-                                    :min_keyword_length 1
-                                    :module "blink.cmp.sources.snippets"}
+             :providers {:snippets {:name :snippets :enabled true}
                          :lazydev {:name :LazyDev
                                    :module :lazydev.integrations.blink}
                          :emoji {:name :Emoji
