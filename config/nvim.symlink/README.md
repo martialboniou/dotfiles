@@ -51,7 +51,7 @@ Dvorak keyboard in mind):
   the line (before the trailing whitespace) **AND puts the cursor before** `;`
     - NOTE: this keybinding was used to print an underscore in *insert* mode
     (obsolete)
-- `"+p`  : paste the system clipboard register
+- `"+p`  : paste the system clipboard register (or use `<leader>p`)
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
   international Dvorak layout (+ Command Qwerty) on macOS)
@@ -76,6 +76,25 @@ Dvorak keyboard in mind):
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
+- useful motions keys (in *normal* mode) for *beginners*:
+  - *jump list*:
+    - `<C-o>` : go to **older** position in *jump list* (**very useful!**)
+    - `<C-i>` : go to **newer** position in *jump list*
+  - *column of the current line*:
+    - `0`    : jump to the **first** column of the current line (`|` does it
+    too **but** *implicitly* as one doesn't give it a count)
+    - `$`    : jump to the **last** column of the current line 
+  - *printable character of the current line*:
+    - `^`    : jump to the **first** *printable character* of the current line
+    (`_` does it too **but** *implicitly* as one doesn't give it a count)
+    - `g_`   : jump to the **last** *printable character* of the current line
+  - *sections*:
+    - check `[]`, `][`, `]]`, `[[` with `:help section`
+  - *above any *braces*/*brackets**:
+    - `%`    : jump to the *matching* *braces*/*brackets*
+  - *inside *parens*/*curly braces**:
+    - `[(`/`[{` : jump to the **previous** *parens*/*curly braces*
+    - `])`/`]}` : jump to the **next** *parens*/*curly braces*
 - useful marks (see ShaDa in `:help`):
   - `` `" `` : go to the cursor position when last exiting the current buffer
   - `` `. `` : go to the cursor position where the last change was made

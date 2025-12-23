@@ -13,10 +13,8 @@ window-inherit-font-size = false
 theme = 0x96f
 # or: theme = iTerm2 default
 # or: theme = MaterialDarker
-foreground = cccccc
-background = black
+config-file = theme
 background-opacity = 0.8
-cursor-color = 1e90ff
 cursor-style-blink = false
 confirm-close-surface = false
 # TODO: check (shift+)ctrl+return non-ANSI term keybindings for `emacs -nw`
@@ -42,3 +40,7 @@ font-size = 12
 shell-integration-features = no-cursor
 # here, I use a 2-hand int'l dvorak layout with qwerty on Command
 keybind = super+k=paste_from_clipboard
+# shaders
+custom-shader = shaders/bloom025.glsl
+custom-shader = shaders/cursor_blaze_no_trail.glsl
+custom-shader = shaders/cursor_smear.glsl
