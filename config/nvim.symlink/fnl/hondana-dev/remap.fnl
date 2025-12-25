@@ -193,7 +193,7 @@
 ;;       `,,` sets the cursor before the newly added trailing `;`
 ;; FIX: better code (TreeSitter?)
 (let [inskey #(keyset :i $1 $2 {: remap : silent :desc $3})]
-  (inskey ",," "<C-o>h" "Move the cursor to the left")
+  (inskey ",," "<Esc>i" "Move the cursor to the left")
   (inskey ",." "<C-o>g_<C-o>a;"
           "Add semi-colon at the EOL before any trailing whitespace")
   (inskey ",p" "<C-o>a" "Move the cursor to the right"))
