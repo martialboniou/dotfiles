@@ -245,8 +245,14 @@ block from the start when misclicked)
     position
 - *insert* abbrev's:
   - `,\ ` : print a `λ` (can be useful in Fennel code; check `fnl/hondana-dev/set.fnl`)
+- `flash.nvim` related:
+  - use `,,` instead `,` (as *comma* is the `<localleader>`; `,` works with the
+  `f`/`t` motions but not when the `flash.nvim` plugin is activated)
+  - `<localleader>s` : **Flash Treesitter** (complete the text objects'
+  selection/replacement)
 - experimenting `ultimate-autopair`:
-  - use `<M-e>` to *fastwrap* (*ie* barf the closing *paren* or *brace*)
+  - use `<M-e>` to *fastwrap* (*ie* barf the closing *paren* or *brace*;
+  default key)
 
 Plugins and new keybindings
 ---------------------------

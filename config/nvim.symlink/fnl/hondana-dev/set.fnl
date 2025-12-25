@@ -68,12 +68,6 @@
   (au :InsertEnter
       {: group : pattern :callback #(set! :timeoutlen shortest-timeoutlen)}))
 
-;; these default keys may be remapped in `hondana-dev.remap`
-(tc type string)
-(g! :mapleader " ")
-(tc type string)
-(g! :maplocalleader ",")
-
 ;; netrw (use right splitting & tree by default)
 (g! netrw_altv 1)
 (g! netrw_liststyle 3)

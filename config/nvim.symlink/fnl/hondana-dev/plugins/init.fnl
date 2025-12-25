@@ -118,10 +118,16 @@
 ;; TODO: test & setup flash.nvim
 (in P {1 :folke/flash.nvim
        :event :VeryLazy
-       :opts {;; dvorak friendly keybindings
-              :labels "aoeui;qjkxhtnsgcrldixbmwvzpy"
-              ;; `/`/`?` is set to flash jump by default
-              :modes {:search {:enabled true}}}
+       :opts ((fn []
+                (local keys [:f :F :t :T ";"])
+                ;; double comma setup (see the `keys` node)
+                (vim.cmd "noremap ,, ,")
+                ;; comma is <localleader>; use double comma instead
+                (set (. keys ",") ",,")
+                {;; dvorak friendly keybindings
+                 :labels "aoeui;qjkxhtnsgcrldixbmwvzpy"
+                 ;; `/`/`?` is set to flash jump by default
+                 :modes {:search {:enabled true} :char {: keys}}}))
        :keys [;; this function is bound to `S` in the recommended install
               {1 :s
                2 #(let [{: treesitter} (require :flash)] (treesitter))

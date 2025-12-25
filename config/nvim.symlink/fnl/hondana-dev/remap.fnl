@@ -11,7 +11,7 @@
     `(do
        ,(unpack out#))))
 
-;; keymap for NeoVim by ThePrimeagen
+;; set leader keys
 (tc type string)
 (g! :mapleader " ")
 (tc type string)
