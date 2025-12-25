@@ -44,13 +44,12 @@ mode (**TIP**: for these keybindings, no need to pause after typing a *comma*;
 it works on a very short timeout like a *double-click* using a mouse; notice
 that these keys were chosen for the lowest impact on your typing and for the
 Dvorak keyboard in mind):
-  - `,.` *ie* `<localleader>.` : jumps and prints `;` at the end of the line
-  (before the trailing whitespace)
-  - `,p` *ie* `<localleader>p` : prints a `{}` block and puts the cursor inside
-  - `,,` *ie* `<localleader><localleader>` : jumps, prints `;` at the end of
-  the line (before the trailing whitespace) **AND puts the cursor before** `;`
-    - NOTE: this keybinding was used to print an underscore in *insert* mode
-    (obsolete)
+  - `,,` *ie* `<localleader><localleader>` : move cursor to the left
+  - `,.` *ie* `<localleader>.` : jumps and prints a trailing `;` at the end of
+  the line (before any trailing whitespace)
+  - `,p` *ie* `<localleader>p` : move cursor to the right (useful to jump a
+  character without switching to the *normal* mode; acts like `<C-o>a` in
+  *insert* mode)
 - `"+p`  : paste the system clipboard register (or use `<leader>p`)
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
   use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
@@ -143,9 +142,9 @@ block from the start when misclicked)
     - NOTES:
       - use `<C-v>` then `<Esc>` to insert the special `Escape` character
       displayed as `^[`
-      - this command will work as expected if you don't use `autopairs` (which
-      is the case in this setup; only `paredit` is activated for some Lisp
-      programming languages)
+      - this command will work as expected if you don't use `autopairs` (to
+      toggle `autopairs`, type `:lua require'ultimate-autopair'.toggle()`;
+      `paredit` is also activated for some Lisp programming languages)
       - use `nvim-surround` or `mini.surround` to add/replace brackets, quotes
       or tags instead; or snippets (as they are more portable than the classic
       `Ex`/`vim` macros)
@@ -246,9 +245,8 @@ block from the start when misclicked)
     position
 - *insert* abbrev's:
   - `,\ ` : print a `λ` (can be useful in Fennel code; check `fnl/hondana-dev/set.fnl`)
-  - `,,` : print a `_` (there's a 200ms timeout here; it won't collide with `<localleader>`
-    keybindings as they are meant for *normal* mode; can be useful to type `_` without
-    the `Shift` key; check `fnl/hondana-dev/remap.fnl`)
+- experimenting `ultimate-autopair`:
+  - use `<M-e>` to *fastwrap* (*ie* barf the closing *paren* or *brace*)
 
 Plugins and new keybindings
 ---------------------------

@@ -172,10 +172,6 @@
 
 ;;; ** EXPERIMENTAL SECTION **
 (local remap false)
-;; `<C-\>` is mandatory here so the cursor doesn't move back twice because of
-;; the `<C-o>` at the EOL (otherwise `<C-o>` doesn't move the cursor if there's
-;; at least one character after the cursor)
-(local move-backwark-seq "<C-\\><C-o>h")
 
 ;; disable `<Tab>` default to vim.snippet.jump if active I use `<C-f>` for this
 ;; (via `blink.cmp` & `<C-b>` for the backwards alternative)
@@ -185,29 +181,25 @@
 ;; NOTE: check `hondana-dev.plugins.completion`
 (keydel [:i :s] :<Tab>)
 
-;; WARN: NEW: `comma period`/`comma comma` => semi-colon at eol
+;; WARN: NEW:          `comma comma`  => move cursor to the left
+;;                     `comma p`      => move cursor to the right
+;;       PRVSLY THERE: `comma period` => semi-colon at eol
 ;; (works in a very short time duration on insert mode only)
-;; INFO: `,.` sets the cursor after the newly added `;`
-;;       `,,` sets the cursor before the newly added `;`
+;; INFO: `,.` sets the cursor after the newly added trailing `;`
+;;       `,p` move the cursor to the right
+;;       `,,` move the cursor to the left
+;;
+;; previous settings:
+;;       `,,` sets the cursor before the newly added trailing `;`
 ;; FIX: better code (TreeSitter?)
-(let [pattern "<C-o>g_<C-o>a;"
-      inskey #(keyset :i $...)]
-  (inskey ",." pattern
-          {: remap
-           : silent
-           :desc "Add semi-colon at the EOL before any trailing whitespace"})
-  (inskey ",," (.. pattern move-backwark-seq)
-          {: remap
-           : silent
-           :desc ;
-           "Add semi-colon at the EOL before any trailing whitespace; the cursor is placed before"}))
+(let [inskey #(keyset :i $1 $2 {: remap : silent :desc $3})]
+  (inskey ",," "<C-o>h" "Move the cursor to the left")
+  (inskey ",." "<C-o>g_<C-o>a;"
+          "Add semi-colon at the EOL before any trailing whitespace")
+  (inskey ",p" "<C-o>a" "Move the cursor to the right"))
 
-;; WARN: NEW: `,p` simulates a auto-pairing of curly brackets (ie `{}`)
+;; WARN: OBSOLETE: `,p` simulates a auto-pairing of curly brackets (ie `{}`)
 ;; in insert mode by pulling the cursor back in between
-(keyset :i ",p" (.. "{}" move-backwark-seq)
-        {: remap
-         : silent
-         :desc "Put the cursor back after a fastly typed {} sequence"})
 
 ;; wordwise `<C-e>`/`<C-y>` in insert mode (restored from my old Vim 6.3 setup)
 ;; INFO: you might not like this one; check `:help i_CTRL-y`
