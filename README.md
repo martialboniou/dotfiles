@@ -91,6 +91,8 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
   - [refactoring](https://github.com/ThePrimeagen/refactoring.nvim),
   [trouble](https://github.com/folke/trouble.nvim) &
   [todo-comments](https://github.com/folke/todo-comments.nvim)
+  - [overseer](https://github.com/stevearc/overseer.nvim), a task runner and
+  job management plugin
   - [rainbow delimiters](https://github.com/HiPhish/rainbow-delimiters.nvim)
     (additional colors for brackets)
   - [mini.hues](https://github.com/echasnovski/mini.hues) (**minimalist
@@ -116,6 +118,8 @@ Every files/directories in `config/` will be linked to the `$HOME` directory as 
           `(() ())` not `(()())`)
         - smooth deletion
         - electric return
+      - temporarily enabled:
+        - [ultimate-autopair](https://github.com/altermo/ultimate-autopair.nvim)
       - disabled ones:
         - [autopairs](https://github.com/windwp/nvim-autopairs) (disabled in
           Telescope & mini.files; quotes and backticks are skipped from

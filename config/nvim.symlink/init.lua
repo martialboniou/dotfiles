@@ -67,7 +67,11 @@ setup({
   -- custom directories:
   -- * lsp files since nvim 0.11 (in `lsp/` or `after/lsp/`)
   -- * `after/` (including `ftplugin/`; BEWARE: if you add `lua` files here)
-  custom = { { fnl("lsp"), root("lsp") }, { fnl("after"), root("after") } },
+  custom = {
+    { fnl("lsp"), root("lsp") },
+    { fnl("after"), root("after") },
+    { fnl("overseer"), root("lua", "overseer") }
+  },
   compiler = {
     verbose = false,
     hooks = { "onsave", "oninit" },

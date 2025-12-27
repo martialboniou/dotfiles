@@ -444,6 +444,17 @@ bad idea; REMINDER: `<localleader>` is `,`)
   - `<leader>]t` : next todo comment
   - `<leader>[t` : previous todo comment
   - NOTE: you can also use the specific commands like `:TodoTelescope`...
+- **Overseer** case:
+  - NOTE: Overseer is a task runner; the current version is not up-to-date
+  (WIP: parser messaging to `vim.diagnostc` to adapt from *tag* v1.6.0 to the
+  current *master* (*tag* v2.0.0))
+  - `<leader>ow` : task list
+  - `<leader>oo` : **run** task
+  - `<leader>oq` : action recent task
+  - `<leader>oi` : overseer info
+  - `<leader>ob` : task builder
+  - `<leader>ot` : task action
+  - `<leader>oc` : **clear cache**
 - **Treesitter**
   - selection text-objects (prefix with `v` for `visual`, `c` for change, `d` for delete...):
     - `ac`       : *outer* class

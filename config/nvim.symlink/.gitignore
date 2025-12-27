@@ -8,6 +8,7 @@
 !/lua/hondana-dev/plugins/**/
 /lua/hondana-dev/plugins/optional/**
 !/lua/hondana-dev/plugins/unchecked/**
+/lua/overseer/template/*
 # plugins/* will contain the fennel-generated lazy files
 # plugins/unchecked/* will contain unverified lua lazy specs
 /fnl/flsproject.fnl
