@@ -31,3 +31,6 @@
  : opts
  : cmd
  : keys}
+
+;; NOTE: `:OverseerTaskAction` to view the task, you can manually edit the
+;; buffer but you must save it, say, with `:w`
