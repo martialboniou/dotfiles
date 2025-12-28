@@ -21,10 +21,13 @@
             :OverseerClearCache
             :OverseerOpen])
 
-;; TODO: learn how to upgrade to 2.0.0 AKA master
+(local render #(let [r (require :overseer.render)]
+                 (r.format_verbose $)))
+
+(local opts {:templates [:hondana_zig_task] :task_list {: render}})
+
 {1 :stevearc/overseer.nvim
- :tag "v1.6.0"
- ;; :commit "2c23513" 
- :opts {:templates [:zig_task]}
+ ;; version 2.0.0+
+ : opts
  : cmd
  : keys}
