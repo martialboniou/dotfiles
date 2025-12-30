@@ -255,6 +255,15 @@
                :mode [:n :x]
                :desc "Lock virtual cursors"}]})
 
+;; url-open: opens the URL under the cursor utilizing your system browser
+;; instead of Netrw
+;; test zone: https://codeberg.org
+(in P {1 :sontungexpt/url-open
+       :event :VeryLazy
+       ;; `gx` key normal mapping in `fnl.hondana-dev.remap`
+       :init #(vim.keymap.set :n :gx "<Cmd>URLOpenUnderCursor<CR>")
+       :opts {}})
+
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)
 ;; (->> :folke/which-key.nvim
