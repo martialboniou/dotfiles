@@ -83,7 +83,9 @@
 
 ;; diagnostic
 (let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
-  (vim.diagnostic.config {:virtual_text {:prefix ""}
+  (vim.diagnostic.config {:virtual_text false
+                          ;; :virtual_text {:prefix ""}
+                          :underline false
                           :update_in_insert false
                           :float {:prefix ""
                                   :header ""
