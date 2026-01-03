@@ -14,11 +14,8 @@
 
 (local cmd [:OverseerToggle
             :OverseerRun
-            :OverseerQuickAction
             :OverseerInfo
-            :OverseerBuild
             :OverseerTaskAction
-            :OverseerClearCache
             :OverseerOpen])
 
 (local render #(let [r (require :overseer.render)]
