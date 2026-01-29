@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# use `xclip -o -selection primary` on X systems
+word=${@:-$(pbpaste)}
+url_word=$(echo $word | sed 's/ /\%20/g')
+query=$(curl -s "https://api.dictionaryapi.dev/api/v2/entries/en_US/$url_word")
+[ -z "$query" ] && echo "Invalid word." && exit 0
+
+def=$(echo "$query" | jq -r '.[0].meanings[] | "\(.partOfSpeech): \(.definitions[0].definition)\n"')
+
+echo $word " - " $def
