@@ -1,12 +1,26 @@
 NeoVim
 ======
 
-- aimed for version 0.11.5 and 0.12-dev
-- tested on version 0.11.5 & 0.12-dev (1187) for macOS 15.7.2 & Alpine Linux 3.22
-  (aarch64 version via [macpine](https://github.com/beringresearch/macpine);
-  the `community` repository; NeoVim was built using `gettext-dev`)
+- this version is frozen
+  - check this [setup](https://codeberg.org/martialboniou/nvim)
+  - motivation: during the port from 0.11 to 0.12, there was so many changes that I decided to
+    invoke the almighty *tabula rasa*
+    - `lazy` is great but `vim.pack`/`lze` might be all we need
+    - improving keybindings' logic
+    - minimizing the external plugin vs 
+    - `fennel` is my main language for this setup but the core options/functions will be kept in
+      Lua for non-native lispers
+    - `Telescope` is cool but `mini.pick` is good enough
+    - simplicity and minimalism over the startup time
+- aimed for version pre-0.12
 - developer guidance:
   - Fennel 1.5.0 or a more recent version is required (no `tset` in this setup)
+
+New chapter
+-----------
+
+Check [this new setup](https://codeberg.org/martialboniou/nvim) for Neovim 0.12
+- `rg` is still mandatory
 
 Pre-configuration
 -----------------
