@@ -1,7 +1,7 @@
 NeoVim
 ======
 
-- this version is frozen
+- **this version is frozen**
   - check this [setup](https://codeberg.org/martialboniou/nvim)
   - motivation: during the port from 0.11 to 0.12, there was so many changes that I decided to
     invoke the almighty *tabula rasa*
