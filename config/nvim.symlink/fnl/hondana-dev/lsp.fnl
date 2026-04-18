@@ -10,7 +10,8 @@
 (local servers [:lua_ls
                 :awk_ls
                 :html
-                :jsonls
+                ;; :jsonls ;; enabled when `b0o/schemastore.nvim` is loaded
+                ;; see `fnl.hondana-dev.plugins.mason.fnl`
                 :ts_ls
                 :tailwindcss
                 :cssls

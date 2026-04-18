@@ -109,7 +109,10 @@
                  :MasonUninstall
                  :MasonUninstallAll]}
           ;; used by `json-lsp` (check `fnl/after/lsp/jsonls.fnl`)
-          :b0o/schemastore.nvim])
+          {1 :b0o/schemastore.nvim
+           :lazy false
+           ;; enable `jsonls` here as its setup requires `schemastore`
+           :init #(vim.lsp.enable :jsonls)}])
 
 ;; NOTE: Alpine Linux may require a `apk add gcompat`
 ;; TIP FOR ALPINE:

@@ -43,7 +43,9 @@
             :defaults {:lazy true}
             :ui {:change_detection {:notify false}}
             :performance {:rtp {:reset false
-                                :disabled_plugins [:tutor :matchit :matchparen]}}
+                                :disabled_plugins [:tutor]
+                                ;; [:tutor :matchit :matchparen]
+                                }}
             :spec plugins}]
   (setup opts))
 

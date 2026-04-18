@@ -56,7 +56,8 @@
        {1 :zk-org/zk-nvim
         :event :VeryLazy
         : keys
-        :opts {:picker :telescope}
+        ;; :opts {:picker :telescope}
+        :opts {:picker :select}
         :config #(let [{: setup} (require :zk)] (setup $2))
         :init #(let [{: edit} (require :zk)
                      {: add : del} (require :zk.commands)

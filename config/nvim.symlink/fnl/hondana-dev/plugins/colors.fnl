@@ -67,7 +67,9 @@
     (vim.api.nvim_exec_autocmds :ColorScheme {})))
 
 (tc type LazySpec)
-(local mini-hues {1 :echasnovski/mini.hues
+(local mini-hues {1 :nvim-mini/mini.hues
+                  ;; recommended main branch; use `:version "*"` for stable branch
+                  :version false
                   :priority 1000
                   :lazy false
                   :opts {:saturation :high

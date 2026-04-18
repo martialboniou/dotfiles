@@ -168,17 +168,16 @@
 (local illuminate-config #(let [{: configure} (require :illuminate)]
                             (configure $2)))
 
-(in P {1 :RRethy/vim-illuminate
-       :event :VeryLazy
-       :cmd [:IlluminatePause :IlluminateToggle]
-       :opts {:delay 400
-              :min_count_to_highlight 2
-              :large_file_overrides {:providers [:lsp]}}
-       :config illuminate-config})
+;; DISABLED ON NVIM 0.12+; BUG?
+;; (in P {1 :RRethy/vim-illuminate
+;;        :event :VeryLazy
+;;        :cmd [:IlluminatePause :IlluminateToggle]
+;;        :opts {:delay 400 :min_count_to_highlight 2}
+;;        :config illuminate-config})
 
 ;; mini.cursorword: automatic highlighting of word under cursor (might replace
 ;; RRethy/vim-illuminate)
-;; (in P {1 :echasnovski/mini.cursorword
+;; (in P {1 :nvim-mini/mini.cursorword
 ;;        :version false
 ;;        :event :VeryLazy
 ;;        :opts {:delay 400}
@@ -258,11 +257,12 @@
 ;; url-open: opens the URL under the cursor utilizing your system browser
 ;; instead of Netrw
 ;; test zone: https://codeberg.org
-(in P {1 :sontungexpt/url-open
-       :event :VeryLazy
-       ;; `gx` key normal mapping in `fnl.hondana-dev.remap`
-       :init #(vim.keymap.set :n :gx "<Cmd>URLOpenUnderCursor<CR>")
-       :opts {}})
+;;; REGRESSION - deprecated vim.validate in Nvim 0.12
+;; (in P {1 :sontungexpt/url-open
+;;        :event :VeryLazy
+;;        ;; `gx` key normal mapping in `fnl.hondana-dev.remap`
+;;        :init #(vim.keymap.set :n :gx "<Cmd>URLOpenUnderCursor<CR>")
+;;        :opts {}})
 
 ;; WhichKey: displays available keybindings in a popup as you type
 ;; FIXME: no highlighted selection line when `<S-V>` (type `V` before to reenable it)

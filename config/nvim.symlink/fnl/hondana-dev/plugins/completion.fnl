@@ -34,6 +34,8 @@
 
 (λ opts []
   {:snippets {:preset :luasnip}
+   :fuzzy {:implementation :prefer_rust
+           :prebuilt_binaries {:download true :force_version "v*"}}
    :sources {:default [:lsp :snippets :lazydev :buffer :path :emoji]
              ;; INFO: ensure hondana-dev.plugins.languages has lazydev
              :providers {:snippets {:name :snippets :enabled true}
@@ -90,6 +92,7 @@
 ;;; PLUGINS
 (tc type LazySpec)
 (local P {1 :saghen/blink.cmp
+          :branch :v1
           :event :InsertEnter
           :build "cargo build --release"
           : opts

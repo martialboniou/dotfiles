@@ -121,9 +121,10 @@
                       "Open a Neovim conf file picker"]
                      ;; open Lazy plugin files (memo: edit plugin)
                      [:ep
-                      #(find_files {:cwd (let [data-path (vim.fn.stdpath :data)]
+                      #(find_files {:cwd (let [{:stdpath std :joinpath join} vim.fn
+                                               data-path (std :data)]
                                            (tc cast data_path string)
-                                           (vim.fs.joinpath data-path :lazy))})
+                                           (join data-path :lazy))})
                       "Open a Lazy plugin file picker"]])))
 
 (tc type "string[]|string|fun(self:LazyPlugin,ft:string[]):string[]")

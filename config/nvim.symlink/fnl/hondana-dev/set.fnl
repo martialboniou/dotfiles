@@ -81,6 +81,12 @@
 ;; comment the next line (check `:help ft-markdown-plugin`)
 (set vim.g.markdown_recommended_style 0)
 
+;; fennel case: TS-COMMENTS DISABLED in 0.12/0.13 (b/c of breaking changes in
+;; nvim-treesitter)
+(let [group (augrp :Hondana_FennelCommentString)
+      callback #(setlocal!! ";; %s" :commentstring)]
+  (au :FileType {: callback : group :pattern :fennel}))
+
 ;; diagnostic
 (let [text (-> :hondana-dev.utils.globals (require) (. :icons :diagnostic))]
   (vim.diagnostic.config {:virtual_text false

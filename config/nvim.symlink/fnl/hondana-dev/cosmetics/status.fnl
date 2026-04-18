@@ -203,21 +203,57 @@
 ;; (set F.stamp #(yield stamps))
 
 (tc type string)
-(local hondana-statusline (let [stamp #(yield stamps.focus)]
-                            (.. filetype-info (stamp) info.diagnostic (stamp)
-                                tag.readonly (stamp) info.filename (stamp)
-                                tag.modified (stamp) (stamp) "" "" (stamp)
-                                "%=" (stamp) info.buffer-number (stamp)
-                                info.column (stamp) "  %p%% " (stamp)
-                                info.git-branch)))
+(local hondana-statusline
+       (let [stamp #(yield stamps.focus)]
+         (table.concat [filetype-info
+                        (stamp)
+                        info.diagnostic
+                        (stamp)
+                        tag.readonly
+                        (stamp)
+                        info.filename
+                        (stamp)
+                        tag.modified
+                        (stamp)
+                        (stamp)
+                        ""
+                        ""
+                        (stamp)
+                        "%="
+                        (stamp)
+                        info.buffer-number
+                        (stamp)
+                        info.column
+                        (stamp)
+                        "  %p%% "
+                        (stamp)
+                        info.git-branch])))
 
 (tc type string)
 (local hondana-defocus-statusline ;; change stamp to the defocus list
        (let [stamp #(yield stamps.defocus)]
-         (.. filetype-info (stamp) info.diagnostic (stamp) tag.readonly (stamp)
-             info.filename (stamp) tag.modified (stamp) (stamp) "" (stamp)
-             "%=" (stamp) info.buffer-number (stamp) info.column (stamp)
-             "  %p%% " (stamp) info.git-branch)))
+         (table.concat [filetype-info
+                        (stamp)
+                        info.diagnostic
+                        (stamp)
+                        tag.readonly
+                        (stamp)
+                        info.filename
+                        (stamp)
+                        tag.modified
+                        (stamp)
+                        (stamp)
+                        ""
+                        (stamp)
+                        "%="
+                        (stamp)
+                        info.buffer-number
+                        (stamp)
+                        info.column
+                        (stamp)
+                        "  %p%% "
+                        (stamp)
+                        info.git-branch])))
 
 ;; set `b:gitbranch` as used in statusline each time we enter a buffer, window...
 (F.au [:BufWinEnter :BufNew]
@@ -230,8 +266,12 @@
        :callback statusline-diagnostics})
 
 ;; active/unactive statusline on focusing events
-(let [group (F.augrp :Hondana_StatusLine)]
+(let [group (F.augrp :Statusline)]
   (F.au [:BufEnter :WinEnter]
-        {: group :callback #(setlocal! statusline hondana-statusline)})
+        {:desc "Activate statusline on focus"
+         : group
+         :callback #(setlocal! statusline hondana-statusline)})
   (F.au [:BufLeave :WinLeave]
-        {: group :callback #(setlocal! statusline hondana-defocus-statusline)}))
+        {:desc "Deactivate statusline when unfocused"
+         : group
+         :callback #(setlocal! statusline hondana-defocus-statusline)}))

@@ -52,7 +52,8 @@
 
 ;;; PLUGIN
 (tc type LazySpec)
-(local P {1 :echasnovski/mini.files
+(local P {1 :nvim-mini/mini.files
+          :version false
           :keys (make-lazykeys! [[:pf
                                   minifiles-open-at-location-or-root
                                   "Open mini.files (directory of the current file)"]
