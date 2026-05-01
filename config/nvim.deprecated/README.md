@@ -1,13 +1,13 @@
-NeoVim
-======
+# NeoVim
+
+**Check my up-to-date version of Neovim for 0.12+ [here](https://codeberg.org/martialboniou/nvim).**
 
 - **this version is frozen**
-  - check this [setup](https://codeberg.org/martialboniou/nvim)
   - motivation: during the port from 0.11 to 0.12, there was so many changes that I decided to
-    invoke the almighty *tabula rasa*
+    invoke the almighty _tabula rasa_
     - `lazy` is great but `vim.pack`/`lze` might be all we need
     - improving keybindings' logic
-    - minimizing the external plugin vs 
+    - minimizing the external plugin vs
     - `fennel` is my main language for this setup but the core options/functions will be kept in
       Lua for non-native lispers
     - `Telescope` is cool but `mini.pick` is good enough
@@ -16,14 +16,13 @@ NeoVim
 - developer guidance:
   - Fennel 1.5.0 or a more recent version is required (no `tset` in this setup)
 
-New chapter
------------
+## New chapter
 
 Check [this new setup](https://codeberg.org/martialboniou/nvim) for Neovim 0.12
+
 - `rg` is still mandatory
 
-Pre-configuration
------------------
+## Pre-configuration
 
 Check this archive [README.md](https://github.com/martialboniou/dotfiles/blob/main/README.md) to
 ensure you have the required tools for [Mason](https://github.com/mason-org/mason.nvim) (`curl`,
@@ -42,149 +41,147 @@ Also install a [Nerd version](https://www.nerdfonts.com/) of your favorite
 monospaced font for your terminal (I'm happy with ZedMono), otherwise
 some emoticons won't be displayed at all.
 
-Showcase
---------
+## Showcase
 
 ![NeoVim in action](../../resources/nvim.jpg "NeoVim in action")
 
-Vim keybinding reminders & tips
--------------------------------
+## Vim keybinding reminders & tips
 
 - `:help index` : when you're lost or you forgot which key is bound to a
-specific command
+  specific command
 - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
-- (*experimental*) notable case in *insert* mode without exiting the *insert*
-mode (**TIP**: for these keybindings, no need to pause after typing a *comma*;
-it works on a very short timeout like a *double-click* using a mouse; notice
-that these keys were chosen for the lowest impact on your typing and for the
-Dvorak keyboard in mind):
-  - `,,` *ie* `<localleader><localleader>` : move cursor to the left
-  - `,.` *ie* `<localleader>.` : jumps and prints a trailing `;` at the end of
-  the line (before any trailing whitespace)
-  - `,p` *ie* `<localleader>p` : move cursor to the right (useful to jump a
-  character without switching to the *normal* mode; acts like `<C-o>a` in
-  *insert* mode)
-- `"+p`  : paste the system clipboard register (or use `<leader>p`)
+- (_experimental_) notable case in _insert_ mode without exiting the _insert_
+  mode (**TIP**: for these keybindings, no need to pause after typing a _comma_;
+  it works on a very short timeout like a _double-click_ using a mouse; notice
+  that these keys were chosen for the lowest impact on your typing and for the
+  Dvorak keyboard in mind):
+  - `,,` _ie_ `<localleader><localleader>` : move cursor to the left
+  - `,.` _ie_ `<localleader>.` : jumps and prints a trailing `;` at the end of
+    the line (before any trailing whitespace)
+  - `,p` _ie_ `<localleader>p` : move cursor to the right (useful to jump a
+    character without switching to the _normal_ mode; acts like `<C-o>a` in
+    _insert_ mode)
+- `"+p` : paste the system clipboard register (or use `<leader>p`)
 - `<C-6>`/`<C-^>`: switch to the **previously edited file** (**IMPORTANT**:
-  use `<C-6>`, not `<C-^>`, on a layout with *dead-keys*; I use an
+  use `<C-6>`, not `<C-^>`, on a layout with _dead-keys_; I use an
   international Dvorak layout (+ Command Qwerty) on macOS)
-- `<C-k>` (in *insert* mode) : prefix to type a *digraph*:
-  - `<C-k>ki` (in *insert* mode) : insert the japanese *hiragana* `き`
-  - `<C-k>=e` (in *insert* mode) : insert the euro symbol (*ie* `€`)
+- `<C-k>` (in _insert_ mode) : prefix to type a _digraph_:
+  - `<C-k>ki` (in _insert_ mode) : insert the japanese _hiragana_ `き`
+  - `<C-k>=e` (in _insert_ mode) : insert the euro symbol (_ie_ `€`)
   - `:digraphs`/`:digr`: show the currently defined *digraph*s
     - `:digr e: 235` : add `<C-k>e:` to print `ë` (already set by default)
   - **BEWARE**: some plugins' default keybindings may override this:
     - example: `blink.cmp` signature toggler has been replaced, from `<C-k>` to
-    `<C-s>` in insert mode;`<C-s>` is `vim.lsp.buf.signature_help()` on a
-    vanilla Vim
-- `<C-e>`/`<C-y>` (in *insert* mode) (check `:help i_CTRL-y`)
+      `<C-s>` in insert mode;`<C-s>` is `vim.lsp.buf.signature_help()` on a
+      vanilla Vim
+- `<C-e>`/`<C-y>` (in _insert_ mode) (check `:help i_CTRL-y`)
   - insert the **word** which is below/above the cursor (the default keys
-  inserts the one character at a time in a vanilla Vim install; this is the
-  *wordwise* version)
+    inserts the one character at a time in a vanilla Vim install; this is the
+    _wordwise_ version)
   - **IMPORTANT**: `<C-e>` always work but to use `<C-y>` normally, you'll need
-  to disable the completion in the buffer (by typing `<F4>`) because `<C-y>`
-  in *insert* mode accepts the completion's suggestion when the completion is
-  enabled (typing `<F4>` again to restore the completion; *ie* `:lua
-  vim.b.completion = true`)
+    to disable the completion in the buffer (by typing `<F4>`) because `<C-y>`
+    in _insert_ mode accepts the completion's suggestion when the completion is
+    enabled (typing `<F4>` again to restore the completion; _ie_ `:lua
+vim.b.completion = true`)
 - `:cd` : change the working directory (good for Harpoon; NOTE: `<leader>cd`
   is available to change the working directory **for the current window**
   with `lcd`)
-- useful motions keys (in *normal* mode) for *beginners*:
-  - *jump list*:
-    - `<C-o>` : go to **older** position in *jump list* (**very useful!**)
-    - `<C-i>` : go to **newer** position in *jump list*
-  - *column of the current line*:
-    - `0`    : jump to the **first** column of the current line (`|` does it
-    too **but** *implicitly* as one doesn't give it a count)
-    - `$`    : jump to the **last** column of the current line 
-  - *printable character of the current line*:
-    - `^`    : jump to the **first** *printable character* of the current line
-    (`_` does it too **but** *implicitly* as one doesn't give it a count)
-    - `g_`   : jump to the **last** *printable character* of the current line
-  - *sections*:
+- useful motions keys (in _normal_ mode) for _beginners_:
+  - _jump list_:
+    - `<C-o>` : go to **older** position in _jump list_ (**very useful!**)
+    - `<C-i>` : go to **newer** position in _jump list_
+  - _column of the current line_:
+    - `0` : jump to the **first** column of the current line (`|` does it
+      too **but** _implicitly_ as one doesn't give it a count)
+    - `$` : jump to the **last** column of the current line
+  - _printable character of the current line_:
+    - `^` : jump to the **first** _printable character_ of the current line
+      (`_` does it too **but** _implicitly_ as one doesn't give it a count)
+    - `g_` : jump to the **last** _printable character_ of the current line
+  - _sections_:
     - check `[]`, `][`, `]]`, `[[` with `:help section`
-  - *above any *braces*/*brackets**:
-    - `%`    : jump to the *matching* *braces*/*brackets*
-  - *inside *parens*/*curly braces**:
-    - `[(`/`[{` : jump to the **previous** *parens*/*curly braces*
-    - `])`/`]}` : jump to the **next** *parens*/*curly braces*
+  - *above any *braces*/*brackets\*\*:
+    - `%` : jump to the _matching_ _braces_/_brackets_
+  - *inside *parens*/*curly braces\*\*:
+    - `[(`/`[{` : jump to the **previous** _parens_/_curly braces_
+    - `])`/`]}` : jump to the **next** _parens_/_curly braces_
 - useful marks (see ShaDa in `:help`):
   - `` `" `` : go to the cursor position when last exiting the current buffer
   - `` `. `` : go to the cursor position where the last change was made
   - `` `' `` : **go to the cursor position of the last jump** (very useful!)
-  - `` `0 `` : go to the position before exit 
+  - `` `0 `` : go to the position before exit
   - same keybindings as before but `'` instead of the first `` ` `` : go to the
     beginning of the line of a specific cursor position
-- `o` (in *visual* mode) : correct the visual block (avoid to redo a visual
-block from the start when misclicked)
-- `gv`   : recall the latest visual block (say, use `<C-v>` to create one):
-  - `I`  : insert in visual block
-  - `A`  : append in visual block (use `$` to reach the EOL of each line of
-           the block; useful to complete lines with commas or semi-colons)
+- `o` (in _visual_ mode) : correct the visual block (avoid to redo a visual
+  block from the start when misclicked)
+- `gv` : recall the latest visual block (say, use `<C-v>` to create one):
+  - `I` : insert in visual block
+  - `A` : append in visual block (use `$` to reach the EOL of each line of
+    the block; useful to complete lines with commas or semi-colons)
 - `gn` to search forward (`g` as in `ex` command) the `n`ext similar word as
-  the last search (`*`, `/\<something\>`...; *since Vim 7.4*):
-    - `cgn` to change the current searched word then the next one with the same
-      pattern by using `.`
-    - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
-      the next one with the same pattern by using `.` (*alias* of
-      `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
-    - from an idea seen on
+  the last search (`*`, `/\<something\>`...; _since Vim 7.4_):
+  - `cgn` to change the current searched word then the next one with the same
+    pattern by using `.`
+  - `<leader>cc`/`<leader>cgn` to change the current word; you can replace
+    the next one with the same pattern by using `.` (_alias_ of
+    `:let @/=expand('<cword>')<CR>cgn`; **very useful!**)
+  - from an idea seen on
     [reddit](https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with):
-      - `g.`  : repeat a regular `c`-prefixed command as if it was performed using `cgn`
-      - `cg*` : alias of `*Ncgn`
-- `gf`   : **f**etch a file using the filename/hyperlink at the cursor position (it `wget`s an URL)
-- `gx`   : `vim.ui.open` a file e**x**plorer/browser using the hyperlink at the cursor position
+    - `g.` : repeat a regular `c`-prefixed command as if it was performed using `cgn`
+    - `cg*` : alias of `*Ncgn`
+- `gf` : **f**etch a file using the filename/hyperlink at the cursor position (it `wget`s an URL)
+- `gx` : `vim.ui.open` a file e**x**plorer/browser using the hyperlink at the cursor position
   (it calls the command `open` on macOS)
 - `:map` : check the key mapping
 - `:set spell` : enables Vim spellchecking
   - `:set spelllang=FR_fr` (as an example) starts a new dictionary (and download it
     first if not available)
-- `<C-f>` (in ***command* mode**) : after a `:`; behave like any Vim buffer
-- navigation with some `z` commands when *wrap* mode is off (default in this setup):
-  - `zz`  : center cursor position vertically (**BEWARE**: `ZZ` means save and close buffer; works
-            the same when *wrap* mode is on)
-  - `z;`  : center cursor position horizontally (added; equivalent to `zszH`; see `remap.fnl`!)
-  - `zs`  : scroll horizontally to position the **cursor at the start** of the
-            screen
-- `G`    : go to the end of file (of course!)
-- `J` (in *visual*) : move down the visual block (added; see `remap.fnl`!)
+- `<C-f>` (in **_command_ mode**) : after a `:`; behave like any Vim buffer
+- navigation with some `z` commands when _wrap_ mode is off (default in this setup):
+  - `zz` : center cursor position vertically (**BEWARE**: `ZZ` means save and close buffer; works
+    the same when _wrap_ mode is on)
+  - `z;` : center cursor position horizontally (added; equivalent to `zszH`; see `remap.fnl`!)
+  - `zs` : scroll horizontally to position the **cursor at the start** of the
+    screen
+- `G` : go to the end of file (of course!)
+- `J` (in _visual_) : move down the visual block (added; see `remap.fnl`!)
 - `<C-j>` : go down in the quickfix list (see below)
 - examples of `:normal` command:
-  - `:%norm I1. ` : prints `1. ` for each line of the current file (*ie* `%`)
+  - `:%norm I1. ` : prints `1. ` for each line of the current file (_ie_ `%`)
   - `:1,3norm I"<C-v><Esc>A"` : prepends & appends double-quotes for each line between
-  the first and the third line included;
+    the first and the third line included;
     - NOTES:
       - use `<C-v>` then `<Esc>` to insert the special `Escape` character
-      displayed as `^[`
+        displayed as `^[`
       - this command will work as expected if you don't use `autopairs` (to
-      toggle `autopairs`, type `:lua require'ultimate-autopair'.toggle()`;
-      `paredit` is also activated for some Lisp programming languages)
+        toggle `autopairs`, type `:lua require'ultimate-autopair'.toggle()`;
+        `paredit` is also activated for some Lisp programming languages)
       - use `nvim-surround` or `mini.surround` to add/replace brackets, quotes
-      or tags instead; or snippets (as they are more portable than the classic
-      `Ex`/`vim` macros)
+        or tags instead; or snippets (as they are more portable than the classic
+        `Ex`/`vim` macros)
 - `:copen` : open the quickfix list (say, after a `:grep foo src/*`)
-  - *alternative*: `<C-q>` in a Telescope search
-- `V:s/foo/bar/g<CR>` : replace *foo* by *bar* in the selection
+  - _alternative_: `<C-q>` in a Telescope search
+- `V:s/foo/bar/g<CR>` : replace _foo_ by _bar_ in the selection
 - `:%s/\(.\)noremap(/vim.keymap.set("\1", <CR>` : replace an old
   `nnoremap` function in standard vim Lua (nice trick!)
-- `<C-x><C-l>` (in *insert* mode) : complete the whole line (*ie* find matching lines
-  from every buffers and open a selector; navigate *normally* by using `<C-n>`/`<C-p>`;
+- `<C-x><C-l>` (in _insert_ mode) : complete the whole line (_ie_ find matching lines
+  from every buffers and open a selector; navigate _normally_ by using `<C-n>`/`<C-p>`;
   confirm with `<C-y>`)
 - multiple cursors:
   - `<C-LeftMouse>` : add or remove a cursor
   - `<C-up>`/`<C-down>` : add a cursor and move up/down
   - `<leader>m` : add cursors for each line of a visual area
-  - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
+  - `<leader>a`/`<leader>A` : add cursors to _cword_/add cursors to _cword_ in previous area
   - `<leader>l` : lock cursors
-- *number formats* and more (in *normal* mode or *visual* mode):
+- _number formats_ and more (in _normal_ mode or _visual_ mode):
   - NOTE: it also works with characters if the `alpha` option is added to
-  `vim.opt.nrformats` (it is set by default; otherwise try `:set nf=alpha`);
-  it's very useful for spawning variable names in a buffer (say, `a = `, `b =
-  `, `c = `...)
+    `vim.opt.nrformats` (it is set by default; otherwise try `:set nf=alpha`);
+    it's very useful for spawning variable names in a buffer (say, `a = `, `b =
+`, `c = `...)
   - `<C-a>` : increment a number
   - `<C-x>` : decrement a number
-  - `g` (in *visual* mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first**
-  number in the visual block for each line:
+  - `g` (in _visual_ mode) : `<C-a>`/`<C-x>` increment/decrement one by one for the **first**
+    number in the visual block for each line:
   ```plaintext
   0                                                    1
   0   --( <C-v> (to visual all the 0 then) g<C-a> )--> 2 (instead of 0s)
@@ -193,7 +190,7 @@ block from the start when misclicked)
 - **Case sensitivity**: the default setting is case insensitive so use `\C`
   to **force the case sensitivity** in a search (eg: `/something\C` or
   `/\Csomething`; use: `\c` otherwise if you've already switched to a
-  *case-sensitive setup* with `:set noic`)
+  _case-sensitive setup_ with `:set noic`)
 - `<C-w>` : window navigation prefix key
   - `!` : kill a **floating window** even if not focused (otherwise, `<C-w><C-w>`
     will get you there eventually)
@@ -208,9 +205,9 @@ block from the start when misclicked)
   - `grr` : `vim.lsp.buf.references()`
   - `gri` : `vim.lsp.buf.implementation()`
   - `gra` : `vim.lsp.buf.code_action()`
-  - `<C-S>` (in *visual* mode **only**) : `vim.lsp.buf.signature_help()`
-    (NOTE: `<C-S>` is mapped to the Harpoon navigation in *normal* mode;
-    and, in *insert* mode, it toggles the signature from `blink.cmp`)
+  - `<C-S>` (in _visual_ mode **only**) : `vim.lsp.buf.signature_help()`
+    (NOTE: `<C-S>` is mapped to the Harpoon navigation in _normal_ mode;
+    and, in _insert_ mode, it toggles the signature from `blink.cmp`)
   - `gO` : `vim.lsp.buf.document_symbol()` (NOTE: **check if it doesn't collide
     with the Markdown Outline keybinding**; it was also the default Tangerine's
     `:FnlGotoOutput` before `gG` to show the Lua output file from the current
@@ -225,7 +222,7 @@ block from the start when misclicked)
 - slurping & barfing using the `kovisoft/paredit` plugin for lisp:
   - `<>` : move left the bracket at the current position (as `<leader><`)
   - `><` : move right the bracket at the current position (as `<leader>>`)
-  - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to *normal*
+  - TIP: use `<M-l>` (`Alt+L` on most systems) to switch back to _normal_
     mode **without moving the cursor back**
   - NOTE: if `julienvincent/nvim-paredit` is activated, you must use:
     - `,@` : splice sexp (unwrap around cursor; `,` is the `<localleader>`)
@@ -234,44 +231,44 @@ block from the start when misclicked)
     - `>e` : drag element forwards (useful for fennel/clojure pairs between `{}`)
     - `,o`/`,O` : raise form/element
     - **IMPORTANT**: core changes:
-      - `W`/`B`  : move to the next/previous head element
+      - `W`/`B` : move to the next/previous head element
       - `E`/`gE` : move to the next/previous tail element (`gE` was the default
-      [Tangerine](https://github.com/martialboniou/tangerine.nvim) *eval*
-      keybinding; it's `gB` in this setup)
+        [Tangerine](https://github.com/martialboniou/tangerine.nvim) _eval_
+        keybinding; it's `gB` in this setup)
 - **function keys** (check `fnl.hondana-dev.remap`)
   - `<F2>` : cycle how the numbers are displayed in the left margin (no numbers,
-  absolute, relative)
-  - `<F3>` (in *insert* mode too) : print a date 
-  - `<F4>` (in *insert* mode too) : toggle completion in the buffer (useful to
-  get `i_CTRL-y` working to insert character which is above the cursor;
-  otherwise, `<C-y>` accepts the `blink.cmp`'s suggestion in insert mode when
-  the completion is enabled in the buffer)
+    absolute, relative)
+  - `<F3>` (in _insert_ mode too) : print a date
+  - `<F4>` (in _insert_ mode too) : toggle completion in the buffer (useful to
+    get `i_CTRL-y` working to insert character which is above the cursor;
+    otherwise, `<C-y>` accepts the `blink.cmp`'s suggestion in insert mode when
+    the completion is enabled in the buffer)
 - utility commands
   - `:ToggleExec` : toggle the executability of a file
   - `:ImprintFilename` : imprint the current filename at the cursor position
-  - `:ToggleCheckbox` : toggle a checkbox (eg. for a list in a buffer; only works in a *non-empty*
-    line; add `- [ ]` at the beginning of the line if no *dash* found there; otherwise,
-    add `[ ]` just after the initial *dash*; if `- [ ]`/`- [x]` already exists, replace it by
+  - `:ToggleCheckbox` : toggle a checkbox (eg. for a list in a buffer; only works in a _non-empty_
+    line; add `- [ ]` at the beginning of the line if no _dash_ found there; otherwise,
+    add `[ ]` just after the initial _dash_; if `- [ ]`/`- [x]` already exists, replace it by
     `- [x]`/`- [ ]` respectively)
     - use `gt` as a keybinding in a text/markdown file (check the [Cheat sheet](#cheat-sheet)
       subsection)
   - `:ImprintCHeader` (in `cpp`/`h` files) : imprint a C `#include` guard at the current cursor
     position
-- *insert* abbrev's:
+- _insert_ abbrev's:
   - `,\ ` : print a `λ` (can be useful in Fennel code; check `fnl/hondana-dev/set.fnl`)
 - `flash.nvim` related:
-  - use `,,` instead `,` (as *comma* is the `<localleader>`; `,` works with the
-  `f`/`t` motions but not when the `flash.nvim` plugin is activated)
+  - use `,,` instead `,` (as _comma_ is the `<localleader>`; `,` works with the
+    `f`/`t` motions but not when the `flash.nvim` plugin is activated)
   - `<localleader>s` : **Flash Treesitter** (complete the text objects'
-  selection/replacement)
+    selection/replacement)
 - experimenting `ultimate-autopair`:
-  - use `<M-e>` to *fastwrap* (*ie* barf the closing *paren* or *brace*;
-  default key)
+  - use `<M-e>` to _fastwrap_ (_ie_ barf the closing _paren_ or _brace_;
+    default key)
 
-Plugins and new keybindings
----------------------------
+## Plugins and new keybindings
 
 ### Special commands
+
 - `:MasonEnsureInstalled` : **install the recommended Mason packages** for
   LSP, linting or formatting (use this command once after the first boot)
 - `:LspInfo` : **show the name of the first language server**; it replaces the
@@ -285,7 +282,7 @@ Plugins and new keybindings
 - the `<leader>` key is `<Space>` in this configuration
 - the `<localleader>` key is `,` in this configuration
 - `<C-c>` as `<Esc>`
-- Harpoon 2 is *Cwd*-dependent; ensure you start NeoVim at the root of
+- Harpoon 2 is _Cwd_-dependent; ensure you start NeoVim at the root of
   your current project (notice you can harpoon a file under the cursor
   in a Netrw or `mini.files` buffer)
 - [Which Key](https://github.com/folke/which-key.nvim) is installed;
@@ -296,18 +293,19 @@ Plugins and new keybindings
 ### About Netrw
 
 It's great but:
+
 - use `mini.files`:
   - IMPORTANT: `h`/`l` : navigate up/down (`l` on a file = load in buffer)
   - `g?` : help
-  - `@`  : reveal `cwd`
-  - `=`  : synchronize (IMPORTANT: not :wq)
+  - `@` : reveal `cwd`
+  - `=` : synchronize (IMPORTANT: not :wq)
   - `gh` : show/hide hidden files (FIXME: possible conflict!)
   - edition like `vim-vinegar`/`oil`:
     - btw, `-` is important in a buffer, DON'T TOUCH IT
   - BAD IDEA: don't add `-` as alias of `h` in the `mini.files` buffer
   - Netrw still available: `:Ex` (or open a directory `nvim .`)
 - I CANNOT switch to `oil.nvim`
-  - `-` (in *normal* mode) : open folder directory in `oil.nvim` (like `vim-vinegar`)
+  - `-` (in _normal_ mode) : open folder directory in `oil.nvim` (like `vim-vinegar`)
   - `<leader>pf`/`<leader>pv` : `mini.files` not `oil.nvim` (instead of `:Ex`)
   - it **BREAKS** Netrw
 - `:Ex` is still available
@@ -328,127 +326,127 @@ It's great but:
 - `<C-h>` : back to first file
 - (optional) `<C-Space>` : enable completion
 - (optional) `<C-y>` : auto-complete a path reference to the newly created
-module (`<C-n>`/`<C-p>` to navigate)
-- `gd` (on a reference, say, `require`; in *normal* mode) : back to the module
+  module (`<C-n>`/`<C-p>` to navigate)
+- `gd` (on a reference, say, `require`; in _normal_ mode) : back to the module
 - `ga` : tag the module in Harpoon 2 (second)
 - `gu` : check the harpoon list (change the order with copy-pasta; this was <C-e> is the original configuration)
 - `<C-h>`/`<C-t>` : switch back and forth, the file and its module
 
 ### Cheat sheet
 
-- `<C-o><cmd>` (in *insert* mode): switch to normal to execute `<cmd>` then back to 
-insert
-- `J` : append line (in *normal* mode) BUT in this remap, it doesn't move the cursor away
-- `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap; 
-  *memo*: Down/Up)
+- `<C-o><cmd>` (in _insert_ mode): switch to normal to execute `<cmd>` then back to
+  insert
+- `J` : append line (in _normal_ mode) BUT in this remap, it doesn't move the cursor away
+- `<C-d>`/`<C-u>` : page up/down (doesn't move the cursor in this remap;
+  _memo_: Down/Up)
 - `:so` : source this file
 - `<C-w><C-w>` : cycle windows
 - `<C-w>o` : one window (AKA 'close' others)
 - `<leader>cd` : change the working directory for the current window
-- in *visual* mode:
+- in _visual_ mode:
   - `<shift-J>`: move down the whole selection
   - `<shift-K>`: move up the whole selection
-- *REMINDER*: `:map` to check the key mapping
+- _REMINDER_: `:map` to check the key mapping
 - `:Lazy` : check package (I prefer this one to Packer)
-- `:InspectTree` : display the *Syntax Tree* from Treesitter (neat! it was `:TSPlaygroundToggle` before but
+- `:InspectTree` : display the _Syntax Tree_ from Treesitter (neat! it was `:TSPlaygroundToggle` before but
   playground is a part of NeoVim now)
-  - `o` (in *Syntax Tree*) : open the *Query Editor* in a *scratch* window to edit
+  - `o` (in _Syntax Tree_) : open the _Query Editor_ in a _scratch_ window to edit
     the Treesitter queries in Scheme (the `:EditQuery` command does it too)
 - **IMPORTANT**: `<leader>f` : **format** using [Conform](https://github.com/stevearc/conform.nvim);
-- **IMPORTANT!**: `gs` : create a template to replace the *current word*
-  (*memo*: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation** (`<leader>ss`
-  was previously used in this case; it's the Telescope *spell suggest* keybinding now)
-- `gs` (in *visual* mode) : create a template to replace a *pattern
-  in the selection*; same confirmation option as above
-- `<localleader>o` (in *normal* **AND** *insert* mode) : print a `;` at the end
-of line (**might be a temporary addition**; it was mapped to `g;` & it was a
-bad idea; REMINDER: `<localleader>` is `,`)
-- `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but 
-  it may *proc* to easily; also *same key twice can be harmful*; *memo*: **p**roject **f**iles)
+- **IMPORTANT!**: `gs` : create a template to replace the _current word_
+  (_memo_: `s` as in `:%s`); type `a` (for `all`) to skip the **confirmation** (`<leader>ss`
+  was previously used in this case; it's the Telescope _spell suggest_ keybinding now)
+- `gs` (in _visual_ mode) : create a template to replace a _pattern
+  in the selection_; same confirmation option as above
+- `<localleader>o` (in _normal_ **AND** _insert_ mode) : print a `;` at the end
+  of line (**might be a temporary addition**; it was mapped to `g;` & it was a
+  bad idea; REMINDER: `<localleader>` is `,`)
+- `<leader>pf` : `mini.files` at current directory (it was previously `<leader><leader>` but
+  it may _proc_ to easily; also _same key twice can be harmful_; _memo_: **p**roject **f**iles)
 - **BEWARE:** `<leader>p` (in selection) : paste a buffer but doesn't keep the deleted selection
   so you can paste the same again
 - `<leader>pg` : Telescope project git (staged files; it was bound to `<C-p>` before)
-- `<leader>pv` : `mini.files` at root (ie *Cwd*; **p**roject **v**iew)
+- `<leader>pv` : `mini.files` at root (ie _Cwd_; **p**roject **v**iew)
 - `<leader>ff>`/`<leader>sf` : Telescope **find files** (replaces `<leader>pf` from a previous setup;
-  notice there's `<leader>sF` for Telescope most frequently used files (see *other Telescope keybindings*))
+  notice there's `<leader>sF` for Telescope most frequently used files (see _other Telescope keybindings_))
 - `<leader>ps` : Telescope project search (`rg`!)
 - `<leader>vh` : Telescope view helptags
-- `<leader>vv` : Telescope recent files (*memo*: view viewed/**v**iew **v**isited);
-- `<leader>vb`/`<leader>bb` : Telescope buffers (*memo*: view buffers); **doesn't show
+- `<leader>vv` : Telescope recent files (_memo_: view viewed/**v**iew **v**isited);
+- `<leader>vb`/`<leader>bb` : Telescope buffers (_memo_: view buffers); **doesn't show
   the current one**
-  - `d` (in *normal* mode) : **d**elete a buffer (added in this setup)
+  - `d` (in _normal_ mode) : **d**elete a buffer (added in this setup)
 - `<leader>gs` : git status (you can lazy load the FuGITive plugin with the
   command `Git`)
 - Harpoon-related keybindings:
-  - `ga` : add file in Harpoon (it works with `Netrw` and `mini.files` too; *memo*: **G**et **a**ttached)
-  - `gh` : harpoon quick menu (*memo*: **G**o to **H**arpoon; it was `<C-e>` originally)
-- `<leader>u`  : undotree
+  - `ga` : add file in Harpoon (it works with `Netrw` and `mini.files` too; _memo_: **G**et **a**ttached)
+  - `gh` : harpoon quick menu (_memo_: **G**o to **H**arpoon; it was `<C-e>` originally)
+- `<leader>u` : undotree
 - **VERY IMPORTANT**: `<leader>y`/`<leader>Y`/`<leader>d` : yank or delete for the clipboard
 - `<leader>j`/`<leader>k` : quickfix local navigation ie `lnext`/`lprev`
 - `<C-j>`/`<C-k>` : quickfix navigation ie `cnext`/`cprev`
 - `<C-h>` (also `t`,`n`,`s`: dvorak!) : navigate file 1 (2,3,4) in harpoon
-- `<C-q>`      : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
-- **IMPORTANT**: `Q` is removed (in *normal* mode; avoid typo)
-- multiple cursors (in *normal* & *visual* mode by default):
-  - `<C-LeftMouse>` (in *insert* & *normal* mode only) : add or remove a cursor
-  - `<C-up>`/`<C-down>` (in *insert* mode too) : add a cursor and move up/down
-  - `<leader>m` (in *visual* mode only) : add cursors for each line of a visual area
-  - `<leader>a`/`<leader>A` : add cursors to *cword*/add cursors to *cword* in previous area
-  - `<leader>h` : add cursor and jump to next *cword*
-  - `<leader>H` : jump to next *cword*
+- `<C-q>` : navigate thru tmux sessions (this executable (file)[https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer] is required in your path)
+- **IMPORTANT**: `Q` is removed (in _normal_ mode; avoid typo)
+- multiple cursors (in _normal_ & _visual_ mode by default):
+  - `<C-LeftMouse>` (in _insert_ & _normal_ mode only) : add or remove a cursor
+  - `<C-up>`/`<C-down>` (in _insert_ mode too) : add a cursor and move up/down
+  - `<leader>m` (in _visual_ mode only) : add cursors for each line of a visual area
+  - `<leader>a`/`<leader>A` : add cursors to _cword_/add cursors to _cword_ in previous area
+  - `<leader>h` : add cursor and jump to next _cword_
+  - `<leader>H` : jump to next _cword_
   - `<leader>l` : lock cursors
 - FuGITive (inside the fugitive buffer only):
   - `<leader>p` : `git push`
-  - `<leader>P` : `git pull` **with rebase** 
+  - `<leader>P` : `git pull` **with rebase**
   - `<leader>t` : `git push -u origin` template; complete with the branch name
     to push to
-- *cmp_mappings* (using `blink.cmp`):
+- _cmp_mappings_ (using `blink.cmp`):
   - `<C-y>` : confirm completion (works with `ghost-text`)
   - `<C-p>` : previous completion (or `show` like `<C-space>` if inactive)
   - `<C-n>` : next completion (or `show` like `<C-space>` if inactive)
   - `<C-Space>` : complete
-  - `<C-f>` : snippet forward selection (navigate thru tmux sessions in *normal* mode)
+  - `<C-f>` : snippet forward selection (navigate thru tmux sessions in _normal_ mode)
   - `<C-b>` : snippet backward selection (unbind `<C-b>` for `tmux`;
     don't use `<C-a>` either because you lose the cursor navigation (start of line);
     `F5`/`fn a` is my current choice for `tmux`)
   - `<C-s>` : toggle the signature helper (from `blink.cmp`, not from `vim.lsp`
-  which is the default setting)
-    - it was `<C-k>` by default but it conflicts with the *digraph* prefix key
-    in *insert* mode
+    which is the default setting)
+    - it was `<C-k>` by default but it conflicts with the _digraph_ prefix key
+      in _insert_ mode
   - other keys (common in any Vim setup)
     - `<C-e>` : cancel the completion
     - `<C-u>`/`<C-d>` : scroll the document up/down
-- in LSP buffer only (in *normal* mode except when said otherwise)
+- in LSP buffer only (in _normal_ mode except when said otherwise)
   - **NOTE**: `<leader>f` will do a `conform.format` or (when unsuccessful) a
     `vim.lsp.buf.format`
   - **REMINDER**: default mappings introduced in NeoVim 0.11:
-    - `<C-s>` (in *insert* mode) : `vim.lsp.buf.signature_help()` (*BEWARE*: `<C-s>`
-    switches to the first harpoon in ***normal* mode**; it was `<C-h>` before)
+    - `<C-s>` (in _insert_ mode) : `vim.lsp.buf.signature_help()` (_BEWARE_: `<C-s>`
+      switches to the first harpoon in **_normal_ mode**; it was `<C-h>` before)
       - **IMPORTANT**: in this setup `<C-s>` toggles the signature from
-      `blink.cmp` (check hondana-dev.plugins.completions)
-    - `K` : hover (*BEWARE*: `K` moves the selection up in ***visual* mode**)
+        `blink.cmp` (check hondana-dev.plugins.completions)
+    - `K` : hover (_BEWARE_: `K` moves the selection up in **_visual_ mode**)
     - `gri` : `vim.lsp.buf.implementation()`; use `gI` for the Telescope version
-    - `gra` (in *normal* or *visual* mode) : `vim.lsp.buf.code_action()`
+    - `gra` (in _normal_ or _visual_ mode) : `vim.lsp.buf.code_action()`
     - `grn` : `vim.lsp.buf.rename()`
     - `grr` : `vim.lsp.buf.references()`
     - `gO` : `vim.lsp.buf.document_symbol()`
     - `[d`/`[D` : jump to previous/first diagnostic
     - `]d`/`]D` : jump to next/last diagnostic
   - changes for this setup:
-    - `gd` : Telescope *builtin*'s **g**oto **d**efinition
+    - `gd` : Telescope _builtin_'s **g**oto **d**efinition
     - `gD` : `vim.lsp.buf.declaration()`
-    - `gI` : Telescope *builtin*'s **g**oto **I**mplementation (better than `gri`)
+    - `gI` : Telescope _builtin_'s **g**oto **I**mplementation (better than `gri`)
     - `g/`/`<leader>vdd` : `vim.diagnostic.open_float()`
     - `<leader>nn` : `vim.lsp.buf.rename()` (alternative to `grn`)
-    - `<leader>ca` (in *normal* or *visual* mode) : `vim.lsp.buf.code_action()` (alternative to `gra`)
-    - `<leader>D` : Telescope *builtin*'s **D**iagnostics for the current buffer
-    - `<leader>vws` : Telescope *builtin*'s **v**iew **w**orkspace **s**ymbol (replaces
+    - `<leader>ca` (in _normal_ or _visual_ mode) : `vim.lsp.buf.code_action()` (alternative to `gra`)
+    - `<leader>D` : Telescope _builtin_'s **D**iagnostics for the current buffer
+    - `<leader>vws` : Telescope _builtin_'s **v**iew **w**orkspace **s**ymbol (replaces
       `vim.lsp.buf.workspace_symbol()`)
-    - `<leader>vtd` : Telescope *builtin*'s **v**iew **t**ype **d**efinition
+    - `<leader>vtd` : Telescope _builtin_'s **v**iew **t**ype **d**efinition
     - `<leader>rs` : command `:LspRestart`
     - `<leader>ih`/`<leader>ii` : toggle LSP inlay hints (the latter for ergonomics)
 - **Trouble** (fix helper plugin in `hondana-dev/plugins/quickfix`) case:
-  - `<leader>xx` : toggle trouble quickfix (*memo*: quickfiXX)
+  - `<leader>xx` : toggle trouble quickfix (_memo_: quickfiXX)
   - `<leader>xX` : toggle trouble for the current buffer
   - `<leader>cs` : symbols (Trouble)
   - `<leader>cl` : LSP definitions etc... (Trouble)
@@ -460,8 +458,8 @@ bad idea; REMINDER: `<localleader>` is `,`)
   - NOTE: you can also use the specific commands like `:TodoTelescope`...
 - **Overseer** case:
   - NOTE: Overseer is a task runner; the current version is not up-to-date
-  (WIP: parser messaging to `vim.diagnostc` to adapt from *tag* v1.6.0 to the
-  current *master* (*tag* v2.0.0))
+    (WIP: parser messaging to `vim.diagnostc` to adapt from _tag_ v1.6.0 to the
+    current _master_ (_tag_ v2.0.0))
   - `<leader>ow` : task list
   - `<leader>oo` : **run** task
   - `<leader>oq` : action recent task
@@ -471,69 +469,69 @@ bad idea; REMINDER: `<localleader>` is `,`)
   - `<leader>oc` : **clear cache**
 - **Treesitter**
   - selection text-objects (prefix with `v` for `visual`, `c` for change, `d` for delete...):
-    - `ac`       : *outer* class
-    - `am`       : *outer* method/function (**BEWARE**: `f` is for function *call*)
-    - `af`       : *outer* function call
-    - `aa`       : *outer* argument/parameter
-    - `ai`       : *outer* if (it seeks any conditional nodes)
-    - `al`       : *outer* loop
-    - `a=`       : *outer* assignment
-    - for any previous selections, replace the first `a` by `i` for the *inner* version
-    - `l=`/`r=`  : LHS/RHS of an assignment
-    - `as`       : `@scope`
+    - `ac` : _outer_ class
+    - `am` : _outer_ method/function (**BEWARE**: `f` is for function _call_)
+    - `af` : _outer_ function call
+    - `aa` : _outer_ argument/parameter
+    - `ai` : _outer_ if (it seeks any conditional nodes)
+    - `al` : _outer_ loop
+    - `a=` : _outer_ assignment
+    - for any previous selections, replace the first `a` by `i` for the _inner_ version
+    - `l=`/`r=` : LHS/RHS of an assignment
+    - `as` : `@scope`
   - move text-objects (go to...):
-    - `]c`       : *next* start *outer* class
-    - `]m`       : *next* start *outer* method/function
-    - `]a`       : *next* start *inner* argument/parameter
-    - `]C`       : *next* end *outer* class
-    - `]M`       : *next* end *outer* method/function
-    - `]A`       : *next* end *inner* argument/parameter
-    - for any previous *moves*, replace the first `]` by `[` for the *previous* version
+    - `]c` : _next_ start _outer_ class
+    - `]m` : _next_ start _outer_ method/function
+    - `]a` : _next_ start _inner_ argument/parameter
+    - `]C` : _next_ end _outer_ class
+    - `]M` : _next_ end _outer_ method/function
+    - `]A` : _next_ end _inner_ argument/parameter
+    - for any previous _moves_, replace the first `]` by `[` for the _previous_ version
 - Other Telescope keybindings:
-  - `<leader>/`  : Telescope search word (**MOST IMPORTANT**; *memo*: `/`)
+  - `<leader>/` : Telescope search word (**MOST IMPORTANT**; _memo_: `/`)
   - `<leader>sr` : Telescope **resume selections from the previous picker**
   - `<leader>sd` : Telescope **diagnostic**
   - `<leader>sF` : Telescope search the most frequently used files at the root directory
-    (using the `frecency` extension; *memo*: **s**earch **F**requently used)
+    (using the `frecency` extension; _memo_: **s**earch **F**requently used)
     - NOTE: launch the command `Telescope frecency workspace=CWD`
   - `<leader>sk` : Telescope **s**earch **k**eymaps
-  - `<leader>s/` : Telescope **s**earch *live grep* AKA `/` in open files
+  - `<leader>s/` : Telescope **s**earch _live grep_ AKA `/` in open files
   - `<leader>sb` : Telescope **s**earch **b**uiltin selector
   - `<leader>sw` : Telescope **s**earch **w**ord (may be deprecated)
   - `<leader>sg` : Telescope **s**earch live **g**rep
   - `<leader>ss` : Telescope **s**pell **s**uggest
-  - `<leader>sm` : (only in this setup) Telescope **s**earch live **m**ultigrep (*usage*:
+  - `<leader>sm` : (only in this setup) Telescope **s**earch live **m**ultigrep (_usage_:
     `<pattern><2-spaces><glob-pattern>`; examples of `<glob-pattern>`: `*.fnl`/`**/plugins/**`)
   - special `stdpath` files:
     - `<leader>en` : Telescope find files to **e**dit amongst the **N**eoVim `config` files
     - `<leader>ep` : Telescope find files to **e**dit amongst the Lazy **p**lugins in your `data`
       path
 - a refactoring plugin (deprecated; inspired by Martin Fowler):
-  - use `:Refactor e<Tab>` or one of these keybindings (in ***selection* mode**
+  - use `:Refactor e<Tab>` or one of these keybindings (in **_selection_ mode**
     by default):
     - `<leader>re` : extract function
     - `<leader>rf` : extract function to a file
     - `<leader>rv` : extract variable (extract occurences of a selected expression
-    to its own variable, replacing occurences of that expression with the variable)
-    - `<leader>ri` (also in ***normal* mode**) : inline variable (opposite of
-    extract variable; replace all occurences of a variable with its value)
-    - `<leader>rb` (**only in *normal* mode**) : extract block
-    - `<leader>rbf` / `<leader>rbb` (**only in *normal* mode**) : extract block
+      to its own variable, replacing occurences of that expression with the variable)
+    - `<leader>ri` (also in **_normal_ mode**) : inline variable (opposite of
+      extract variable; replace all occurences of a variable with its value)
+    - `<leader>rb` (**only in _normal_ mode**) : extract block
+    - `<leader>rbf` / `<leader>rbb` (**only in _normal_ mode**) : extract block
       to a file
-    - `<leader>rt` : select the *refactor* via Telescope
+    - `<leader>rt` : select the _refactor_ via Telescope
 - [zk](https://github.com/zk-org/zk-nvim) plugin in `hondana-dev/plugins/zettel`:
   - `<leader>z`-based
     [keybindings](https://github.com/zk-org/zk-nvim/blob/main/README.md#example-mappings)
-    - global mappings (`<leader>` *+* zn`, `zo`, `zt` & `zf` (incl. visual))
+    - global mappings (`<leader>` _+_ zn`, `zo`, `zt`&`zf` (incl. visual))
     - markdown-specific keybindings:
       - example: `<leader>znt` in visual : new note using the current selection as title
   - `:ZkNotes` (key: `<leader>zo`) : check your global notebook according to
     your `~/.config/zk/config.toml` if there's no `.zk` in the vicinity
     of the current buffer
-  - `<leader>zn`: add a new note from the ```[[<title>]]``` at the current line
+  - `<leader>zn`: add a new note from the `[[<title>]]` at the current line
   - **(untested)** `<leader>zo`: open Telescope on your zk notebook searching
     the current square-bracketed word at the cursor by default (ie the
-    *yanked* text surrounded by any `[ ]`)
+    _yanked_ text surrounded by any `[ ]`)
 - Persistence, a simple session manager (`<leader>q` is the prefix for Persistence):
   - `<leader>qq` : load the session for the current directory
   - `<leader>qs` : select a session to load
@@ -543,22 +541,22 @@ bad idea; REMINDER: `<localleader>` is `,`)
   If Copilot is not loaded, type `:Copilot` or start asking for a suggestion
   with `<C-]>`. Copilot is not auto-triggered by default; type `:CopilotTrigger`
   to do so (NOTE: if the auto-completion menu disturbs you, use `<C-e>` to disable
-  the menu and `<C-Space>`, after that, to restore it).  These following
-  keybindings are available in ***insert* mode**:
-  - `<M-]>` : next suggestion/start the suggestion (*lazy-load* if not loaded)
+  the menu and `<C-Space>`, after that, to restore it). These following
+  keybindings are available in **_insert_ mode**:
+  - `<M-]>` : next suggestion/start the suggestion (_lazy-load_ if not loaded)
   - `<M-[>` : previous suggestion
   - `<C-]>` : accept next word from the suggestion
   - `<C-[>` : cancel the suggestion
   - `<M-=>` : accept the suggestion (**IMPORTANT!**: the default keybinding
     `<M-l>` was reserved in my [yabai](https://github.com/koekeishiya/yabai)
-    setup; *memo*: `=` to synchronize as already used in `mini.files`; also,
+    setup; _memo_: `=` to synchronize as already used in `mini.files`; also,
     `=` is just below `]` on the dvorak layout)
-- `gt` (in a text/markdown file) : toggle a checkbox (only works in a *non-empty* line;
+- `gt` (in a text/markdown file) : toggle a checkbox (only works in a _non-empty_ line;
   also available in Org mode & `asciidoc` files; check the utility command `:ToggleCheckbox`
   in the [keybindings](#vim-keybinding-reminders-tips) section)
 - [Cellular Automaton](https://github.com/Eandrju/cellular-automaton.nvim)
   (setup in `plugins/procrastinate.lua`)
-  - `<leader>zz`  : randomly activate an animation
+  - `<leader>zz` : randomly activate an animation
 
 ### Technical tips
 
@@ -591,10 +589,10 @@ I choose [paredit](https://github.com/kovisoft/paredit) for Lisp coding over
 This setup uses the `vim.lsp.config()` & `vim.lsp.enable()` functions introduced in
 NeoVim 0.11.
 `blink.cmp` (relying on `LuaSnip`) completes this configuration. Note that
-`mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional 
+`mason-lspconfig.nvim` & `mason-tool-installer` can still install some additional
 language servers, linters, formatters...
 
-Type `:LspInfo!` or `:LspInfo`  to check the active LSP clients attached to
+Type `:LspInfo!` or `:LspInfo` to check the active LSP clients attached to
 your current buffer (as `get_active_clients()` is obsolete in NeoVim 0.12;
 added in this setup; they replace a cumbersome command like
 `:= vim.lsp.get_clients({bufnr=0})` or `:= vim.lsp.get_clients({bufnr=0})[1].name`
@@ -607,7 +605,7 @@ article](https://dx13.co.uk/articles/2023/04/24/neovim-lsp-without-plugins/).
 #### Debugger Adapter Protocol
 
 DAP is ready to run. It may be configued for your `lldb-vscode` (soon, `lldb-dap`).
-Check `hondana-dev/plugins/dap`. You can: 
+Check `hondana-dev/plugins/dap`. You can:
 
 - toggle a breakpoint with `<leader>dt` (or `:DapToggleBreakpoint`)
 - start debugging with `<leader>dc` (or `:DapContinue`; opens the UI)
@@ -630,12 +628,13 @@ return {
 ```
 
 **IMPORTANT**: If you put your plugins in `lua/hondana-dev/plugins`, please
-choose an original filename (say, add your name as a  prefix). If another
-plugin spec file with the same name may exist in `fnl/hondana-dev/plugins` 
+choose an original filename (say, add your name as a prefix). If another
+plugin spec file with the same name may exist in `fnl/hondana-dev/plugins`
 in the future, the compiled version in `lua/hondana-dev/plugins` would crush
 yours.
 
 If you want to edit some Fennel code, notice that:
+
 - the Fennel Language Server should work for diagnostics
 - the `<leader>f` keybinding for formatting (ie. `conform.format()`) will
   work if you have the **latest version** of
@@ -643,6 +642,7 @@ If you want to edit some Fennel code, notice that:
   `;skip` prints a special comment if you want to locally skip the formatting)
 
 Here are some keybindings for the Fennel buffer (mainly to access a REPL):
+
 - from the [Tangerine](https://github.com/martialboniou/tangerine.nvim) plugin
   (NOTE: `<leader>g` is a prefix for git-related actions (as `<leader>gs` and
   other FuGITive commands); here, `g` followed by a **capital letter** is
@@ -652,7 +652,7 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
     file (this keybinding is not available in the default configuration; don't
     forget to save the file as the compiler doesn't use the current buffer
     itself)
-  - (*recent change*) `gG` : **G**o to the Lua file (`:FnlGotoOutput`)
+  - (_recent change_) `gG` : **G**o to the Lua file (`:FnlGotoOutput`)
     (**IMPORTANT**: your Fennel files must be in a `fnl/` directory so your
     compiled Lua files will be pushed into a `lua/`-rooted directory tree; to
     move back to the Fennel buffer, remember `<C-6>` is your friend; also, don't
@@ -660,13 +660,13 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
     keybinding but NeoVim 0.11 adds `gO` as the default keybinding for
     `vim.lsp.buf.document_symbol()`)
   - `gB` : **B**uffer evaluation (**IMPORTANT:** it was `gE` before but it
-    collides with the Vim core mechanics (*ie* jump backwards to the end of a
-    word w/ or w/o punctuation) and/or the *unused for now*
+    collides with the Vim core mechanics (_ie_ jump backwards to the end of a
+    word w/ or w/o punctuation) and/or the _unused for now_
     [paredit](https://github.com/julienvincent/nvim-paredit) by Julien Vincent)
-  - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`) 
+  - `<C-c>` (in the float output buffer) : kill (instead of `<Esc>`)
 - from the [Conjure](https://github.com/Olical/conjure) plugin (NOTE: every
   evaluation is stored in a register, try `"cp`):
-  - evaluate: 
+  - evaluate:
     - `<localleader>eb` : **e**valuate the whole **b**uffer
     - `<localleader>ee` : **e**valuate the inn**e**r form
     - `<localleader>er` : **e**valuate the oute**r** form
@@ -675,22 +675,22 @@ Here are some keybindings for the Fennel buffer (mainly to access a REPL):
       (created with `m<letter>`)
   - inspect:
     - `<localleader>ew` : inspect by **e**valuating *w*hat it is
-    - `<localleader>E` (in *visual* mode) : inspect by **E**valuating the selection
-    - `<localleader>Eiw` (in *normal* mode) : inspect by **E**valuating the inner word
-    - `<localleader>Ea(` (in *normal* mode) : inspect by **E**valuating the whole parens (`a(`)
+    - `<localleader>E` (in _visual_ mode) : inspect by **E**valuating the selection
+    - `<localleader>Eiw` (in _normal_ mode) : inspect by **E**valuating the inner word
+    - `<localleader>Ea(` (in _normal_ mode) : inspect by **E**valuating the whole parens (`a(`)
   - log buffer:
     - `<localleader>ls` : open the **l**og buffer horizontally **s**plit
-    - `<localleader>q`  : close any log buffer (*ie* **q**uit)
+    - `<localleader>q` : close any log buffer (_ie_ **q**uit)
     - `<localleader>lr` : soft **l**og **r**eset (leaving the window open)
     - `<localleader>lR` : hard **l**og **R**eset (closing the window open, deleting the buffer)
   - doc word:
-    - `<localleader>K`  : doc word (instead of `K`; as used in LSP for hover)
+    - `<localleader>K` : doc word (instead of `K`; as used in LSP for hover)
 
 ##### LSP server for Fennel
 
 This setup requires [fennel-ls](https://sr.ht/~xerool/fennel-ls/), a language
 server for intelligent editing of the Fennel programming language. This script in
-*alpha* stage **must be installed manually** (to be up-to-date). 
+_alpha_ stage **must be installed manually** (to be up-to-date).
 
 To setup this language server for your Fennel code inside `~/.config/nvim/fnl/`,
 you must run NeoVim at least once (in order to install
@@ -708,9 +708,10 @@ server).
 ##### Random tips
 
 Here's some tips for the LISP typists:
-- `,\<Space>` (in *insert* mode) : print `λ` (only in this configuration; a viable
+
+- `,\<Space>` (in _insert_ mode) : print `λ` (only in this configuration; a viable
   **keyword** in Fennel)
-- `<C-k>` + `*` + `l` (in *insert* mode) : print `λ` (same as above but this is an 
+- `<C-k>` + `*` + `l` (in _insert_ mode) : print `λ` (same as above but this is an
   universal keybinding in Vim/NeoVim, thanks to the *digraph*s)
 
 **Fennel developers**: if you need to compile some fennel codes using
@@ -732,10 +733,10 @@ Check
 by Andrey Listopadov for more information.
 
 Notice that for convenience, one of the Tangerine's `fennel.lua` files (normally,
-the *latest* one) will be linked to `~/.config/nvim/fnl/fennel.lua`. Delete this
-file if you need to update it (the *latest* version is technically a `require`
+the _latest_ one) will be linked to `~/.config/nvim/fnl/fennel.lua`. Delete this
+file if you need to update it (the _latest_ version is technically a `require`
 to another file in the `tangerine/fennel` tree but this setup targets the very last
-static file instead and, it won't be the *latest* at some point).
+static file instead and, it won't be the _latest_ at some point).
 Check `~/.config/nvim/boot.fnl`.
 
 ### Note about specific environment for developers
@@ -755,7 +756,7 @@ Report to the [documentation](https://clangd.llvm.org/config) for other
 settings (say, if you use `cmake`; I generally build by `zig` or other
 minimalist scripts).
 
-The default formatting is *annoying* (set to 2 spaces' indent). So, in
+The default formatting is _annoying_ (set to 2 spaces' indent). So, in
 this setup, `conform` takes care of `clang-format` instead of the embedded
 `clang-format` from `clangd` (the `offsetEncoding` of the LSP protocol
 capabilities of `clangd` must be set to `utf-16`): you can pass extra
@@ -776,7 +777,7 @@ If you need a global `clang-format` configuration (and thus **override
 every local `.clang-format` files**), set `override-clang-format-globally`
 to `true` in `~/.config/nvim/fnl/hondana-dev/plugins/formatters.fnl`: by
 doing so, `~/.config/nvim/.clang-format` will be used everytime to
-format your *Clang* code.
+format your _Clang_ code.
 
 Here's an example of this current file (check
 [the current documentation](https://clang.llvm.org/docs/ClangFormatStyleOptions.html)):
@@ -791,49 +792,54 @@ AlignConsecutiveMacros:
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterFunction: false
-IndentWidth: 4 # depends on your tabstop; here, 4; check with
-               # `= :vim.filetype.get_option('c', 'tabstop')`
+IndentWidth:
+  4 # depends on your tabstop; here, 4; check with
+  # `= :vim.filetype.get_option('c', 'tabstop')`
 ```
 
 Delete `~/.config/nvim/.clang-format` each time you change your tabstop;
 it will rebuild this file with your new setting (you can copy to your
-*Clang* projects' root or use it globally if you enabled this option).
+_Clang_ projects' root or use it globally if you enabled this option).
 
-One last word about *clangd*: The default LSP semantics in this server
+One last word about _clangd_: The default LSP semantics in this server
 don't fit most colorschemes I used. I decided to remove this part of
 the server (thus, the syntax in C, ObjC & C++ is highlighted by using
 Treesitter). IMO, the lack of extra tokens in the strings brought by
-`clangd` is *no big deal*; the lack of that atrocious parsing for
+`clangd` is _no big deal_; the lack of that atrocious parsing for
 the CPP/macros is for the best.
 
 #### Symfony 6+ (PHP)
 
 If you want to use this install to make NeoVim as
-a *ready-to-go* Symfony editor (and get rid of VSCode), do it so.
+a _ready-to-go_ Symfony editor (and get rid of VSCode), do it so.
 
 First, install with `:Mason` (type `i` when the cursor is above
 one of the following package):
 
 - `php-cs-fixer` (not needed if already in your path)
-: use `<Space>f` to format your code
+  : use `<Space>f` to format your code
 - `php-actor` (need a restart): `phpactor.json` auto-created at the root
-of the project (start NeoVim there!) and auto-configured after Symfony
-was detected. It'll make the editing smooth (autocompletion, auto-imports,
-...)
+  of the project (start NeoVim there!) and auto-configured after Symfony
+  was detected. It'll make the editing smooth (autocompletion, auto-imports,
+  ...)
 
 (Optional) For the [Twig](https://twig.symfony.com) template engine:
+
 - `twigcs` diagnostics:
+
 ```shell
 composer global require friendsoftwig/twigcs
 ```
+
 - [djLint](https://www.djlint.com/docs/getting-started/) formatter (Python3 required;
-NOTE: this was the best way to format Twig properly for me; `conform` uses it by default
-for the `twig` filetype):
+  NOTE: this was the best way to format Twig properly for me; `conform` uses it by default
+  for the `twig` filetype):
+
 ```shell
 pip3 install djlint
 ```
 
-### Note about the *emoji* completion
+### Note about the _emoji_ completion
 
 `blink-emoji` is enabled for **markdown** file or a `git commit` message only.
 I'd like to enable this for other filetypes too inside comments or strings only
