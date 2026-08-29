@@ -1,3 +1,5 @@
+;;; Project manager -*- lexical-binding: t; -*-
+
 (unless (boundp 'project-directory)
   (defvar project-directory "~/Documents/Code"))
 

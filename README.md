@@ -188,8 +188,9 @@ The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZ
 
 ## GNU Emacs
 
-### Emacs 30 (used for Common Lisp projects)
+### Emacs 31.1 (used for Common Lisp projects)
 
+- _Work In Progress_
 - starts on a _Sly_ session (requires `sbcl`)
 - minimal setup
 - Evil mode
@@ -198,7 +199,7 @@ The packages will be auto-installed via vim-plug. Untested on NeoVim. Install FZ
 ### Previous version (obsolete)
 
 All scripts in `.emacs.d/2013-scripts` are dead and tested on Emacs 24.3 only.
-You can access to this archive from this  
+You can access to this archive from this
 [revision](https://github.com/martialboniou/dotfiles/tree/db66a2a41cd4fc950a378088de126f5ffef67a19).
 
 ## Bat

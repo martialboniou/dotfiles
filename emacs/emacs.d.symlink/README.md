@@ -1,11 +1,11 @@
-Emacs 29.1 setup
+Emacs 31.1 setup
 ================
 
 Goal
 ----
 
 - small setup (no time for crazy customization as NeoVim is my main editor in
-  2023)
+  2023-2026)
 - Common Lisp ready (this setup will boot a REPL automatically)
 - **Evil Mode** activated
   - *REMINDER*: `C-z` to go back to the `Normal` state from the `Emacs` one
@@ -19,8 +19,8 @@ Goal
 Context
 -------
 
-- `emacs -nw` on iTerm2 in tmux session
-- SBCL 2.3.7 on macOS 13.4
+- `emacs -nw` on ghostty in tmux session
+- SBCL 2.6.5 on macOS 15.7.8
 
 Notes
 -----

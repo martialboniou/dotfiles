@@ -1,6 +1,6 @@
 ;;; Simple Emacs for Common Lisp -*- lexical-binding: t; -*-
 
-;;  Emacs version = 29.1
+;;  Emacs version = 31.1
 (defconst hondana/want-git t)
 (defconst hondana/want-project-assist nil)
 (defconst hondana/want-org-mode t)
@@ -215,8 +215,8 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Sly
-(hondana/use sly
-  :init (when (executable-find inferior-lisp-program) (sly)))
+; (hondana/use sly
+;   :init (when (executable-find inferior-lisp-program) (sly)))
 
 ;;; EXTENSIONS
 
@@ -239,5 +239,10 @@
 ;; Org-mode
 (when hondana/want-org-mode
   (require 'org-setup))
+
+;; Coalton hacks (might be merged or removed)
+(show-paren-mode 1)
+
+; (use-package 'slime)
 
 (provide 'init)

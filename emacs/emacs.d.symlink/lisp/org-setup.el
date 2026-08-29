@@ -1,3 +1,5 @@
+;;; Org -*- lexical-binding: t; -*-
+
 (defvar evil-auto-indent nil)
 (declare-function org-indent-mode (&optional arg))
 

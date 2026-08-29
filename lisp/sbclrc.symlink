@@ -4,15 +4,15 @@
 ;; (setf (sb-impl::%readtable-normalization sb-impl::*standard-readtable*) nil)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ASDF from QUICKLISP
-#-quicklisp
-(let* ((quicklisp-directory-name  (merge-pathnames ".quicklisp/" (user-homedir-pathname)))
-       (quicklisp-setup-file-name (merge-pathnames "setup.lisp"  quicklisp-directory-name)))
- (if (probe-file quicklisp-setup-file-name)
-    (load quicklisp-setup-file-name)
-  (progn
-    (load (merge-pathnames ".ql_install" (user-homedir-pathname)))
-    (format t "Reload SBCL please.")
-    (exit))))
+; #-quicklisp
+; (let* ((quicklisp-directory-name  (merge-pathnames ".quicklisp/" (user-homedir-pathname)))
+;        (quicklisp-setup-file-name (merge-pathnames "setup.lisp"  quicklisp-directory-name)))
+;  (if (probe-file quicklisp-setup-file-name)
+;     (load quicklisp-setup-file-name)
+;   (progn
+;     (load (merge-pathnames ".ql_install" (user-homedir-pathname)))
+;     (format t "Reload SBCL please.")
+;     (exit))))
 ;; project directory example: ~/.config/common-lisp/source-registry.conf.d/projects.conf
 ;; containing the following snippet: (:tree (:home "MyLispDirectory/Projects"))
 
@@ -28,3 +28,11 @@
 ;   (sb-ext:invalid-fasl ()
 ;    (asdf:perform (make-instance 'asdf:compile-op) c)
 ;    (call-next-method))))
+
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
